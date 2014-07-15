@@ -5,29 +5,36 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://xcodest.me/index.html</loc>
-<lastmod>2014-07-15T11:59:29-00:00</lastmod>
+<lastmod>2014-07-15T12:02:18-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://xcodest.me/archives.html</loc>
-<lastmod>2014-07-15T11:59:29-00:00</lastmod>
+<lastmod>2014-07-15T12:02:18-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://xcodest.me/tags.html</loc>
-<lastmod>2014-07-15T11:59:29-00:00</lastmod>
+<lastmod>2014-07-15T12:02:18-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://xcodest.me/categories.html</loc>
-<lastmod>2014-07-15T11:59:29-00:00</lastmod>
+<lastmod>2014-07-15T12:02:18-00:00</lastmod>
 <changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://xcodest.me/pages/about.html</loc>
+<lastmod>2014-07-14T00:00:00-00:00</lastmod>
+<changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
@@ -53,7 +60,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>http://xcodest.me/category/misc.html</loc>
+<loc>http://xcodest.me/category/content.html</loc>
 <lastmod>2014-04-14T19:39:51-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>

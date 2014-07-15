@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+        <meta charset="utf-8" />
+        <title>Xcodest</title>
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" />
+        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="http://xcodest.me/">Xcodest </a></h1>
+                <nav><ul>
+                    <li><a href="http://xcodest.me/category/misc.html">misc</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://xcodest.me/linux-bonding-mode-6-break-the-vms.html">linux bonding mode 6 break the vms</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2014-04-14T19:39:51">
+                Mon 14 April 2014
+        </abbr>
+
+        <address class="vcard author">
+                By <a class="url fn" href="http://xcodest.me/author/jeffrey4l.html">Jeffrey4l</a>
+        </address>
+<p>In <a href="http://xcodest.me/category/misc.html">misc</a>. </p>
+<p>tags: <a href="http://xcodest.me/tag/openstack.html">openstack</a></p>
+</footer><!-- /.post-info --><p>操作系统： ubuntu 12.04.1
+内核 linux 3.2</p>
+<p>今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。</p>
+<div class="highlight"><pre><span class="o">+----</span> <span class="n">host1</span> <span class="o">-------+</span>         <span class="o">+----</span> <span class="n">host2</span> <span class="o">----+</span>
+                 <span class="n">eth0</span> <span class="o">----</span> <span class="n">eth0</span> 
+               <span class="o">/</span>                \
+<span class="n">br1</span> <span class="o">----</span> <span class="n">bond0</span>                   <span class="n">bond0</span> <span class="o">----</span> <span class="n">br1</span> 
+               <span class="err">\</span>                <span class="o">/</span>
+                 <span class="n">eth0</span> <span class="o">----</span> <span class="n">eth0</span>
+</pre></div>
+
+
+<p>机器的连接方式如上图，经检查发现，问题简化成两边的 br1 是不通的，现像是ping时，接收方收不到包，包只走到bond0就给丢弃了。原因在于内核上有问题。在网络上查到以下两个连接 </p>
+<ol>
+<li>https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302 </li>
+<li>https://bugzilla.redhat.com/show_bug.cgi?id=487763</li>
+</ol>
+<p>把内核升级到3.8之后就可以了。</p>
+<div class="highlight"><pre><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">linux</span><span class="o">-</span><span class="n">image</span><span class="o">-</span><span class="n">generic</span><span class="o">-</span><span class="n">lts</span><span class="o">-</span><span class="n">raring</span>
+</pre></div>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html" rel="bookmark"
+                           title="Permalink to Dhcp lease errors in vlan mode">Dhcp lease errors in vlan mode</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2013-08-27T08:50:00">
+                Tue 27 August 2013
+        </abbr>
+
+        <address class="vcard author">
+                By <a class="url fn" href="http://xcodest.me/author/jeffrey4l.html">Jeffrey4l</a>
+        </address>
+<p>In <a href="http://xcodest.me/category/misc.html">misc</a>. </p>
+<p>tags: <a href="http://xcodest.me/tag/openstack.html">openstack</a></p>
+</footer><!-- /.post-info -->                <p>在使用<code>keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
+<div class="highlight"><pre><span class="n">PERSISTENT_DHCLIENT</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+
+
+<p>使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个<a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results">邮件列表</a>中找到原因，如下：</p>
+<p>To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1</p>
+<p>THE LONG VERSION</p>
+<p>There is an issue with ...</p>
+                <a class="readmore" href="http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://xcodest.me/openstack-brief.html" rel="bookmark"
+                           title="Permalink to Openstack Brief">Openstack Brief</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2013-06-17T23:08:00">
+                Mon 17 June 2013
+        </abbr>
+
+        <address class="vcard author">
+                By <a class="url fn" href="http://xcodest.me/author/jeffrey4l.html">Jeffrey4l</a>
+        </address>
+<p>In <a href="http://xcodest.me/category/misc.html">misc</a>. </p>
+<p>tags: <a href="http://xcodest.me/tag/openstack.html">openstack</a></p>
+</footer><!-- /.post-info -->                <p>自从Openstack诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于Grizzly的版本来写的。</p>
+<ul>
+<li>Keystone</li>
+<li>Nova</li>
+<li>Cinder</li>
+<li>Glance</li>
+<li>Openstack Network(Quantum)</li>
+<li>LBaaS</li>
+<li>Ceilometer</li>
+<li>Baremetal</li>
+</ul>
+<h1>Keystone</h1>
+<p>keystone是Openstack的认证和服务注册模块。其结构比较简单。其功能包括:</p>
+<ol>
+<li><strong>认证</strong> 主要功能是管理用户和用户组的信息，后端可以绑定ldap, mysql等认证方式。</li>
+<li><strong>服务注册模块</strong> 主要用于管理Openstack相关服务的地址，所有的服务都要先注册到Keystone中，才可以使用。它可使用基于文件的模板，也可以使用数据库存储。</li>
+<li><strong>Token</strong> 管理。</li>
+</ol>
+<p>相对于其它子项目来说，keystone最近的变化并不是太大。将来一个比较大的变化就是基于domain的权限控制，届时Tenant里也可以细经出管理员和使用者的角色，并有详细的权限功能控制。</p>
+<h1>Nova</h1>
+<p>Nova是Openstack最早的子项目。现在其它项目如cinder, quantum(Openstack Network)都是来自于该项目。可以说这是Openstack中最复杂，最主要的部分。它负责 ...</p>
+                <a class="readmore" href="http://xcodest.me/openstack-brief.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://github.com/jeffrey4l">My Git</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

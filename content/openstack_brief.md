@@ -1,6 +1,7 @@
-title: Openstack Brief
-date: 2013-06-17 23:08
-tags: openstack
+Title: Openstack Brief
+Date: 2013-06-17 23:08
+Tags: openstack
+Email: zhang.lei.fly@gmail.com
 
 
 自从Openstack诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于Grizzly的版本来写的。

@@ -43,3 +43,8 @@ EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
+
+
+DISQUS_SITENAME = u'xcodest'
+#DISQUS_SECRET_KEY = u'YOUR_SECRET_KEY'
+#DISQUS_PUBLIC_KEY = u'YOUR_PUBLIC_KEY'

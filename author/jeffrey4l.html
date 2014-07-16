@@ -22,7 +22,79 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="../linux-bonding-mode-6-break-the-vms.html">linux bonding mode 6 break the vms</a></h1>
+                    <h1 class="entry-title"><a href="../salt-mine.html">Salt Mine</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2014-07-16T00:00:00">
+                Wed 16 July 2014
+        </abbr>
+
+        <address class="vcard author">
+                By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a>
+        </address>
+<p>In <a href="../category/content.html">content</a>. </p>
+<p>tags: <a href="../tag/salt.html">salt</a></p>
+</footer><!-- /.post-info --><p>Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。</p>
+<p>可以通过两种方法来配置:</p>
+<ol>
+<li>minion的配置文件</li>
+<li>master的pillar</li>
+</ol>
+<p>使用minion配置时，要直接修改minion的配置文件，在<code>/etc/salt/minion.d/mine.conf</code> 加入如下内容</p>
+<div class="highlight"><pre><span class="l-Scalar-Plain">mine_functions</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">test.ping</span><span class="p-Indicator">:</span> <span class="p-Indicator">[]</span>
+  <span class="l-Scalar-Plain">network.ip_addrs</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">interface</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">eth0</span>
+</pre></div>
+
+
+<p>使用pillar时配置时，只需要修改master的pillar配置即可。如在<code>/srv/pillar/mine.conf</code> 中加入如下内容</p>
+<div class="highlight"><pre><span class="l-Scalar-Plain">mine_functions</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">test.ping</span><span class="p-Indicator">:</span> <span class="p-Indicator">[]</span>
+  <span class="l-Scalar-Plain">network.ip_addrs</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">interface</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">eth0</span>
+</pre></div>
+
+
+<p>然后把<code>mine.conf</code>加入到<code>/srv/pillar/top.sls</code>, 这时可以指定哪些minion来配置mine_functions。相比较而言，这种方式更加灵活一些。</p>
+<div class="highlight"><pre><span class="l-Scalar-Plain">base</span><span class="p-Indicator">:</span>
+  <span class="s">&#39;controller*&#39;</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">mine</span>
+</pre></div>
+
+
+<p>之后就可以使用如下语句拿到mine上报上来的结果的(其实这个结果是保存在master的<code>/var/cache/salt/master/minions/*/mine.p</code>的文件下就可找到上报上来的内容。</p>
+<div class="highlight"><pre><span class="nv">$ </span>salt <span class="s1">&#39;jeffrey-thinkpad&#39;</span> mine.get <span class="s1">&#39;*&#39;</span> network.ip_addrs
+jeffrey-thinkpad:
+    ----------
+    icehouse-compute:
+        - 10.0.0.11
+    icehouse-controller:
+        - 10.0.0.10
+</pre></div>
+
+
+<p>另外，可以在minion上来修改上报的时间间隔。方法是增加/修改<code>/etc/salt/minion.d/mine.conf</code>。</p>
+<div class="highlight"><pre><span class="n">mine_interval</span><span class="o">:</span> <span class="mi">1</span>
+</pre></div>
+
+
+<h2>REF</h2>
+<ol>
+<li><a href="http://docs.saltstack.com/en/latest/topics/mine/">Salt Mine</a></li>
+</ol><p>There are <a href="../salt-mine.html#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="../linux-bonding-mode-6-break-the-vms.html" rel="bookmark"
+                           title="Permalink to linux bonding mode 6 break the vms">linux bonding mode 6 break the vms</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2014-04-14T19:39:51">
                 Mon 14 April 2014
@@ -33,7 +105,7 @@
         </address>
 <p>In <a href="../category/content.html">content</a>. </p>
 <p>tags: <a href="../tag/openstack.html">openstack</a></p>
-</footer><!-- /.post-info --><p>操作系统： ubuntu 12.04.1
+</footer><!-- /.post-info -->                <p>操作系统： ubuntu 12.04.1
 内核 linux 3.2</p>
 <p>今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。</p>
 <div class="highlight"><pre><span class="o">+----</span> <span class="n">host1</span> <span class="o">-------+</span>         <span class="o">+----</span> <span class="n">host2</span> <span class="o">----+</span>
@@ -48,16 +120,10 @@
 <p>机器的连接方式如上图，经检查发现，问题简化成两边的 br1 是不通的，现像是ping时，接收方收不到包，包只走到bond0就给丢弃了。原因在于内核上有问题。在网络上查到以下两个连接 </p>
 <ol>
 <li>https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302 </li>
-<li>https://bugzilla.redhat.com/show_bug.cgi?id=487763</li>
-</ol>
-<p>把内核升级到3.8之后就可以了。</p>
-<div class="highlight"><pre><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">linux</span><span class="o">-</span><span class="n">image</span><span class="o">-</span><span class="n">generic</span><span class="o">-</span><span class="n">lts</span><span class="o">-</span><span class="n">raring</span>
-</pre></div><p>There are <a href="../linux-bonding-mode-6-break-the-vms.html#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<li>https://bugzilla ...</li></ol>
+                <a class="readmore" href="../linux-bonding-mode-6-break-the-vms.html">read more</a>
+<p>There are <a href="../linux-bonding-mode-6-break-the-vms.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>

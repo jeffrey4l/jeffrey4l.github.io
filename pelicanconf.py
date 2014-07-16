@@ -6,14 +6,14 @@ sys.path.append('/home/jeffrey/temp/pelican-plugins')
 
 AUTHOR = u'Jeffrey4l'
 SITENAME = u'Xcodest'
-SITEURL = ''
+SITEURL = 'http://xcodest.me'
 
 TIMEZONE = 'Asia/Shanghai'
 
 DEFAULT_LANG = u'cn'
 
 # Feed generation is usually not desired when developing
-FEED_ALL_ATOM = None
+FEED_ALL_ATOM = True
 CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 
@@ -37,7 +37,7 @@ PLUGINS = ['assets', 'sitemap', 'gravatar']
 
 SITEMAP= {'format': 'xml'}
 
-STATIC_PATHS = ['images', 'extra/CNAME']
+STATIC_PATHS = ['images', 'extra/CNAME', 'theme']
 
 EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
 
@@ -46,5 +46,24 @@ EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
 
 
 DISQUS_SITENAME = u'xcodest'
-#DISQUS_SECRET_KEY = u'YOUR_SECRET_KEY'
-#DISQUS_PUBLIC_KEY = u'YOUR_PUBLIC_KEY'
+
+#MONTH_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/{date:%b}/index.html'
+YEAR_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/index.html'
+
+MENUITEMS = (
+    ('Home', '/index.html'),
+    ('Archives', '/archives.html'),
+    )
+
+GOOGLE_ANALYTICS = 'UA-41808584-1'
+
+USE_FOLDER_AS_CATEGORY = True
+
+AUTHORS_SAVE_AS = ''
+
+DISPLAY_CATEGORIES_ON_MENU = False
+
+THEME_STATIC_DIR = 'themes'
+THEME = 'theme/xcodest'
+
+ARTICLE_EXCLUDES =  ['theme']

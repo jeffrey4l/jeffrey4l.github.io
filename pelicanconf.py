@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
+
+import os.path
 import sys
-sys.path.append('/home/jeffrey/temp/pelican-plugins')
+
+ROOT = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(ROOT, 'plugins'))
 
 AUTHOR = u'Jeffrey4l'
 SITENAME = u'Xcodest'
@@ -25,13 +29,11 @@ LINKS = (('My Git', 'http://github.com/jeffrey4l'),
 SOCIAL = (('You can add links in your config file', '#'),
           ('Another social link', '#'),)
 
-#PAGE_PATHS = ['author']
-
 YEAR_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/index.html'
 MONTH_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/{date:%b}/index.html'
 
 
-PLUGIN_PATHS = [ '/home/jeffrey/temp/pelican-plugins']
+PLUGIN_PATHS = [ os.path.join(ROOT, 'plugins')]
 
 PLUGINS = ['assets', 'sitemap', 'gravatar']
 
@@ -63,7 +65,4 @@ AUTHORS_SAVE_AS = ''
 
 DISPLAY_CATEGORIES_ON_MENU = False
 
-THEME_STATIC_DIR = 'themes'
-THEME = 'theme/xcodest'
-
-ARTICLE_EXCLUDES =  ['theme']
+ARTICLE_EXCLUDES =  ['theme', 'themes', 'plugins']

@@ -17,7 +17,7 @@ TIMEZONE = 'Asia/Shanghai'
 DEFAULT_LANG = u'cn'
 
 # Feed generation is usually not desired when developing
-FEED_ALL_ATOM = True
+FEED_ALL_ATOM = None
 CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 
@@ -65,4 +65,4 @@ AUTHORS_SAVE_AS = ''
 
 DISPLAY_CATEGORIES_ON_MENU = False
 
-ARTICLE_EXCLUDES =  ['theme', 'themes', 'plugins']
+ARTICLE_EXCLUDES =  ['theme', 'themes', 'plugins', 'output']

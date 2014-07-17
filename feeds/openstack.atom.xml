@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/openstack.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2014-07-17T00:00:00+08:00</updated><entry><title>Glance Image Cache</title><link href="http://xcodest.me/glance-image-cache.html" rel="alternate"></link><updated>2014-07-17T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-07-17:glance-image-cache.html</id><summary type="html">&lt;p&gt;Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定
+程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。&lt;/p&gt;
+&lt;p&gt;因为是通过middleware来控制的，所以只要修改一下paster的配置就行。更简单的是指定
+glance-api加载的pipeline的名字。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[deploy]&lt;/span&gt;
+&lt;span class="c1"&gt;# possible value: none, cachine, keystone, keystone+caching, &lt;/span&gt;
+&lt;span class="c1"&gt;# keystone+cachemanagement&lt;/span&gt;
+&lt;span class="c1"&gt;# This value can get from glance-api-paste.conf file&lt;/span&gt;
+&lt;span class="na"&gt;flavor&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;keystone+caching&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;具体看下&lt;code&gt;glance-api-paster.conf&lt;/code&gt;文件就能明白。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[pipeline:glance-api]&lt;/span&gt;
+&lt;span class="na"&gt;pipeline&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;versionnegotiation unauthenticated-context rootapp&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Use this pipeline for image caching and no auth&lt;/span&gt;
+&lt;span class="k"&gt;[pipeline:glance-api-caching]&lt;/span&gt;
+&lt;span class="na"&gt;pipeline&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;versionnegotiation unauthenticated-context cache rootapp&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Use this pipeline for caching w/ management interface but no auth&lt;/span&gt;
+&lt;span class="k"&gt;[pipeline:glance-api-cachemanagement]&lt;/span&gt;
+&lt;span class="na"&gt;pipeline&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;versionnegotiation unauthenticated-context cache cachemanage rootapp&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Use this pipeline for keystone auth&lt;/span&gt;
+&lt;span class="k"&gt;[pipeline:glance-api-keystone]&lt;/span&gt;
+&lt;span class="na"&gt;pipeline&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;versionnegotiation authtoken context rootapp&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Use this pipeline for keystone auth with image caching&lt;/span&gt;
+&lt;span class="k"&gt;[pipeline:glance-api-keystone+caching]&lt;/span&gt;
+&lt;span class="na"&gt;pipeline&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;versionnegotiation authtoken context cache rootapp&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Use this pipeline for keystone auth with caching and cache management&lt;/span&gt;
+&lt;span class="k"&gt;[pipeline:glance-api-keystone+cachemanagement]&lt;/span&gt;
+&lt;span class="na"&gt;pipeline&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;versionnegotiation authtoken context cache cachemanage rootapp&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;不同的pipeline用到了不同的middleware, 启作用的是cache 和 cachemanagement这两个
+。&lt;/p&gt;
+&lt;h2&gt;REF&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://docs.openstack.org/developer/glance/cache.html"&gt;The Glance Image Cache&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</summary><category term="openstack"></category></entry></feed>

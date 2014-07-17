@@ -26,8 +26,9 @@ LINKS = (('My Git', 'http://github.com/jeffrey4l'),
         )
 
 # Social widget
-SOCIAL = (('You can add links in your config file', '#'),
-          ('Another social link', '#'),)
+SOCIAL = (
+    ('Github', 'http://github.com/jeffrey4l'),
+  )
 
 YEAR_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/index.html'
 MONTH_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/{date:%b}/index.html'
@@ -44,7 +45,7 @@ STATIC_PATHS = ['images', 'extra/CNAME', 'theme']
 EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
 
 # Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True
+RELATIVE_URLS = True
 
 
 DISQUS_SITENAME = 'xcodest'
@@ -53,16 +54,20 @@ DISQUS_SITENAME = 'xcodest'
 YEAR_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/index.html'
 
 MENUITEMS = (
-    ('Home', '/index.html'),
     ('Archives', '/archives.html'),
     )
 
 GOOGLE_ANALYTICS = 'UA-41808584-1'
 
-USE_FOLDER_AS_CATEGORY = True
+USE_FOLDER_AS_CATEGORY = False
+DEFAULT_CATEGORY = 'Others'
 
 AUTHORS_SAVE_AS = ''
 
 DISPLAY_CATEGORIES_ON_MENU = False
 
 ARTICLE_EXCLUDES =  ['theme', 'themes', 'plugins', 'output']
+
+THEME = 'themes/gum'
+
+GITHUB_URL = 'http://githbu.com/jeffrey4l'

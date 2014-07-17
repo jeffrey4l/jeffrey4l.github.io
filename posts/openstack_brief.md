@@ -1,6 +1,6 @@
 Title: Openstack Brief
 Date: 2013-06-17 23:08
-Tags: openstack
+Category: Openstack
 Email: zhang.lei.fly@gmail.com
 
 

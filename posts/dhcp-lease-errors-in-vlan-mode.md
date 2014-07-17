@@ -1,6 +1,7 @@
 title: Dhcp lease errors in vlan mode
 date: 2013-08-27 08:50
-tags: openstack
+tags: dhcp, network, vlan
+Category: Openstack
 
 
 在使用``keepalived``的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在``/etc/sysconfig/network-scripts/ifcfg-eth0``中加上了如下语句：

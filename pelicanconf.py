@@ -47,7 +47,7 @@ EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
 #RELATIVE_URLS = True
 
 
-DISQUS_SITENAME = u'xcodest'
+DISQUS_SITENAME = 'xcodest'
 
 #MONTH_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/{date:%b}/index.html'
 YEAR_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/index.html'

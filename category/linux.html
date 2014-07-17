@@ -2,9 +2,10 @@
 <html lang="cn">
 <head>
 
-        <title>Xcodest - salt</title>
+        <title>Xcodest</title>
         <meta charset="utf-8" />
         <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Full Atom Feed" />
+        <link href="http://xcodest.me/feeds/linux.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Categories Atom Feed" />
 
 
         <!-- Mobile viewport optimized: j.mp/bplateviewport -->
@@ -47,7 +48,7 @@
             </div>
 
 <section id="content">
-
+<h2>Articles in the Linux category</h2>
 
 
    <div class="row">
@@ -91,6 +92,40 @@
 								<div class="row tag-row">
 										<span>Tagged as : </span>
 											<a class="danger label" href="../tag/salt.html">salt</a>
+								</div>
+
+
+
+				        </article></li>
+				        <li><article class="hentry">
+				                <header> <h2 class="entry-title"><a href="../linux-bonding-mode-6-break-the-vms.html" rel="bookmark" title="Permalink to linux bonding mode 6 break the vms">linux bonding mode 6 break the vms</a></h2> </header>
+				                <footer class="post-info">
+				                    <abbr class="published" title="2014-04-14T19:39:51"> Mon 14 April 2014 </abbr>
+<address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
+				                <div class="entry-content"> <p>操作系统： ubuntu 12.04.1
+内核 linux 3.2</p>
+<p>今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。</p>
+<div class="highlight"><pre>    +---- host1 -------+         +---- host2 ----+
+                     eth0 ---- eth0 
+                   /                \
+    br1 ---- bond0                   bond0 ---- br1 
+                   \                /
+                     eth0 ---- eth0 
+</pre></div>
+
+
+<p>机器的连接方式如上图，经检查发现，问题简化成两边的 br1 是不通的，现像是ping时，接收方收不到包，包只走到bond0就给丢弃了。原因在于内核上有问题。在网络上查到以下两个连接 </p>
+<ol>
+<li>https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302 </li>
+<li>https://bugzilla ...</li></ol> </div><!-- /.entry-content -->
+
+								<div class="medium primary btn"><a href="../linux-bonding-mode-6-break-the-vms.html" rel="bookmark" title="Permalink to linux bonding mode 6 break the vms">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+								<div class="row tag-row">
+										<span>Tagged as : </span>
+											<a class="danger label" href="../tag/network.html">network</a>
 								</div>
 
 

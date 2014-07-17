@@ -2,7 +2,7 @@
 <html lang="cn">
 <head>
 
-        <title>Xcodest - salt</title>
+        <title>Xcodest - glance</title>
         <meta charset="utf-8" />
         <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Full Atom Feed" />
 
@@ -56,41 +56,35 @@
         <div class="eleven columns">
 		         <ol id="post-list">
 				        <li><article class="hentry">
-				                <header> <h2 class="entry-title"><a href="../salt-mine.html" rel="bookmark" title="Permalink to Salt Mine">Salt Mine</a></h2> </header>
+				                <header> <h2 class="entry-title"><a href="../glance-image-cache.html" rel="bookmark" title="Permalink to Glance Image Cache">Glance Image Cache</a></h2> </header>
 				                <footer class="post-info">
-				                    <abbr class="published" title="2014-07-16T00:00:00"> Wed 16 July 2014 </abbr>
+				                    <abbr class="published" title="2014-07-17T00:00:00"> Thu 17 July 2014 </abbr>
 <address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
-				                <div class="entry-content"> <p>Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。</p>
-<p>可以通过两种方法来配置:</p>
-<ol>
-<li>minion的配置文件</li>
-<li>master的pillar</li>
-</ol>
-<p>使用minion配置时，要直接修改minion的配置文件，在<code>/etc/salt/minion.d/mine.conf</code> 加入如下内容</p>
-<div class="highlight"><pre><span class="l-Scalar-Plain">mine_functions</span><span class="p-Indicator">:</span>
-  <span class="l-Scalar-Plain">test.ping</span><span class="p-Indicator">:</span> <span class="p-Indicator">[]</span>
-  <span class="l-Scalar-Plain">network.ip_addrs</span><span class="p-Indicator">:</span>
-    <span class="l-Scalar-Plain">interface</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">eth0</span>
+				                <div class="entry-content"> <p>Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定
+程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。</p>
+<p>因为是通过middleware来控制的，所以只要修改一下paster的配置就行。更简单的是指定
+glance-api加载的pipeline的名字。</p>
+<div class="highlight"><pre><span class="k">[deploy]</span>
+<span class="c1"># possible value: none, cachine, keystone, keystone+caching, </span>
+<span class="c1"># keystone+cachemanagement</span>
+<span class="c1"># This value can get from glance-api-paste.conf file</span>
+<span class="na">flavor</span><span class="o">=</span><span class="s">keystone+caching</span>
 </pre></div>
 
 
-<p>使用pillar时配置时，只需要修改master的pillar配置即可。如在<code>/srv/pillar/mine.conf</code> 中加入如下内容</p>
-<div class="highlight"><pre><span class="l-Scalar-Plain">mine_functions</span><span class="p-Indicator">:</span>
-  <span class="l-Scalar-Plain">test.ping</span><span class="p-Indicator">:</span> <span class="p-Indicator">[]</span>
-  <span class="l-Scalar-Plain">network.ip_addrs</span><span class="p-Indicator">:</span>
-    <span class="l-Scalar-Plain">interface</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">eth0</span>
-</pre></div>
+<p>具体看下<code>glance-api-paster.conf</code>文件就能明白。</p>
+<div class="highlight"><pre><span class="k">[pipeline:glance-api]</span>
+<span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation unauthenticated-context rootapp</span>
 
+<span class="c1"># Use this pipeline for image caching and no ...</span></pre></div> </div><!-- /.entry-content -->
 
-<p>然后把<code>mine.conf ...</code></p> </div><!-- /.entry-content -->
-
-								<div class="medium primary btn"><a href="../salt-mine.html" rel="bookmark" title="Permalink to Salt Mine">Read more <i class="icon-arrow-right"></i></a></div>
+								<div class="medium primary btn"><a href="../glance-image-cache.html" rel="bookmark" title="Permalink to Glance Image Cache">Read more <i class="icon-arrow-right"></i></a></div>
 
 
 
 								<div class="row tag-row">
 										<span>Tagged as : </span>
-											<a class="danger label" href="../tag/salt.html">salt</a>
+											<a class="danger label" href="../tag/glance.html">glance</a>
 								</div>
 
 

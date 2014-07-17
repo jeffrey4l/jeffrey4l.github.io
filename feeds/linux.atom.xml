@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/linux.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2014-07-16T00:00:00+08:00</updated><entry><title>Salt Mine</title><link href="http://xcodest.me/salt-mine.html" rel="alternate"></link><updated>2014-07-16T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-07-16:salt-mine.html</id><summary type="html">&lt;p&gt;Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。&lt;/p&gt;
+&lt;p&gt;可以通过两种方法来配置:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;minion的配置文件&lt;/li&gt;
+&lt;li&gt;master的pillar&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;使用minion配置时，要直接修改minion的配置文件，在&lt;code&gt;/etc/salt/minion.d/mine.conf&lt;/code&gt; 加入如下内容&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l-Scalar-Plain"&gt;mine_functions&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
+  &lt;span class="l-Scalar-Plain"&gt;test.ping&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p-Indicator"&gt;[]&lt;/span&gt;
+  &lt;span class="l-Scalar-Plain"&gt;network.ip_addrs&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
+    &lt;span class="l-Scalar-Plain"&gt;interface&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;eth0&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;使用pillar时配置时，只需要修改master的pillar配置即可。如在&lt;code&gt;/srv/pillar/mine.conf&lt;/code&gt; 中加入如下内容&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l-Scalar-Plain"&gt;mine_functions&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
+  &lt;span class="l-Scalar-Plain"&gt;test.ping&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p-Indicator"&gt;[]&lt;/span&gt;
+  &lt;span class="l-Scalar-Plain"&gt;network.ip_addrs&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
+    &lt;span class="l-Scalar-Plain"&gt;interface&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;eth0&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;然后把&lt;code&gt;mine.conf&lt;/code&gt;加入到&lt;code&gt;/srv/pillar/top.sls&lt;/code&gt;, 这时可以指定哪些minion来配置mine_functions。相比较而言，这种方式更加灵活一些。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l-Scalar-Plain"&gt;base&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
+  &lt;span class="s"&gt;&amp;#39;controller*&amp;#39;&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
+    &lt;span class="p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;mine&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;之后就可以使用如下语句拿到mine上报上来的结果的(其实这个结果是保存在master的&lt;code&gt;/var/cache/salt/master/minions/*/mine.p&lt;/code&gt;的文件下就可找到上报上来的内容。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;salt &lt;span class="s1"&gt;&amp;#39;jeffrey-thinkpad&amp;#39;&lt;/span&gt; mine.get &lt;span class="s1"&gt;&amp;#39;*&amp;#39;&lt;/span&gt; network.ip_addrs
+jeffrey-thinkpad:
+    ----------
+    icehouse-compute:
+        - 10.0.0.11
+    icehouse-controller:
+        - 10.0.0.10
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;另外，可以在minion上来修改上报的时间间隔。方法是增加/修改&lt;code&gt;/etc/salt/minion.d/mine.conf&lt;/code&gt;。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;mine_interval&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;REF&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://docs.saltstack.com/en/latest/topics/mine/"&gt;Salt Mine&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</summary><category term="salt"></category></entry><entry><title>linux bonding mode 6 break the vms</title><link href="http://xcodest.me/linux-bonding-mode-6-break-the-vms.html" rel="alternate"></link><updated>2014-04-14T19:39:51+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-04-14:linux-bonding-mode-6-break-the-vms.html</id><summary type="html">&lt;p&gt;操作系统： ubuntu 12.04.1
+内核 linux 3.2&lt;/p&gt;
+&lt;p&gt;今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;    +---- host1 -------+         +---- host2 ----+
+                     eth0 ---- eth0 
+                   /                \
+    br1 ---- bond0                   bond0 ---- br1 
+                   \                /
+                     eth0 ---- eth0 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;机器的连接方式如上图，经检查发现，问题简化成两边的 br1 是不通的，现像是ping时，接收方收不到包，包只走到bond0就给丢弃了。原因在于内核上有问题。在网络上查到以下两个连接 &lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302 &lt;/li&gt;
+&lt;li&gt;https://bugzilla.redhat.com/show_bug.cgi?id=487763&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;把内核升级到3.8之后就可以了。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;apt&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;linux&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;generic&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;lts&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;raring&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="network"></category></entry></feed>

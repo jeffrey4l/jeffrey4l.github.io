@@ -50,12 +50,12 @@ jeffrey-thinkpad:
 &lt;/ol&gt;</summary><category term="salt"></category></entry><entry><title>linux bonding mode 6 break the vms</title><link href="http://xcodest.me/linux-bonding-mode-6-break-the-vms.html" rel="alternate"></link><updated>2014-04-14T19:39:51+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-04-14:linux-bonding-mode-6-break-the-vms.html</id><summary type="html">&lt;p&gt;操作系统： ubuntu 12.04.1
 内核 linux 3.2&lt;/p&gt;
 &lt;p&gt;今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;+----&lt;/span&gt; &lt;span class="n"&gt;host1&lt;/span&gt; &lt;span class="o"&gt;-------+&lt;/span&gt;         &lt;span class="o"&gt;+----&lt;/span&gt; &lt;span class="n"&gt;host2&lt;/span&gt; &lt;span class="o"&gt;----+&lt;/span&gt;
-                 &lt;span class="n"&gt;eth0&lt;/span&gt; &lt;span class="o"&gt;----&lt;/span&gt; &lt;span class="n"&gt;eth0&lt;/span&gt; 
-               &lt;span class="o"&gt;/&lt;/span&gt;                \
-&lt;span class="n"&gt;br1&lt;/span&gt; &lt;span class="o"&gt;----&lt;/span&gt; &lt;span class="n"&gt;bond0&lt;/span&gt;                   &lt;span class="n"&gt;bond0&lt;/span&gt; &lt;span class="o"&gt;----&lt;/span&gt; &lt;span class="n"&gt;br1&lt;/span&gt; 
-               &lt;span class="err"&gt;\&lt;/span&gt;                &lt;span class="o"&gt;/&lt;/span&gt;
-                 &lt;span class="n"&gt;eth0&lt;/span&gt; &lt;span class="o"&gt;----&lt;/span&gt; &lt;span class="n"&gt;eth0&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;    +---- host1 -------+         +---- host2 ----+
+                     eth0 ---- eth0 
+                   /                \
+    br1 ---- bond0                   bond0 ---- br1 
+                   \                /
+                     eth0 ---- eth0 
 &lt;/pre&gt;&lt;/div&gt;
 
 

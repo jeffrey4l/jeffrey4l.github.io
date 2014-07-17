@@ -42,12 +42,12 @@
 </footer><!-- /.post-info -->      <p>操作系统： ubuntu 12.04.1
 内核 linux 3.2</p>
 <p>今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。</p>
-<div class="highlight"><pre><span class="o">+----</span> <span class="n">host1</span> <span class="o">-------+</span>         <span class="o">+----</span> <span class="n">host2</span> <span class="o">----+</span>
-                 <span class="n">eth0</span> <span class="o">----</span> <span class="n">eth0</span> 
-               <span class="o">/</span>                \
-<span class="n">br1</span> <span class="o">----</span> <span class="n">bond0</span>                   <span class="n">bond0</span> <span class="o">----</span> <span class="n">br1</span> 
-               <span class="err">\</span>                <span class="o">/</span>
-                 <span class="n">eth0</span> <span class="o">----</span> <span class="n">eth0</span>
+<div class="highlight"><pre>    +---- host1 -------+         +---- host2 ----+
+                     eth0 ---- eth0 
+                   /                \
+    br1 ---- bond0                   bond0 ---- br1 
+                   \                /
+                     eth0 ---- eth0 
 </pre></div>
 
 

@@ -1,2 +1,4 @@
 ghp-import
 fabric
+pelican
+webassets

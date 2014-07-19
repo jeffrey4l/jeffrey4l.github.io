@@ -1,5 +1,12 @@
 ghp-import
 fabric
+
+# Require by pelican
 pelican
 webassets
-markdown
+Markdown
+feedgenerator
+jinja2
+docutils
+pygments
+Typogrify

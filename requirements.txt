@@ -2,3 +2,4 @@ ghp-import
 fabric
 pelican
 webassets
+markdown

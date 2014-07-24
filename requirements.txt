@@ -6,7 +6,7 @@ pelican
 webassets
 Markdown
 feedgenerator
-jinja2
+Jinja2
 docutils
 pygments
 Typogrify

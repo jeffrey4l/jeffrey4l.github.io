@@ -2,9 +2,10 @@
 <html lang="cn">
 <head>
 
-        <title>Xcodest - network</title>
+        <title>Xcodest</title>
         <meta charset="utf-8" />
         <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Full Atom Feed" />
+        <link href="http://xcodest.me/feeds/life.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Categories Atom Feed" />
 
 
         <!-- Mobile viewport optimized: j.mp/bplateviewport -->
@@ -47,7 +48,7 @@
             </div>
 
 <section id="content">
-
+<h2>Articles in the Life category</h2>
 
 
    <div class="row">
@@ -56,63 +57,33 @@
         <div class="eleven columns">
 		         <ol id="post-list">
 				        <li><article class="hentry">
-				                <header> <h2 class="entry-title"><a href="../linux-bonding-mode-6-break-the-vms.html" rel="bookmark" title="Permalink to linux bonding mode 6 break the vms">linux bonding mode 6 break the vms</a></h2> </header>
+				                <header> <h2 class="entry-title"><a href="../hard-gym-reading-note.html" rel="bookmark" title="Permalink to 硬派健身-减肥篇 阅读笔记">硬派健身-减肥篇 阅读笔记</a></h2> </header>
 				                <footer class="post-info">
-				                    <abbr class="published" title="2014-04-14T19:39:51"> Mon 14 April 2014 </abbr>
+				                    <abbr class="published" title="2014-07-19T00:00:00"> Sat 19 July 2014 </abbr>
 <address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
-				                <div class="entry-content"> <p>操作系统： ubuntu 12.04.1
-内核 linux 3.2</p>
-<p>今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。</p>
-<div class="highlight"><pre>    +---- host1 -------+         +---- host2 ----+
-                     eth0 ---- eth0 
-                   /                \
-    br1 ---- bond0                   bond0 ---- br1 
-                   \                /
-                     eth0 ---- eth0 
-</pre></div>
-
-
-<p>机器的连接方式如上图，经检查发现，问题简化成两边的 br1 是不通的，现像是ping时，接收方收不到包，包只走到bond0就给丢弃了。原因在于内核上有问题。在网络上查到以下两个连接 </p>
+				                <div class="entry-content"> <h2>战肥肉有氧不敌，强塑身无氧超神</h2>
 <ol>
-<li>https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302 </li>
-<li>https://bugzilla ...</li></ol> </div><!-- /.entry-content -->
+<li>长时间有氧运动——似是而非的减肥妙计<ol>
+<li>当我们的身体状态稳定，身体素质、生活习惯变化不大时，我们的体重和体脂含量都是只能加，不能减，只能胖，不能瘦。这就是我们序章介绍过的体重设定点理论。</li>
+<li>很多实验都证实，单纯增加能量支出，做长时间、中高强度的有氧运动，无法有效地帮正常人减重。</li>
+<li>你的身体也是一样，当它打定主意把你的体重维持在一个设定点上，就会有非常多的手段可以调节这些体重和脂肪。比如，瘦素是一种能减肥和帮助我们抑制食欲的身体激素。研究发现，如果我们单纯进行长时间有氧耐力运动减肥，增加了热量的支出，我们身体会减少瘦素的分泌，让我们多吃，多增长脂肪。效果可以持续好几天，</li>
+<li>还有研究发现，马拉松运动员的瘦素分泌量仅为普通人的三分之一。</li>
+</ol>
+</li>
+<li>共振——跑步会伤害胖胖的你……<ol>
+<li>这也就是说，跑步等运动会在脂肪和关节等部位引起共振，共振的效应最后会引起身体与关节的损伤。目前的研究发现，脂肪的体积越大，重量越重，共振的效果越强，对身体的伤害也就越强烈。冲击力的输入振动频率是10hz左右，脂肪的固定振动频率是2-10hz，可以引起共振，伤害到自己的身体组织</li>
+</ol>
+</li>
+<li>世上减肥万法，唯有肌肉无敌<ol>
+<li>肉和脂肪的密度差异。要知道，肌肉的密度大概是1 ...</li></ol></li></ol> </div><!-- /.entry-content -->
 
-								<div class="medium primary btn"><a href="../linux-bonding-mode-6-break-the-vms.html" rel="bookmark" title="Permalink to linux bonding mode 6 break the vms">Read more <i class="icon-arrow-right"></i></a></div>
-
-
-
-								<div class="row tag-row">
-										<span>Tagged as : </span>
-											<a class="danger label" href="../tag/network.html">network</a>
-								</div>
-
-
-
-				        </article></li>
-				        <li><article class="hentry">
-				                <header> <h2 class="entry-title"><a href="../dhcp-lease-errors-in-vlan-mode.html" rel="bookmark" title="Permalink to Dhcp lease errors in vlan mode">Dhcp lease errors in vlan mode</a></h2> </header>
-				                <footer class="post-info">
-				                    <abbr class="published" title="2013-08-27T08:50:00"> Tue 27 August 2013 </abbr>
-<address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
-				                <div class="entry-content"> <p>在使用<code>keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
-<div class="highlight"><pre><span class="n">PERSISTENT_DHCLIENT</span><span class="o">=</span><span class="mi">1</span>
-</pre></div>
-
-
-<p>使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个<a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results">邮件列表</a>中找到原因，如下：</p>
-<p>To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1</p>
-<p>THE LONG VERSION</p>
-<p>There is an issue with ...</p> </div><!-- /.entry-content -->
-
-								<div class="medium primary btn"><a href="../dhcp-lease-errors-in-vlan-mode.html" rel="bookmark" title="Permalink to Dhcp lease errors in vlan mode">Read more <i class="icon-arrow-right"></i></a></div>
+								<div class="medium primary btn"><a href="../hard-gym-reading-note.html" rel="bookmark" title="Permalink to 硬派健身-减肥篇 阅读笔记">Read more <i class="icon-arrow-right"></i></a></div>
 
 
 
 								<div class="row tag-row">
 										<span>Tagged as : </span>
-											<a class="danger label" href="../tag/dhcp.html">dhcp</a>
-											<a class="danger label" href="../tag/network.html">network</a>
-											<a class="danger label" href="../tag/vlan.html">vlan</a>
+											<a class="danger label" href="../tag/book.html">book</a>
 								</div>
 
 

@@ -1,4 +1,4 @@
-Title: <硬派健身-减肥篇> 阅读笔记
+Title: 硬派健身-减肥篇 阅读笔记
 Category: Life
 Date: 2014-7-19
 Tags: book

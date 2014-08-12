@@ -56,6 +56,41 @@
         <div class="eleven columns">
 		         <ol id="post-list">
 				        <li><article class="hentry">
+				                <header> <h2 class="entry-title"><a href="../migrate-svn-to-gitlab.html" rel="bookmark" title="Permalink to Migrate SVN to GitLab">Migrate SVN to GitLab</a></h2> </header>
+				                <footer class="post-info">
+				                    <abbr class="published" title="2014-08-12T00:00:00"> Tue 12 August 2014 </abbr>
+<address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
+				                <div class="entry-content"> <ul>
+<li>在GitLab上创建相对应的项目/项目组</li>
+<li>准备''users.txt''文件，来修正提交用户名。并手动修改users.txt的正确性 </li>
+</ul>
+<div class="highlight"><pre><span class="nx">svn</span> <span class="k">log</span> <span class="o">&lt;</span><span class="nx">svn</span><span class="na">-url</span><span class="o">&gt;</span> <span class="o">--</span><span class="kt">xml</span> <span class="o">|</span> <span class="nx">grep</span> <span class="na">-P</span> <span class="s2">&quot;^&lt;author&quot;</span> <span class="o">|</span> <span class="nb">sort</span> <span class="na">-u</span> <span class="o">|</span> <span class="nx">perl</span> <span class="na">-pe</span> <span class="s1">&#39;s/&lt;author&gt;(.*?)&lt;\/author&gt;/$1 = /&#39;</span> <span class="o">&gt;</span> <span class="nx">users.txt</span>
+</pre></div>
+
+
+<p>users.txt的文件格式如下</p>
+<div class="highlight"><pre>Lei Zhang = Lei Zhang &lt;zhang.lei.fly#gmail.com&gt;
+</pre></div>
+
+
+<ul>
+<li>把SVN项目使用git-svn进行克隆 </li>
+</ul>
+<div class="highlight"><pre><span class="nx">git</span> <span class="nx">svn</span> <span class="nx">clone</span> <span class="o">--</span><span class="nx">no</span><span class="na">-metadata</span> <span class="o">--</span><span class="nx">authors</span><span class="na">-file</span> <span class="nx">users.txt</span> <span class="na">-s</span> <span class="o">&lt;</span><span class="nx">svn ...</span></pre></div> </div><!-- /.entry-content -->
+
+								<div class="medium primary btn"><a href="../migrate-svn-to-gitlab.html" rel="bookmark" title="Permalink to Migrate SVN to GitLab">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+								<div class="row tag-row">
+										<span>Tagged as : </span>
+											<a class="danger label" href="../tag/git.html">git</a>
+								</div>
+
+
+
+				        </article></li>
+				        <li><article class="hentry">
 				                <header> <h2 class="entry-title"><a href="../hard-gym-reading-note.html" rel="bookmark" title="Permalink to 硬派健身-减肥篇 阅读笔记">硬派健身-减肥篇 阅读笔记</a></h2> </header>
 				                <footer class="post-info">
 				                    <abbr class="published" title="2014-07-19T00:00:00"> Sat 19 July 2014 </abbr>
@@ -159,6 +194,23 @@ glance-api加载的pipeline的名字。</p>
 								<div class="row tag-row">
 										<span>Tagged as : </span>
 											<a class="danger label" href="../tag/salt.html">salt</a>
+								</div>
+
+
+
+				        </article></li>
+				        <li><article class="hentry">
+				                <header> <h2 class="entry-title"><a href="../about.html" rel="bookmark" title="Permalink to About">About</a></h2> </header>
+				                <footer class="post-info">
+				                    <abbr class="published" title="2014-07-14T00:00:00"> Mon 14 July 2014 </abbr>
+<address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
+				                <div class="entry-content"> <p>Email: zhang.lei.fly(#)gmail.com</p> </div><!-- /.entry-content -->
+
+								<div class="medium primary btn"><a href="../about.html" rel="bookmark" title="Permalink to About">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+								<div class="row tag-row">
 								</div>
 
 
@@ -282,6 +334,7 @@ glance-api加载的pipeline的名字。</p>
 		<li><a href="../category/life.html">Life</a></li>
 		<li><a href="../category/linux.html">Linux</a></li>
 		<li><a href="../category/openstack.html">Openstack</a></li>
+		<li><a href="../category/others.html">Others</a></li>
 </ul>
 
 
@@ -289,10 +342,11 @@ glance-api加载的pipeline的名字。</p>
 	<ul>
 	    <li class="tag-4"><a href="../tag/glance.html">glance</a></li>
 	    <li class="tag-4"><a href="../tag/dhcp.html">dhcp</a></li>
-	    <li class="tag-4"><a href="../tag/salt.html">salt</a></li>
-	    <li class="tag-4"><a href="../tag/vlan.html">vlan</a></li>
 	    <li class="tag-1"><a href="../tag/network.html">network</a></li>
+	    <li class="tag-4"><a href="../tag/git.html">git</a></li>
 	    <li class="tag-4"><a href="../tag/book.html">book</a></li>
+	    <li class="tag-4"><a href="../tag/vlan.html">vlan</a></li>
+	    <li class="tag-4"><a href="../tag/salt.html">salt</a></li>
 </ul>
 
 

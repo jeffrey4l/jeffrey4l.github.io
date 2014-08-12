@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/others.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2014-08-12T00:00:00+08:00</updated><entry><title>Migrate SVN to GitLab</title><link href="http://xcodest.me/migrate-svn-to-gitlab.html" rel="alternate"></link><updated>2014-08-12T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-08-12:migrate-svn-to-gitlab.html</id><summary type="html">&lt;ul&gt;
+&lt;li&gt;在GitLab上创建相对应的项目/项目组&lt;/li&gt;
+&lt;li&gt;准备''users.txt''文件，来修正提交用户名。并手动修改users.txt的正确性 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;svn&lt;/span&gt; &lt;span class="k"&gt;log&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;svn&lt;/span&gt;&lt;span class="na"&gt;-url&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="kt"&gt;xml&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nx"&gt;grep&lt;/span&gt; &lt;span class="na"&gt;-P&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;^&amp;lt;author&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;sort&lt;/span&gt; &lt;span class="na"&gt;-u&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nx"&gt;perl&lt;/span&gt; &lt;span class="na"&gt;-pe&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;s/&amp;lt;author&amp;gt;(.*?)&amp;lt;\/author&amp;gt;/$1 = /&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="nx"&gt;users.txt&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;users.txt的文件格式如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;Lei Zhang = Lei Zhang &amp;lt;zhang.lei.fly#gmail.com&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;把SVN项目使用git-svn进行克隆 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="nx"&gt;svn&lt;/span&gt; &lt;span class="nx"&gt;clone&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="nx"&gt;no&lt;/span&gt;&lt;span class="na"&gt;-metadata&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="nx"&gt;authors&lt;/span&gt;&lt;span class="na"&gt;-file&lt;/span&gt; &lt;span class="nx"&gt;users.txt&lt;/span&gt; &lt;span class="na"&gt;-s&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;svn&lt;/span&gt;&lt;span class="na"&gt;-url&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;project&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;处理SVN的分支和标签 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;cd&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;project&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="nb"&gt;for&lt;/span&gt;&lt;span class="na"&gt;-each-ref&lt;/span&gt; &lt;span class="nx"&gt;refs&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;remotes&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;tags&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nx"&gt;cut&lt;/span&gt; &lt;span class="na"&gt;-d&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="na"&gt;-f&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nx"&gt;grep&lt;/span&gt; &lt;span class="na"&gt;-v&lt;/span&gt; &lt;span class="p"&gt;@&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nb"&gt;read&lt;/span&gt; &lt;span class="nb"&gt;tagname&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="kt"&gt;tag&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;$tagname&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;tags/$tagname&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="nx"&gt;branch&lt;/span&gt; &lt;span class="na"&gt;-r&lt;/span&gt; &lt;span class="na"&gt;-d&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;tags/$tagname&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nb"&gt;done&lt;/span&gt;
+&lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="nb"&gt;for&lt;/span&gt;&lt;span class="na"&gt;-each-ref&lt;/span&gt; &lt;span class="nx"&gt;refs&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;remotes&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nx"&gt;cut&lt;/span&gt; &lt;span class="na"&gt;-d&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="na"&gt;-f&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nx"&gt;grep&lt;/span&gt; &lt;span class="na"&gt;-v&lt;/span&gt; &lt;span class="p"&gt;@&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nb"&gt;read&lt;/span&gt; &lt;span class="nx"&gt;branchname&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="nx"&gt;branch&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;$branchname&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;refs/remotes/$branchname&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="nx"&gt;branch&lt;/span&gt; &lt;span class="na"&gt;-r&lt;/span&gt; &lt;span class="na"&gt;-d&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;$branchname&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nb"&gt;done&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nb"&gt;code&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Push到Gitlab上的仓库&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;git&lt;/span&gt; &lt;span class="n"&gt;remote&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="n"&gt;origin&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;git&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;repo&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="n"&gt;git&lt;/span&gt; &lt;span class="n"&gt;push&lt;/span&gt; &lt;span class="n"&gt;origin&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;
+&lt;span class="n"&gt;git&lt;/span&gt; &lt;span class="n"&gt;push&lt;/span&gt; &lt;span class="n"&gt;origin&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;tags&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;参考&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://git-scm.com/book/en/Git-and-Other-Systems-Migrating-to-Git"&gt;Git and Other Systems - Migrating to Git&lt;/a&gt;&lt;/p&gt;</summary><category term="git"></category></entry><entry><title>About</title><link href="http://xcodest.me/about.html" rel="alternate"></link><updated>2014-07-14T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-07-14:about.html</id><summary type="html">&lt;p&gt;Email: zhang.lei.fly(#)gmail.com&lt;/p&gt;</summary></entry></feed>

@@ -57,6 +57,32 @@
         <div class="eleven columns">
 		         <ol id="post-list">
 				        <li><article class="hentry">
+				                <header> <h2 class="entry-title"><a href="../python-cstring-unicode.html" rel="bookmark" title="Permalink to Python cString raise exception when feed Unicode">Python cString raise exception when feed Unicode</a></h2> </header>
+				                <footer class="post-info">
+				                    <abbr class="published" title="2014-09-09T00:00:00"> Tue 09 September 2014 </abbr>
+<address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
+				                <div class="entry-content"> <p>I gett following different result when using these two Class.</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">import</span> <span class="nx">StringIO</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">import</span> <span class="nx">cStringIO</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nx">StringIO.StringIO</span><span class="p">()</span><span class="bp">.</span><span class="nb">write</span><span class="p">(</span><span class="nx">u</span><span class="s1">&#39;</span><span class="se">\u2222</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nx">cStringIO.StringIO</span><span class="p">()</span><span class="bp">.</span><span class="nb">write</span><span class="p">(</span><span class="nx">u</span><span class="s1">&#39;</span><span class="se">\u2222</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nx">Traceback</span> <span class="p">(</span><span class="nx">most</span> <span class="nx">recent</span> <span class="nb">call</span> <span class="nb">last</span><span class="p">):</span>
+  <span class="nb">File</span> <span class="s2">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="nb">line</span> <span class="mi">1</span><span class="p">,</span> <span class="k">in</span> <span class="o">&lt;</span><span class="nx">module</span><span class="o">&gt;</span>
+<span class="nx">UnicodeEncodeError</span><span class="p">:</span> <span class="s1">&#39;ascii&#39;</span> <span class="nx">codec</span> <span class="nx">can</span><span class="s1">&#39;t encode character u&#39;</span><span class="o">\</span><span class="nx">u2222</span><span class="s1">&#39; in position 0: ordinal not in ...</span></pre></div> </div><!-- /.entry-content -->
+
+								<div class="medium primary btn"><a href="../python-cstring-unicode.html" rel="bookmark" title="Permalink to Python cString raise exception when feed Unicode">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+								<div class="row tag-row">
+										<span>Tagged as : </span>
+											<a class="danger label" href="../tag/python.html">python</a>
+								</div>
+
+
+
+				        </article></li>
+				        <li><article class="hentry">
 				                <header> <h2 class="entry-title"><a href="../migrate-svn-to-gitlab.html" rel="bookmark" title="Permalink to Migrate SVN to GitLab">Migrate SVN to GitLab</a></h2> </header>
 				                <footer class="post-info">
 				                    <abbr class="published" title="2014-08-12T00:00:00"> Tue 12 August 2014 </abbr>
@@ -132,13 +158,14 @@
 
 <h4>Tags</h4>
 	<ul>
-	    <li class="tag-4"><a href="../tag/glance.html">glance</a></li>
-	    <li class="tag-4"><a href="../tag/dhcp.html">dhcp</a></li>
-	    <li class="tag-1"><a href="../tag/network.html">network</a></li>
 	    <li class="tag-4"><a href="../tag/git.html">git</a></li>
-	    <li class="tag-4"><a href="../tag/book.html">book</a></li>
-	    <li class="tag-4"><a href="../tag/vlan.html">vlan</a></li>
 	    <li class="tag-4"><a href="../tag/salt.html">salt</a></li>
+	    <li class="tag-4"><a href="../tag/vlan.html">vlan</a></li>
+	    <li class="tag-4"><a href="../tag/python.html">python</a></li>
+	    <li class="tag-4"><a href="../tag/dhcp.html">dhcp</a></li>
+	    <li class="tag-4"><a href="../tag/glance.html">glance</a></li>
+	    <li class="tag-4"><a href="../tag/book.html">book</a></li>
+	    <li class="tag-1"><a href="../tag/network.html">network</a></li>
 </ul>
 
 

@@ -2,10 +2,10 @@
 <html lang="cn">
 <head>
 
-        <title>linux bonding mode 6 break the vms</title>
+        <title>Python cString raise exception when feed Unicode</title>
         <meta charset="utf-8" />
         <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Full Atom Feed" />
-        <link href="http://xcodest.me/feeds/linux.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Categories Atom Feed" />
+        <link href="http://xcodest.me/feeds/others.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Categories Atom Feed" />
 
 
         <!-- Mobile viewport optimized: j.mp/bplateviewport -->
@@ -55,45 +55,40 @@
 
             <header>
               <h2 class="entry-title">
-                <a href="./linux-bonding-mode-6-break-the-vms.html" rel="bookmark"
-                   title="Permalink to linux bonding mode 6 break the vms">linux bonding mode 6 break the vms</a></h2>
+                <a href="./python-cstring-unicode.html" rel="bookmark"
+                   title="Permalink to Python cString raise exception when feed Unicode">Python cString raise exception when feed Unicode</a></h2>
            
             </header>
             <footer class="post-info">
-              <abbr class="published" title="2014-04-14T19:39:51">
-                Mon 14 April 2014
+              <abbr class="published" title="2014-09-09T00:00:00">
+                Tue 09 September 2014
               </abbr>
               <address class="vcard author">
                 By <a class="url fn" href="./author/jeffrey4l.html">Jeffrey4l</a>
               </address>
             </footer><!-- /.post-info -->
             <div class="entry-content">
-              <p>操作系统： ubuntu 12.04.1
-内核 linux 3.2</p>
-<p>今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。</p>
-<div class="highlight"><pre>    +---- host1 -------+         +---- host2 ----+
-                     eth0 ---- eth0 
-                   /                \
-    br1 ---- bond0                   bond0 ---- br1 
-                   \                /
-                     eth0 ---- eth0 
+              <p>I gett following different result when using these two Class.</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">import</span> <span class="nx">StringIO</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">import</span> <span class="nx">cStringIO</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nx">StringIO.StringIO</span><span class="p">()</span><span class="bp">.</span><span class="nb">write</span><span class="p">(</span><span class="nx">u</span><span class="s1">&#39;</span><span class="se">\u2222</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nx">cStringIO.StringIO</span><span class="p">()</span><span class="bp">.</span><span class="nb">write</span><span class="p">(</span><span class="nx">u</span><span class="s1">&#39;</span><span class="se">\u2222</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nx">Traceback</span> <span class="p">(</span><span class="nx">most</span> <span class="nx">recent</span> <span class="nb">call</span> <span class="nb">last</span><span class="p">):</span>
+  <span class="nb">File</span> <span class="s2">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="nb">line</span> <span class="mi">1</span><span class="p">,</span> <span class="k">in</span> <span class="o">&lt;</span><span class="nx">module</span><span class="o">&gt;</span>
+<span class="nx">UnicodeEncodeError</span><span class="p">:</span> <span class="s1">&#39;ascii&#39;</span> <span class="nx">codec</span> <span class="nx">can</span><span class="s1">&#39;t encode character u&#39;</span><span class="o">\</span><span class="nx">u2222</span><span class="s1">&#39; in position 0: ordinal not in range(128)</span>
 </pre></div>
 
 
-<p>机器的连接方式如上图，经检查发现，问题简化成两边的 br1 是不通的，现像是ping时，接收方收不到包，包只走到bond0就给丢弃了。原因在于内核上有问题。在网络上查到以下两个连接 </p>
-<ol>
-<li>https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302 </li>
-<li>https://bugzilla.redhat.com/show_bug.cgi?id=487763</li>
-</ol>
-<p>把内核升级到3.8之后就可以了。</p>
-<div class="highlight"><pre><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">linux</span><span class="o">-</span><span class="n">image</span><span class="o">-</span><span class="n">generic</span><span class="o">-</span><span class="n">lts</span><span class="o">-</span><span class="n">raring</span>
-</pre></div>
+<p>The root cause is explained on <a href="https://docs.python.org/2/library/stringio.html#cStringIO.StringIO">document for cStringIO</a></p>
+<blockquote>
+<p>Unlike the StringIO module, this module is not able to accept Unicode strings that cannot be encoded as plain ASCII strings.</p>
+</blockquote>
             </div><!-- /.entry-content -->
             <div class="comments">
               <h3>Comments</h3>
               <div id="disqus_thread"></div>
               <script type="text/javascript">
-                var disqus_identifier = "linux-bonding-mode-6-break-the-vms.html";
+                var disqus_identifier = "python-cstring-unicode.html";
                 (function() {
                 var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                 dsq.src = 'http://xcodest.disqus.com/embed.js';

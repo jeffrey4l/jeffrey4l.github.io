@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://xcodest.me/index.html</loc>
-<lastmod>2014-08-12T09:34:51-00:00</lastmod>
+<lastmod>2014-09-09T14:23:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://xcodest.me/archives.html</loc>
-<lastmod>2014-08-12T09:34:51-00:00</lastmod>
+<lastmod>2014-09-09T14:23:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://xcodest.me/tags.html</loc>
-<lastmod>2014-08-12T09:34:51-00:00</lastmod>
+<lastmod>2014-09-09T14:23:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://xcodest.me/categories.html</loc>
-<lastmod>2014-08-12T09:34:51-00:00</lastmod>
+<lastmod>2014-09-09T14:23:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -34,6 +34,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>http://xcodest.me/pages/about.html</loc>
 <lastmod>2014-07-14T00:00:00-00:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://xcodest.me/python-cstring-unicode.html</loc>
+<lastmod>2014-09-09T00:00:00-00:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -117,7 +124,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://xcodest.me/category/others.html</loc>
-<lastmod>2014-08-12T00:00:00-00:00</lastmod>
+<lastmod>2014-09-09T00:00:00-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -132,6 +139,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>http://xcodest.me/tag/network.html</loc>
 <lastmod>2014-04-14T19:39:51-00:00</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://xcodest.me/tag/python.html</loc>
+<lastmod>2014-09-09T00:00:00-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -173,7 +187,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://xcodest.me/author/jeffrey4l.html</loc>
-<lastmod>2014-08-12T00:00:00-00:00</lastmod>
+<lastmod>2014-09-09T00:00:00-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>

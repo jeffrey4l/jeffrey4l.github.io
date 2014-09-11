@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/all.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2014-09-11T00:00:00+08:00</updated><entry><title>Nova flavor init</title><link href="http://xcodest.me/nova-flavor-init.html" rel="alternate"></link><updated>2014-09-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-09-11:nova-flavor-init.html</id><summary type="html">&lt;p&gt;ustack的flavor做的还是挺全的，所以用了一个脚本来创建和其一样的flavor类型。&lt;/p&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description></description><atom:link href="http://xcodest.me/feeds/jeffrey4l.rss.xml" rel="self"></atom:link><lastBuildDate>Thu, 11 Sep 2014 00:00:00 +0800</lastBuildDate><item><title>Nova flavor init</title><link>http://xcodest.me/nova-flavor-init.html</link><description>&lt;p&gt;ustack的flavor做的还是挺全的，所以用了一个脚本来创建和其一样的flavor类型。&lt;/p&gt;
 &lt;div class="gist"&gt;
     &lt;script src='https://gist.github.com/ecee9fcb00412cd67fe7.js?file=nova-flavor-init.sh'&gt;&lt;/script&gt;
     &lt;noscript&gt;
@@ -29,7 +29,7 @@ nova-manage flavor create --name compute-8 --cpu 8 --memory 8192 --root_gb $DEFA
 nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $DEFAULT_ROOT_GB --is_public True
 &lt;/code&gt;&lt;/pre&gt;
     &lt;/noscript&gt;
-&lt;/div&gt;</summary><category term="openstack"></category></entry><entry><title>Python cString raise exception when feed Unicode</title><link href="http://xcodest.me/python-cstring-unicode.html" rel="alternate"></link><updated>2014-09-09T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-09-09:python-cstring-unicode.html</id><summary type="html">&lt;p&gt;I gett following different result when using these two Class.&lt;/p&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 11 Sep 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-09-11:nova-flavor-init.html</guid><category>openstack</category></item><item><title>Python cString raise exception when feed Unicode</title><link>http://xcodest.me/python-cstring-unicode.html</link><description>&lt;p&gt;I gett following different result when using these two Class.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="nx"&gt;StringIO&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="nx"&gt;cStringIO&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nx"&gt;StringIO.StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="bp"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -43,7 +43,7 @@ nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $D
 &lt;p&gt;The root cause is explained on &lt;a href="https://docs.python.org/2/library/stringio.html#cStringIO.StringIO"&gt;document for cStringIO&lt;/a&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Unlike the StringIO module, this module is not able to accept Unicode strings that cannot be encoded as plain ASCII strings.&lt;/p&gt;
-&lt;/blockquote&gt;</summary><category term="python"></category></entry><entry><title>Migrate SVN to GitLab</title><link href="http://xcodest.me/migrate-svn-to-gitlab.html" rel="alternate"></link><updated>2014-08-12T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-08-12:migrate-svn-to-gitlab.html</id><summary type="html">&lt;ul&gt;
+&lt;/blockquote&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 09 Sep 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-09-09:python-cstring-unicode.html</guid><category>python</category></item><item><title>Migrate SVN to GitLab</title><link>http://xcodest.me/migrate-svn-to-gitlab.html</link><description>&lt;ul&gt;
 &lt;li&gt;在GitLab上创建相对应的项目/项目组&lt;/li&gt;
 &lt;li&gt;准备''users.txt''文件，来修正提交用户名。并手动修改users.txt的正确性 &lt;/li&gt;
 &lt;/ul&gt;
@@ -82,7 +82,7 @@ nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $D
 
 
 &lt;h2&gt;参考&lt;/h2&gt;
-&lt;p&gt;&lt;a href="http://git-scm.com/book/en/Git-and-Other-Systems-Migrating-to-Git"&gt;Git and Other Systems - Migrating to Git&lt;/a&gt;&lt;/p&gt;</summary><category term="git"></category></entry><entry><title>硬派健身-减肥篇 阅读笔记</title><link href="http://xcodest.me/hard-gym-reading-note.html" rel="alternate"></link><updated>2014-07-19T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-07-19:hard-gym-reading-note.html</id><summary type="html">&lt;h2&gt;战肥肉有氧不敌，强塑身无氧超神&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://git-scm.com/book/en/Git-and-Other-Systems-Migrating-to-Git"&gt;Git and Other Systems - Migrating to Git&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 12 Aug 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-08-12:migrate-svn-to-gitlab.html</guid><category>git</category></item><item><title>硬派健身-减肥篇 阅读笔记</title><link>http://xcodest.me/hard-gym-reading-note.html</link><description>&lt;h2&gt;战肥肉有氧不敌，强塑身无氧超神&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;长时间有氧运动——似是而非的减肥妙计&lt;ol&gt;
 &lt;li&gt;当我们的身体状态稳定，身体素质、生活习惯变化不大时，我们的体重和体脂含量都是只能加，不能减，只能胖，不能瘦。这就是我们序章介绍过的体重设定点理论。&lt;/li&gt;
@@ -145,7 +145,7 @@ nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $D
 &lt;/ul&gt;
 &lt;h4&gt;HIIT训练的重点：&lt;/h4&gt;
 &lt;p&gt;HIIT运动实际上就是间歇性地提高与降低运动强度，某种程度上自己可以排列组合。只要是大肌群训练（臀腿主要发力），高低强度交替，持续10-20分钟，就能够达到HIIT的健身目的。
-至于高低强度交替的规律，我建议变化间隔要短，不要5分钟高强度，5分钟低强度。因为高强度时间太长，无法保证强度忠实完成。最后还是成为中等或低强度的训练。另外，变化的间隔越短，对于脂肪的供能比提升越多。据猜测这可能与身体的预适应有关。有很多人提到了HIIT的强度过大，无法完成。我的建议是，循序渐进。你如果做不了一个insanity的全程，可以找个强度低一点的、二三十分钟的先练，慢慢来。如果你做不到十五分钟的冲刺交替跑，你可以只是快慢跑交替，慢慢进阶。锻炼的成果，更看重的是坚持。人的适应性是很强的，已经有很多朋友联系我说，他们做了我推荐的运动，第一次很难，第二次还可以，现在已经相对轻松了。HIIT训练也是一样的。如果坚持，身体就能不断进步。最后达到希望的效果。&lt;/p&gt;</summary><category term="book"></category></entry><entry><title>Glance Image Cache</title><link href="http://xcodest.me/glance-image-cache.html" rel="alternate"></link><updated>2014-07-17T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-07-17:glance-image-cache.html</id><summary type="html">&lt;p&gt;Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定
+至于高低强度交替的规律，我建议变化间隔要短，不要5分钟高强度，5分钟低强度。因为高强度时间太长，无法保证强度忠实完成。最后还是成为中等或低强度的训练。另外，变化的间隔越短，对于脂肪的供能比提升越多。据猜测这可能与身体的预适应有关。有很多人提到了HIIT的强度过大，无法完成。我的建议是，循序渐进。你如果做不了一个insanity的全程，可以找个强度低一点的、二三十分钟的先练，慢慢来。如果你做不到十五分钟的冲刺交替跑，你可以只是快慢跑交替，慢慢进阶。锻炼的成果，更看重的是坚持。人的适应性是很强的，已经有很多朋友联系我说，他们做了我推荐的运动，第一次很难，第二次还可以，现在已经相对轻松了。HIIT训练也是一样的。如果坚持，身体就能不断进步。最后达到希望的效果。&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 19 Jul 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-07-19:hard-gym-reading-note.html</guid><category>book</category></item><item><title>Glance Image Cache</title><link>http://xcodest.me/glance-image-cache.html</link><description>&lt;p&gt;Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定
 程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。&lt;/p&gt;
 &lt;p&gt;因为是通过middleware来控制的，所以只要修改一下paster的配置就行。更简单的是指定
 glance-api加载的pipeline的名字。&lt;/p&gt;
@@ -188,7 +188,7 @@ glance-api加载的pipeline的名字。&lt;/p&gt;
 &lt;h2&gt;REF&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://docs.openstack.org/developer/glance/cache.html"&gt;The Glance Image Cache&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</summary><category term="glance"></category></entry><entry><title>Salt Mine</title><link href="http://xcodest.me/salt-mine.html" rel="alternate"></link><updated>2014-07-16T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-07-16:salt-mine.html</id><summary type="html">&lt;p&gt;Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。&lt;/p&gt;
+&lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 17 Jul 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-07-17:glance-image-cache.html</guid><category>glance</category></item><item><title>Salt Mine</title><link>http://xcodest.me/salt-mine.html</link><description>&lt;p&gt;Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。&lt;/p&gt;
 &lt;p&gt;可以通过两种方法来配置:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;minion的配置文件&lt;/li&gt;
@@ -236,7 +236,7 @@ jeffrey-thinkpad:
 &lt;h2&gt;REF&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://docs.saltstack.com/en/latest/topics/mine/"&gt;Salt Mine&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</summary><category term="salt"></category></entry><entry><title>linux bonding mode 6 break the vms</title><link href="http://xcodest.me/linux-bonding-mode-6-break-the-vms.html" rel="alternate"></link><updated>2014-04-14T19:39:51+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-04-14:linux-bonding-mode-6-break-the-vms.html</id><summary type="html">&lt;p&gt;操作系统： ubuntu 12.04.1
+&lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 16 Jul 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-07-16:salt-mine.html</guid><category>salt</category></item><item><title>linux bonding mode 6 break the vms</title><link>http://xcodest.me/linux-bonding-mode-6-break-the-vms.html</link><description>&lt;p&gt;操作系统： ubuntu 12.04.1
 内核 linux 3.2&lt;/p&gt;
 &lt;p&gt;今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;    +---- host1 -------+         +---- host2 ----+
@@ -255,7 +255,7 @@ jeffrey-thinkpad:
 &lt;/ol&gt;
 &lt;p&gt;把内核升级到3.8之后就可以了。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;apt&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;linux&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;generic&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;lts&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;raring&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="network"></category></entry><entry><title>Dhcp lease errors in vlan mode</title><link href="http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html" rel="alternate"></link><updated>2013-08-27T08:50:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2013-08-27:dhcp-lease-errors-in-vlan-mode.html</id><summary type="html">&lt;p&gt;在使用&lt;code&gt;keepalived&lt;/code&gt;的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在&lt;code&gt;/etc/sysconfig/network-scripts/ifcfg-eth0&lt;/code&gt;中加上了如下语句：&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 14 Apr 2014 19:39:51 +0800</pubDate><guid>tag:xcodest.me,2014-04-14:linux-bonding-mode-6-break-the-vms.html</guid><category>network</category></item><item><title>Dhcp lease errors in vlan mode</title><link>http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html</link><description>&lt;p&gt;在使用&lt;code&gt;keepalived&lt;/code&gt;的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在&lt;code&gt;/etc/sysconfig/network-scripts/ifcfg-eth0&lt;/code&gt;中加上了如下语句：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;PERSISTENT_DHCLIENT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -295,7 +295,7 @@ lease renewals with something like the following combination of config options.&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;This is also documented &lt;a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues"&gt; Known issue with failed DHCP leases in VLAN configuration&lt;/a&gt;&lt;/p&gt;</summary><category term="dhcp"></category><category term="network"></category><category term="vlan"></category></entry><entry><title>Openstack Brief</title><link href="http://xcodest.me/openstack-brief.html" rel="alternate"></link><updated>2013-06-17T23:08:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2013-06-17:openstack-brief.html</id><summary type="html">&lt;p&gt;自从Openstack诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于Grizzly的版本来写的。&lt;/p&gt;
+&lt;p&gt;This is also documented &lt;a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues"&gt; Known issue with failed DHCP leases in VLAN configuration&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 27 Aug 2013 08:50:00 +0800</pubDate><guid>tag:xcodest.me,2013-08-27:dhcp-lease-errors-in-vlan-mode.html</guid><category>dhcp</category><category>network</category><category>vlan</category></item><item><title>Openstack Brief</title><link>http://xcodest.me/openstack-brief.html</link><description>&lt;p&gt;自从Openstack诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于Grizzly的版本来写的。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Keystone&lt;/li&gt;
 &lt;li&gt;Nova&lt;/li&gt;
@@ -342,4 +342,4 @@ lease renewals with something like the following combination of config options.&
 &lt;p&gt;Openstack的计量，计费模块。可以统计Cpu, IO, Network使用的详细情况。对公有云和私有云都有极大的好处。现在也有一个Horizon的插件，可以直接在dashboard里显示使用情况（将来，该插件会合并到horizon中）&lt;/p&gt;
 &lt;h1&gt;Baremetal&lt;/h1&gt;
 &lt;p&gt;增加Openstack对裸机的管理功能。可以实现直接对裸机进行系统安装，配置。模糊了虚拟化和物理机之间的界线。现在所有模块包括nova, glance, cinder都在努力增强这方面的功能。
-这个模块，我更期望是可以建立Nested-Openstack。同一个Openstack环境，既管理物理机，又自动在物理机上安装Openstack的模块来成为Openstack的一部分。&lt;/p&gt;</summary></entry></feed>
+这个模块，我更期望是可以建立Nested-Openstack。同一个Openstack环境，既管理物理机，又自动在物理机上安装Openstack的模块来成为Openstack的一部分。&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 17 Jun 2013 23:08:00 +0800</pubDate><guid>tag:xcodest.me,2013-06-17:openstack-brief.html</guid></item></channel></rss>

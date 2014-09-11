@@ -2,7 +2,7 @@
 <html lang="cn">
 <head>
 
-        <title>About</title>
+        <title>Nova flavor init</title>
         <meta charset="utf-8" />
         <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Full Atom Feed" />
         <link href="http://xcodest.me/feeds/others.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Categories Atom Feed" />
@@ -55,26 +55,56 @@
 
             <header>
               <h2 class="entry-title">
-                <a href="./about.html" rel="bookmark"
-                   title="Permalink to About">About</a></h2>
+                <a href="./nova-flavor-init.html" rel="bookmark"
+                   title="Permalink to Nova flavor init">Nova flavor init</a></h2>
            
             </header>
             <footer class="post-info">
-              <abbr class="published" title="2014-07-14T00:00:00">
-                Mon 14 July 2014
+              <abbr class="published" title="2014-09-11T00:00:00">
+                Thu 11 September 2014
               </abbr>
               <address class="vcard author">
                 By <a class="url fn" href="./author/jeffrey4l.html">Jeffrey4l</a>
               </address>
             </footer><!-- /.post-info -->
             <div class="entry-content">
-              <p>Email: zhang.lei.fly(#)gmail.com</p>
+              <p>ustack的flavor做的还是挺全的，所以用了一个脚本来创建和其一样的flavor类型。</p>
+<div class="gist">
+    <script src='https://gist.github.com/ecee9fcb00412cd67fe7.js?file=nova-flavor-init.sh'></script>
+    <noscript>
+        <pre><code>#!/bin/bash
+#
+# This configuration is copy from ustack.com
+
+DEFAULT_ROOT_GB=40
+
+nova-manage flavor create --name micro-1 --cpu 1 --memory 512 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name micro-2 --cpu 1 --memory 1024 --root_gb $DEFAULT_ROOT_GB --is_public True
+
+nova-manage flavor create --name standard-1 --cpu 1 --memory 2048 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name standard-2 --cpu 2 --memory 4096 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name standard-4 --cpu 4 --memory 8192 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name standard-8 --cpu 8 --memory 16384 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name standard-12 --cpu 12 --memory 24576 --root_gb $DEFAULT_ROOT_GB --is_public True
+
+nova-manage flavor create --name memory-1 --cpu 1 --memory 4096 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name memory-2 --cpu 2 --memory 8192 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name memory-4 --cpu 4 --memory 16384 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name memory-8 --cpu 8 --memory 24576 --root_gb $DEFAULT_ROOT_GB --is_public True
+
+nova-manage flavor create --name compute-2 --cpu 2 --memory 2048 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name compute-4 --cpu 4 --memory 4096 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name compute-8 --cpu 8 --memory 8192 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $DEFAULT_ROOT_GB --is_public True
+</code></pre>
+    </noscript>
+</div>
             </div><!-- /.entry-content -->
             <div class="comments">
               <h3>Comments</h3>
               <div id="disqus_thread"></div>
               <script type="text/javascript">
-                var disqus_identifier = "about.html";
+                var disqus_identifier = "nova-flavor-init.html";
                 (function() {
                 var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                 dsq.src = 'http://xcodest.disqus.com/embed.js';
@@ -106,14 +136,15 @@
 
 <h4>Tags</h4>
 	<ul>
-	    <li class="tag-4"><a href="./tag/git.html">git</a></li>
+	    <li class="tag-4"><a href="./tag/python.html">python</a></li>
 	    <li class="tag-4"><a href="./tag/salt.html">salt</a></li>
 	    <li class="tag-4"><a href="./tag/vlan.html">vlan</a></li>
-	    <li class="tag-4"><a href="./tag/python.html">python</a></li>
-	    <li class="tag-4"><a href="./tag/dhcp.html">dhcp</a></li>
+	    <li class="tag-4"><a href="./tag/openstack.html">openstack</a></li>
 	    <li class="tag-4"><a href="./tag/glance.html">glance</a></li>
-	    <li class="tag-4"><a href="./tag/book.html">book</a></li>
+	    <li class="tag-4"><a href="./tag/dhcp.html">dhcp</a></li>
 	    <li class="tag-1"><a href="./tag/network.html">network</a></li>
+	    <li class="tag-4"><a href="./tag/book.html">book</a></li>
+	    <li class="tag-4"><a href="./tag/git.html">git</a></li>
 </ul>
 
 

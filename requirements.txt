@@ -10,3 +10,4 @@ Jinja2
 docutils
 pygments
 Typogrify
+pelican-gist

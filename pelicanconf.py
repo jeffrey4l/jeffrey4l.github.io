@@ -36,7 +36,7 @@ MONTH_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/{date:%b}/index.html'
 
 PLUGIN_PATHS = [ os.path.join(ROOT, 'plugins')]
 
-PLUGINS = ['assets', 'sitemap', 'gravatar']
+PLUGINS = ['assets', 'sitemap', 'gravatar', 'pelican_gist']
 
 SITEMAP= {'format': 'xml'}
 

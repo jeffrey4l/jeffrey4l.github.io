@@ -57,7 +57,7 @@ MENUITEMS = (
     ('Archives', '/archives.html'),
     )
 
-GOOGLE_ANALYTICS = 'UA-41808584-1'
+GOOGLE_ANALYTICS = 'UA-41808584-2'
 
 USE_FOLDER_AS_CATEGORY = False
 DEFAULT_CATEGORY = 'Others'
@@ -68,6 +68,6 @@ DISPLAY_CATEGORIES_ON_MENU = False
 
 ARTICLE_EXCLUDES =  ['theme', 'themes', 'plugins', 'output']
 
-THEME = 'themes/gum'
+#THEME = 'themes/gum'
 
 GITHUB_URL = 'http://githbu.com/jeffrey4l'

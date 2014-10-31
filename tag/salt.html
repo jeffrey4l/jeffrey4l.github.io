@@ -1,66 +1,42 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-
-        <title>Xcodest - salt</title>
         <meta charset="utf-8" />
-        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Full Atom Feed" />
+        <title>Xcodest - salt</title>
+        <link rel="stylesheet" href="../theme/css/main.css" />
+        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Atom Feed" />
 
-
-        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
-
-        <link rel="stylesheet" type="text/css" href="../theme/gumby.css" />
-        <link rel="stylesheet" type="text/css" href="../theme/style.css" />
-        <link rel="stylesheet" type="text/css" href="../theme/pygment.css" />
-
-        <script src="../theme/js/libs/modernizr-2.6.2.min.js"></script>
-
-
-
-
-
-
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 </head>
 
 <body id="index" class="home">
+<a href="http://githbu.com/jeffrey4l">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="../">Xcodest </a></h1>
+                <nav><ul>
+                    <li><a href="/archives.html">Archives</a></li>
+                    <li><a href="../pages/about.html">About</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
 
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="../salt-mine.html">Salt Mine</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2014-07-16T00:00:00">
+                Published: Wed 16 July 2014
+        </abbr>
 
-    <div class="container">
-
-        <div class="row">
-
-          <header id="banner" class="body">
-                  <h1><a href="../">Xcodest <strong></strong></a></h1>
-          </header><!-- /#banner -->
-
-            <div id="navigation" class="navbar row">
-              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
-             
-              <ul class="columns">
-                <li><a href="../">Home</a></li>
-
-                <li><a href="/archives.html">Archives</a></li>
-                <li><a href="../pages/about.html">About</a></li>
-
-              </ul>
-            </div>
-
-<section id="content">
-
-
-
-   <div class="row">
-
-
-        <div class="eleven columns">
-		         <ol id="post-list">
-				        <li><article class="hentry">
-				                <header> <h2 class="entry-title"><a href="../salt-mine.html" rel="bookmark" title="Permalink to Salt Mine">Salt Mine</a></h2> </header>
-				                <footer class="post-info">
-				                    <abbr class="published" title="2014-07-16T00:00:00"> Wed 16 July 2014 </abbr>
-<address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
-				                <div class="entry-content"> <p>Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。</p>
+        <address class="vcard author">
+                By                         <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a>
+        </address>
+<p>In <a href="../category/linux.html">Linux</a>. </p>
+<p>tags: <a href="../tag/salt.html">salt</a> </p>
+</footer><!-- /.post-info --><p>Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。</p>
 <p>可以通过两种方法来配置:</p>
 <ol>
 <li>minion的配置文件</li>
@@ -82,114 +58,77 @@
 </pre></div>
 
 
-<p>然后把<code>mine.conf ...</code></p> </div><!-- /.entry-content -->
-
-								<div class="medium primary btn"><a href="../salt-mine.html" rel="bookmark" title="Permalink to Salt Mine">Read more <i class="icon-arrow-right"></i></a></div>
-
-
-
-								<div class="row tag-row">
-										<span>Tagged as : </span>
-											<a class="danger label" href="../tag/salt.html">salt</a>
-								</div>
+<p>然后把<code>mine.conf</code>加入到<code>/srv/pillar/top.sls</code>, 这时可以指定哪些minion来配置mine_functions。相比较而言，这种方式更加灵活一些。</p>
+<div class="highlight"><pre><span class="l-Scalar-Plain">base</span><span class="p-Indicator">:</span>
+  <span class="s">&#39;controller*&#39;</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">mine</span>
+</pre></div>
 
 
-
-				        </article></li>
-				</ol><!-- /#posts-list -->
-
-        </div><!-- /.eleven.columns -->
-        
-<div class="three columns">
-
-<h4>Pages</h4>
-
- <ul>
-      <li><a href="/archives.html">Archives</a></li>
-      <li><a href="../pages/about.html">About</a></li>
-  </ul>
-
-<h4>Categories</h4>
-<ul>
-		<li><a href="../category/life.html">Life</a></li>
-		<li><a href="../category/linux.html">Linux</a></li>
-		<li><a href="../category/openstack.html">Openstack</a></li>
-		<li><a href="../category/others.html">Others</a></li>
-</ul>
+<p>之后就可以使用如下语句拿到mine上报上来的结果的(其实这个结果是保存在master的<code>/var/cache/salt/master/minions/*/mine.p</code>的文件下就可找到上报上来的内容。</p>
+<div class="highlight"><pre><span class="nv">$ </span>salt <span class="s1">&#39;jeffrey-thinkpad&#39;</span> mine.get <span class="s1">&#39;*&#39;</span> network.ip_addrs
+jeffrey-thinkpad:
+    ----------
+    icehouse-compute:
+        - 10.0.0.11
+    icehouse-controller:
+        - 10.0.0.10
+</pre></div>
 
 
-<h4>Tags</h4>
-	<ul>
-	    <li class="tag-4"><a href="../tag/python.html">python</a></li>
-	    <li class="tag-4"><a href="../tag/salt.html">salt</a></li>
-	    <li class="tag-4"><a href="../tag/vlan.html">vlan</a></li>
-	    <li class="tag-4"><a href="../tag/openstack.html">openstack</a></li>
-	    <li class="tag-4"><a href="../tag/glance.html">glance</a></li>
-	    <li class="tag-4"><a href="../tag/dhcp.html">dhcp</a></li>
-	    <li class="tag-1"><a href="../tag/network.html">network</a></li>
-	    <li class="tag-4"><a href="../tag/book.html">book</a></li>
-	    <li class="tag-4"><a href="../tag/git.html">git</a></li>
-</ul>
+<p>另外，可以在minion上来修改上报的时间间隔。方法是增加/修改<code>/etc/salt/minion.d/mine.conf</code>。</p>
+<div class="highlight"><pre><span class="n">mine_interval</span><span class="o">:</span> <span class="mi">1</span>
+</pre></div>
 
 
-<nav class="widget">
-  <h4>Social</h4>
-  <ul>
-    <li><a href="http://github.com/jeffrey4l">Github</a></li>
-  </ul>
-</nav>
+<h2>REF</h2>
+<ol>
+<li><a href="http://docs.saltstack.com/en/latest/topics/mine/">Salt Mine</a></li>
+</ol><p>There are <a href="../salt-mine.html#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://github.com/jeffrey4l">My Git</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
-</div> </div><!-- /.row -->
+                            <li><a href="http://github.com/jeffrey4l">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
 
-</section><!-- /#content -->
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
 
-       </div><!-- /.row -->
-    </div><!-- /.container -->
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
 
-
-       <div class="container.nopad bg">
-
-    
-        <footer id="credits" class="row">
-          <div class="seven columns left-center">
-
-                   <address id="about" class="vcard body">
-                    Proudly powered by <a href="http://getpelican.com/">Pelican</a>,
-                    which takes great advantage of <a href="http://python.org">Python</a>.
-                    <br />
-                    Based on the <a target="_blank" href="http://gumbyframework.com">Gumby Framework</a>
-                    </address>
-          </div>
-
-
-          <div class="seven columns">
-            <div class="row">
-              <ul class="socbtns">
-
-                <li><div class="btn primary"><a href="http://githbu.com/jeffrey4l" target="_blank">Github</a></div></li>
-
-
-
-
-              </ul>
-            </div>
-          </div>
-        </footer>
-
-    </div>
-
-
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
 <script type="text/javascript">
     var disqus_shortname = 'xcodest';
     (function () {
         var s = document.createElement('script'); s.async = true;
         s.type = 'text/javascript';
-        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
         (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
     }());
 </script>
-  <script src="../theme/js/libs/jquery-1.9.1.min.js"></script>
-  <script src="../theme/js/libs/gumby.min.js"></script>
-  <script src="../theme/js/plugins.js"></script>
 </body>
 </html>

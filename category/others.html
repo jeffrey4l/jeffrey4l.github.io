@@ -1,67 +1,42 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-
-        <title>Xcodest</title>
         <meta charset="utf-8" />
-        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Full Atom Feed" />
-        <link href="http://xcodest.me/feeds/others.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Categories Atom Feed" />
+        <title>Xcodest - Others</title>
+        <link rel="stylesheet" href="../theme/css/main.css" />
+        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Atom Feed" />
 
-
-        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
-
-        <link rel="stylesheet" type="text/css" href="../theme/gumby.css" />
-        <link rel="stylesheet" type="text/css" href="../theme/style.css" />
-        <link rel="stylesheet" type="text/css" href="../theme/pygment.css" />
-
-        <script src="../theme/js/libs/modernizr-2.6.2.min.js"></script>
-
-
-
-
-
-
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 </head>
 
 <body id="index" class="home">
+<a href="http://githbu.com/jeffrey4l">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="../">Xcodest </a></h1>
+                <nav><ul>
+                    <li><a href="/archives.html">Archives</a></li>
+                    <li><a href="../pages/about.html">About</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
 
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="../nova-flavor-init.html">Nova flavor init</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2014-09-11T00:00:00">
+                Published: Thu 11 September 2014
+        </abbr>
 
-    <div class="container">
-
-        <div class="row">
-
-          <header id="banner" class="body">
-                  <h1><a href="../">Xcodest <strong></strong></a></h1>
-          </header><!-- /#banner -->
-
-            <div id="navigation" class="navbar row">
-              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
-             
-              <ul class="columns">
-                <li><a href="../">Home</a></li>
-
-                <li><a href="/archives.html">Archives</a></li>
-                <li><a href="../pages/about.html">About</a></li>
-
-              </ul>
-            </div>
-
-<section id="content">
-<h2>Articles in the Others category</h2>
-
-
-   <div class="row">
-
-
-        <div class="eleven columns">
-		         <ol id="post-list">
-				        <li><article class="hentry">
-				                <header> <h2 class="entry-title"><a href="../nova-flavor-init.html" rel="bookmark" title="Permalink to Nova flavor init">Nova flavor init</a></h2> </header>
-				                <footer class="post-info">
-				                    <abbr class="published" title="2014-09-11T00:00:00"> Thu 11 September 2014 </abbr>
-<address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
-				                <div class="entry-content"> <p>ustack的flavor做的还是挺全的，所以用了一个脚本来创建和其一样的flavor类型。</p>
+        <address class="vcard author">
+                By                         <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a>
+        </address>
+<p>In <a href="../category/others.html">Others</a>. </p>
+<p>tags: <a href="../tag/openstack.html">openstack</a> </p>
+</footer><!-- /.post-info --><p>ustack的flavor做的还是挺全的，所以用了一个脚本来创建和其一样的flavor类型。</p>
 <div class="gist">
     <script src='https://gist.github.com/ecee9fcb00412cd67fe7.js?file=nova-flavor-init.sh'></script>
     <noscript>
@@ -74,52 +49,77 @@ DEFAULT_ROOT_GB=40
 nova-manage flavor create --name micro-1 --cpu 1 --memory 512 --root_gb $DEFAULT_ROOT_GB --is_public True
 nova-manage flavor create --name micro-2 --cpu 1 --memory 1024 --root_gb $DEFAULT_ROOT_GB --is_public True
 
-nova-manage flavor create --name standard-1 --cpu 1 --memory 2048 --root_gb $DEFAULT_ROOT_GB ...</code></pre></noscript></div> </div><!-- /.entry-content -->
+nova-manage flavor create --name standard-1 --cpu 1 --memory 2048 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name standard-2 --cpu 2 --memory 4096 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name standard-4 --cpu 4 --memory 8192 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name standard-8 --cpu 8 --memory 16384 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name standard-12 --cpu 12 --memory 24576 --root_gb $DEFAULT_ROOT_GB --is_public True
 
-								<div class="medium primary btn"><a href="../nova-flavor-init.html" rel="bookmark" title="Permalink to Nova flavor init">Read more <i class="icon-arrow-right"></i></a></div>
+nova-manage flavor create --name memory-1 --cpu 1 --memory 4096 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name memory-2 --cpu 2 --memory 8192 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name memory-4 --cpu 4 --memory 16384 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name memory-8 --cpu 8 --memory 24576 --root_gb $DEFAULT_ROOT_GB --is_public True
 
+nova-manage flavor create --name compute-2 --cpu 2 --memory 2048 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name compute-4 --cpu 4 --memory 4096 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name compute-8 --cpu 8 --memory 8192 --root_gb $DEFAULT_ROOT_GB --is_public True
+nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $DEFAULT_ROOT_GB --is_public True
+</code></pre>
+    </noscript>
+</div><p>There are <a href="../nova-flavor-init.html#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
 
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="../python-cstring-unicode.html" rel="bookmark"
+                           title="Permalink to Python cString raise exception when feed Unicode">Python cString raise exception when feed Unicode</a></h1>
+                </header>
 
-								<div class="row tag-row">
-										<span>Tagged as : </span>
-											<a class="danger label" href="../tag/openstack.html">openstack</a>
-								</div>
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-09-09T00:00:00">
+                Published: Tue 09 September 2014
+        </abbr>
 
-
-
-				        </article></li>
-				        <li><article class="hentry">
-				                <header> <h2 class="entry-title"><a href="../python-cstring-unicode.html" rel="bookmark" title="Permalink to Python cString raise exception when feed Unicode">Python cString raise exception when feed Unicode</a></h2> </header>
-				                <footer class="post-info">
-				                    <abbr class="published" title="2014-09-09T00:00:00"> Tue 09 September 2014 </abbr>
-<address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
-				                <div class="entry-content"> <p>I gett following different result when using these two Class.</p>
+        <address class="vcard author">
+                By                         <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a>
+        </address>
+<p>In <a href="../category/others.html">Others</a>. </p>
+<p>tags: <a href="../tag/python.html">python</a> </p>
+</footer><!-- /.post-info -->                <p>I gett following different result when using these two Class.</p>
 <div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">import</span> <span class="nx">StringIO</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">import</span> <span class="nx">cStringIO</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nx">StringIO.StringIO</span><span class="p">()</span><span class="bp">.</span><span class="nb">write</span><span class="p">(</span><span class="nx">u</span><span class="s1">&#39;</span><span class="se">\u2222</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nx">cStringIO.StringIO</span><span class="p">()</span><span class="bp">.</span><span class="nb">write</span><span class="p">(</span><span class="nx">u</span><span class="s1">&#39;</span><span class="se">\u2222</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="nx">Traceback</span> <span class="p">(</span><span class="nx">most</span> <span class="nx">recent</span> <span class="nb">call</span> <span class="nb">last</span><span class="p">):</span>
   <span class="nb">File</span> <span class="s2">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="nb">line</span> <span class="mi">1</span><span class="p">,</span> <span class="k">in</span> <span class="o">&lt;</span><span class="nx">module</span><span class="o">&gt;</span>
-<span class="nx">UnicodeEncodeError</span><span class="p">:</span> <span class="s1">&#39;ascii&#39;</span> <span class="nx">codec</span> <span class="nx">can</span><span class="s1">&#39;t encode character u&#39;</span><span class="o">\</span><span class="nx">u2222</span><span class="s1">&#39; in position 0: ordinal not in ...</span></pre></div> </div><!-- /.entry-content -->
+<span class="nx">UnicodeEncodeError</span><span class="p">:</span> <span class="s1">&#39;ascii&#39;</span> <span class="nx">codec</span> <span class="nx">can</span><span class="s1">&#39;t encode character u&#39;</span><span class="o">\</span><span class="nx">u2222</span><span class="s1">&#39; in position 0: ordinal not in ...</span></pre></div>
+                <a class="readmore" href="../python-cstring-unicode.html">read more</a>
+<p>There are <a href="../python-cstring-unicode.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
-								<div class="medium primary btn"><a href="../python-cstring-unicode.html" rel="bookmark" title="Permalink to Python cString raise exception when feed Unicode">Read more <i class="icon-arrow-right"></i></a></div>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="../migrate-svn-to-gitlab.html" rel="bookmark"
+                           title="Permalink to Migrate SVN to GitLab">Migrate SVN to GitLab</a></h1>
+                </header>
 
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-08-12T00:00:00">
+                Published: Tue 12 August 2014
+        </abbr>
 
-
-								<div class="row tag-row">
-										<span>Tagged as : </span>
-											<a class="danger label" href="../tag/python.html">python</a>
-								</div>
-
-
-
-				        </article></li>
-				        <li><article class="hentry">
-				                <header> <h2 class="entry-title"><a href="../migrate-svn-to-gitlab.html" rel="bookmark" title="Permalink to Migrate SVN to GitLab">Migrate SVN to GitLab</a></h2> </header>
-				                <footer class="post-info">
-				                    <abbr class="published" title="2014-08-12T00:00:00"> Tue 12 August 2014 </abbr>
-<address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
-				                <div class="entry-content"> <ul>
+        <address class="vcard author">
+                By                         <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a>
+        </address>
+<p>In <a href="../category/others.html">Others</a>. </p>
+<p>tags: <a href="../tag/git.html">git</a> </p>
+</footer><!-- /.post-info -->                <ul>
 <li>在GitLab上创建相对应的项目/项目组</li>
 <li>准备''users.txt''文件，来修正提交用户名。并手动修改users.txt的正确性 </li>
 </ul>
@@ -135,114 +135,55 @@ nova-manage flavor create --name standard-1 --cpu 1 --memory 2048 --root_gb $DEF
 <ul>
 <li>把SVN项目使用git-svn进行克隆 </li>
 </ul>
-<div class="highlight"><pre><span class="nx">git</span> <span class="nx">svn</span> <span class="nx">clone</span> <span class="o">--</span><span class="nx">no</span><span class="na">-metadata</span> <span class="o">--</span><span class="nx">authors</span><span class="na">-file</span> <span class="nx">users.txt</span> <span class="na">-s</span> <span class="o">&lt;</span><span class="nx">svn ...</span></pre></div> </div><!-- /.entry-content -->
+<div class="highlight"><pre><span class="nx">git</span> <span class="nx">svn</span> <span class="nx">clone</span> <span class="o">--</span><span class="nx">no</span><span class="na">-metadata</span> <span class="o">--</span><span class="nx">authors</span><span class="na">-file</span> <span class="nx">users.txt</span> <span class="na">-s</span> <span class="o">&lt;</span><span class="nx">svn ...</span></pre></div>
+                <a class="readmore" href="../migrate-svn-to-gitlab.html">read more</a>
+<p>There are <a href="../migrate-svn-to-gitlab.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://github.com/jeffrey4l">My Git</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
-								<div class="medium primary btn"><a href="../migrate-svn-to-gitlab.html" rel="bookmark" title="Permalink to Migrate SVN to GitLab">Read more <i class="icon-arrow-right"></i></a></div>
+                            <li><a href="http://github.com/jeffrey4l">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
 
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
 
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
 
-								<div class="row tag-row">
-										<span>Tagged as : </span>
-											<a class="danger label" href="../tag/git.html">git</a>
-								</div>
-
-
-
-				        </article></li>
-				</ol><!-- /#posts-list -->
-
-        </div><!-- /.eleven.columns -->
-        
-<div class="three columns">
-
-<h4>Pages</h4>
-
- <ul>
-      <li><a href="/archives.html">Archives</a></li>
-      <li><a href="../pages/about.html">About</a></li>
-  </ul>
-
-<h4>Categories</h4>
-<ul>
-		<li><a href="../category/life.html">Life</a></li>
-		<li><a href="../category/linux.html">Linux</a></li>
-		<li><a href="../category/openstack.html">Openstack</a></li>
-		<li><a href="../category/others.html">Others</a></li>
-</ul>
-
-
-<h4>Tags</h4>
-	<ul>
-	    <li class="tag-4"><a href="../tag/python.html">python</a></li>
-	    <li class="tag-4"><a href="../tag/salt.html">salt</a></li>
-	    <li class="tag-4"><a href="../tag/vlan.html">vlan</a></li>
-	    <li class="tag-4"><a href="../tag/openstack.html">openstack</a></li>
-	    <li class="tag-4"><a href="../tag/glance.html">glance</a></li>
-	    <li class="tag-4"><a href="../tag/dhcp.html">dhcp</a></li>
-	    <li class="tag-1"><a href="../tag/network.html">network</a></li>
-	    <li class="tag-4"><a href="../tag/book.html">book</a></li>
-	    <li class="tag-4"><a href="../tag/git.html">git</a></li>
-</ul>
-
-
-<nav class="widget">
-  <h4>Social</h4>
-  <ul>
-    <li><a href="http://github.com/jeffrey4l">Github</a></li>
-  </ul>
-</nav>
-
-</div> </div><!-- /.row -->
-
-</section><!-- /#content -->
-
-       </div><!-- /.row -->
-    </div><!-- /.container -->
-
-
-       <div class="container.nopad bg">
-
-    
-        <footer id="credits" class="row">
-          <div class="seven columns left-center">
-
-                   <address id="about" class="vcard body">
-                    Proudly powered by <a href="http://getpelican.com/">Pelican</a>,
-                    which takes great advantage of <a href="http://python.org">Python</a>.
-                    <br />
-                    Based on the <a target="_blank" href="http://gumbyframework.com">Gumby Framework</a>
-                    </address>
-          </div>
-
-
-          <div class="seven columns">
-            <div class="row">
-              <ul class="socbtns">
-
-                <li><div class="btn primary"><a href="http://githbu.com/jeffrey4l" target="_blank">Github</a></div></li>
-
-
-
-
-              </ul>
-            </div>
-          </div>
-        </footer>
-
-    </div>
-
-
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
 <script type="text/javascript">
     var disqus_shortname = 'xcodest';
     (function () {
         var s = document.createElement('script'); s.async = true;
         s.type = 'text/javascript';
-        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
         (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
     }());
 </script>
-  <script src="../theme/js/libs/jquery-1.9.1.min.js"></script>
-  <script src="../theme/js/libs/gumby.min.js"></script>
-  <script src="../theme/js/plugins.js"></script>
 </body>
 </html>

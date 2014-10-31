@@ -1,67 +1,42 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-
-        <title>Xcodest</title>
         <meta charset="utf-8" />
-        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Full Atom Feed" />
-        <link href="http://xcodest.me/feeds/openstack.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Categories Atom Feed" />
+        <title>Xcodest - Openstack</title>
+        <link rel="stylesheet" href="../theme/css/main.css" />
+        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Atom Feed" />
 
-
-        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
-
-        <link rel="stylesheet" type="text/css" href="../theme/gumby.css" />
-        <link rel="stylesheet" type="text/css" href="../theme/style.css" />
-        <link rel="stylesheet" type="text/css" href="../theme/pygment.css" />
-
-        <script src="../theme/js/libs/modernizr-2.6.2.min.js"></script>
-
-
-
-
-
-
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 </head>
 
 <body id="index" class="home">
+<a href="http://githbu.com/jeffrey4l">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="../">Xcodest </a></h1>
+                <nav><ul>
+                    <li><a href="/archives.html">Archives</a></li>
+                    <li><a href="../pages/about.html">About</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
 
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="../glance-image-cache.html">Glance Image Cache</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2014-07-17T00:00:00">
+                Published: Thu 17 July 2014
+        </abbr>
 
-    <div class="container">
-
-        <div class="row">
-
-          <header id="banner" class="body">
-                  <h1><a href="../">Xcodest <strong></strong></a></h1>
-          </header><!-- /#banner -->
-
-            <div id="navigation" class="navbar row">
-              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
-             
-              <ul class="columns">
-                <li><a href="../">Home</a></li>
-
-                <li><a href="/archives.html">Archives</a></li>
-                <li><a href="../pages/about.html">About</a></li>
-
-              </ul>
-            </div>
-
-<section id="content">
-<h2>Articles in the Openstack category</h2>
-
-
-   <div class="row">
-
-
-        <div class="eleven columns">
-		         <ol id="post-list">
-				        <li><article class="hentry">
-				                <header> <h2 class="entry-title"><a href="../glance-image-cache.html" rel="bookmark" title="Permalink to Glance Image Cache">Glance Image Cache</a></h2> </header>
-				                <footer class="post-info">
-				                    <abbr class="published" title="2014-07-17T00:00:00"> Thu 17 July 2014 </abbr>
-<address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
-				                <div class="entry-content"> <p>Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定
+        <address class="vcard author">
+                By                         <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a>
+        </address>
+<p>In <a href="../category/openstack.html">Openstack</a>. </p>
+<p>tags: <a href="../tag/glance.html">glance</a> </p>
+</footer><!-- /.post-info --><p>Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定
 程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。</p>
 <p>因为是通过middleware来控制的，所以只要修改一下paster的配置就行。更简单的是指定
 glance-api加载的pipeline的名字。</p>
@@ -77,26 +52,58 @@ glance-api加载的pipeline的名字。</p>
 <div class="highlight"><pre><span class="k">[pipeline:glance-api]</span>
 <span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation unauthenticated-context rootapp</span>
 
-<span class="c1"># Use this pipeline for image caching and no ...</span></pre></div> </div><!-- /.entry-content -->
+<span class="c1"># Use this pipeline for image caching and no auth</span>
+<span class="k">[pipeline:glance-api-caching]</span>
+<span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation unauthenticated-context cache rootapp</span>
 
-								<div class="medium primary btn"><a href="../glance-image-cache.html" rel="bookmark" title="Permalink to Glance Image Cache">Read more <i class="icon-arrow-right"></i></a></div>
+<span class="c1"># Use this pipeline for caching w/ management interface but no auth</span>
+<span class="k">[pipeline:glance-api-cachemanagement]</span>
+<span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation unauthenticated-context cache cachemanage rootapp</span>
+
+<span class="c1"># Use this pipeline for keystone auth</span>
+<span class="k">[pipeline:glance-api-keystone]</span>
+<span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation authtoken context rootapp</span>
+
+<span class="c1"># Use this pipeline for keystone auth with image caching</span>
+<span class="k">[pipeline:glance-api-keystone+caching]</span>
+<span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation authtoken context cache rootapp</span>
+
+<span class="c1"># Use this pipeline for keystone auth with caching and cache management</span>
+<span class="k">[pipeline:glance-api-keystone+cachemanagement]</span>
+<span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation authtoken context cache cachemanage rootapp</span>
+</pre></div>
 
 
+<p>不同的pipeline用到了不同的middleware, 启作用的是cache 和 cachemanagement这两个
+。</p>
+<h2>REF</h2>
+<ol>
+<li><a href="http://docs.openstack.org/developer/glance/cache.html">The Glance Image Cache</a></li>
+</ol><p>There are <a href="../glance-image-cache.html#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
 
-								<div class="row tag-row">
-										<span>Tagged as : </span>
-											<a class="danger label" href="../tag/glance.html">glance</a>
-								</div>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="../dhcp-lease-errors-in-vlan-mode.html" rel="bookmark"
+                           title="Permalink to Dhcp lease errors in vlan mode">Dhcp lease errors in vlan mode</a></h1>
+                </header>
 
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2013-08-27T08:50:00">
+                Published: Tue 27 August 2013
+        </abbr>
 
-
-				        </article></li>
-				        <li><article class="hentry">
-				                <header> <h2 class="entry-title"><a href="../dhcp-lease-errors-in-vlan-mode.html" rel="bookmark" title="Permalink to Dhcp lease errors in vlan mode">Dhcp lease errors in vlan mode</a></h2> </header>
-				                <footer class="post-info">
-				                    <abbr class="published" title="2013-08-27T08:50:00"> Tue 27 August 2013 </abbr>
-<address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
-				                <div class="entry-content"> <p>在使用<code>keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
+        <address class="vcard author">
+                By                         <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a>
+        </address>
+<p>In <a href="../category/openstack.html">Openstack</a>. </p>
+<p>tags: <a href="../tag/dhcp.html">dhcp</a> <a href="../tag/network.html">network</a> <a href="../tag/vlan.html">vlan</a> </p>
+</footer><!-- /.post-info -->                <p>在使用<code>keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
 <div class="highlight"><pre><span class="n">PERSISTENT_DHCLIENT</span><span class="o">=</span><span class="mi">1</span>
 </pre></div>
 
@@ -104,28 +111,29 @@ glance-api加载的pipeline的名字。</p>
 <p>使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个<a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results">邮件列表</a>中找到原因，如下：</p>
 <p>To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1</p>
 <p>THE LONG VERSION</p>
-<p>There is an issue with ...</p> </div><!-- /.entry-content -->
+<p>There is an issue with ...</p>
+                <a class="readmore" href="../dhcp-lease-errors-in-vlan-mode.html">read more</a>
+<p>There are <a href="../dhcp-lease-errors-in-vlan-mode.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
-								<div class="medium primary btn"><a href="../dhcp-lease-errors-in-vlan-mode.html" rel="bookmark" title="Permalink to Dhcp lease errors in vlan mode">Read more <i class="icon-arrow-right"></i></a></div>
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="../openstack-brief.html" rel="bookmark"
+                           title="Permalink to Openstack Brief">Openstack Brief</a></h1>
+                </header>
 
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2013-06-17T23:08:00">
+                Published: Mon 17 June 2013
+        </abbr>
 
+        <address class="vcard author">
+                By                         <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a>
+        </address>
+<p>In <a href="../category/openstack.html">Openstack</a>. </p>
 
-								<div class="row tag-row">
-										<span>Tagged as : </span>
-											<a class="danger label" href="../tag/dhcp.html">dhcp</a>
-											<a class="danger label" href="../tag/network.html">network</a>
-											<a class="danger label" href="../tag/vlan.html">vlan</a>
-								</div>
-
-
-
-				        </article></li>
-				        <li><article class="hentry">
-				                <header> <h2 class="entry-title"><a href="../openstack-brief.html" rel="bookmark" title="Permalink to Openstack Brief">Openstack Brief</a></h2> </header>
-				                <footer class="post-info">
-				                    <abbr class="published" title="2013-06-17T23:08:00"> Mon 17 June 2013 </abbr>
-<address class="vcard author">By <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a></address>				                </footer><!-- /.post-info -->
-				                <div class="entry-content"> <p>自从Openstack诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于Grizzly的版本来写的。</p>
+</footer><!-- /.post-info -->                <p>自从Openstack诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于Grizzly的版本来写的。</p>
 <ul>
 <li>Keystone</li>
 <li>Nova</li>
@@ -145,112 +153,55 @@ glance-api加载的pipeline的名字。</p>
 </ol>
 <p>相对于其它子项目来说，keystone最近的变化并不是太大。将来一个比较大的变化就是基于domain的权限控制，届时Tenant里也可以细经出管理员和使用者的角色，并有详细的权限功能控制。</p>
 <h1>Nova</h1>
-<p>Nova是Openstack最早的子项目。现在其它项目如cinder, quantum(Openstack Network)都是来自于该项目。可以说这是Openstack中最复杂，最主要的部分。它负责 ...</p> </div><!-- /.entry-content -->
+<p>Nova是Openstack最早的子项目。现在其它项目如cinder, quantum(Openstack Network)都是来自于该项目。可以说这是Openstack中最复杂，最主要的部分。它负责 ...</p>
+                <a class="readmore" href="../openstack-brief.html">read more</a>
+<p>There are <a href="../openstack-brief.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://github.com/jeffrey4l">My Git</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
-								<div class="medium primary btn"><a href="../openstack-brief.html" rel="bookmark" title="Permalink to Openstack Brief">Read more <i class="icon-arrow-right"></i></a></div>
+                            <li><a href="http://github.com/jeffrey4l">Github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
 
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
 
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
 
-								<div class="row tag-row">
-								</div>
-
-
-
-				        </article></li>
-				</ol><!-- /#posts-list -->
-
-        </div><!-- /.eleven.columns -->
-        
-<div class="three columns">
-
-<h4>Pages</h4>
-
- <ul>
-      <li><a href="/archives.html">Archives</a></li>
-      <li><a href="../pages/about.html">About</a></li>
-  </ul>
-
-<h4>Categories</h4>
-<ul>
-		<li><a href="../category/life.html">Life</a></li>
-		<li><a href="../category/linux.html">Linux</a></li>
-		<li><a href="../category/openstack.html">Openstack</a></li>
-		<li><a href="../category/others.html">Others</a></li>
-</ul>
-
-
-<h4>Tags</h4>
-	<ul>
-	    <li class="tag-4"><a href="../tag/python.html">python</a></li>
-	    <li class="tag-4"><a href="../tag/salt.html">salt</a></li>
-	    <li class="tag-4"><a href="../tag/vlan.html">vlan</a></li>
-	    <li class="tag-4"><a href="../tag/openstack.html">openstack</a></li>
-	    <li class="tag-4"><a href="../tag/glance.html">glance</a></li>
-	    <li class="tag-4"><a href="../tag/dhcp.html">dhcp</a></li>
-	    <li class="tag-1"><a href="../tag/network.html">network</a></li>
-	    <li class="tag-4"><a href="../tag/book.html">book</a></li>
-	    <li class="tag-4"><a href="../tag/git.html">git</a></li>
-</ul>
-
-
-<nav class="widget">
-  <h4>Social</h4>
-  <ul>
-    <li><a href="http://github.com/jeffrey4l">Github</a></li>
-  </ul>
-</nav>
-
-</div> </div><!-- /.row -->
-
-</section><!-- /#content -->
-
-       </div><!-- /.row -->
-    </div><!-- /.container -->
-
-
-       <div class="container.nopad bg">
-
-    
-        <footer id="credits" class="row">
-          <div class="seven columns left-center">
-
-                   <address id="about" class="vcard body">
-                    Proudly powered by <a href="http://getpelican.com/">Pelican</a>,
-                    which takes great advantage of <a href="http://python.org">Python</a>.
-                    <br />
-                    Based on the <a target="_blank" href="http://gumbyframework.com">Gumby Framework</a>
-                    </address>
-          </div>
-
-
-          <div class="seven columns">
-            <div class="row">
-              <ul class="socbtns">
-
-                <li><div class="btn primary"><a href="http://githbu.com/jeffrey4l" target="_blank">Github</a></div></li>
-
-
-
-
-              </ul>
-            </div>
-          </div>
-        </footer>
-
-    </div>
-
-
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
 <script type="text/javascript">
     var disqus_shortname = 'xcodest';
     (function () {
         var s = document.createElement('script'); s.async = true;
         s.type = 'text/javascript';
-        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
         (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
     }());
 </script>
-  <script src="../theme/js/libs/jquery-1.9.1.min.js"></script>
-  <script src="../theme/js/libs/gumby.min.js"></script>
-  <script src="../theme/js/plugins.js"></script>
 </body>
 </html>

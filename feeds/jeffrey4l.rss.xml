@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description></description><atom:link href="http://xcodest.me/feeds/jeffrey4l.rss.xml" rel="self"></atom:link><lastBuildDate>Thu, 11 Sep 2014 00:00:00 +0800</lastBuildDate><item><title>Nova flavor init</title><link>http://xcodest.me/nova-flavor-init.html</link><description>&lt;p&gt;ustack的flavor做的还是挺全的，所以用了一个脚本来创建和其一样的flavor类型。&lt;/p&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description></description><atom:link href="http://xcodest.me/feeds/jeffrey4l.rss.xml" rel="self"></atom:link><lastBuildDate>Thu, 08 Jan 2015 00:00:00 +0800</lastBuildDate><item><title>PIP install from local</title><link>http://xcodest.me/pip-install-from-local.html</link><description>&lt;p&gt;在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。&lt;/p&gt;
+&lt;p&gt;先在有网络的环境中下载下来所有需要的包：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在把这些包拷贝到目标环境中去，使用下面的命令来安装：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;pip install --no-index --find-links &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;所有需要的包就安装上了。&lt;/p&gt;
+&lt;p&gt;为了方便使用，还可以把这两个命令弄成alias来使用&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;alias pipcache=&amp;#39;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages&amp;#39;
+alias pipinstall=&amp;#39;pip install --no-index --find-links=file://&lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages/&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 08 Jan 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-01-08:pip-install-from-local.html</guid><category>python</category></item><item><title>Nova flavor init</title><link>http://xcodest.me/nova-flavor-init.html</link><description>&lt;p&gt;ustack的flavor做的还是挺全的，所以用了一个脚本来创建和其一样的flavor类型。&lt;/p&gt;
 &lt;div class="gist"&gt;
     &lt;script src='https://gist.github.com/ecee9fcb00412cd67fe7.js?file=nova-flavor-init.sh'&gt;&lt;/script&gt;
     &lt;noscript&gt;

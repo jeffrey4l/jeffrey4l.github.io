@@ -6,7 +6,8 @@
         <meta name="author" content="Jeffrey4l" />
         <meta name="copyright" content="Jeffrey4l" />
 
-        <title>All Tags · Xcodest
+<meta name="keywords" content="python, Programming, " />
+        <title>PIP install from local  · Xcodest
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -52,7 +53,7 @@
                             <li ><a href=".">Home</a></li>
                             <li ><a href="./pages/about.html">About</a></li>
                             <li ><a href="./categories.html">Categories</a></li>
-                            <li  class="active"><a href="./tags.html">Tags</a></li>
+                            <li ><a href="./tags.html">Tags</a></li>
                             <li ><a href="./archives.html">Archives</a></li>
                             <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
@@ -64,112 +65,91 @@
             <div class="row-fluid">
                 <div class="span1"></div>
                 <div class="span10">
-
+<article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="/tags.html">All Tags</a></h1>
+    <h1><a href="./pip-install-from-local.html"> PIP install from local  </a></h1>
     </header>
 </div>
-<div class="row-fluid">
-    <div class="span8 offset2">
-        <form class="form-search">
-            <input type="text" class="input-medium search-query filterinput" placeholder="Find a tag">
-        </form>
-        <ul class="list-of-tags">
-            <li>
-            <a href="/tags.html#book-ref">book<span>1</span></a>
-            </li>
-            <li>
-            <a href="/tags.html#dhcp-ref">dhcp<span>1</span></a>
-            </li>
-            <li>
-            <a href="/tags.html#git-ref">git<span>1</span></a>
-            </li>
-            <li>
-            <a href="/tags.html#glance-ref">glance<span>1</span></a>
-            </li>
-            <li>
-            <a href="/tags.html#network-ref">network<span>2</span></a>
-            </li>
-            <li>
-            <a href="/tags.html#openstack-ref">openstack<span>1</span></a>
-            </li>
-            <li>
-            <a href="/tags.html#python-ref">python<span>2</span></a>
-            </li>
-            <li>
-            <a href="/tags.html#salt-ref">salt<span>1</span></a>
-            </li>
-            <li>
-            <a href="/tags.html#vlan-ref">vlan<span>1</span></a>
-            </li>
-        </ul>
-    </div>
-</div>
 
 <div class="row-fluid">
-    <div class="span8 offset2">
-        <h2 id="book-ref" class="tag-title">book</h2>
-        <ul class="articles-in-tag">
- 
-            <li><a href="./hard-gym-reading-note.html">硬派健身-减肥篇 阅读笔记  </a></li>
-        </ul>
+        <div class="span8 offset2 article-content">
 
-        <h2 id="dhcp-ref" class="tag-title">dhcp</h2>
-        <ul class="articles-in-tag">
- 
-            <li><a href="./dhcp-lease-errors-in-vlan-mode.html">Dhcp lease errors in vlan mode  </a></li>
-        </ul>
+            <p>在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。</p>
+<p>先在有网络的环境中下载下来所有需要的包：</p>
+<div class="highlight"><pre>pip install --download <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages -r requirement.txt
+</pre></div>
 
-        <h2 id="git-ref" class="tag-title">git</h2>
-        <ul class="articles-in-tag">
- 
-            <li><a href="./migrate-svn-to-gitlab.html">Migrate SVN to GitLab  </a></li>
-        </ul>
 
-        <h2 id="glance-ref" class="tag-title">glance</h2>
-        <ul class="articles-in-tag">
- 
-            <li><a href="./glance-image-cache.html">Glance Image Cache  </a></li>
-        </ul>
+<p>在把这些包拷贝到目标环境中去，使用下面的命令来安装：</p>
+<div class="highlight"><pre>pip install --no-index --find-links <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages -r requirement.txt
+</pre></div>
 
-        <h2 id="network-ref" class="tag-title">network</h2>
-        <ul class="articles-in-tag">
- 
-            <li><a href="./dhcp-lease-errors-in-vlan-mode.html">Dhcp lease errors in vlan mode  </a></li>
- 
-            <li><a href="./linux-bonding-mode-6-break-the-vms.html">linux bonding mode 6 break the vms  </a></li>
-        </ul>
 
-        <h2 id="openstack-ref" class="tag-title">openstack</h2>
-        <ul class="articles-in-tag">
- 
-            <li><a href="./nova-flavor-init.html">Nova flavor init  </a></li>
-        </ul>
+<p>所有需要的包就安装上了。</p>
+<p>为了方便使用，还可以把这两个命令弄成alias来使用</p>
+<div class="highlight"><pre>alias pipcache=&#39;pip install --download <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages&#39;
+alias pipinstall=&#39;pip install --no-index --find-links=file://<span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages/&#39;
+</pre></div>
+<section>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2"
+                href="./pip-install-from-local.html#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'xcodest';
+        var disqus_identifier = './pip-install-from-local.html';
+    var disqus_url = './pip-install-from-local.html';
 
-        <h2 id="python-ref" class="tag-title">python</h2>
-        <ul class="articles-in-tag">
- 
-            <li><a href="./pip-install-from-local.html">PIP install from local  </a></li>
- 
-            <li><a href="./python-cstring-unicode.html">Python cString raise exception when feed Unicode  </a></li>
-        </ul>
-
-        <h2 id="salt-ref" class="tag-title">salt</h2>
-        <ul class="articles-in-tag">
- 
-            <li><a href="./salt-mine.html">Salt Mine  </a></li>
-        </ul>
-
-        <h2 id="vlan-ref" class="tag-title">vlan</h2>
-        <ul class="articles-in-tag">
- 
-            <li><a href="./dhcp-lease-errors-in-vlan-mode.html">Dhcp lease errors in vlan mode  </a></li>
-        </ul>
-
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
     </div>
 </div>
+</section>
+            <aside>
+            <hr/>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="./nova-flavor-init.html" title="Previous: Nova flavor init">Nova flavor init</a></li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2015-01-08T00:00:00+08:00">Jan 8, 2015</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#Programming-ref">Programming</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#python-ref">python
+                    <span>2</span>
+</a></li>
+            </ul>
 
+        </div>
+        </section>
+</div>
+</article>
                 </div>
                 <div class="span1"></div>
             </div>
@@ -181,7 +161,7 @@
         <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
     </ul>
 </div>
-</footer>        <script src="http://code.jquery.com/jquery.min.js"></script>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
@@ -190,43 +170,31 @@
             }
         </script>
 
+<script type="text/javascript">
+    var disqus_shortname = 'xcodest';
 
-<script>
-    (function ($) {
-        // custom css expression for a case-insensitive contains()
-        jQuery.expr[':'].Contains = function(a,i,m){
-            return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
-        };
-
-        function listFilter() {
-
-            $('.filterinput')
-            .change( function () {
-                var filter = $(this).val();
-                if(filter) {
-                    // this finds all links in a list that contain the input,
-                    // and hide the ones not containing the input while showing the ones that do
-                    $('.list-of-tags').find("a:not(:Contains(" + filter + "))").parent().hide();
-                    $('.list-of-tags').find("a:Contains(" + filter + ")").parent().show();
-                    } else {
-                    $('.list-of-tags').find("li").show();
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+        <script  language="javascript" type="text/javascript">
+            function uncollapse() {
+                var hash_str = window.location.hash;
+                if (window.location.hash.match(/^#comment-\d+$/))
+                {
+                    var hash_str = '#disqus_thread';
                 }
-                return false;
-            })
-            .keyup( function () {
-                // fire the above change event after every letter
-                $(this).change();
-            });
-        }
+                $(hash_str).collapse({
+                    toggle: true
+                    })
+            }
+        </script>
 
-        //ondomready
-        $(function () {
-            listFilter($());
-        });
-    }(jQuery));
-
-</script>
-
-
+        <script type="text/javascript" language="JavaScript">
+            uncollapse(); 
+        </script>
     </body>
 </html>

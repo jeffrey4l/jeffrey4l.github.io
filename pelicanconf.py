@@ -71,3 +71,13 @@ ARTICLE_EXCLUDES =  ['themes', 'plugins', 'output']
 THEME = 'themes/elegant'
 
 GITHUB_URL = 'http://githbu.com/jeffrey4l'
+
+LANDING_PAGE_ABOUT = {
+    'title': 'Code for fun',
+    'details': '''
+<ul>
+    <li>Email: zhang.lei.fly(#)gmail.com
+</ul>
+
+    '''
+}

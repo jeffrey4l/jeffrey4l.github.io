@@ -4,3 +4,6 @@
 [submodule "themes"]
 	path = themes
 	url = https://github.com/getpelican/pelican-themes
+[submodule "themes/elegant"]
+	path = themes/elegant
+	url = git@github.com:talha131/pelican-elegant.git

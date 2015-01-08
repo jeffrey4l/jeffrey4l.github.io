@@ -36,13 +36,13 @@ MONTH_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/{date:%b}/index.html'
 
 PLUGIN_PATHS = [ os.path.join(ROOT, 'plugins')]
 
-PLUGINS = ['assets', 'sitemap', 'gravatar', 'pelican_gist']
+PLUGINS = ['assets', 'gravatar', 'pelican_gist']
 
 SITEMAP= {'format': 'xml'}
 
-STATIC_PATHS = ['images', 'extra/CNAME', 'theme']
+STATIC_PATHS = ['images', 'extra/CNAME']
 
-EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
+EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'}}
 
 # Uncomment following line if you want document-relative URLs when developing
 RELATIVE_URLS = True
@@ -66,8 +66,8 @@ AUTHORS_SAVE_AS = ''
 
 DISPLAY_CATEGORIES_ON_MENU = False
 
-ARTICLE_EXCLUDES =  ['theme', 'themes', 'plugins', 'output']
+ARTICLE_EXCLUDES =  ['themes', 'plugins', 'output']
 
-#THEME = 'themes/gum'
+THEME = 'themes/elegant'
 
 GITHUB_URL = 'http://githbu.com/jeffrey4l'

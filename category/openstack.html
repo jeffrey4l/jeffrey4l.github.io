@@ -1,188 +1,30 @@
 <!DOCTYPE html>
-<html lang="cn">
-<head>
-        <meta charset="utf-8" />
-        <title>Xcodest - Openstack</title>
-        <link rel="stylesheet" href="../theme/css/main.css" />
-        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Atom Feed" />
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Jeffrey4l" />
+        <meta name="copyright" content="Jeffrey4l" />
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-</head>
-
-<body id="index" class="home">
-<a href="http://githbu.com/jeffrey4l">
-<img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
-</a>
-        <header id="banner" class="body">
-                <h1><a href="../">Xcodest </a></h1>
-                <nav><ul>
-                    <li><a href="/archives.html">Archives</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
-
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="../glance-image-cache.html">Glance Image Cache</a></h1>
-<footer class="post-info">
-        <abbr class="published" title="2014-07-17T00:00:00+08:00">
-                Published: Thu 17 July 2014
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a>
-        </address>
-<p>In <a href="../category/openstack.html">Openstack</a>. </p>
-<p>tags: <a href="../tag/glance.html">glance</a> </p>
-</footer><!-- /.post-info --><p>Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定
-程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。</p>
-<p>因为是通过middleware来控制的，所以只要修改一下paster的配置就行。更简单的是指定
-glance-api加载的pipeline的名字。</p>
-<div class="highlight"><pre><span class="k">[deploy]</span>
-<span class="c1"># possible value: none, cachine, keystone, keystone+caching, </span>
-<span class="c1"># keystone+cachemanagement</span>
-<span class="c1"># This value can get from glance-api-paste.conf file</span>
-<span class="na">flavor</span><span class="o">=</span><span class="s">keystone+caching</span>
-</pre></div>
-
-
-<p>具体看下<code>glance-api-paster.conf</code>文件就能明白。</p>
-<div class="highlight"><pre><span class="k">[pipeline:glance-api]</span>
-<span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation unauthenticated-context rootapp</span>
-
-<span class="c1"># Use this pipeline for image caching and no auth</span>
-<span class="k">[pipeline:glance-api-caching]</span>
-<span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation unauthenticated-context cache rootapp</span>
-
-<span class="c1"># Use this pipeline for caching w/ management interface but no auth</span>
-<span class="k">[pipeline:glance-api-cachemanagement]</span>
-<span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation unauthenticated-context cache cachemanage rootapp</span>
-
-<span class="c1"># Use this pipeline for keystone auth</span>
-<span class="k">[pipeline:glance-api-keystone]</span>
-<span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation authtoken context rootapp</span>
-
-<span class="c1"># Use this pipeline for keystone auth with image caching</span>
-<span class="k">[pipeline:glance-api-keystone+caching]</span>
-<span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation authtoken context cache rootapp</span>
-
-<span class="c1"># Use this pipeline for keystone auth with caching and cache management</span>
-<span class="k">[pipeline:glance-api-keystone+cachemanagement]</span>
-<span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation authtoken context cache cachemanage rootapp</span>
-</pre></div>
-
-
-<p>不同的pipeline用到了不同的middleware, 启作用的是cache 和 cachemanagement这两个
-。</p>
-<h2>REF</h2>
-<ol>
-<li><a href="http://docs.openstack.org/developer/glance/cache.html">The Glance Image Cache</a></li>
-</ol><p>There are <a href="../glance-image-cache.html#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="../dhcp-lease-errors-in-vlan-mode.html" rel="bookmark"
-                           title="Permalink to Dhcp lease errors in vlan mode">Dhcp lease errors in vlan mode</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2013-08-27T08:50:00+08:00">
-                Published: Tue 27 August 2013
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a>
-        </address>
-<p>In <a href="../category/openstack.html">Openstack</a>. </p>
-<p>tags: <a href="../tag/dhcp.html">dhcp</a> <a href="../tag/network.html">network</a> <a href="../tag/vlan.html">vlan</a> </p>
-</footer><!-- /.post-info -->                <p>在使用<code>keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
-<div class="highlight"><pre><span class="n">PERSISTENT_DHCLIENT</span><span class="o">=</span><span class="mi">1</span>
-</pre></div>
-
-
-<p>使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个<a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results">邮件列表</a>中找到原因，如下：</p>
-<p>To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1</p>
-<p>THE LONG VERSION</p>
-<p>There is an issue with ...</p>
-                <a class="readmore" href="../dhcp-lease-errors-in-vlan-mode.html">read more</a>
-<p>There are <a href="../dhcp-lease-errors-in-vlan-mode.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="../openstack-brief.html" rel="bookmark"
-                           title="Permalink to Openstack Brief">Openstack Brief</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2013-06-17T23:08:00+08:00">
-                Published: Mon 17 June 2013
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="../author/jeffrey4l.html">Jeffrey4l</a>
-        </address>
-<p>In <a href="../category/openstack.html">Openstack</a>. </p>
-
-</footer><!-- /.post-info -->                <p>自从Openstack诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于Grizzly的版本来写的。</p>
-<ul>
-<li>Keystone</li>
-<li>Nova</li>
-<li>Cinder</li>
-<li>Glance</li>
-<li>Openstack Network(Quantum)</li>
-<li>LBaaS</li>
-<li>Ceilometer</li>
-<li>Baremetal</li>
-</ul>
-<h1>Keystone</h1>
-<p>keystone是Openstack的认证和服务注册模块。其结构比较简单。其功能包括:</p>
-<ol>
-<li><strong>认证</strong> 主要功能是管理用户和用户组的信息，后端可以绑定ldap, mysql等认证方式。</li>
-<li><strong>服务注册模块</strong> 主要用于管理Openstack相关服务的地址，所有的服务都要先注册到Keystone中，才可以使用。它可使用基于文件的模板，也可以使用数据库存储。</li>
-<li><strong>Token</strong> 管理。</li>
-</ol>
-<p>相对于其它子项目来说，keystone最近的变化并不是太大。将来一个比较大的变化就是基于domain的权限控制，届时Tenant里也可以细经出管理员和使用者的角色，并有详细的权限功能控制。</p>
-<h1>Nova</h1>
-<p>Nova是Openstack最早的子项目。现在其它项目如cinder, quantum(Openstack Network)都是来自于该项目。可以说这是Openstack中最复杂，最主要的部分。它负责 ...</p>
-                <a class="readmore" href="../openstack-brief.html">read more</a>
-<p>There are <a href="../openstack-brief.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://github.com/jeffrey4l">My Git</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
-
-                            <li><a href="http://github.com/jeffrey4l">Github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
-
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
-
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
-
+        <title>Xcodest
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="../theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="../theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="../theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="../theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="../theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="../theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="../theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="../theme/images/apple-touch-icon-144x144.png" />
+        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Full Atom Feed" />
+        <link href="http://xcodest.me/feeds/Life.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Life Category Atom Feed" />
+        <link href="http://xcodest.me/feeds/Linux.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Linux Category Atom Feed" />
+        <link href="http://xcodest.me/feeds/Openstack.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Openstack Category Atom Feed" />
+        <link href="http://xcodest.me/feeds/Others.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Others Category Atom Feed" />
+        <link href="http://xcodest.me/feeds/Programming.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Programming Category Atom Feed" />
     <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-41808584-2']);
@@ -193,14 +35,100 @@ glance-api加载的pipeline的名字。</p>
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
     </script>
-<script type="text/javascript">
-    var disqus_shortname = 'xcodest';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
-</body>
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="../"><span class=site-name>Xcodest</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="..">Home</a></li>
+                            <li ><a href="../categories.html">Categories</a></li>
+                            <li ><a href="../tags.html">Tags</a></li>
+                            <li ><a href="../archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="../search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<div class="row-fluid">
+    <header class="page_header span12">
+    <h1><a href="..">Code for fun</a></h1>
+    </header>
+
+    <div class="row-fluid">
+        <div class="span8">
+            <header>
+            <h1 id="about-me">About me</h1>
+            </header>
+            <div class="article-content">
+                
+<ul>
+    <li>Email: zhang.lei.fly(#)gmail.com
+</ul>
+
+    
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <header>
+            <h1 id="recent-posts">Recent Posts <a id="allposts" href="../archives.html">all posts</a></h1>
+            </header>
+            <ul class="list-all-articles">
+                <li>
+                <a href="../glance-image-cache.html">Glance Image Cache  </a> 
+                <time pubdate="pubdate" datetime="2014-07-17T00:00:00+08:00">Thu 17 July 2014</time>
+                </li>
+            </ul>
+            <ul class="list-all-articles">
+                <li>
+                <a href="../dhcp-lease-errors-in-vlan-mode.html">Dhcp lease errors in vlan mode  </a> 
+                <time pubdate="pubdate" datetime="2013-08-27T08:50:00+08:00">Tue 27 August 2013</time>
+                </li>
+            </ul>
+            <ul class="list-all-articles">
+                <li>
+                <a href="../openstack-brief.html">Openstack Brief  </a> 
+                <time pubdate="pubdate" datetime="2013-06-17T23:08:00+08:00">Mon 17 June 2013</time>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>        <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+    </body>
 </html>

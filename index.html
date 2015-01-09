@@ -1,417 +1,30 @@
 <!DOCTYPE html>
-<html lang="cn">
-<head>
-        <meta charset="utf-8" />
-        <title>Xcodest</title>
-        <link rel="stylesheet" href="./theme/css/main.css" />
-        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Atom Feed" />
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Jeffrey4l" />
+        <meta name="copyright" content="Jeffrey4l" />
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-</head>
-
-<body id="index" class="home">
-<a href="http://githbu.com/jeffrey4l">
-<img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
-</a>
-        <header id="banner" class="body">
-                <h1><a href="./">Xcodest </a></h1>
-                <nav><ul>
-                    <li><a href="/archives.html">Archives</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
-
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="./pip-install-from-local.html">PIP install from local</a></h1>
-<footer class="post-info">
-        <abbr class="published" title="2015-01-08T00:00:00+08:00">
-                Published: Thu 08 January 2015
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="./author/jeffrey4l.html">Jeffrey4l</a>
-        </address>
-<p>In <a href="./category/programming.html">Programming</a>. </p>
-<p>tags: <a href="./tag/python.html">python</a> </p>
-</footer><!-- /.post-info --><p>在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。</p>
-<p>先在有网络的环境中下载下来所有需要的包：</p>
-<div class="highlight"><pre>pip install --download <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages -r requirement.txt
-</pre></div>
-
-
-<p>在把这些包拷贝到目标环境中去，使用下面的命令来安装：</p>
-<div class="highlight"><pre>pip install --no-index --find-links <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages -r requirement.txt
-</pre></div>
-
-
-<p>所有需要的包就安装上了。</p>
-<p>为了方便使用，还可以把这两个命令弄成alias来使用</p>
-<div class="highlight"><pre>alias pipcache=&#39;pip install --download <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages&#39;
-alias pipinstall=&#39;pip install --no-index --find-links=file://<span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages/&#39;
-</pre></div><p>There are <a href="./pip-install-from-local.html#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="./nova-flavor-init.html" rel="bookmark"
-                           title="Permalink to Nova flavor init">Nova flavor init</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2014-09-11T00:00:00+08:00">
-                Published: Thu 11 September 2014
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="./author/jeffrey4l.html">Jeffrey4l</a>
-        </address>
-<p>In <a href="./category/others.html">Others</a>. </p>
-<p>tags: <a href="./tag/openstack.html">openstack</a> </p>
-</footer><!-- /.post-info -->                <p>ustack的flavor做的还是挺全的，所以用了一个脚本来创建和其一样的flavor类型。</p>
-<div class="gist">
-    <script src='https://gist.github.com/ecee9fcb00412cd67fe7.js?file=nova-flavor-init.sh'></script>
-    <noscript>
-        <pre><code>#!/bin/bash
-#
-# This configuration is copy from ustack.com
-
-DEFAULT_ROOT_GB=40
-
-nova-manage flavor create --name micro-1 --cpu 1 --memory 512 --root_gb $DEFAULT_ROOT_GB --is_public True
-nova-manage flavor create --name micro-2 --cpu 1 --memory 1024 --root_gb $DEFAULT_ROOT_GB --is_public True
-
-nova-manage flavor create --name standard-1 --cpu 1 --memory 2048 --root_gb $DEFAULT_ROOT_GB ...</code></pre></noscript></div>
-                <a class="readmore" href="./nova-flavor-init.html">read more</a>
-<p>There are <a href="./nova-flavor-init.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="./python-cstring-unicode.html" rel="bookmark"
-                           title="Permalink to Python cString raise exception when feed Unicode">Python cString raise exception when feed Unicode</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2014-09-09T00:00:00+08:00">
-                Published: Tue 09 September 2014
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="./author/jeffrey4l.html">Jeffrey4l</a>
-        </address>
-<p>In <a href="./category/others.html">Others</a>. </p>
-<p>tags: <a href="./tag/python.html">python</a> </p>
-</footer><!-- /.post-info -->                <p>I gett following different result when using these two Class.</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">import</span> <span class="nx">StringIO</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">import</span> <span class="nx">cStringIO</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nx">StringIO.StringIO</span><span class="p">()</span><span class="bp">.</span><span class="nb">write</span><span class="p">(</span><span class="nx">u</span><span class="s1">&#39;</span><span class="se">\u2222</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nx">cStringIO.StringIO</span><span class="p">()</span><span class="bp">.</span><span class="nb">write</span><span class="p">(</span><span class="nx">u</span><span class="s1">&#39;</span><span class="se">\u2222</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nx">Traceback</span> <span class="p">(</span><span class="nx">most</span> <span class="nx">recent</span> <span class="nb">call</span> <span class="nb">last</span><span class="p">):</span>
-  <span class="nb">File</span> <span class="s2">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="nb">line</span> <span class="mi">1</span><span class="p">,</span> <span class="k">in</span> <span class="o">&lt;</span><span class="nx">module</span><span class="o">&gt;</span>
-<span class="nx">UnicodeEncodeError</span><span class="p">:</span> <span class="s1">&#39;ascii&#39;</span> <span class="nx">codec</span> <span class="nx">can</span><span class="s1">&#39;t encode character u&#39;</span><span class="o">\</span><span class="nx">u2222</span><span class="s1">&#39; in position 0: ordinal not in ...</span></pre></div>
-                <a class="readmore" href="./python-cstring-unicode.html">read more</a>
-<p>There are <a href="./python-cstring-unicode.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="./migrate-svn-to-gitlab.html" rel="bookmark"
-                           title="Permalink to Migrate SVN to GitLab">Migrate SVN to GitLab</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2014-08-12T00:00:00+08:00">
-                Published: Tue 12 August 2014
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="./author/jeffrey4l.html">Jeffrey4l</a>
-        </address>
-<p>In <a href="./category/others.html">Others</a>. </p>
-<p>tags: <a href="./tag/git.html">git</a> </p>
-</footer><!-- /.post-info -->                <ul>
-<li>在GitLab上创建相对应的项目/项目组</li>
-<li>准备''users.txt''文件，来修正提交用户名。并手动修改users.txt的正确性 </li>
-</ul>
-<div class="highlight"><pre><span class="nx">svn</span> <span class="k">log</span> <span class="o">&lt;</span><span class="nx">svn</span><span class="na">-url</span><span class="o">&gt;</span> <span class="o">--</span><span class="kt">xml</span> <span class="o">|</span> <span class="nx">grep</span> <span class="na">-P</span> <span class="s2">&quot;^&lt;author&quot;</span> <span class="o">|</span> <span class="nb">sort</span> <span class="na">-u</span> <span class="o">|</span> <span class="nx">perl</span> <span class="na">-pe</span> <span class="s1">&#39;s/&lt;author&gt;(.*?)&lt;\/author&gt;/$1 = /&#39;</span> <span class="o">&gt;</span> <span class="nx">users.txt</span>
-</pre></div>
-
-
-<p>users.txt的文件格式如下</p>
-<div class="highlight"><pre>Lei Zhang = Lei Zhang &lt;zhang.lei.fly#gmail.com&gt;
-</pre></div>
-
-
-<ul>
-<li>把SVN项目使用git-svn进行克隆 </li>
-</ul>
-<div class="highlight"><pre><span class="nx">git</span> <span class="nx">svn</span> <span class="nx">clone</span> <span class="o">--</span><span class="nx">no</span><span class="na">-metadata</span> <span class="o">--</span><span class="nx">authors</span><span class="na">-file</span> <span class="nx">users.txt</span> <span class="na">-s</span> <span class="o">&lt;</span><span class="nx">svn ...</span></pre></div>
-                <a class="readmore" href="./migrate-svn-to-gitlab.html">read more</a>
-<p>There are <a href="./migrate-svn-to-gitlab.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="./hard-gym-reading-note.html" rel="bookmark"
-                           title="Permalink to 硬派健身-减肥篇 阅读笔记">硬派健身-减肥篇 阅读笔记</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2014-07-19T00:00:00+08:00">
-                Published: Sat 19 July 2014
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="./author/jeffrey4l.html">Jeffrey4l</a>
-        </address>
-<p>In <a href="./category/life.html">Life</a>. </p>
-<p>tags: <a href="./tag/book.html">book</a> </p>
-</footer><!-- /.post-info -->                <h2>战肥肉有氧不敌，强塑身无氧超神</h2>
-<ol>
-<li>长时间有氧运动——似是而非的减肥妙计<ol>
-<li>当我们的身体状态稳定，身体素质、生活习惯变化不大时，我们的体重和体脂含量都是只能加，不能减，只能胖，不能瘦。这就是我们序章介绍过的体重设定点理论。</li>
-<li>很多实验都证实，单纯增加能量支出，做长时间、中高强度的有氧运动，无法有效地帮正常人减重。</li>
-<li>你的身体也是一样，当它打定主意把你的体重维持在一个设定点上，就会有非常多的手段可以调节这些体重和脂肪。比如，瘦素是一种能减肥和帮助我们抑制食欲的身体激素。研究发现，如果我们单纯进行长时间有氧耐力运动减肥，增加了热量的支出，我们身体会减少瘦素的分泌，让我们多吃，多增长脂肪。效果可以持续好几天，</li>
-<li>还有研究发现，马拉松运动员的瘦素分泌量仅为普通人的三分之一。</li>
-</ol>
-</li>
-<li>共振——跑步会伤害胖胖的你……<ol>
-<li>这也就是说，跑步等运动会在脂肪和关节等部位引起共振，共振的效应最后会引起身体与关节的损伤。目前的研究发现，脂肪的体积越大，重量越重，共振的效果越强，对身体的伤害也就越强烈。冲击力的输入振动频率是10hz左右，脂肪的固定振动频率是2-10hz，可以引起共振，伤害到自己的身体组织</li>
-</ol>
-</li>
-<li>世上减肥万法，唯有肌肉无敌<ol>
-<li>肉和脂肪的密度差异。要知道，肌肉的密度大概是1 ...</li></ol></li></ol>
-                <a class="readmore" href="./hard-gym-reading-note.html">read more</a>
-<p>There are <a href="./hard-gym-reading-note.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="./glance-image-cache.html" rel="bookmark"
-                           title="Permalink to Glance Image Cache">Glance Image Cache</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2014-07-17T00:00:00+08:00">
-                Published: Thu 17 July 2014
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="./author/jeffrey4l.html">Jeffrey4l</a>
-        </address>
-<p>In <a href="./category/openstack.html">Openstack</a>. </p>
-<p>tags: <a href="./tag/glance.html">glance</a> </p>
-</footer><!-- /.post-info -->                <p>Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定
-程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。</p>
-<p>因为是通过middleware来控制的，所以只要修改一下paster的配置就行。更简单的是指定
-glance-api加载的pipeline的名字。</p>
-<div class="highlight"><pre><span class="k">[deploy]</span>
-<span class="c1"># possible value: none, cachine, keystone, keystone+caching, </span>
-<span class="c1"># keystone+cachemanagement</span>
-<span class="c1"># This value can get from glance-api-paste.conf file</span>
-<span class="na">flavor</span><span class="o">=</span><span class="s">keystone+caching</span>
-</pre></div>
-
-
-<p>具体看下<code>glance-api-paster.conf</code>文件就能明白。</p>
-<div class="highlight"><pre><span class="k">[pipeline:glance-api]</span>
-<span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation unauthenticated-context rootapp</span>
-
-<span class="c1"># Use this pipeline for image caching and no ...</span></pre></div>
-                <a class="readmore" href="./glance-image-cache.html">read more</a>
-<p>There are <a href="./glance-image-cache.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="./salt-mine.html" rel="bookmark"
-                           title="Permalink to Salt Mine">Salt Mine</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2014-07-16T00:00:00+08:00">
-                Published: Wed 16 July 2014
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="./author/jeffrey4l.html">Jeffrey4l</a>
-        </address>
-<p>In <a href="./category/linux.html">Linux</a>. </p>
-<p>tags: <a href="./tag/salt.html">salt</a> </p>
-</footer><!-- /.post-info -->                <p>Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。</p>
-<p>可以通过两种方法来配置:</p>
-<ol>
-<li>minion的配置文件</li>
-<li>master的pillar</li>
-</ol>
-<p>使用minion配置时，要直接修改minion的配置文件，在<code>/etc/salt/minion.d/mine.conf</code> 加入如下内容</p>
-<div class="highlight"><pre><span class="l-Scalar-Plain">mine_functions</span><span class="p-Indicator">:</span>
-  <span class="l-Scalar-Plain">test.ping</span><span class="p-Indicator">:</span> <span class="p-Indicator">[]</span>
-  <span class="l-Scalar-Plain">network.ip_addrs</span><span class="p-Indicator">:</span>
-    <span class="l-Scalar-Plain">interface</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">eth0</span>
-</pre></div>
-
-
-<p>使用pillar时配置时，只需要修改master的pillar配置即可。如在<code>/srv/pillar/mine.conf</code> 中加入如下内容</p>
-<div class="highlight"><pre><span class="l-Scalar-Plain">mine_functions</span><span class="p-Indicator">:</span>
-  <span class="l-Scalar-Plain">test.ping</span><span class="p-Indicator">:</span> <span class="p-Indicator">[]</span>
-  <span class="l-Scalar-Plain">network.ip_addrs</span><span class="p-Indicator">:</span>
-    <span class="l-Scalar-Plain">interface</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">eth0</span>
-</pre></div>
-
-
-<p>然后把<code>mine.conf ...</code></p>
-                <a class="readmore" href="./salt-mine.html">read more</a>
-<p>There are <a href="./salt-mine.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="./linux-bonding-mode-6-break-the-vms.html" rel="bookmark"
-                           title="Permalink to linux bonding mode 6 break the vms">linux bonding mode 6 break the vms</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2014-04-14T19:39:51+08:00">
-                Published: Mon 14 April 2014
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="./author/jeffrey4l.html">Jeffrey4l</a>
-        </address>
-<p>In <a href="./category/linux.html">Linux</a>. </p>
-<p>tags: <a href="./tag/network.html">network</a> </p>
-</footer><!-- /.post-info -->                <p>操作系统： ubuntu 12.04.1
-内核 linux 3.2</p>
-<p>今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。</p>
-<div class="highlight"><pre>    +---- host1 -------+         +---- host2 ----+
-                     eth0 ---- eth0 
-                   /                \
-    br1 ---- bond0                   bond0 ---- br1 
-                   \                /
-                     eth0 ---- eth0 
-</pre></div>
-
-
-<p>机器的连接方式如上图，经检查发现，问题简化成两边的 br1 是不通的，现像是ping时，接收方收不到包，包只走到bond0就给丢弃了。原因在于内核上有问题。在网络上查到以下两个连接 </p>
-<ol>
-<li>https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302 </li>
-<li>https://bugzilla ...</li></ol>
-                <a class="readmore" href="./linux-bonding-mode-6-break-the-vms.html">read more</a>
-<p>There are <a href="./linux-bonding-mode-6-break-the-vms.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="./dhcp-lease-errors-in-vlan-mode.html" rel="bookmark"
-                           title="Permalink to Dhcp lease errors in vlan mode">Dhcp lease errors in vlan mode</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2013-08-27T08:50:00+08:00">
-                Published: Tue 27 August 2013
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="./author/jeffrey4l.html">Jeffrey4l</a>
-        </address>
-<p>In <a href="./category/openstack.html">Openstack</a>. </p>
-<p>tags: <a href="./tag/dhcp.html">dhcp</a> <a href="./tag/network.html">network</a> <a href="./tag/vlan.html">vlan</a> </p>
-</footer><!-- /.post-info -->                <p>在使用<code>keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
-<div class="highlight"><pre><span class="n">PERSISTENT_DHCLIENT</span><span class="o">=</span><span class="mi">1</span>
-</pre></div>
-
-
-<p>使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个<a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results">邮件列表</a>中找到原因，如下：</p>
-<p>To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1</p>
-<p>THE LONG VERSION</p>
-<p>There is an issue with ...</p>
-                <a class="readmore" href="./dhcp-lease-errors-in-vlan-mode.html">read more</a>
-<p>There are <a href="./dhcp-lease-errors-in-vlan-mode.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="./openstack-brief.html" rel="bookmark"
-                           title="Permalink to Openstack Brief">Openstack Brief</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2013-06-17T23:08:00+08:00">
-                Published: Mon 17 June 2013
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="./author/jeffrey4l.html">Jeffrey4l</a>
-        </address>
-<p>In <a href="./category/openstack.html">Openstack</a>. </p>
-
-</footer><!-- /.post-info -->                <p>自从Openstack诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于Grizzly的版本来写的。</p>
-<ul>
-<li>Keystone</li>
-<li>Nova</li>
-<li>Cinder</li>
-<li>Glance</li>
-<li>Openstack Network(Quantum)</li>
-<li>LBaaS</li>
-<li>Ceilometer</li>
-<li>Baremetal</li>
-</ul>
-<h1>Keystone</h1>
-<p>keystone是Openstack的认证和服务注册模块。其结构比较简单。其功能包括:</p>
-<ol>
-<li><strong>认证</strong> 主要功能是管理用户和用户组的信息，后端可以绑定ldap, mysql等认证方式。</li>
-<li><strong>服务注册模块</strong> 主要用于管理Openstack相关服务的地址，所有的服务都要先注册到Keystone中，才可以使用。它可使用基于文件的模板，也可以使用数据库存储。</li>
-<li><strong>Token</strong> 管理。</li>
-</ol>
-<p>相对于其它子项目来说，keystone最近的变化并不是太大。将来一个比较大的变化就是基于domain的权限控制，届时Tenant里也可以细经出管理员和使用者的角色，并有详细的权限功能控制。</p>
-<h1>Nova</h1>
-<p>Nova是Openstack最早的子项目。现在其它项目如cinder, quantum(Openstack Network)都是来自于该项目。可以说这是Openstack中最复杂，最主要的部分。它负责 ...</p>
-                <a class="readmore" href="./openstack-brief.html">read more</a>
-<p>There are <a href="./openstack-brief.html#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://github.com/jeffrey4l">My Git</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
-
-                            <li><a href="http://github.com/jeffrey4l">Github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
-
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
-
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
-
+        <title>Xcodest
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="./theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="./theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="./theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="./theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="./theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="./theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="./theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="./theme/images/apple-touch-icon-144x144.png" />
+        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Full Atom Feed" />
+        <link href="http://xcodest.me/feeds/Life.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Life Category Atom Feed" />
+        <link href="http://xcodest.me/feeds/Linux.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Linux Category Atom Feed" />
+        <link href="http://xcodest.me/feeds/Openstack.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Openstack Category Atom Feed" />
+        <link href="http://xcodest.me/feeds/Others.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Others Category Atom Feed" />
+        <link href="http://xcodest.me/feeds/Programming.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Programming Category Atom Feed" />
     <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-41808584-2']);
@@ -422,14 +35,142 @@ glance-api加载的pipeline的名字。</p>
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
     </script>
-<script type="text/javascript">
-    var disqus_shortname = 'xcodest';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
-</body>
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="./"><span class=site-name>Xcodest</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li  class="active"><a href=".">Home</a></li>
+                            <li ><a href="./categories.html">Categories</a></li>
+                            <li ><a href="./tags.html">Tags</a></li>
+                            <li ><a href="./archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<div class="row-fluid">
+    <header class="page_header span12">
+    <h1><a href=".">Code for fun</a></h1>
+    </header>
+
+    <div class="row-fluid">
+        <div class="span8">
+            <header>
+            <h1 id="about-me">About me</h1>
+            </header>
+            <div class="article-content">
+                
+<ul>
+    <li>Email: zhang.lei.fly(#)gmail.com
+</ul>
+
+    
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <header>
+            <h1 id="recent-posts">Recent Posts <a id="allposts" href="./archives.html">all posts</a></h1>
+            </header>
+            <ul class="list-all-articles">
+                <li>
+                <a href="./pip-install-from-local.html">PIP install from local  </a> 
+                <time pubdate="pubdate" datetime="2015-01-08T00:00:00+08:00">Thu 08 January 2015</time>
+                </li>
+            </ul>
+            <ul class="list-all-articles">
+                <li>
+                <a href="./nova-flavor-init.html">Nova flavor init  </a> 
+                <time pubdate="pubdate" datetime="2014-09-11T00:00:00+08:00">Thu 11 September 2014</time>
+                </li>
+            </ul>
+            <ul class="list-all-articles">
+                <li>
+                <a href="./python-cstring-unicode.html">Python cString raise exception when feed Unicode  </a> 
+                <time pubdate="pubdate" datetime="2014-09-09T00:00:00+08:00">Tue 09 September 2014</time>
+                </li>
+            </ul>
+            <ul class="list-all-articles">
+                <li>
+                <a href="./migrate-svn-to-gitlab.html">Migrate SVN to GitLab  </a> 
+                <time pubdate="pubdate" datetime="2014-08-12T00:00:00+08:00">Tue 12 August 2014</time>
+                </li>
+            </ul>
+            <ul class="list-all-articles">
+                <li>
+                <a href="./hard-gym-reading-note.html">硬派健身-减肥篇 阅读笔记  </a> 
+                <time pubdate="pubdate" datetime="2014-07-19T00:00:00+08:00">Sat 19 July 2014</time>
+                </li>
+            </ul>
+            <ul class="list-all-articles">
+                <li>
+                <a href="./glance-image-cache.html">Glance Image Cache  </a> 
+                <time pubdate="pubdate" datetime="2014-07-17T00:00:00+08:00">Thu 17 July 2014</time>
+                </li>
+            </ul>
+            <ul class="list-all-articles">
+                <li>
+                <a href="./salt-mine.html">Salt Mine  </a> 
+                <time pubdate="pubdate" datetime="2014-07-16T00:00:00+08:00">Wed 16 July 2014</time>
+                </li>
+            </ul>
+            <ul class="list-all-articles">
+                <li>
+                <a href="./linux-bonding-mode-6-break-the-vms.html">linux bonding mode 6 break the vms  </a> 
+                <time pubdate="pubdate" datetime="2014-04-14T19:39:51+08:00">Mon 14 April 2014</time>
+                </li>
+            </ul>
+            <ul class="list-all-articles">
+                <li>
+                <a href="./dhcp-lease-errors-in-vlan-mode.html">Dhcp lease errors in vlan mode  </a> 
+                <time pubdate="pubdate" datetime="2013-08-27T08:50:00+08:00">Tue 27 August 2013</time>
+                </li>
+            </ul>
+            <ul class="list-all-articles">
+                <li>
+                <a href="./openstack-brief.html">Openstack Brief  </a> 
+                <time pubdate="pubdate" datetime="2013-06-17T23:08:00+08:00">Mon 17 June 2013</time>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>        <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+    </body>
 </html>

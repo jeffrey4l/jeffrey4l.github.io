@@ -45,7 +45,7 @@ STATIC_PATHS = ['images', 'extra/CNAME']
 EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'}}
 
 # Uncomment following line if you want document-relative URLs when developing
-RELATIVE_URLS = True
+# RELATIVE_URLS = True
 
 
 DISQUS_SITENAME = 'xcodest'
@@ -68,7 +68,7 @@ DISPLAY_CATEGORIES_ON_MENU = False
 
 ARTICLE_EXCLUDES =  ['themes', 'plugins', 'output']
 
-THEME = 'themes/elegant'
+THEME = 'elegant'
 
 GITHUB_URL = 'http://githbu.com/jeffrey4l'
 

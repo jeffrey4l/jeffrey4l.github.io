@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Jeffrey4l" />
+        <meta name="copyright" content="Jeffrey4l" />
+
+<meta name="keywords" content="mysql, Others, " />
+        <title>MySQL Errno 150  · Xcodest
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="./theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="./theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="./theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="./theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="./theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="./theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="./theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="./theme/images/apple-touch-icon-144x144.png" />
+        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Full Atom Feed" />
+        <link href="http://xcodest.me/feeds/Life.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Life Category Atom Feed" />
+        <link href="http://xcodest.me/feeds/Linux.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Linux Category Atom Feed" />
+        <link href="http://xcodest.me/feeds/Openstack.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Openstack Category Atom Feed" />
+        <link href="http://xcodest.me/feeds/Others.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Others Category Atom Feed" />
+        <link href="http://xcodest.me/feeds/Programming.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest - Programming Category Atom Feed" />
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="./"><span class=site-name>Xcodest</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href=".">Home</a></li>
+                            <li ><a href="./categories.html">Categories</a></li>
+                            <li ><a href="./tags.html">Tags</a></li>
+                            <li ><a href="./archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="./mysql-errno-150.html"> MySQL Errno 150  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <p>做OpenStack icehouse 升级到 Juno过程中，升级Neutron数据库时遇到这个错误。</p>
+<div class="highlight"><pre><span class="err">$</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">neutron</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="n">migration</span><span class="p">.</span><span class="n">migrate_to_ml2</span> <span class="n">openvswitch</span> <span class="nl">mysql</span><span class="p">:</span><span class="c1">//USER:PASSWORD@10.251.1.8/neutron</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span><span class="o">:</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/runpy.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">162</span><span class="p">,</span> <span class="k">in</span> <span class="n">_run_module_as_main</span>
+    <span class="s">&quot;__main__&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">pkg_name</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/runpy.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">72</span><span class="p">,</span> <span class="k">in</span> <span class="n">_run_code</span>
+    <span class="n">exec</span> <span class="n">code</span> <span class="k">in</span> <span class="n">run_globals</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">462</span><span class="p">,</span> <span class="k">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="n">main</span><span class="p">()</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">458</span><span class="p">,</span> <span class="k">in</span> <span class="n">main</span>
+    <span class="n">args</span><span class="p">.</span><span class="n">vxlan_udp_port</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">138</span><span class="p">,</span> <span class="k">in</span> <span class="n">__call__</span>
+    <span class="n">metadata</span><span class="p">.</span><span class="n">create_all</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/schema.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">2848</span><span class="p">,</span> <span class="k">in</span> <span class="n">create_all</span>
+    <span class="n">tables</span><span class="o">=</span><span class="n">tables</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1479</span><span class="p">,</span> <span class="k">in</span> <span class="n">_run_visitor</span>
+    <span class="n">conn</span><span class="p">.</span><span class="n">_run_visitor</span><span class="p">(</span><span class="n">visitorcallable</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1122</span><span class="p">,</span> <span class="k">in</span> <span class="n">_run_visitor</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">).</span><span class="n">traverse_single</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/sql/visitors.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">122</span><span class="p">,</span> <span class="k">in</span> <span class="n">traverse_single</span>
+    <span class="k">return</span> <span class="n">meth</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/ddl.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">70</span><span class="p">,</span> <span class="k">in</span> <span class="n">visit_metadata</span>
+    <span class="nb">self</span><span class="p">.</span><span class="n">traverse_single</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">create_ok</span><span class="o">=</span><span class="n">True</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/sql/visitors.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">122</span><span class="p">,</span> <span class="k">in</span> <span class="n">traverse_single</span>
+    <span class="k">return</span> <span class="n">meth</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/ddl.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">89</span><span class="p">,</span> <span class="k">in</span> <span class="n">visit_table</span>
+    <span class="nb">self</span><span class="p">.</span><span class="n">connection</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">schema</span><span class="p">.</span><span class="n">CreateTable</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">662</span><span class="p">,</span> <span class="k">in</span> <span class="n">execute</span>
+    <span class="n">params</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">720</span><span class="p">,</span> <span class="k">in</span> <span class="n">_execute_ddl</span>
+    <span class="n">compiled</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">874</span><span class="p">,</span> <span class="k">in</span> <span class="n">_execute_context</span>
+    <span class="n">context</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1024</span><span class="p">,</span> <span class="k">in</span> <span class="n">_handle_dbapi_exception</span>
+    <span class="n">exc_info</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/util/compat.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">196</span><span class="p">,</span> <span class="k">in</span> <span class="n">raise_from_cause</span>
+    <span class="n">reraise</span><span class="p">(</span><span class="n">type</span><span class="p">(</span><span class="n">exception</span><span class="p">),</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="o">=</span><span class="n">exc_tb</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">867</span><span class="p">,</span> <span class="k">in</span> <span class="n">_execute_context</span>
+    <span class="n">context</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/default.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">324</span><span class="p">,</span> <span class="k">in</span> <span class="n">do_execute</span>
+    <span class="n">cursor</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/MySQLdb/cursors.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">174</span><span class="p">,</span> <span class="k">in</span> <span class="n">execute</span>
+    <span class="nb">self</span><span class="p">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s">&quot;/usr/lib/python2.7/dist-packages/MySQLdb/connections.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">36</span><span class="p">,</span> <span class="k">in</span> <span class="n">defaulterrorhandler</span>
+    <span class="n">raise</span> <span class="n">errorclass</span><span class="p">,</span> <span class="n">errorvalue</span>
+<span class="n">sqlalchemy</span><span class="p">.</span><span class="n">exc</span><span class="p">.</span><span class="nl">OperationalError</span><span class="p">:</span> <span class="p">(</span><span class="n">OperationalError</span><span class="p">)</span> <span class="p">(</span><span class="mi">1005</span><span class="p">,</span> <span class="s">&quot;Can&#39;t create table &#39;neutron.ml2_network_segments&#39; (errno: 150)&quot;</span><span class="p">)</span> <span class="err">&#39;\</span><span class="n">nCREATE</span> <span class="n">TABLE</span> <span class="n">ml2_network_segments</span> <span class="p">(</span><span class="err">\</span><span class="n">n</span><span class="err">\</span><span class="n">tid</span> <span class="n">VARCHAR</span><span class="p">(</span><span class="mi">36</span><span class="p">)</span> <span class="n">NOT</span> <span class="nb">NULL</span><span class="p">,</span> <span class="err">\</span><span class="n">n</span><span class="err">\</span><span class="n">tnetwork_id</span> <span class="n">VARCHAR</span><span class="p">(</span><span class="mi">36</span><span class="p">)</span> <span class="n">NOT</span> <span class="nb">NULL</span><span class="p">,</span> <span class="err">\</span><span class="n">n</span><span class="err">\</span><span class="n">tnetwork_type</span> <span class="n">VARCHAR</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span> <span class="n">NOT</span> <span class="nb">NULL</span><span class="p">,</span> <span class="err">\</span><span class="n">n</span><span class="err">\</span><span class="n">tphysical_network</span> <span class="n">VARCHAR</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span> <span class="err">\</span><span class="n">n</span><span class="err">\</span><span class="n">tsegmentation_id</span> <span class="n">INTEGER</span><span class="p">,</span> <span class="err">\</span><span class="n">n</span><span class="err">\</span><span class="n">tPRIMARY</span> <span class="n">KEY</span> <span class="p">(</span><span class="kt">id</span><span class="p">),</span> <span class="err">\</span><span class="n">n</span><span class="err">\</span><span class="n">tFOREIGN</span> <span class="n">KEY</span><span class="p">(</span><span class="n">network_id</span><span class="p">)</span> <span class="n">REFERENCES</span> <span class="n">networks</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="n">ON</span> <span class="n">DELETE</span> <span class="n">CASCADE</span><span class="err">\</span><span class="n">n</span><span class="p">)</span><span class="err">\</span><span class="n">n</span><span class="err">\</span><span class="n">n</span><span class="err">&#39;</span> <span class="p">()</span>
+</pre></div>
+
+
+<p>原因是 Mysql 有对外键约束[1]，仔细查数据里发现 networks 表的 collcation 和新建上述表时的默认数据库 collcation 不一样。以下是Mysql对外键约束的描述[1]，我遇到的是第二条错误(加粗的部分)。</p>
+<blockquote>
+<ul>
+<li>Foreign key relationships involve a parent table that holds the central data values, and a child table with identical values pointing back to its parent. The FOREIGN KEY clause is specified in the child table. The parent and child tables must use the same storage engine. They must not be TEMPORARY tables.</li>
+<li>Corresponding columns in the foreign key and the referenced key must have similar data types. The size and sign of integer types must be the same. The length of string types need not be the same. For nonbinary (character) string columns, the character set and collation must be the same.</li>
+<li>MySQL requires indexes on foreign keys and referenced keys so that*  foreign key checks can be fast and not require a table scan. In the referencing table, there must be an index where the foreign key columns are listed as the first columns in the same order. Such an index is created on the referencing table automatically if it does not exist. This index might be silently dropped later, if you create another index that can be used to enforce the foreign key constraint. index_name, if given, is used as described previously.</li>
+<li>InnoDB permits a foreign key to reference any index column or group of columns. However, in the referenced table, there must be an index where the referenced columns are listed as the first columns in the same order.</li>
+<li>Index prefixes on foreign key columns are not supported. One consequence of this is that BLOB and TEXT columns cannot be included in a foreign key because indexes on those columns must always include a prefix length.</li>
+<li>If the CONSTRAINT symbol clause is given, the symbol value, if used, must be unique in the database. A duplicate symbol will result in an error similar to: ERROR 1005 (HY000): Can't create table 'test.#sql-211d_3' (errno: 121). If the clause is not given, or a symbol is not included following the CONSTRAINT keyword, a name for the constraint is created automatically.</li>
+<li>InnoDB does not currently support foreign keys for tables with user-defined partitioning. This includes both parent and child tables.</li>
+</ul>
+</blockquote>
+<p><strong>解决方法是</strong>：将 database 及 table 的 character 和 collcation 改成一样的就行了。</p>
+<div class="highlight"><pre><span class="k">alter</span> <span class="k">database</span> <span class="n">neutron</span> <span class="k">DEFAULT</span> <span class="k">character</span> <span class="kt">set</span> <span class="n">utf8</span><span class="p">;</span>
+</pre></div>
+
+
+<h1>REF</h1>
+<ol>
+<li><a href="https://bugs.launchpad.net/neutron/+bug/1332564">https://bugs.launchpad.net/neutron/+bug/1332564</a></li>
+<li><a href="http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html">http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html</a></li>
+</ol>
+<section>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2"
+                href="./mysql-errno-150.html#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'xcodest';
+        var disqus_identifier = './mysql-errno-150.html';
+    var disqus_url = './mysql-errno-150.html';
+
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+            <aside>
+            <hr/>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="./pip-install-from-local.html" title="Previous: PIP install from local">PIP install from local</a></li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2015-01-14T00:00:00+08:00">Jan 14, 2015</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#Others-ref">Others</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#mysql-ref">mysql
+                    <span>1</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+</div>
+</article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'xcodest';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+        <script  language="javascript" type="text/javascript">
+            function uncollapse() {
+                var hash_str = window.location.hash;
+                if (window.location.hash.match(/^#comment-\d+$/))
+                {
+                    var hash_str = '#disqus_thread';
+                }
+                $(hash_str).collapse({
+                    toggle: true
+                    })
+            }
+        </script>
+
+        <script type="text/javascript" language="JavaScript">
+            uncollapse(); 
+        </script>
+    </body>
+</html>

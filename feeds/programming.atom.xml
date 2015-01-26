@@ -14,4 +14,4 @@
 &lt;p&gt;为了方便使用，还可以把这两个命令弄成alias来使用&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;alias pipcache=&amp;#39;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages&amp;#39;
 alias pipinstall=&amp;#39;pip install --no-index --find-links=file://&lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages/&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="python"></category></entry></feed>
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Python"></category></entry></feed>

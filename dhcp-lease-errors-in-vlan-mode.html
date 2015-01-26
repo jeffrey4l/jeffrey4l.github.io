@@ -8,9 +8,9 @@
 
 
 
-    <meta name="tags" contents="dhcp" />
-    <meta name="tags" contents="network" />
-    <meta name="tags" contents="vlan" />
+    <meta name="tags" contents="DHCP" />
+    <meta name="tags" contents="Network" />
+    <meta name="tags" contents="VLAN" />
 
         <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
 </head>
@@ -26,7 +26,7 @@
   </header>
   <div class="entry-content">
     <p>在使用<code>keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
-<div class="highlight"><pre>PERSISTENT_DHCLIENT=1
+<div class="highlight"><pre><span class="n">PERSISTENT_DHCLIENT</span><span class="o">=</span><span class="mi">1</span>
 </pre></div>
 
 
@@ -56,19 +56,19 @@ to deal with this issue by upgrading dnsmasq. It would be great if the various
 distributionss could upgrade as well, or at least try to patch in the fix. If
 upgrading dnsmasq is out of the question, a possible workaround is to minimize
 lease renewals with something like the following combination of config options.</p>
-<div class="highlight"><pre># release leases immediately on terminate
-force_dhcp_release=true
-# one week lease time
-dhcp_lease_time=604800
-# two week disassociate timeout
-fixed_ip_disassociate_timeout=1209600
+<div class="highlight"><pre><span class="cp"># release leases immediately on terminate</span>
+<span class="n">force_dhcp_release</span><span class="o">=</span><span class="nb">true</span>
+<span class="cp"># one week lease time</span>
+<span class="n">dhcp_lease_time</span><span class="o">=</span><span class="mi">604800</span>
+<span class="cp"># two week disassociate timeout</span>
+<span class="n">fixed_ip_disassociate_timeout</span><span class="o">=</span><span class="mi">1209600</span>
 </pre></div>
 
 
 <p>This is also documented <a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues"> Known issue with failed DHCP leases in VLAN configuration</a></p>
   </div><!-- /.entry-content -->
   <div class="entry-info">
-    <p> Tags: <a href="http://xcodest.me/tag/dhcp.html">dhcp</a> <a href="http://xcodest.me/tag/network.html">network</a> <a href="http://xcodest.me/tag/vlan.html">vlan</a>  </p>
+    <p> Tags: <a href="http://xcodest.me/tag/dhcp.html">DHCP</a> <a href="http://xcodest.me/tag/network.html">Network</a> <a href="http://xcodest.me/tag/vlan.html">VLAN</a>  </p>
   </div>
     <div class="comments">
       <h2>Comments</h2>

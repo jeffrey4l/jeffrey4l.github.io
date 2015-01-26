@@ -1,6 +1,6 @@
 Title: PIP install from local
 Date: 2015-1-8
-Tags: python
+Tags: Python
 Category: Programming
 
 在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。

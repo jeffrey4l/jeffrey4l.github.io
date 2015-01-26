@@ -1,6 +1,6 @@
 title: Dhcp lease errors in vlan mode
 date: 2013-08-27 08:50
-tags: dhcp, network, vlan
+tags: DHCP, Network, VLAN 
 Category: Openstack
 
 

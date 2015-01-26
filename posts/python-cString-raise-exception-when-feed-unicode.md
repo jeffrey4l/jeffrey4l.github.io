@@ -1,6 +1,6 @@
 Title: Python cString raise exception when feed Unicode
 Date: 2014-9-9
-Tags: python
+Tags: Python
 Slug: python-cstring-unicode
 
 I gett following different result when using these two Class.

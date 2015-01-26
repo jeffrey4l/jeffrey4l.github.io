@@ -1,6 +1,6 @@
 title: linux bonding mode 6 break the vms
 date: 2014-04-14 19:39:51
-tags: network
+tags: Network
 Category: Linux
 
 操作系统： ubuntu 12.04.1

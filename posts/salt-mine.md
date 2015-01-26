@@ -1,6 +1,6 @@
 Title: Salt Mine
 Date: 2014-7-16
-Tags: salt
+Tags: SaltStack
 Category: Linux
 
 Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。

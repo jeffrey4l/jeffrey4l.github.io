@@ -1,6 +1,6 @@
 Title: MySQL Errno 150
 Date: 2015-1-14
-Tags: mysql
+Tags: MySQL
 
 
 做OpenStack icehouse 升级到 Juno过程中，升级Neutron数据库时遇到这个错误。

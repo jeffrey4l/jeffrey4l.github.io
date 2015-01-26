@@ -1,7 +1,7 @@
 Title: Glance Image Cache
 Date: 2014-7-17
-Tags: glance
-Category: Openstack
+Tags: Glance
+Category: OpenStack
 
 Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定
 程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。

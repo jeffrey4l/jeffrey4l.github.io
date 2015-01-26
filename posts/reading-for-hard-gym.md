@@ -1,7 +1,7 @@
 Title: 硬派健身-减肥篇 阅读笔记
 Category: Life
 Date: 2014-7-19
-Tags: book
+Tags: Book
 Slug: hard-gym-reading-note
 
 ## 战肥肉有氧不敌，强塑身无氧超神

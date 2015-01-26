@@ -1,11 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
 <section id="content">
-<ol id="post-list">
+<ul id="post-list">
+{% set year=0 %}
 {% for article in articles_page.object_list %}
+{% if year != article.date.year %}
+  {% if year != 0 %}
+  </ul>
+  {% endif %}
+  {% set year=article.date.year %}
+  <li> {{ year }} </li>
+  <ul>
+{% else %}
         <li><a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}</a></li>
+{% endif %}
 {% endfor %}
-</ol><!-- /#posts-list -->
+</ul>
+</ul><!-- /#posts-list -->
 {% include 'pagination.html' %}
 </section><!-- /#content -->
 {% endblock content %}

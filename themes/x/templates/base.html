@@ -34,8 +34,8 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="{{ SITEURL }}/">{{ SITENAME }} <strong>{{ SITESUBTITLE }}</strong></a></h1>
-        </header><!-- /#banner -->
+                <span class='site-title'><a href="{{ SITEURL }}/">{{ SITENAME }}</a></span><span class="site-subtitle">{{ SITESUBTITLE }}</span>
+        </header>
         {% block content %}
         {% endblock %}
 </body>

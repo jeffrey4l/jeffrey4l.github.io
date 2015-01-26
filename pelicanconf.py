@@ -10,6 +10,7 @@ sys.path.append(os.path.join(ROOT, 'plugins'))
 
 AUTHOR = u'Jeffrey4l'
 SITENAME = u'Xcodest'
+SITESUBTITLE = u'code for fun'
 SITEURL = 'http://xcodest.me'
 RELATIVE_URLS = True
 
@@ -69,13 +70,3 @@ ARTICLE_EXCLUDES =  ['themes', 'plugins', 'output']
 THEME = 'themes/x'
 
 GITHUB_URL = 'http://githbu.com/jeffrey4l'
-
-LANDING_PAGE_ABOUT = {
-    'title': 'Code for fun',
-    'details': '''
-<ul>
-    <li>Email: zhang.lei.fly(#)gmail.com
-</ul>
-
-    '''
-}

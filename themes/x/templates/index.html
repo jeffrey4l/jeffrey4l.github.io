@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<section id="content">
+<ol id="post-list">
+{% for article in articles_page.object_list %}
+        <li><a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}</a></li>
+{% endfor %}
+</ol><!-- /#posts-list -->
+{% include 'pagination.html' %}
+</section><!-- /#content -->
+{% endblock content %}

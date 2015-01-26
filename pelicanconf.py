@@ -11,6 +11,7 @@ sys.path.append(os.path.join(ROOT, 'plugins'))
 AUTHOR = u'Jeffrey4l'
 SITENAME = u'Xcodest'
 SITEURL = 'http://xcodest.me'
+RELATIVE_URLS = True
 
 TIMEZONE = 'Asia/Shanghai'
 
@@ -44,9 +45,6 @@ STATIC_PATHS = ['images', 'extra/CNAME']
 
 EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'}}
 
-# Uncomment following line if you want document-relative URLs when developing
-# RELATIVE_URLS = True
-
 
 DISQUS_SITENAME = 'xcodest'
 
@@ -68,7 +66,7 @@ DISPLAY_CATEGORIES_ON_MENU = False
 
 ARTICLE_EXCLUDES =  ['themes', 'plugins', 'output']
 
-THEME = 'elegant'
+THEME = 'themes/x'
 
 GITHUB_URL = 'http://githbu.com/jeffrey4l'
 

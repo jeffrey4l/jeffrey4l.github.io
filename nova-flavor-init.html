@@ -15,8 +15,8 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="http://xcodest.me/">Xcodest <strong></strong></a></h1>
-        </header><!-- /#banner -->
+                <span class='site-title'><a href="http://xcodest.me/">Xcodest</a></span><span class="site-subtitle">code for fun</span>
+        </header>
 <section id="content" class="body">
   <header>
     <h2 class="entry-title">Nova flavor init</h2>
@@ -24,37 +24,11 @@
   </header>
   <div class="entry-content">
     <p>ustack的flavor做的还是挺全的，所以用了一个脚本来创建和其一样的flavor类型。</p>
-<div class="gist">
-    <script src='https://gist.github.com/ecee9fcb00412cd67fe7.js?file=nova-flavor-init.sh'></script>
-    <noscript>
-        <pre><code>#!/bin/bash
-#
-# This configuration is copy from ustack.com
-
-DEFAULT_ROOT_GB=40
-
-nova-manage flavor create --name micro-1 --cpu 1 --memory 512 --root_gb $DEFAULT_ROOT_GB --is_public True
-nova-manage flavor create --name micro-2 --cpu 1 --memory 1024 --root_gb $DEFAULT_ROOT_GB --is_public True
-
-nova-manage flavor create --name standard-1 --cpu 1 --memory 2048 --root_gb $DEFAULT_ROOT_GB --is_public True
-nova-manage flavor create --name standard-2 --cpu 2 --memory 4096 --root_gb $DEFAULT_ROOT_GB --is_public True
-nova-manage flavor create --name standard-4 --cpu 4 --memory 8192 --root_gb $DEFAULT_ROOT_GB --is_public True
-nova-manage flavor create --name standard-8 --cpu 8 --memory 16384 --root_gb $DEFAULT_ROOT_GB --is_public True
-nova-manage flavor create --name standard-12 --cpu 12 --memory 24576 --root_gb $DEFAULT_ROOT_GB --is_public True
-
-nova-manage flavor create --name memory-1 --cpu 1 --memory 4096 --root_gb $DEFAULT_ROOT_GB --is_public True
-nova-manage flavor create --name memory-2 --cpu 2 --memory 8192 --root_gb $DEFAULT_ROOT_GB --is_public True
-nova-manage flavor create --name memory-4 --cpu 4 --memory 16384 --root_gb $DEFAULT_ROOT_GB --is_public True
-nova-manage flavor create --name memory-8 --cpu 8 --memory 24576 --root_gb $DEFAULT_ROOT_GB --is_public True
-
-nova-manage flavor create --name compute-2 --cpu 2 --memory 2048 --root_gb $DEFAULT_ROOT_GB --is_public True
-nova-manage flavor create --name compute-4 --cpu 4 --memory 4096 --root_gb $DEFAULT_ROOT_GB --is_public True
-nova-manage flavor create --name compute-8 --cpu 8 --memory 8192 --root_gb $DEFAULT_ROOT_GB --is_public True
-nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $DEFAULT_ROOT_GB --is_public True
-</code></pre>
-    </noscript>
-</div>
+<p>[gist:id=ecee9fcb00412cd67fe7,file=nova-flavor-init.sh]</p>
   </div><!-- /.entry-content -->
+  <div class="entry-info">
+    <p> Tags: <a href="http://xcodest.me/tag/openstack.html">openstack</a>  </p>
+  </div>
     <div class="comments">
       <h2>Comments</h2>
       <div id="disqus_thread"></div>

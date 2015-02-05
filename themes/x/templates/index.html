@@ -11,9 +11,8 @@
   {% set year=article.date.year %}
   <li> {{ year }} </li>
   <ul>
-{% else %}
-        <li><a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}</a></li>
 {% endif %}
+    <li><a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}</a></li>
 {% endfor %}
 </ul>
 </ul><!-- /#posts-list -->

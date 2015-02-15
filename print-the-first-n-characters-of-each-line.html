@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+          <title> Print the First N Characters of each Line - Xcodest </title>
+        <meta charset="utf-8" />
+        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Full Atom Feed" />
+        <link href="http://xcodest.me/feeds/linux.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Categories Atom Feed" />
+
+
+
+    <meta name="tags" contents="Shell" />
+
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
+        <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <span class='site-title'><a href="http://xcodest.me/">Xcodest</a></span><span class="site-subtitle">code for fun</span>
+        </header>
+<section id="content" class="body">
+  <header>
+    <h2 class="entry-title">Print the First N Characters of each Line</h2>
+    <span class="post-date"> Sun 15 February 2015 </span>
+  </header>
+  <div class="entry-content">
+    <p>在使用 Shell 的过程中，经常会遇到一行过长，导致输出折行，相当难看的情况出现。而且多数据情况下，我们只用每行的前 N 个字符就可以了。这时可以用以下方法来截断每行的长度。</p>
+<p><strong>方法1</strong>： 使用 <code>awk</code></p>
+<div class="highlight"><pre>cat filename | awk &#39;{print substr($0, 0, 20)}&#39;
+</pre></div>
+
+
+<p><strong>方法2</strong>: 使用 <code>sed</code></p>
+<div class="highlight"><pre>cat filename | sed &#39;s/\(.\{20\}\).*/\1/&#39;
+</pre></div>
+
+
+<p><strong> 方法3</strong>: 使用 <code>sed -r</code></p>
+<div class="highlight"><pre>cat filename | sed -r &#39;s/(.{20}).*/\1/&#39;
+</pre></div>
+  </div><!-- /.entry-content -->
+  <div class="entry-info">
+    <p> Tags: <a href="http://xcodest.me/tag/shell.html">Shell</a>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'print-the-first-n-characters-of-each-line.html';
+        var disqus_url = 'http://xcodest.me/print-the-first-n-characters-of-each-line.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

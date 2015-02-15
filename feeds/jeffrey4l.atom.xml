@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/jeffrey4l.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-02-10T00:00:00+08:00</updated><entry><title>修改 Libvirt 的 UUID</title><link href="http://xcodest.me/libvirt-uuid.html" rel="alternate"></link><updated>2015-02-10T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-02-10:libvirt-uuid.html</id><summary type="html">&lt;p&gt;由于物理机器有限，想做OpenStack的多机环境一直是个问题。之前是在OpenStack上部署OpenStack。由于只有一台物理机，资源相当紧张。不能建太多机器。最近突然想，既然 LXC 现在已经很完善了。能不能就利用它来做 OpenStack 服务间的隔离呢。所以最近一直在搞这东西。搞了几天还是有效果的。基本搭建了 OpenStack + Ceph + Swift 的环境出来。其中网络用的 Neutron + ML2 + OVS + VLAN。由于用 LXC 的隔离的，相对于之前来说相当节省资源。很好的解决了资源的问题。可以做一些大量机器的实验了。之后也会也这其中遇到的一些问题写下来，备忘。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/jeffrey4l.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-02-15T00:00:00+08:00</updated><entry><title>Print the First N Characters of each Line</title><link href="http://xcodest.me/print-the-first-n-characters-of-each-line.html" rel="alternate"></link><updated>2015-02-15T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-02-15:print-the-first-n-characters-of-each-line.html</id><summary type="html">&lt;p&gt;在使用 Shell 的过程中，经常会遇到一行过长，导致输出折行，相当难看的情况出现。而且多数据情况下，我们只用每行的前 N 个字符就可以了。这时可以用以下方法来截断每行的长度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;方法1&lt;/strong&gt;： 使用 &lt;code&gt;awk&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;cat filename | awk &amp;#39;{print substr($0, 0, 20)}&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;方法2&lt;/strong&gt;: 使用 &lt;code&gt;sed&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;cat filename | sed &amp;#39;s/\(.\{20\}\).*/\1/&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt; 方法3&lt;/strong&gt;: 使用 &lt;code&gt;sed -r&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;cat filename | sed -r &amp;#39;s/(.{20}).*/\1/&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Shell"></category></entry><entry><title>修改 Libvirt 的 UUID</title><link href="http://xcodest.me/libvirt-uuid.html" rel="alternate"></link><updated>2015-02-10T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-02-10:libvirt-uuid.html</id><summary type="html">&lt;p&gt;由于物理机器有限，想做OpenStack的多机环境一直是个问题。之前是在OpenStack上部署OpenStack。由于只有一台物理机，资源相当紧张。不能建太多机器。最近突然想，既然 LXC 现在已经很完善了。能不能就利用它来做 OpenStack 服务间的隔离呢。所以最近一直在搞这东西。搞了几天还是有效果的。基本搭建了 OpenStack + Ceph + Swift 的环境出来。其中网络用的 Neutron + ML2 + OVS + VLAN。由于用 LXC 的隔离的，相对于之前来说相当节省资源。很好的解决了资源的问题。可以做一些大量机器的实验了。之后也会也这其中遇到的一些问题写下来，备忘。&lt;/p&gt;
 &lt;p&gt;今天主要写下配置 Live Migration 过程中遇到的一个问题。&lt;/p&gt;
 &lt;p&gt;每个 Libvirtd 实例都会有一个 UUID 存在。不同的 libvirt 实例的 UUID 应该是不同的。否则在 migrate 过程中， libvirt 会认为自己是在向自己迁移从而导致迁移失败。这个UUID有一个默认值，是来自于 SMBIOS UUID。这两个UUID可以通过以下方法拿到：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;$ dmidecode  -s system-uuid

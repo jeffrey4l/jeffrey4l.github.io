@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+          <title> Cinder V2 API - Xcodest </title>
+        <meta charset="utf-8" />
+        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Full Atom Feed" />
+        <link href="http://xcodest.me/feeds/openstack.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Categories Atom Feed" />
+
+
+
+    <meta name="tags" contents="Cinder" />
+    <meta name="tags" contents="OpenStack" />
+
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
+        <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <span class='site-title'><a href="http://xcodest.me/">Xcodest</a></span><span class="site-subtitle">code for fun</span>
+        </header>
+<section id="content" class="body">
+  <header>
+    <h2 class="entry-title">Cinder V2 API</h2>
+    <span class="post-date"> Tue 10 March 2015 </span>
+  </header>
+  <div class="entry-content">
+    <p>cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).</p>
+<h1>Enable the v2 in cinder</h1>
+<p>Change the following config. The v1 and v2 is enabled in default.</p>
+<div class="highlight"><pre><span class="c1"># DEPRECATED: Deploy v1 of the Cinder API. (boolean value)</span>
+<span class="c1">#enable_v1_api=true</span>
+
+<span class="c1"># Deploy v2 of the Cinder API. (boolean value)</span>
+<span class="c1">#enable_v2_api=true</span>
+</pre></div>
+
+
+<h1>Enable the cinder v2 api in nova</h1>
+<p>In current nova config ( juno ), the default config like below. Depend on <code>catalog_info</code> key, it use the v2 first. If v2 is not found, it will fall back to v1 version.</p>
+<div class="highlight"><pre><span class="k">[cinder]</span>
+
+<span class="c1">#</span>
+<span class="c1"># Options defined in nova.volume.cinder</span>
+<span class="c1">#</span>
+
+<span class="c1"># Info to match when looking for cinder in the service</span>
+<span class="c1"># catalog. Format is: separated values of the form:</span>
+<span class="c1"># &lt;service_type&gt;:&lt;service_name&gt;:&lt;endpoint_type&gt; (string value)</span>
+<span class="c1">#catalog_info=volumev2:cinderv2:publicURL</span>
+
+<span class="c1"># Override service catalog lookup with template for cinder</span>
+<span class="c1"># endpoint e.g. http://localhost:8776/v1/%(project_id)s</span>
+<span class="c1"># (string value)</span>
+<span class="c1">#endpoint_template=&lt;None&gt;</span>
+
+<span class="c1"># Region name of this node (string value)</span>
+<span class="c1">#os_region_name=&lt;None&gt;</span>
+
+<span class="c1"># Number of cinderclient retries on failed http calls (integer</span>
+<span class="c1"># value)</span>
+<span class="c1">#http_retries=3</span>
+
+<span class="c1"># Allow attach between instance and volume in different</span>
+<span class="c1"># availability zones. (boolean value)</span>
+<span class="c1">#cross_az_attach=true</span>
+</pre></div>
+
+
+<p>You can just add the endpoint to the keystone to enable the cinder v2 api.</p>
+<div class="highlight"><pre>keystone service-create --name<span class="o">=</span>cinderv2 --type<span class="o">=</span>volumev2 <span class="se">\</span>
+  --description<span class="o">=</span><span class="s2">&quot;Cinder Volume Service V2&quot;</span>
+
+keystone endpoint-create <span class="se">\</span>
+  --service-id<span class="o">=</span>the_service_id_above <span class="se">\</span>
+  --publicurl<span class="o">=</span>http://controller:8776/v2/%<span class="se">\(</span>tenant_id<span class="se">\)</span>s <span class="se">\</span>
+  --internalurl<span class="o">=</span>http://controller:8776/v2/%<span class="se">\(</span>tenant_id<span class="se">\)</span>s <span class="se">\</span>
+  --adminurl<span class="o">=</span>http://controller:8776/v2/%<span class="se">\(</span>tenant_id<span class="se">\)</span>s
+
+service cinder-scheduler restart
+service cinder-api restart
+</pre></div>
+
+
+<h1>REF</h1>
+<ul>
+<li>http://docs.openstack.org/havana/install-guide/install/apt/content/cinder-controller.html</li>
+<li>https://wiki.openstack.org/wiki/CinderAPIv2</li>
+</ul>
+  </div><!-- /.entry-content -->
+  <div class="entry-info">
+    <p> Tags: <a href="http://xcodest.me/tag/cinder.html">Cinder</a> <a href="http://xcodest.me/tag/openstack.html">OpenStack</a>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'cinder-v2-api.html';
+        var disqus_url = 'http://xcodest.me/cinder-v2-api.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

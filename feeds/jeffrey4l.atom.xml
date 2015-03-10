@@ -1,5 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/jeffrey4l.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-02-15T00:00:00+08:00</updated><entry><title>Print the First N Characters of each Line</title><link href="http://xcodest.me/print-the-first-n-characters-of-each-line.html" rel="alternate"></link><updated>2015-02-15T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-02-15:print-the-first-n-characters-of-each-line.html</id><summary type="html">&lt;p&gt;在使用 Shell 的过程中，经常会遇到一行过长，导致输出折行，相当难看的情况出现。而且多数据情况下，我们只用每行的前 N 个字符就可以了。这时可以用以下方法来截断每行的长度。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/jeffrey4l.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-03-10T00:00:00+08:00</updated><entry><title>Cinder V2 API</title><link href="http://xcodest.me/cinder-v2-api.html" rel="alternate"></link><updated>2015-03-10T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-10:cinder-v2-api.html</id><summary type="html">&lt;p&gt;cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).&lt;/p&gt;
+&lt;h1&gt;Enable the v2 in cinder&lt;/h1&gt;
+&lt;p&gt;Change the following config. The v1 and v2 is enabled in default.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# DEPRECATED: Deploy v1 of the Cinder API. (boolean value)&lt;/span&gt;
+&lt;span class="c1"&gt;#enable_v1_api=true&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Deploy v2 of the Cinder API. (boolean value)&lt;/span&gt;
+&lt;span class="c1"&gt;#enable_v2_api=true&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Enable the cinder v2 api in nova&lt;/h1&gt;
+&lt;p&gt;In current nova config ( juno ), the default config like below. Depend on &lt;code&gt;catalog_info&lt;/code&gt; key, it use the v2 first. If v2 is not found, it will fall back to v1 version.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[cinder]&lt;/span&gt;
+
+&lt;span class="c1"&gt;#&lt;/span&gt;
+&lt;span class="c1"&gt;# Options defined in nova.volume.cinder&lt;/span&gt;
+&lt;span class="c1"&gt;#&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Info to match when looking for cinder in the service&lt;/span&gt;
+&lt;span class="c1"&gt;# catalog. Format is: separated values of the form:&lt;/span&gt;
+&lt;span class="c1"&gt;# &amp;lt;service_type&amp;gt;:&amp;lt;service_name&amp;gt;:&amp;lt;endpoint_type&amp;gt; (string value)&lt;/span&gt;
+&lt;span class="c1"&gt;#catalog_info=volumev2:cinderv2:publicURL&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Override service catalog lookup with template for cinder&lt;/span&gt;
+&lt;span class="c1"&gt;# endpoint e.g. http://localhost:8776/v1/%(project_id)s&lt;/span&gt;
+&lt;span class="c1"&gt;# (string value)&lt;/span&gt;
+&lt;span class="c1"&gt;#endpoint_template=&amp;lt;None&amp;gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Region name of this node (string value)&lt;/span&gt;
+&lt;span class="c1"&gt;#os_region_name=&amp;lt;None&amp;gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Number of cinderclient retries on failed http calls (integer&lt;/span&gt;
+&lt;span class="c1"&gt;# value)&lt;/span&gt;
+&lt;span class="c1"&gt;#http_retries=3&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Allow attach between instance and volume in different&lt;/span&gt;
+&lt;span class="c1"&gt;# availability zones. (boolean value)&lt;/span&gt;
+&lt;span class="c1"&gt;#cross_az_attach=true&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can just add the endpoint to the keystone to enable the cinder v2 api.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;keystone service-create --name&lt;span class="o"&gt;=&lt;/span&gt;cinderv2 --type&lt;span class="o"&gt;=&lt;/span&gt;volumev2 &lt;span class="se"&gt;\&lt;/span&gt;
+  --description&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Cinder Volume Service V2&amp;quot;&lt;/span&gt;
+
+keystone endpoint-create &lt;span class="se"&gt;\&lt;/span&gt;
+  --service-id&lt;span class="o"&gt;=&lt;/span&gt;the_service_id_above &lt;span class="se"&gt;\&lt;/span&gt;
+  --publicurl&lt;span class="o"&gt;=&lt;/span&gt;http://controller:8776/v2/%&lt;span class="se"&gt;\(&lt;/span&gt;tenant_id&lt;span class="se"&gt;\)&lt;/span&gt;s &lt;span class="se"&gt;\&lt;/span&gt;
+  --internalurl&lt;span class="o"&gt;=&lt;/span&gt;http://controller:8776/v2/%&lt;span class="se"&gt;\(&lt;/span&gt;tenant_id&lt;span class="se"&gt;\)&lt;/span&gt;s &lt;span class="se"&gt;\&lt;/span&gt;
+  --adminurl&lt;span class="o"&gt;=&lt;/span&gt;http://controller:8776/v2/%&lt;span class="se"&gt;\(&lt;/span&gt;tenant_id&lt;span class="se"&gt;\)&lt;/span&gt;s
+
+service cinder-scheduler restart
+service cinder-api restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;REF&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;http://docs.openstack.org/havana/install-guide/install/apt/content/cinder-controller.html&lt;/li&gt;
+&lt;li&gt;https://wiki.openstack.org/wiki/CinderAPIv2&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="Cinder"></category><category term="OpenStack"></category></entry><entry><title>Print the First N Characters of each Line</title><link href="http://xcodest.me/print-the-first-n-characters-of-each-line.html" rel="alternate"></link><updated>2015-02-15T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-02-15:print-the-first-n-characters-of-each-line.html</id><summary type="html">&lt;p&gt;在使用 Shell 的过程中，经常会遇到一行过长，导致输出折行，相当难看的情况出现。而且多数据情况下，我们只用每行的前 N 个字符就可以了。这时可以用以下方法来截断每行的长度。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;方法1&lt;/strong&gt;： 使用 &lt;code&gt;awk&lt;/code&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;cat filename | awk &amp;#39;{print substr($0, 0, 20)}&amp;#39;
 &lt;/pre&gt;&lt;/div&gt;

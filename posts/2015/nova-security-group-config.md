@@ -6,17 +6,17 @@ Tags: Network
 
 # 相关配置
 
-* network_api_class - 设置 network 模块所用的api
+* network\_api\_class - 设置 network 模块所用的api
     * `nova.network.api.API` - 通过rpc与nova-network交互
     * `nova.network.neutronv2.API` - 通过http与neutron-server交互
-* security_group_api - 设置 security group 模块所用的api类
+* security\_group\_api - 设置 security group 模块所用的api类
     * `nova` (`nova.compute.api.SecurityGroupAPI`) - 通过rcp与nova-compute交互
     * `neutron` ( `nova.network.security_group.neutron_driver.SecurityGroupAPI` ) - 通过http与neutron-server交互
-* linuxnet_interface_driver - 在机器与 ethernet interface plug&unplug时调用 。
+* linuxnet\_interface\_driver - 在机器与 ethernet interface plug&unplug时调用 。
     * `nova.network.linux_net.LinuxBridgeInterfaceDriver` - used in nova-network
     * `nova.network.linux_net.linuxOVSInterfaceDriver` - use in neutron + ml2 + ovs
     * `nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver` - use in neutron + ml2 + linuxbridge
-* firewall_driver - 虚拟化层所用的 firewall。在nova-network时代，security group由iptables和ebtables实现。在neutron时代，这个已经不需要了。但是neutron里现在还有arp-spoofing的bug, 参见[2]
+* firewall\_driver - 虚拟化层所用的 firewall。在nova-network时代，security group由iptables和ebtables实现。在neutron时代，这个已经不需要了。但是neutron里现在还有arp-spoofing的bug, 参见[2]
     * `nova.virt.firewall.IptablesFirewallDrive` - 
     * `nova.virt.firewall.NoopFirewallDriver`
 

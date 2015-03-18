@@ -1,5 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/all.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-03-12T00:00:00+08:00</updated><entry><title>关于减肥你应该知道的十件事 - 观后总结</title><link href="http://xcodest.me/ten-things-you-need-know-abount-loss-weight.html" rel="alternate"></link><updated>2015-03-12T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-12:ten-things-you-need-know-abount-loss-weight.html</id><summary type="html">&lt;p&gt;看了BBC出的"BBC：关于减肥你应该知道的十件事"，做了一些笔记。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/all.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-03-18T00:00:00+08:00</updated><entry><title>Nova Security Group相关配置</title><link href="http://xcodest.me/nova-security-groupxiang-guan-pei-zhi.html" rel="alternate"></link><updated>2015-03-18T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-18:nova-security-groupxiang-guan-pei-zhi.html</id><summary type="html">&lt;h1&gt;相关配置&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;network_api_class - 设置 network 模块所用的api&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nova.network.api.API&lt;/code&gt; - 通过rpc与nova-network交互&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nova.network.neutronv2.API&lt;/code&gt; - 通过http与neutron-server交互&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;security_group_api - 设置 security group 模块所用的api类&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nova&lt;/code&gt; (&lt;code&gt;nova.compute.api.SecurityGroupAPI&lt;/code&gt;) - 通过rcp与nova-compute交互&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;neutron&lt;/code&gt; ( &lt;code&gt;nova.network.security_group.neutron_driver.SecurityGroupAPI&lt;/code&gt; ) - 通过http与neutron-server交互&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;linuxnet_interface_driver - 在机器与 ethernet interface plug&amp;amp;unplug时调用 。&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nova.network.linux_net.LinuxBridgeInterfaceDriver&lt;/code&gt; - used in nova-network&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nova.network.linux_net.linuxOVSInterfaceDriver&lt;/code&gt; - use in neutron + ml2 + ovs&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver&lt;/code&gt; - use in neutron + ml2 + linuxbridge&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;firewall_driver - 虚拟化层所用的 firewall。在nova-network时代，security group由iptables和ebtables实现。在neutron时代，这个已经不需要了。但是neutron里现在还有arp-spoofing的bug, 参见[2]&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nova.virt.firewall.IptablesFirewallDrive&lt;/code&gt; - &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nova.virt.firewall.NoopFirewallDriver&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;使用组合：&lt;/h1&gt;
+&lt;p&gt;nova-network + libvirt&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;nova_api_class=nova.network.api.API
+security_group_ap=nova
+linuxnet_interface_driver=nova.network.linux_net.LinuxBridgeInterfaceDriver
+firewall_driver=nova.virt.firewall.IptablesFirewallDrive
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;neutron + ml2 + linuxbridge plugin + libvirt&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;nova_api_class=nova.network.neutronv2.API
+security_group_ap=neutron
+linuxnet_interface_driver=nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
+firewall_driver=nova.virt.firewall.NoopFirewallDriver
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;neutron + ml2 + ovs plugin + libvirt&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;nova_api_class=nova.network.neutronv2.API
+security_group_ap=neutron
+linuxnet_interface_driver=nova.network.linux_net.linuxOVSInterfaceDriver
+firewall_driver=nova.virt.firewall.NoopFirewallDriver
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;REF&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://kennethjiang.blogspot.jp/2012/02/ebtables-in-openstack-nova-and.html"&gt;ebtables in Openstack Nova&lt;/a&gt; - nwfilter explaination&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://blueprints.launchpad.net/neutron/+spec/arp-spoof-patch-ebtables"&gt;Preventing ARP spoofing via ebtables&lt;/a&gt; - Neutron BP for preventing arp snoofing. Expected in Kilo&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://bugs.launchpad.net/neutron/+bug/1274034"&gt;Neutron firewall anti-spoofing does not prevent ARP poisoning&lt;/a&gt; - Related bug&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;</summary><category term="Network"></category></entry><entry><title>关于减肥你应该知道的十件事 - 观后总结</title><link href="http://xcodest.me/ten-things-you-need-know-abount-loss-weight.html" rel="alternate"></link><updated>2015-03-12T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-12:ten-things-you-need-know-abount-loss-weight.html</id><summary type="html">&lt;p&gt;看了BBC出的"BBC：关于减肥你应该知道的十件事"，做了一些笔记。&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;瘦人也可能脂肪高&lt;ul&gt;
 &lt;li&gt;主要存在于内脏。增加有2型糖尿病和胰岛素抵抗病的风险。内脏脂肪还能释放某些物质损坏心脏周围的动脉，导致心脏病。这些物质还能增加癌症的风险。肝脏释放的化学物质很容易进入肝脏，影响肝脏清除血液中胰岛素的能力，从而有可能引发2型糖尿病。减肥时，最先减掉的就是自己内脏里的脂肪。&lt;/li&gt;

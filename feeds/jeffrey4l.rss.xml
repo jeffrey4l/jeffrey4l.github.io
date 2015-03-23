@@ -1,5 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><atom:link href="http://xcodest.me/feeds/jeffrey4l.rss.xml" rel="self"></atom:link><lastBuildDate>Wed, 18 Mar 2015 00:00:00 +0800</lastBuildDate><item><title>Nova Security Group相关配置</title><link>http://xcodest.me/nova-security-groupxiang-guan-pei-zhi.html</link><description>&lt;h1&gt;相关配置&lt;/h1&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><atom:link href="http://xcodest.me/feeds/jeffrey4l.rss.xml" rel="self"></atom:link><lastBuildDate>Mon, 23 Mar 2015 00:00:00 +0800</lastBuildDate><item><title>Logstash Debug</title><link>http://xcodest.me/logstash_debug.html</link><description>&lt;p&gt;Logstash 能使用 rubydebug 这个 codec 进行 debug。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;input {
+    stdin {}
+}
+
+output {
+    stdout {
+        codec =&amp;gt; rubydebug
+    }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;用 logstash 手动启动&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;logstash -f debug.conf --verbose --debug
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;直接输入数据，能得到详细的输出报告&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;./logstash -f debug --verbose --debug                            
+a
+Pipeline started {:level=&amp;gt;:info}
+{
+       &amp;quot;message&amp;quot; =&amp;gt; &amp;quot;a&amp;quot;,
+      &amp;quot;@version&amp;quot; =&amp;gt; &amp;quot;1&amp;quot;,
+    &amp;quot;@timestamp&amp;quot; =&amp;gt; &amp;quot;2015-03-23T09:55:15.226Z&amp;quot;,
+          &amp;quot;type&amp;quot; =&amp;gt; &amp;quot;test&amp;quot;,
+          &amp;quot;host&amp;quot; =&amp;gt; &amp;quot;jeffrey-thinkpad&amp;quot;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;REF&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/codecs/rubydebug"&gt;http://logstash.net/docs/1.4.2/codecs/rubydebug&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/flags"&gt;http://logstash.net/docs/1.4.2/flags&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 23 Mar 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-03-23:logstash_debug.html</guid></item><item><title>Nova Security Group相关配置</title><link>http://xcodest.me/nova-security-groupxiang-guan-pei-zhi.html</link><description>&lt;h1&gt;相关配置&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;network_api_class - 设置 network 模块所用的api&lt;ul&gt;
 &lt;li&gt;&lt;code&gt;nova.network.api.API&lt;/code&gt; - 通过rpc与nova-network交互&lt;/li&gt;

@@ -1,5 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/others.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-02-05T20:00:00+08:00</updated><entry><title>中信9积分</title><link href="http://xcodest.me/ecitic9.html" rel="alternate"></link><updated>2015-02-05T20:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-02-05:ecitic9.html</id><summary type="html">&lt;p&gt;中信的i白金是张好卡，也是我的主力使用卡。其中9积分的活动还是比较厚道的。这个羊毛可以薅一薅。但是参加的店和地址还不少。我把北京西城这边的统计了一下。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/others.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-03-23T00:00:00+08:00</updated><entry><title>Logstash Debug</title><link href="http://xcodest.me/logstash_debug.html" rel="alternate"></link><updated>2015-03-23T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-23:logstash_debug.html</id><summary type="html">&lt;p&gt;Logstash 能使用 rubydebug 这个 codec 进行 debug。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;input {
+    stdin {}
+}
+
+output {
+    stdout {
+        codec =&amp;gt; rubydebug
+    }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;用 logstash 手动启动&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;logstash -f debug.conf --verbose --debug
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;直接输入数据，能得到详细的输出报告&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;./logstash -f debug --verbose --debug                            
+a
+Pipeline started {:level=&amp;gt;:info}
+{
+       &amp;quot;message&amp;quot; =&amp;gt; &amp;quot;a&amp;quot;,
+      &amp;quot;@version&amp;quot; =&amp;gt; &amp;quot;1&amp;quot;,
+    &amp;quot;@timestamp&amp;quot; =&amp;gt; &amp;quot;2015-03-23T09:55:15.226Z&amp;quot;,
+          &amp;quot;type&amp;quot; =&amp;gt; &amp;quot;test&amp;quot;,
+          &amp;quot;host&amp;quot; =&amp;gt; &amp;quot;jeffrey-thinkpad&amp;quot;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;REF&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/codecs/rubydebug"&gt;http://logstash.net/docs/1.4.2/codecs/rubydebug&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/flags"&gt;http://logstash.net/docs/1.4.2/flags&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary></entry><entry><title>中信9积分</title><link href="http://xcodest.me/ecitic9.html" rel="alternate"></link><updated>2015-02-05T20:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-02-05:ecitic9.html</id><summary type="html">&lt;p&gt;中信的i白金是张好卡，也是我的主力使用卡。其中9积分的活动还是比较厚道的。这个羊毛可以薅一薅。但是参加的店和地址还不少。我把北京西城这边的统计了一下。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;西树泡芙 - 9积分换36元消费金1次&lt;ul&gt;
 &lt;li&gt;西单北大街131号西单大悦城3F-B14&lt;/li&gt;

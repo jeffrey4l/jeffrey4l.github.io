@@ -1,5 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/all.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-03-23T00:00:00+08:00</updated><entry><title>Logstash Debug</title><link href="http://xcodest.me/logstash_debug.html" rel="alternate"></link><updated>2015-03-23T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-23:logstash_debug.html</id><summary type="html">&lt;p&gt;Logstash 能使用 rubydebug 这个 codec 进行 debug。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/all.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-05-06T00:00:00+08:00</updated><entry><title>论Python的异常的合理抛出姿势</title><link href="http://xcodest.me/How_to_raise_python_exception.html" rel="alternate"></link><updated>2015-05-06T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-06:How_to_raise_python_exception.html</id><summary type="html">&lt;p&gt;当需要重新抛出 Python 的异常时，很多人都处理不好。本文总结了一些处理方法。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_cleanup&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;这种处理会直接把内部异常吃掉，当有问题/Bug时，会很难处理，所以不推荐。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;Exception&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_cleanup&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;
+    &lt;span class="c"&gt;# or&lt;/span&gt;
+    &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;traceback&lt;/span&gt;
+    &lt;span class="n"&gt;traceback&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;print_exc&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;这种直接打印的，一是不能很好的输出到日志里。二是不能把错误交到上层调用者，不能让其知道这是有问题。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_somethink&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;except&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_cleanup&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;raise&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;用这种，主要是为了做cleanup。直接&lt;code&gt;raise&lt;/code&gt;后，异常会抛向上层。没有catch的效果一样。&lt;/p&gt;
+&lt;p&gt;这里还有一种和上面这个类似的效果的&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;
+    &lt;span class="n"&gt;exc_info&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exc_info&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="n"&gt;exc_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;exc_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;exc_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;最后，当要抛出自己重新包装后的异常时，最好把原始的异常也带上。这样有利于问题的debug。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;
+    &lt;span class="n"&gt;exc_info&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exc_info&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="n"&gt;MyException&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;exc_info&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;REF&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html"&gt;Re-raising Exceptions&lt;/a&gt; - by Ian Bicking&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="Python"></category><category term="Exception"></category></entry><entry><title>Logstash Debug</title><link href="http://xcodest.me/logstash_debug.html" rel="alternate"></link><updated>2015-03-23T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-23:logstash_debug.html</id><summary type="html">&lt;p&gt;Logstash 能使用 rubydebug 这个 codec 进行 debug。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;input {
     stdin {}
 }

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+          <title> 论Python的异常的合理抛出姿势 - Xcodest </title>
+        <meta charset="utf-8" />
+        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Full Atom Feed" />
+        <link href="http://xcodest.me/feeds/program.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Categories Atom Feed" />
+
+
+
+    <meta name="tags" contents="Python" />
+    <meta name="tags" contents="Exception" />
+
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
+        <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <span class='site-title'><a href="http://xcodest.me/">Xcodest</a></span><span class="site-subtitle">code for fun</span>
+        </header>
+<section id="content" class="body">
+  <header>
+    <h2 class="entry-title">论Python的异常的合理抛出姿势</h2>
+    <span class="post-date"> Wed 06 May 2015 </span>
+  </header>
+  <div class="entry-content">
+    <p>当需要重新抛出 Python 的异常时，很多人都处理不好。本文总结了一些处理方法。</p>
+<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="n">do_something</span><span class="p">()</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">do_cleanup</span><span class="p">()</span>
+</pre></div>
+
+
+<p>这种处理会直接把内部异常吃掉，当有问题/Bug时，会很难处理，所以不推荐。</p>
+<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="n">do_something</span><span class="p">()</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">do_cleanup</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">e</span>
+    <span class="c"># or</span>
+    <span class="kn">import</span> <span class="nn">traceback</span>
+    <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+</pre></div>
+
+
+<p>这种直接打印的，一是不能很好的输出到日志里。二是不能把错误交到上层调用者，不能让其知道这是有问题。</p>
+<div class="highlight"><pre><span class="k">try</span><span class="o">:</span>
+    <span class="n">do_somethink</span><span class="o">()</span>
+<span class="n">except</span><span class="o">:</span>
+    <span class="n">do_cleanup</span><span class="o">()</span>
+    <span class="n">raise</span>
+</pre></div>
+
+
+<p>用这种，主要是为了做cleanup。直接<code>raise</code>后，异常会抛向上层。没有catch的效果一样。</p>
+<p>这里还有一种和上面这个类似的效果的</p>
+<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="n">do_something</span><span class="p">()</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="n">exc_info</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+    <span class="k">raise</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+
+<p>最后，当要抛出自己重新包装后的异常时，最好把原始的异常也带上。这样有利于问题的debug。</p>
+<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="n">do_something</span><span class="p">()</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="n">exc_info</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+    <span class="k">raise</span> <span class="n">MyException</span><span class="p">(),</span> <span class="bp">None</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+
+<h1>REF</h1>
+<ul>
+<li><a href="http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html">Re-raising Exceptions</a> - by Ian Bicking</li>
+</ul>
+  </div><!-- /.entry-content -->
+  <div class="entry-info">
+    <p> Tags: <a href="http://xcodest.me/tag/python.html">Python</a> <a href="http://xcodest.me/tag/exception.html">Exception</a>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'How_to_raise_python_exception.html';
+        var disqus_url = 'http://xcodest.me/How_to_raise_python_exception.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

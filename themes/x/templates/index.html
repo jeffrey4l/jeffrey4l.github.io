@@ -1,21 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-<section id="content">
-<ul id="post-list">
-{% set year=0 %}
-{% for article in articles_page.object_list %}
-{% if year != article.date.year %}
-  {% if year != 0 %}
-  </ul>
-  {% endif %}
-  {% set year=article.date.year %}
-  <li> {{ year }} </li>
-  <ul>
-{% endif %}
-    <li><a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}</a></li>
-{% endfor %}
-</ul>
-</ul><!-- /#posts-list -->
-{% include 'pagination.html' %}
-</section><!-- /#content -->
+<div class="row">
+  <div class="col-sm-offset-1 col-sm-8">
+    <ul id="list-group">
+    {% for article in articles_page.object_list %}
+      <li class="list-group-item">
+        <span class="badge">{{ article.date|strftime(DEFAULT_DATE_FORMAT) }}</span>
+        <a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}</a>
+      </li>
+    {% endfor %}
+    </ul><!-- /#posts-list -->
+    {% include 'pagination.html' %}
+  </div>
+</div>
 {% endblock content %}

@@ -3,26 +3,26 @@
 <head>
           <title> 修改 Libvirt 的 UUID - Xcodest </title>
         <meta charset="utf-8" />
-        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Full Atom Feed" />
-        <link href="http://xcodest.me/feeds/linux.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Categories Atom Feed" />
 
 
 
     <meta name="tags" contents="Libvirt" />
 
         <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
         <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
 </head>
 
 <body id="index" class="home">
+    <div class="container">
         <header id="banner" class="body">
                 <span class='site-title'><a href="http://xcodest.me/">Xcodest</a></span><span class="site-subtitle">code for fun</span>
         </header>
 <section id="content" class="body">
   <header>
     <h2 class="entry-title">修改 Libvirt 的 UUID</h2>
-    <span class="post-date"> Tue 10 February 2015 </span>
+    <span class="post-date"> 2015-02-10 </span>
   </header>
   <div class="entry-content">
     <p>由于物理机器有限，想做OpenStack的多机环境一直是个问题。之前是在OpenStack上部署OpenStack。由于只有一台物理机，资源相当紧张。不能建太多机器。最近突然想，既然 LXC 现在已经很完善了。能不能就利用它来做 OpenStack 服务间的隔离呢。所以最近一直在搞这东西。搞了几天还是有效果的。基本搭建了 OpenStack + Ceph + Swift 的环境出来。其中网络用的 Neutron + ML2 + OVS + VLAN。由于用 LXC 的隔离的，相对于之前来说相当节省资源。很好的解决了资源的问题。可以做一些大量机器的实验了。之后也会也这其中遇到的一些问题写下来，备忘。</p>
@@ -77,5 +77,6 @@ $ virsh capabilities | grep uuid
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
     </script>
+    </div>
 </body>
 </html>

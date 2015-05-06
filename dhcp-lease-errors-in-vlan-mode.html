@@ -3,8 +3,6 @@
 <head>
           <title> Dhcp lease errors in vlan mode - Xcodest </title>
         <meta charset="utf-8" />
-        <link href="http://xcodest.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Full Atom Feed" />
-        <link href="http://xcodest.me/feeds/openstack.atom.xml" type="application/atom+xml" rel="alternate" title="Xcodest Categories Atom Feed" />
 
 
 
@@ -13,18 +11,20 @@
     <meta name="tags" contents="VLAN" />
 
         <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
         <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
 </head>
 
 <body id="index" class="home">
+    <div class="container">
         <header id="banner" class="body">
                 <span class='site-title'><a href="http://xcodest.me/">Xcodest</a></span><span class="site-subtitle">code for fun</span>
         </header>
 <section id="content" class="body">
   <header>
     <h2 class="entry-title">Dhcp lease errors in vlan mode</h2>
-    <span class="post-date"> Tue 27 August 2013 </span>
+    <span class="post-date"> 2013-08-27 </span>
   </header>
   <div class="entry-content">
     <p>在使用<code>keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
@@ -98,5 +98,6 @@ lease renewals with something like the following combination of config options.<
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
     </script>
+    </div>
 </body>
 </html>

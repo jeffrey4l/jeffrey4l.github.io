@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/jeffrey4l.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-05-06T00:00:00+08:00</updated><entry><title>论Python的异常的合理抛出姿势</title><link href="http://xcodest.me/How_to_raise_python_exception.html" rel="alternate"></link><updated>2015-05-06T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-06:How_to_raise_python_exception.html</id><summary type="html">&lt;p&gt;当需要重新抛出 Python 的异常时，很多人都处理不好。本文总结了一些处理方法。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/jeffrey4l.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-05-11T00:00:00+08:00</updated><entry><title>Oz Templates</title><link href="http://xcodest.me/oz-templates.html" rel="alternate"></link><updated>2015-05-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-11:oz-templates.html</id><summary type="html">&lt;p&gt;最近利用&lt;a href="https://github.com/clalancette/oz"&gt;OZ&lt;/a&gt;做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下&lt;/p&gt;
+&lt;p&gt;项目地址: &lt;a href="https://github.com/jeffrey4l/oz-templates"&gt;https://github.com/jeffrey4l/oz-templates&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;以下是README里的内容。&lt;/p&gt;
+&lt;h2&gt;Usage&lt;/h2&gt;
+&lt;p&gt;The isos are located in &lt;code&gt;/data/isos/&lt;/code&gt;. The isos' name are conversionally.
+Including&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CentOS-6.3-x86_64-bin-DVD1.iso&lt;/li&gt;
+&lt;li&gt;RHEL-6.3-x86_64-DVD.iso&lt;/li&gt;
+&lt;li&gt;ubuntu-14.04.1-server-amd64.iso&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;git clone https://github.com/clalancette/oz.git
+cd oz
+git clone https://github.com/jeffrey4l/oz-templates.git
+cd oz-templates
+make all
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Detail&lt;/h2&gt;
+&lt;p&gt;The image are configured as following&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;without lvm, which will helpful for partion auto extend.&lt;/li&gt;
+&lt;li&gt;Default image size is 40GB&lt;/li&gt;
+&lt;li&gt;Installed cloud-init with some basic configuration.&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="OpenStack"></category></entry><entry><title>论Python的异常的合理抛出姿势</title><link href="http://xcodest.me/How_to_raise_python_exception.html" rel="alternate"></link><updated>2015-05-06T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-06:How_to_raise_python_exception.html</id><summary type="html">&lt;p&gt;当需要重新抛出 Python 的异常时，很多人都处理不好。本文总结了一些处理方法。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;

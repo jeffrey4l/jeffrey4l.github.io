@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+          <title> Oz Templates - Xcodest </title>
+        <meta charset="utf-8" />
+
+
+
+    <meta name="tags" contents="OpenStack" />
+
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
+        <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
+</head>
+
+<body id="index" class="home">
+    <div class="container">
+        <header id="banner" class="body">
+                <span class='site-title'><a href="http://xcodest.me/">Xcodest</a></span><span class="site-subtitle">code for fun</span>
+        </header>
+<section id="content" class="body">
+  <header>
+    <h2 class="entry-title">Oz Templates</h2>
+    <span class="post-date"> 2015-05-11 </span>
+  </header>
+  <div class="entry-content">
+    <p>最近利用<a href="https://github.com/clalancette/oz">OZ</a>做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下</p>
+<p>项目地址: <a href="https://github.com/jeffrey4l/oz-templates">https://github.com/jeffrey4l/oz-templates</a></p>
+<p>以下是README里的内容。</p>
+<h2>Usage</h2>
+<p>The isos are located in <code>/data/isos/</code>. The isos' name are conversionally.
+Including</p>
+<ul>
+<li>CentOS-6.3-x86_64-bin-DVD1.iso</li>
+<li>RHEL-6.3-x86_64-DVD.iso</li>
+<li>ubuntu-14.04.1-server-amd64.iso</li>
+</ul>
+<div class="highlight"><pre>git clone https://github.com/clalancette/oz.git
+cd oz
+git clone https://github.com/jeffrey4l/oz-templates.git
+cd oz-templates
+make all
+</pre></div>
+
+
+<h2>Detail</h2>
+<p>The image are configured as following</p>
+<ul>
+<li>without lvm, which will helpful for partion auto extend.</li>
+<li>Default image size is 40GB</li>
+<li>Installed cloud-init with some basic configuration.</li>
+</ul>
+  </div><!-- /.entry-content -->
+  <div class="entry-info">
+    <p> Tags: <a href="http://xcodest.me/tag/openstack.html">OpenStack</a>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'oz-templates.html';
+        var disqus_url = 'http://xcodest.me/oz-templates.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    </div>
+</body>
+</html>

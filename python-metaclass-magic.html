@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+          <title> Python MetaClass Magic - Xcodest </title>
+        <meta charset="utf-8" />
+
+
+
+    <meta name="tags" contents="Python" />
+
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
+        <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
+</head>
+
+<body id="index" class="home">
+    <div class="container">
+        <header id="banner" class="body">
+                <span class='site-title'><a href="http://xcodest.me/">Xcodest</a></span><span class="site-subtitle">code for fun</span>
+        </header>
+<section id="content" class="body">
+  <header>
+    <h2 class="entry-title">Python MetaClass Magic</h2>
+    <span class="post-date"> 2015-05-18 </span>
+  </header>
+  <div class="entry-content">
+    <p>在 Nova 代码中[<a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075">0</a>]发现一个神奇的应用，利用 decrator 来区分同名的函数，根据 decrator 上面定义的版本，来调用不同的方法。仔细学习了一下。它是用到了 MetaClass。主要思路是：</p>
+<ul>
+<li>在 decrator 里面，把被装饰的方法存在类的一个属性里面(version_methods)</li>
+<li>使用自定义的metaclass, 删除掉父类上的version_methods，并把这个属性放到子类中。这样做是为了防止子类共享父类的version_methods属性。</li>
+<li>在子类里面，重写<code>__getattribute__</code>方法，当所需要的属性存在于<code>version_methods</code>时，根据特定的条件，返回期望的方法。如果没有，就调用父类的方法。</li>
+</ul>
+<p>以下是示例代码</p>
+<div class="gist">
+    <script src='https://gist.github.com/0b974aaea1be25cde67d.js?file=version_method.py'></script>
+    <noscript>
+        <pre><code>VERION_METHODS='version_methods'
+
+class VersionMethod(object):
+    def __init__(self, version, func):
+        self.version = version
+        self.func = func
+
+
+class MetaClass(type):
+    def __new__(cls, name, bases, cls_dict):
+        for base in bases:
+            version_methods = getattr(base, VERION_METHODS, None)
+            if version_methods:
+                cls_dict[VERION_METHODS] = version_methods
+                delattr(base, VERION_METHODS)
+
+        return super(MetaClass, cls).__new__(cls, name, bases, cls_dict)
+
+
+class Base(object):
+    __metaclass__ = MetaClass
+
+    def __getattribute__(self, name):
+
+        def version_select(*args, **kwargs):
+            if len(args) > 0:
+                version = args[0]['version']
+            else:
+                version = kwargs['req']['version']
+            for version_func in self.version_methods.get(name, None):
+                if version_func.version == version:
+                    return version_func.func(self, *args, **kwargs)
+            raise AttributeError
+
+        try:
+            version_methods = object.__getattribute__(self, VERION_METHODS)
+        except AttributeError:
+            return object.__getattribute__(self, name)
+
+        if version_methods and \
+                name in version_methods:
+            return version_select
+        return object.__getattribute__(self, name)
+
+
+    @classmethod
+    def version(cls, version):
+        def wrapper(func):
+            name = func.func_name
+            version_methods = getattr(cls, VERION_METHODS, {})
+            if not version_methods:
+                setattr(cls, VERION_METHODS, version_methods)
+
+            methods = version_methods.get(name, [])
+            if not methods:
+                version_methods[name] = methods
+            methods.append(VersionMethod(version, func))
+
+            return func
+        return wrapper
+
+
+class SubClass(Base):
+
+    @Base.version("1.0")
+    def foo(self, req):
+        print "in SubClass 1.0 version: %s" % req
+
+    @Base.version("2.0")
+    def foo(self, req):
+        print "in SubClass 2.0 version: %s" % req
+
+class SubClass2(Base):
+
+    @Base.version("1.0")
+    def foo(self, req):
+        print "in SubClass2 1.0 version: %s" % req
+
+    @Base.version("2.0")
+    def foo(self, req):
+        print "in SubClass2 2.0 version: %s" % req
+
+
+
+
+SubClass().foo({"version": "1.0"})
+SubClass().foo({"version": "2.0"})
+
+SubClass2().foo({"version": "1.0"})
+SubClass2().foo({"version": "2.0"})</code></pre>
+    </noscript>
+</div>
+<ul>
+<li>[0] <a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075">https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075</a></li>
+</ul>
+  </div><!-- /.entry-content -->
+  <div class="entry-info">
+    <p> Tags: <a href="http://xcodest.me/tag/python.html">Python</a>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'python-metaclass-magic.html';
+        var disqus_url = 'http://xcodest.me/python-metaclass-magic.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    </div>
+</body>
+</html>

@@ -1,5 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/all.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-05-11T00:00:00+08:00</updated><entry><title>Oz Templates</title><link href="http://xcodest.me/oz-templates.html" rel="alternate"></link><updated>2015-05-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-11:oz-templates.html</id><summary type="html">&lt;p&gt;最近利用&lt;a href="https://github.com/clalancette/oz"&gt;OZ&lt;/a&gt;做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/all.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-05-18T00:00:00+08:00</updated><entry><title>Python MetaClass Magic</title><link href="http://xcodest.me/python-metaclass-magic.html" rel="alternate"></link><updated>2015-05-18T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-18:python-metaclass-magic.html</id><summary type="html">&lt;p&gt;在 Nova 代码中[&lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075"&gt;0&lt;/a&gt;]发现一个神奇的应用，利用 decrator 来区分同名的函数，根据 decrator 上面定义的版本，来调用不同的方法。仔细学习了一下。它是用到了 MetaClass。主要思路是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在 decrator 里面，把被装饰的方法存在类的一个属性里面(version_methods)&lt;/li&gt;
+&lt;li&gt;使用自定义的metaclass, 删除掉父类上的version_methods，并把这个属性放到子类中。这样做是为了防止子类共享父类的version_methods属性。&lt;/li&gt;
+&lt;li&gt;在子类里面，重写&lt;code&gt;__getattribute__&lt;/code&gt;方法，当所需要的属性存在于&lt;code&gt;version_methods&lt;/code&gt;时，根据特定的条件，返回期望的方法。如果没有，就调用父类的方法。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;以下是示例代码&lt;/p&gt;
+&lt;div class="gist"&gt;
+    &lt;script src='https://gist.github.com/0b974aaea1be25cde67d.js?file=version_method.py'&gt;&lt;/script&gt;
+    &lt;noscript&gt;
+        &lt;pre&gt;&lt;code&gt;VERION_METHODS='version_methods'
+
+class VersionMethod(object):
+    def __init__(self, version, func):
+        self.version = version
+        self.func = func
+
+
+class MetaClass(type):
+    def __new__(cls, name, bases, cls_dict):
+        for base in bases:
+            version_methods = getattr(base, VERION_METHODS, None)
+            if version_methods:
+                cls_dict[VERION_METHODS] = version_methods
+                delattr(base, VERION_METHODS)
+
+        return super(MetaClass, cls).__new__(cls, name, bases, cls_dict)
+
+
+class Base(object):
+    __metaclass__ = MetaClass
+
+    def __getattribute__(self, name):
+
+        def version_select(*args, **kwargs):
+            if len(args) &gt; 0:
+                version = args[0]['version']
+            else:
+                version = kwargs['req']['version']
+            for version_func in self.version_methods.get(name, None):
+                if version_func.version == version:
+                    return version_func.func(self, *args, **kwargs)
+            raise AttributeError
+
+        try:
+            version_methods = object.__getattribute__(self, VERION_METHODS)
+        except AttributeError:
+            return object.__getattribute__(self, name)
+
+        if version_methods and \
+                name in version_methods:
+            return version_select
+        return object.__getattribute__(self, name)
+
+
+    @classmethod
+    def version(cls, version):
+        def wrapper(func):
+            name = func.func_name
+            version_methods = getattr(cls, VERION_METHODS, {})
+            if not version_methods:
+                setattr(cls, VERION_METHODS, version_methods)
+
+            methods = version_methods.get(name, [])
+            if not methods:
+                version_methods[name] = methods
+            methods.append(VersionMethod(version, func))
+
+            return func
+        return wrapper
+
+
+class SubClass(Base):
+
+    @Base.version("1.0")
+    def foo(self, req):
+        print "in SubClass 1.0 version: %s" % req
+
+    @Base.version("2.0")
+    def foo(self, req):
+        print "in SubClass 2.0 version: %s" % req
+
+class SubClass2(Base):
+
+    @Base.version("1.0")
+    def foo(self, req):
+        print "in SubClass2 1.0 version: %s" % req
+
+    @Base.version("2.0")
+    def foo(self, req):
+        print "in SubClass2 2.0 version: %s" % req
+
+
+
+
+SubClass().foo({"version": "1.0"})
+SubClass().foo({"version": "2.0"})
+
+SubClass2().foo({"version": "1.0"})
+SubClass2().foo({"version": "2.0"})&lt;/code&gt;&lt;/pre&gt;
+    &lt;/noscript&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;[0] &lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075"&gt;https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="Python"></category></entry><entry><title>Oz Templates</title><link href="http://xcodest.me/oz-templates.html" rel="alternate"></link><updated>2015-05-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-11:oz-templates.html</id><summary type="html">&lt;p&gt;最近利用&lt;a href="https://github.com/clalancette/oz"&gt;OZ&lt;/a&gt;做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下&lt;/p&gt;
 &lt;p&gt;项目地址: &lt;a href="https://github.com/jeffrey4l/oz-templates"&gt;https://github.com/jeffrey4l/oz-templates&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;以下是README里的内容。&lt;/p&gt;
 &lt;h2&gt;Usage&lt;/h2&gt;

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+          <title> Glance Create Image from Existent Image in Ceph - Xcodest </title>
+        <meta charset="utf-8" />
+
+
+
+
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
+        <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
+</head>
+
+<body id="index" class="home">
+    <div class="container">
+        <header id="banner" class="body">
+                <span class='site-title'><a href="http://xcodest.me/">Xcodest</a></span><span class="site-subtitle">code for fun</span>
+        </header>
+<section id="content" class="body">
+  <header>
+    <h2 class="entry-title">Glance Create Image from Existent Image in Ceph</h2>
+    <span class="post-date"> 2015-06-04 </span>
+  </header>
+  <div class="entry-content">
+    <p>当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。</p>
+<p>可以先用 rbd 上传镜像，转换格式(也会比较慢，还不如直接上传 RAW 格式的镜像)。然后再做好对应的 snap , 并加以保护。是后一步的location必须按格式写(见[0])，这样才会使用rbd的 COW clone 功能。</p>
+<div class="highlight"><pre><span class="c"># image format 2 support layering</span>
+rbd --image-format <span class="m">2</span> import /tmp/ubuntu14.04.2.dsk <span class="nv">$uuid</span>
+
+<span class="c"># Convert to raw image type</span>
+qemu-img convert -O raw rbd:<span class="nv">$pool</span>/<span class="nv">$uuid</span> rbd:<span class="nv">$pool</span>/<span class="nv">$uuid</span>
+
+<span class="c"># Make Snapshot and protect it which is require by image clone in nova libvirt.</span>
+rbd --pool images snap create --snap snap <span class="nv">$uuid</span>
+rbd --pool images snap protect --image <span class="nv">$uuid</span> --snap snap
+
+<span class="c"># Create Image in Glance</span>
+glance image-create --id <span class="nv">$uuid</span> --name ubuntu14.04.2 --disk-format raw --container-format bare --is-public True --location rbd://<span class="nv">$fsid</span>/images/<span class="nv">$uuid</span>/snap
+</pre></div>
+
+
+<h1>REF</h1>
+<ul>
+<li>[0] <a href="https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179">https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179</a></li>
+<li>[1] <a href="http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf">http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf</a></li>
+<li>[2] <a href="http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/">http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/</a></li>
+</ul>
+  </div><!-- /.entry-content -->
+  <div class="entry-info">
+    <p>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'glance-create-image-from-existent-image-in-ceph.html';
+        var disqus_url = 'http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    </div>
+</body>
+</html>

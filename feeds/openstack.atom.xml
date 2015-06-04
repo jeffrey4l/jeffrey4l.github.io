@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/openstack.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-05-11T00:00:00+08:00</updated><entry><title>Oz Templates</title><link href="http://xcodest.me/oz-templates.html" rel="alternate"></link><updated>2015-05-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-11:oz-templates.html</id><summary type="html">&lt;p&gt;最近利用&lt;a href="https://github.com/clalancette/oz"&gt;OZ&lt;/a&gt;做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/openstack.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-06-04T00:00:00+08:00</updated><entry><title>Glance Create Image from Existent Image in Ceph</title><link href="http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html" rel="alternate"></link><updated>2015-06-04T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-06-04:glance-create-image-from-existent-image-in-ceph.html</id><summary type="html">&lt;p&gt;当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。&lt;/p&gt;
+&lt;p&gt;可以先用 rbd 上传镜像，转换格式(也会比较慢，还不如直接上传 RAW 格式的镜像)。然后再做好对应的 snap , 并加以保护。是后一步的location必须按格式写(见[0])，这样才会使用rbd的 COW clone 功能。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# image format 2 support layering&lt;/span&gt;
+rbd --image-format &lt;span class="m"&gt;2&lt;/span&gt; import /tmp/ubuntu14.04.2.dsk &lt;span class="nv"&gt;$uuid&lt;/span&gt;
+
+&lt;span class="c"&gt;# Convert to raw image type&lt;/span&gt;
+qemu-img convert -O raw rbd:&lt;span class="nv"&gt;$pool&lt;/span&gt;/&lt;span class="nv"&gt;$uuid&lt;/span&gt; rbd:&lt;span class="nv"&gt;$pool&lt;/span&gt;/&lt;span class="nv"&gt;$uuid&lt;/span&gt;
+
+&lt;span class="c"&gt;# Make Snapshot and protect it which is require by image clone in nova libvirt.&lt;/span&gt;
+rbd --pool images snap create --snap snap &lt;span class="nv"&gt;$uuid&lt;/span&gt;
+rbd --pool images snap protect --image &lt;span class="nv"&gt;$uuid&lt;/span&gt; --snap snap
+
+&lt;span class="c"&gt;# Create Image in Glance&lt;/span&gt;
+glance image-create --id &lt;span class="nv"&gt;$uuid&lt;/span&gt; --name ubuntu14.04.2 --disk-format raw --container-format bare --is-public True --location rbd://&lt;span class="nv"&gt;$fsid&lt;/span&gt;/images/&lt;span class="nv"&gt;$uuid&lt;/span&gt;/snap
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;REF&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;[0] &lt;a href="https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179"&gt;https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[1] &lt;a href="http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf"&gt;http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[2] &lt;a href="http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/"&gt;http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary></entry><entry><title>Oz Templates</title><link href="http://xcodest.me/oz-templates.html" rel="alternate"></link><updated>2015-05-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-11:oz-templates.html</id><summary type="html">&lt;p&gt;最近利用&lt;a href="https://github.com/clalancette/oz"&gt;OZ&lt;/a&gt;做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下&lt;/p&gt;
 &lt;p&gt;项目地址: &lt;a href="https://github.com/jeffrey4l/oz-templates"&gt;https://github.com/jeffrey4l/oz-templates&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;以下是README里的内容。&lt;/p&gt;
 &lt;h2&gt;Usage&lt;/h2&gt;

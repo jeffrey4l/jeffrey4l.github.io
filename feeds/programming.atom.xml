@@ -1,5 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/programming.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-01-08T00:00:00+08:00</updated><entry><title>PIP install from local</title><link href="http://xcodest.me/pip-install-from-local.html" rel="alternate"></link><updated>2015-01-08T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-01-08:pip-install-from-local.html</id><summary type="html">&lt;p&gt;在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/programming.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-11-17T00:00:00+08:00</updated><entry><title>Interrupt the Python multiprocess.Pool in graceful way</title><link href="http://xcodest.me/interrupt-the-python-multiprocesspool-in-graceful-way.html" rel="alternate"></link><updated>2015-11-17T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-11-17:interrupt-the-python-multiprocesspool-in-graceful-way.html</id><summary type="html">&lt;p&gt;When using &lt;code&gt;KeyboardInterrupt&lt;/code&gt;(&lt;code&gt;Ctrl+c&lt;/code&gt;) interrupt the excution of the &lt;code&gt;multiprocess.Pool&lt;/code&gt;, it will not work as expected. Following is a demo&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;worker&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;pool&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;pool&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;worker&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When run the code and try to &lt;code&gt;Ctrl+C&lt;/code&gt; to stop it, it will never be stopped.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;python2 b.py                                                                      
+^CProcess PoolWorker-1:
+Traceback &lt;span class="o"&gt;(&lt;/span&gt;most recent call last&lt;span class="o"&gt;)&lt;/span&gt;:
+  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/process.py&amp;quot;&lt;/span&gt;, line 258, in _bootstrap
+    self.run&lt;span class="o"&gt;()&lt;/span&gt;
+  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/process.py&amp;quot;&lt;/span&gt;, line 114, in run
+    self._target&lt;span class="o"&gt;(&lt;/span&gt;*self._args, **self._kwargs&lt;span class="o"&gt;)&lt;/span&gt;
+  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/pool.py&amp;quot;&lt;/span&gt;, line 113, in worker
+    &lt;span class="nv"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;True, func&lt;span class="o"&gt;(&lt;/span&gt;*args, **kwds&lt;span class="o"&gt;))&lt;/span&gt;
+  File &lt;span class="s2"&gt;&amp;quot;b.py&amp;quot;&lt;/span&gt;, line 7, in worker
+    time.sleep&lt;span class="o"&gt;(&lt;/span&gt;1&lt;span class="o"&gt;)&lt;/span&gt;
+KeyboardInterrupt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The root cause is explained in &lt;a href="http://stackoverflow.com/a/1408476/893981"&gt;stackoverflow&lt;/a&gt;. And the bug is &lt;a href="http://bugs.python.org/issue8296"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+This is a Python bug. When waiting for a condition in threading.Condition.wait(), KeyboardInterrupt is never sent. Repro:
+
+&lt;pre&gt;
+import threading
+cond = threading.Condition(threading.Lock())
+cond.acquire()
+cond.wait(None)
+print "done"
+&lt;/pre&gt;
+
+The KeyboardInterrupt exception won't be delivered until wait() returns, and it never returns, so the interrupt never happens. KeyboardInterrupt should almost certainly interrupt a condition wait.
+
+Note that this doesn't happen if a timeout is specified; cond.wait(1) will receive the interrupt immediately. So, a workaround is to specify a timeout. To do that, replace
+
+&lt;pre&gt;
+    results = pool.map(slowly_square, range(40))
+&lt;/pre&gt;
+
+with
+
+&lt;pre&gt;
+    results = pool.map_async(slowly_square, range(40)).get(9999999)
+&lt;/pre&gt;
+
+or similar.
+&lt;/blockquote&gt;
+
+&lt;p&gt;By using this, we can interrupt the Pool by using &lt;code&gt;Ctrl+c&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Here is a better version.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;signal&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;worker&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;worker_init&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="c"&gt;# ignore the SIGINI in sub process, just print a log&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;sig_int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signal_num&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;signal: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;signal_num&lt;/span&gt;
+    &lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SIGINT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sig_int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;pool&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;worker_init&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pool&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_async&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;worker&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mh"&gt;0xfff&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c"&gt;# catch TimeoutError and get again&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;multiprocessing&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TimeoutError&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;ex&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;timeout&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;REF&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://bugs.python.org/issue8296"&gt;Python Bug&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://unix.stackexchange.com/a/149756"&gt;How Ctrl+c works&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://stackoverflow.com/a/1408476/893981"&gt;Keyboard Interrupts with python's multiprocessing Pool&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="Python"></category></entry><entry><title>PIP install from local</title><link href="http://xcodest.me/pip-install-from-local.html" rel="alternate"></link><updated>2015-01-08T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-01-08:pip-install-from-local.html</id><summary type="html">&lt;p&gt;在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。&lt;/p&gt;
 &lt;p&gt;先在有网络的环境中下载下来所有需要的包：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
 &lt;/pre&gt;&lt;/div&gt;

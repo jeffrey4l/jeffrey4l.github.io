@@ -1,5 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/all.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-06-04T00:00:00+08:00</updated><entry><title>Glance Create Image from Existent Image in Ceph</title><link href="http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html" rel="alternate"></link><updated>2015-06-04T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-06-04:glance-create-image-from-existent-image-in-ceph.html</id><summary type="html">&lt;p&gt;当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/all.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-11-17T00:00:00+08:00</updated><entry><title>Interrupt the Python multiprocess.Pool in graceful way</title><link href="http://xcodest.me/interrupt-the-python-multiprocesspool-in-graceful-way.html" rel="alternate"></link><updated>2015-11-17T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-11-17:interrupt-the-python-multiprocesspool-in-graceful-way.html</id><summary type="html">&lt;p&gt;When using &lt;code&gt;KeyboardInterrupt&lt;/code&gt;(&lt;code&gt;Ctrl+c&lt;/code&gt;) interrupt the excution of the &lt;code&gt;multiprocess.Pool&lt;/code&gt;, it will not work as expected. Following is a demo&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;worker&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;pool&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;pool&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;worker&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When run the code and try to &lt;code&gt;Ctrl+C&lt;/code&gt; to stop it, it will never be stopped.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;python2 b.py                                                                      
+^CProcess PoolWorker-1:
+Traceback &lt;span class="o"&gt;(&lt;/span&gt;most recent call last&lt;span class="o"&gt;)&lt;/span&gt;:
+  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/process.py&amp;quot;&lt;/span&gt;, line 258, in _bootstrap
+    self.run&lt;span class="o"&gt;()&lt;/span&gt;
+  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/process.py&amp;quot;&lt;/span&gt;, line 114, in run
+    self._target&lt;span class="o"&gt;(&lt;/span&gt;*self._args, **self._kwargs&lt;span class="o"&gt;)&lt;/span&gt;
+  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/pool.py&amp;quot;&lt;/span&gt;, line 113, in worker
+    &lt;span class="nv"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;True, func&lt;span class="o"&gt;(&lt;/span&gt;*args, **kwds&lt;span class="o"&gt;))&lt;/span&gt;
+  File &lt;span class="s2"&gt;&amp;quot;b.py&amp;quot;&lt;/span&gt;, line 7, in worker
+    time.sleep&lt;span class="o"&gt;(&lt;/span&gt;1&lt;span class="o"&gt;)&lt;/span&gt;
+KeyboardInterrupt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The root cause is explained in &lt;a href="http://stackoverflow.com/a/1408476/893981"&gt;stackoverflow&lt;/a&gt;. And the bug is &lt;a href="http://bugs.python.org/issue8296"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+This is a Python bug. When waiting for a condition in threading.Condition.wait(), KeyboardInterrupt is never sent. Repro:
+
+&lt;pre&gt;
+import threading
+cond = threading.Condition(threading.Lock())
+cond.acquire()
+cond.wait(None)
+print "done"
+&lt;/pre&gt;
+
+The KeyboardInterrupt exception won't be delivered until wait() returns, and it never returns, so the interrupt never happens. KeyboardInterrupt should almost certainly interrupt a condition wait.
+
+Note that this doesn't happen if a timeout is specified; cond.wait(1) will receive the interrupt immediately. So, a workaround is to specify a timeout. To do that, replace
+
+&lt;pre&gt;
+    results = pool.map(slowly_square, range(40))
+&lt;/pre&gt;
+
+with
+
+&lt;pre&gt;
+    results = pool.map_async(slowly_square, range(40)).get(9999999)
+&lt;/pre&gt;
+
+or similar.
+&lt;/blockquote&gt;
+
+&lt;p&gt;By using this, we can interrupt the Pool by using &lt;code&gt;Ctrl+c&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Here is a better version.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;signal&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;worker&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;worker_init&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="c"&gt;# ignore the SIGINI in sub process, just print a log&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;sig_int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signal_num&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;signal: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;signal_num&lt;/span&gt;
+    &lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;signal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SIGINT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sig_int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;pool&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;worker_init&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pool&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_async&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;worker&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mh"&gt;0xfff&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c"&gt;# catch TimeoutError and get again&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;multiprocessing&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TimeoutError&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;ex&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;timeout&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;REF&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://bugs.python.org/issue8296"&gt;Python Bug&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://unix.stackexchange.com/a/149756"&gt;How Ctrl+c works&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://stackoverflow.com/a/1408476/893981"&gt;Keyboard Interrupts with python's multiprocessing Pool&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="Python"></category></entry><entry><title>Glance Create Image from Existent Image in Ceph</title><link href="http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html" rel="alternate"></link><updated>2015-06-04T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-06-04:glance-create-image-from-existent-image-in-ceph.html</id><summary type="html">&lt;p&gt;当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。&lt;/p&gt;
 &lt;p&gt;可以先用 rbd 上传镜像，转换格式(也会比较慢，还不如直接上传 RAW 格式的镜像)。然后再做好对应的 snap , 并加以保护。是后一步的location必须按格式写(见[0])，这样才会使用rbd的 COW clone 功能。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# image format 2 support layering&lt;/span&gt;
 rbd --image-format &lt;span class="m"&gt;2&lt;/span&gt; import /tmp/ubuntu14.04.2.dsk &lt;span class="nv"&gt;$uuid&lt;/span&gt;
@@ -432,16 +528,16 @@ $ virsh capabilities | grep uuid
 &lt;/ul&gt;</summary><category term="Libvirt"></category></entry><entry><title>tun &amp; veth设备</title><link href="http://xcodest.me/tun-vethshe-bei.html" rel="alternate"></link><updated>2015-02-09T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-02-09:tun-vethshe-bei.html</id><summary type="html">&lt;p&gt;OpenStack 的 Neutron 中会建立好多网卡设备。大体上这些网卡可以分为两类 tun 和 veth。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="OpenStack Neutron Network" src="images/neutron-ovs-compute.png" /&gt;&lt;/p&gt;
 &lt;p&gt;用&lt;code&gt;ethtool&lt;/code&gt;可以得到网卡所用的驱动，从而得到网上设备是哪一类。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;ethtool&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="n"&gt;veth4NCTQ1&lt;/span&gt; 
-&lt;span class="nl"&gt;driver:&lt;/span&gt; &lt;span class="n"&gt;veth&lt;/span&gt;
-&lt;span class="nl"&gt;version:&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt;
-&lt;span class="n"&gt;firmware&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;version&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
-&lt;span class="n"&gt;bus&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
-&lt;span class="n"&gt;supports&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;statistics&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;yes&lt;/span&gt;
-&lt;span class="n"&gt;supports&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt;
-&lt;span class="n"&gt;supports&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;eeprom&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;access&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt;
-&lt;span class="n"&gt;supports&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="k"&gt;register&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dump&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt;
-&lt;span class="n"&gt;supports&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;priv&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;flags&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;ethtool -i veth4NCTQ1 
+driver: veth
+version: 1.0
+firmware-version: 
+bus-info: 
+supports-statistics: yes
+supports-test: no
+supports-eeprom-access: no
+supports-register-dump: no
+supports-priv-flags: no
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -455,15 +551,15 @@ $ virsh capabilities | grep uuid
 &lt;p&gt;开源项目openvpn和Vtun都是利用tun/tap驱动实现的隧道封装&lt;/p&gt;
 &lt;p&gt;虽然是出自一个娘，但它们仍然有大的不同。tun是点对点的设备，而tap是一个普通的以太网卡设备。也就是说，tun设备其实完全不需要有物理地址的。它收到和发出的包不需要arp，也不需要有数据链路层的头。而tap设备则是有完整的物理地址和完整的以太网帧。&lt;/p&gt;
 &lt;p&gt;可以通过以下方法创建&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;ip&lt;/span&gt; &lt;span class="n"&gt;tuntap&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="n"&gt;mode&lt;/span&gt; &lt;span class="n"&gt;tap&lt;/span&gt; 
-&lt;span class="n"&gt;ip&lt;/span&gt; &lt;span class="n"&gt;tuntap&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="n"&gt;mode&lt;/span&gt; &lt;span class="n"&gt;tun&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ip tuntap add mode tap 
+ip tuntap add mode tun
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;在 OpenStack 中，主要用tap来做虚拟机的网卡。&lt;/p&gt;
 &lt;h1&gt;veth&lt;/h1&gt;
 &lt;p&gt;veth 从名字上来看是 Virtual ETHernet 的缩写，它的作用很简单，就是要把从一个 network namespace 发出的数据包转发到另一个 namespace。veth 设备是成对的，一个是 container 之中，另一个在 container 之外，即在真实机器上能看到的。 建立 veth 类型的设备可以用下面的命令：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;ip&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="n"&gt;veth0&lt;/span&gt; &lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="n"&gt;veth0&lt;/span&gt; &lt;span class="n"&gt;peer&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="n"&gt;veth1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ip link add name veth0 type veth0 peer name veth1
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -500,51 +596,51 @@ $ virsh capabilities | grep uuid
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;另活动页面在 &lt;a href="http://creditcard.ecitic.com/youhui/120926/wanning.shtml"&gt;http://creditcard.ecitic.com/youhui/120926/wanning.shtml&lt;/a&gt;&lt;/p&gt;</summary></entry><entry><title>MySQL Errno 150</title><link href="http://xcodest.me/mysql-errno-150.html" rel="alternate"></link><updated>2015-01-14T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-01-14:mysql-errno-150.html</id><summary type="html">&lt;p&gt;做OpenStack icehouse 升级到 Juno过程中，升级Neutron数据库时遇到这个错误。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="nx"&gt;python&lt;/span&gt; &lt;span class="na"&gt;-m&lt;/span&gt; &lt;span class="nx"&gt;neutron.db.migration.migrate_to_ml2&lt;/span&gt; &lt;span class="nx"&gt;openvswitch&lt;/span&gt; &lt;span class="nx"&gt;mysql&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//USER:PASSWORD@10.251.1.8/neutron&lt;/span&gt;
-&lt;span class="nx"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;most&lt;/span&gt; &lt;span class="nx"&gt;recent&lt;/span&gt; &lt;span class="nb"&gt;call&lt;/span&gt; &lt;span class="nb"&gt;last&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/runpy.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;162&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;_run_module_as_main&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;fname&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;loader&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;pkg_name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/runpy.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;72&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;_run_code&lt;/span&gt;
-    &lt;span class="nx"&gt;exec&lt;/span&gt; &lt;span class="n"&gt;code&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;run_globals&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;462&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;module&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class="nx"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;458&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;main&lt;/span&gt;
-    &lt;span class="nx"&gt;args.vxlan_udp_port&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;138&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;__call__&lt;/span&gt;
-    &lt;span class="nx"&gt;metadata.create_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;engine&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/schema.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;2848&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;create_all&lt;/span&gt;
-    &lt;span class="n"&gt;tables&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;tables&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1479&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;_run_visitor&lt;/span&gt;
-    &lt;span class="nx"&gt;conn._run_visitor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;visitorcallable&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;element&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1122&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;_run_visitor&lt;/span&gt;
-    &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="bp"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;traverse_single&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;element&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/sql/visitors.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;122&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;traverse_single&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;meth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="nx"&gt;kw&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/ddl.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;70&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;visit_metadata&lt;/span&gt;
-    &lt;span class="bp"&gt;self.&lt;/span&gt;&lt;span class="nx"&gt;traverse_single&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;table&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;create_ok&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/sql/visitors.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;122&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;traverse_single&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;meth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="nx"&gt;kw&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/ddl.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;89&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;visit_table&lt;/span&gt;
-    &lt;span class="bp"&gt;self.&lt;/span&gt;&lt;span class="nx"&gt;connection.execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;schema.CreateTable&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;table&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;662&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;execute&lt;/span&gt;
-    &lt;span class="k"&gt;params&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;720&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;_execute_ddl&lt;/span&gt;
-    &lt;span class="nx"&gt;compiled&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;874&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;_execute_context&lt;/span&gt;
-    &lt;span class="nx"&gt;context&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1024&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;_handle_dbapi_exception&lt;/span&gt;
-    &lt;span class="nx"&gt;exc_info&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/util/compat.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;196&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;raise_from_cause&lt;/span&gt;
-    &lt;span class="nx"&gt;reraise&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;exception&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nx"&gt;exception&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tb&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nx"&gt;exc_tb&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;867&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;_execute_context&lt;/span&gt;
-    &lt;span class="nx"&gt;context&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/default.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;324&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;do_execute&lt;/span&gt;
-    &lt;span class="nx"&gt;cursor.execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;statement&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;parameters&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/MySQLdb/cursors.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;174&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;execute&lt;/span&gt;
-    &lt;span class="bp"&gt;self.&lt;/span&gt;&lt;span class="nx"&gt;errorhandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;exc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/MySQLdb/connections.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;36&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="nx"&gt;defaulterrorhandler&lt;/span&gt;
-    &lt;span class="nx"&gt;raise&lt;/span&gt; &lt;span class="nx"&gt;errorclass&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;errorvalue&lt;/span&gt;
-&lt;span class="nx"&gt;sqlalchemy.exc.OperationalError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;OperationalError&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1005&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Can&amp;#39;t create table &amp;#39;neutron.ml2_network_segments&amp;#39; (errno: 150)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s1"&gt;CREATE TABLE ml2_network_segments (&lt;/span&gt;&lt;span class="se"&gt;\n\t&lt;/span&gt;&lt;span class="s1"&gt;id VARCHAR(36) NOT NULL, &lt;/span&gt;&lt;span class="se"&gt;\n\t&lt;/span&gt;&lt;span class="s1"&gt;network_id VARCHAR(36) NOT NULL, &lt;/span&gt;&lt;span class="se"&gt;\n\t&lt;/span&gt;&lt;span class="s1"&gt;network_type VARCHAR(32) NOT NULL, &lt;/span&gt;&lt;span class="se"&gt;\n\t&lt;/span&gt;&lt;span class="s1"&gt;physical_network VARCHAR(64), &lt;/span&gt;&lt;span class="se"&gt;\n\t&lt;/span&gt;&lt;span class="s1"&gt;segmentation_id INTEGER, &lt;/span&gt;&lt;span class="se"&gt;\n\t&lt;/span&gt;&lt;span class="s1"&gt;PRIMARY KEY (id), &lt;/span&gt;&lt;span class="se"&gt;\n\t&lt;/span&gt;&lt;span class="s1"&gt;FOREIGN KEY(network_id) REFERENCES networks (id) ON DELETE CASCADE&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s1"&gt;)&lt;/span&gt;&lt;span class="se"&gt;\n\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="n"&gt;neutron&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;migration&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;migrate_to_ml2&lt;/span&gt; &lt;span class="n"&gt;openvswitch&lt;/span&gt; &lt;span class="nl"&gt;mysql&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//USER:PASSWORD@10.251.1.8/neutron&lt;/span&gt;
+&lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/runpy.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;162&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_run_module_as_main&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fname&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pkg_name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/runpy.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;72&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_run_code&lt;/span&gt;
+    &lt;span class="n"&gt;exec&lt;/span&gt; &lt;span class="n"&gt;code&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;run_globals&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;462&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;module&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;458&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;
+    &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vxlan_udp_port&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;138&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;__call__&lt;/span&gt;
+    &lt;span class="n"&gt;metadata&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;engine&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/schema.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;2848&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;create_all&lt;/span&gt;
+    &lt;span class="n"&gt;tables&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;tables&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1479&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_run_visitor&lt;/span&gt;
+    &lt;span class="n"&gt;conn&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_run_visitor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;visitorcallable&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1122&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_run_visitor&lt;/span&gt;
+    &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="n"&gt;traverse_single&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/sql/visitors.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;122&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;traverse_single&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;meth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kw&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/ddl.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;70&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;visit_metadata&lt;/span&gt;
+    &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;traverse_single&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;table&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;create_ok&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/sql/visitors.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;122&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;traverse_single&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;meth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kw&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/ddl.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;89&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;visit_table&lt;/span&gt;
+    &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connection&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CreateTable&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;table&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;662&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;execute&lt;/span&gt;
+    &lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;720&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_execute_ddl&lt;/span&gt;
+    &lt;span class="n"&gt;compiled&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;874&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_execute_context&lt;/span&gt;
+    &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1024&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_handle_dbapi_exception&lt;/span&gt;
+    &lt;span class="n"&gt;exc_info&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/util/compat.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;196&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;raise_from_cause&lt;/span&gt;
+    &lt;span class="n"&gt;reraise&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exception&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;exception&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tb&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;exc_tb&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;867&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_execute_context&lt;/span&gt;
+    &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/default.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;324&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;do_execute&lt;/span&gt;
+    &lt;span class="n"&gt;cursor&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statement&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;parameters&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/MySQLdb/cursors.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;174&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;execute&lt;/span&gt;
+    &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;errorhandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/MySQLdb/connections.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;36&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;defaulterrorhandler&lt;/span&gt;
+    &lt;span class="n"&gt;raise&lt;/span&gt; &lt;span class="n"&gt;errorclass&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;errorvalue&lt;/span&gt;
+&lt;span class="n"&gt;sqlalchemy&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nl"&gt;OperationalError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;OperationalError&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1005&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Can&amp;#39;t create table &amp;#39;neutron.ml2_network_segments&amp;#39; (errno: 150)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="err"&gt;&amp;#39;\&lt;/span&gt;&lt;span class="n"&gt;nCREATE&lt;/span&gt; &lt;span class="n"&gt;TABLE&lt;/span&gt; &lt;span class="n"&gt;ml2_network_segments&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tid&lt;/span&gt; &lt;span class="n"&gt;VARCHAR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;36&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;NOT&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tnetwork_id&lt;/span&gt; &lt;span class="n"&gt;VARCHAR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;36&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;NOT&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tnetwork_type&lt;/span&gt; &lt;span class="n"&gt;VARCHAR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;NOT&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tphysical_network&lt;/span&gt; &lt;span class="n"&gt;VARCHAR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;64&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tsegmentation_id&lt;/span&gt; &lt;span class="n"&gt;INTEGER&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tPRIMARY&lt;/span&gt; &lt;span class="n"&gt;KEY&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;id&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tFOREIGN&lt;/span&gt; &lt;span class="n"&gt;KEY&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;network_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;REFERENCES&lt;/span&gt; &lt;span class="n"&gt;networks&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;ON&lt;/span&gt; &lt;span class="n"&gt;DELETE&lt;/span&gt; &lt;span class="n"&gt;CASCADE&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -615,13 +711,13 @@ nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $D
 &lt;/code&gt;&lt;/pre&gt;
     &lt;/noscript&gt;
 &lt;/div&gt;</summary><category term="OpenStack"></category><category term="Nova"></category></entry><entry><title>Python cString raise exception when feed Unicode</title><link href="http://xcodest.me/python-cstring-unicode.html" rel="alternate"></link><updated>2014-09-09T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-09-09:python-cstring-unicode.html</id><summary type="html">&lt;p&gt;I gett following different result when using these two Class.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="nx"&gt;StringIO&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="nx"&gt;cStringIO&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nx"&gt;StringIO.StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="bp"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nx"&gt;cStringIO.StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="bp"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="nx"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;most&lt;/span&gt; &lt;span class="nx"&gt;recent&lt;/span&gt; &lt;span class="nb"&gt;call&lt;/span&gt; &lt;span class="nb"&gt;last&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-  &lt;span class="nb"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;module&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
-&lt;span class="nx"&gt;UnicodeEncodeError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ascii&amp;#39;&lt;/span&gt; &lt;span class="nx"&gt;codec&lt;/span&gt; &lt;span class="nx"&gt;can&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;t encode character u&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;\&lt;/span&gt;&lt;span class="nx"&gt;u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; in position 0: ordinal not in range(128)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;StringIO&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;cStringIO&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;u&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cStringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;u&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;module&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="ne"&gt;UnicodeEncodeError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;ascii&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;codec&lt;/span&gt; &lt;span class="n"&gt;can&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;t encode character u&amp;#39;&lt;/span&gt;\&lt;span class="n"&gt;u2222&lt;/span&gt;&lt;span class="s"&gt;&amp;#39; in position 0: ordinal not in range(128)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -632,7 +728,7 @@ nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $D
 &lt;li&gt;在GitLab上创建相对应的项目/项目组&lt;/li&gt;
 &lt;li&gt;准备''users.txt''文件，来修正提交用户名。并手动修改users.txt的正确性 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;svn&lt;/span&gt; &lt;span class="k"&gt;log&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;svn&lt;/span&gt;&lt;span class="na"&gt;-url&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="kt"&gt;xml&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nx"&gt;grep&lt;/span&gt; &lt;span class="na"&gt;-P&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;^&amp;lt;author&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;sort&lt;/span&gt; &lt;span class="na"&gt;-u&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nx"&gt;perl&lt;/span&gt; &lt;span class="na"&gt;-pe&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;s/&amp;lt;author&amp;gt;(.*?)&amp;lt;\/author&amp;gt;/$1 = /&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="nx"&gt;users.txt&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;svn log &amp;lt;svn-url&amp;gt; --xml | grep -P &amp;quot;^&amp;lt;author&amp;quot; | sort -u | perl -pe &amp;#39;s/&amp;lt;author&amp;gt;(.*?)&amp;lt;\/author&amp;gt;/$1 = /&amp;#39; &amp;gt; users.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -644,25 +740,25 @@ nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $D
 &lt;ul&gt;
 &lt;li&gt;把SVN项目使用git-svn进行克隆 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="nx"&gt;svn&lt;/span&gt; &lt;span class="nx"&gt;clone&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="nx"&gt;no&lt;/span&gt;&lt;span class="na"&gt;-metadata&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="nx"&gt;authors&lt;/span&gt;&lt;span class="na"&gt;-file&lt;/span&gt; &lt;span class="nx"&gt;users.txt&lt;/span&gt; &lt;span class="na"&gt;-s&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;svn&lt;/span&gt;&lt;span class="na"&gt;-url&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;project&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;git svn clone --no-metadata --authors-file users.txt -s &amp;lt;svn-url&amp;gt; &amp;lt;project&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;ul&gt;
 &lt;li&gt;处理SVN的分支和标签 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;cd&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;project&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
-&lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="nb"&gt;for&lt;/span&gt;&lt;span class="na"&gt;-each-ref&lt;/span&gt; &lt;span class="nx"&gt;refs&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;remotes&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;tags&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nx"&gt;cut&lt;/span&gt; &lt;span class="na"&gt;-d&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="na"&gt;-f&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nx"&gt;grep&lt;/span&gt; &lt;span class="na"&gt;-v&lt;/span&gt; &lt;span class="p"&gt;@&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nb"&gt;read&lt;/span&gt; &lt;span class="nb"&gt;tagname&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="kt"&gt;tag&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;$tagname&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;tags/$tagname&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="nx"&gt;branch&lt;/span&gt; &lt;span class="na"&gt;-r&lt;/span&gt; &lt;span class="na"&gt;-d&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;tags/$tagname&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nb"&gt;done&lt;/span&gt;
-&lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="nb"&gt;for&lt;/span&gt;&lt;span class="na"&gt;-each-ref&lt;/span&gt; &lt;span class="nx"&gt;refs&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;remotes&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nx"&gt;cut&lt;/span&gt; &lt;span class="na"&gt;-d&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="na"&gt;-f&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nx"&gt;grep&lt;/span&gt; &lt;span class="na"&gt;-v&lt;/span&gt; &lt;span class="p"&gt;@&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nb"&gt;read&lt;/span&gt; &lt;span class="nx"&gt;branchname&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="nx"&gt;branch&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;$branchname&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;refs/remotes/$branchname&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;git&lt;/span&gt; &lt;span class="nx"&gt;branch&lt;/span&gt; &lt;span class="na"&gt;-r&lt;/span&gt; &lt;span class="na"&gt;-d&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;$branchname&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nb"&gt;done&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nb"&gt;code&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;cd &lt;span class="nt"&gt;&amp;lt;project&amp;gt;&lt;/span&gt;
+git for-each-ref refs/remotes/tags | cut -d / -f 4- | grep -v @ | while read tagname; do git tag &amp;quot;$tagname&amp;quot; &amp;quot;tags/$tagname&amp;quot;; git branch -r -d &amp;quot;tags/$tagname&amp;quot;; done
+git for-each-ref refs/remotes | cut -d / -f 3- | grep -v @ | while read branchname; do git branch &amp;quot;$branchname&amp;quot; &amp;quot;refs/remotes/$branchname&amp;quot;; git branch -r -d &amp;quot;$branchname&amp;quot;; done&lt;span class="nt"&gt;&amp;lt;/code&amp;gt;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;ul&gt;
 &lt;li&gt;Push到Gitlab上的仓库&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;git&lt;/span&gt; &lt;span class="n"&gt;remote&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="n"&gt;origin&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;git&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;repo&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
-&lt;span class="n"&gt;git&lt;/span&gt; &lt;span class="n"&gt;push&lt;/span&gt; &lt;span class="n"&gt;origin&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;
-&lt;span class="n"&gt;git&lt;/span&gt; &lt;span class="n"&gt;push&lt;/span&gt; &lt;span class="n"&gt;origin&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;tags&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;git remote add origin &amp;lt;git-repo-url&amp;gt;
+git push origin --all
+git push origin --tags
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -839,9 +935,9 @@ jeffrey-thinkpad:
 &lt;li&gt;https://bugzilla.redhat.com/show_bug.cgi?id=487763&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;把内核升级到3.8之后就可以了。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;apt&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;linux&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;generic&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;lts&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;raring&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;apt-get install linux-image-generic-lts-raring
 &lt;/pre&gt;&lt;/div&gt;</summary><category term="Network"></category></entry><entry><title>Dhcp lease errors in vlan mode</title><link href="http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html" rel="alternate"></link><updated>2013-08-27T08:50:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2013-08-27:dhcp-lease-errors-in-vlan-mode.html</id><summary type="html">&lt;p&gt;在使用&lt;code&gt;keepalived&lt;/code&gt;的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在&lt;code&gt;/etc/sysconfig/network-scripts/ifcfg-eth0&lt;/code&gt;中加上了如下语句：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;PERSISTENT_DHCLIENT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;PERSISTENT_DHCLIENT=1
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -871,12 +967,12 @@ to deal with this issue by upgrading dnsmasq. It would be great if the various
 distributionss could upgrade as well, or at least try to patch in the fix. If
 upgrading dnsmasq is out of the question, a possible workaround is to minimize
 lease renewals with something like the following combination of config options.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;# release leases immediately on terminate&lt;/span&gt;
-&lt;span class="n"&gt;force_dhcp_release&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;
-&lt;span class="cp"&gt;# one week lease time&lt;/span&gt;
-&lt;span class="n"&gt;dhcp_lease_time&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;604800&lt;/span&gt;
-&lt;span class="cp"&gt;# two week disassociate timeout&lt;/span&gt;
-&lt;span class="n"&gt;fixed_ip_disassociate_timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1209600&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;# release leases immediately on terminate
+force_dhcp_release=true
+# one week lease time
+dhcp_lease_time=604800
+# two week disassociate timeout
+fixed_ip_disassociate_timeout=1209600
 &lt;/pre&gt;&lt;/div&gt;
 
 

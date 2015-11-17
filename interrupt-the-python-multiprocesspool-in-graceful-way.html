@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+          <title> Interrupt the Python multiprocess.Pool in graceful way - Xcodest </title>
+        <meta charset="utf-8" />
+
+
+
+    <meta name="tags" contents="Python" />
+
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
+        <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
+</head>
+
+<body id="index" class="home">
+    <div class="container">
+        <header id="banner" class="body">
+                <span class='site-title'><a href="http://xcodest.me/">Xcodest</a></span><span class="site-subtitle">code for fun</span>
+        </header>
+<section id="content" class="body">
+  <header>
+    <h2 class="entry-title">Interrupt the Python multiprocess.Pool in graceful way</h2>
+    <span class="post-date"> 2015-11-17 </span>
+  </header>
+  <div class="entry-content">
+    <p>When using <code>KeyboardInterrupt</code>(<code>Ctrl+c</code>) interrupt the excution of the <code>multiprocess.Pool</code>, it will not work as expected. Following is a demo</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
+
+
+<span class="k">def</span> <span class="nf">worker</span><span class="p">():</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">pool</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">worker</span><span class="p">)</span>
+</pre></div>
+
+
+<p>When run the code and try to <code>Ctrl+C</code> to stop it, it will never be stopped.</p>
+<div class="highlight"><pre><span class="nv">$ </span>python2 b.py                                                                      
+^CProcess PoolWorker-1:
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/process.py&quot;</span>, line 258, in _bootstrap
+    self.run<span class="o">()</span>
+  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/process.py&quot;</span>, line 114, in run
+    self._target<span class="o">(</span>*self._args, **self._kwargs<span class="o">)</span>
+  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/pool.py&quot;</span>, line 113, in worker
+    <span class="nv">result</span> <span class="o">=</span> <span class="o">(</span>True, func<span class="o">(</span>*args, **kwds<span class="o">))</span>
+  File <span class="s2">&quot;b.py&quot;</span>, line 7, in worker
+    time.sleep<span class="o">(</span>1<span class="o">)</span>
+KeyboardInterrupt
+</pre></div>
+
+
+<p>The root cause is explained in <a href="http://stackoverflow.com/a/1408476/893981">stackoverflow</a>. And the bug is <a href="http://bugs.python.org/issue8296">here</a></p>
+<blockquote>
+This is a Python bug. When waiting for a condition in threading.Condition.wait(), KeyboardInterrupt is never sent. Repro:
+
+<pre>
+import threading
+cond = threading.Condition(threading.Lock())
+cond.acquire()
+cond.wait(None)
+print "done"
+</pre>
+
+The KeyboardInterrupt exception won't be delivered until wait() returns, and it never returns, so the interrupt never happens. KeyboardInterrupt should almost certainly interrupt a condition wait.
+
+Note that this doesn't happen if a timeout is specified; cond.wait(1) will receive the interrupt immediately. So, a workaround is to specify a timeout. To do that, replace
+
+<pre>
+    results = pool.map(slowly_square, range(40))
+</pre>
+
+with
+
+<pre>
+    results = pool.map_async(slowly_square, range(40)).get(9999999)
+</pre>
+
+or similar.
+</blockquote>
+
+<p>By using this, we can interrupt the Pool by using <code>Ctrl+c</code>.</p>
+<p>Here is a better version.</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+
+
+<span class="k">def</span> <span class="nf">worker</span><span class="p">():</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">worker_init</span><span class="p">():</span>
+    <span class="c"># ignore the SIGINI in sub process, just print a log</span>
+    <span class="k">def</span> <span class="nf">sig_int</span><span class="p">(</span><span class="n">signal_num</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&#39;signal: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">signal_num</span>
+    <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">sig_int</span><span class="p">)</span>
+
+
+<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">worker_init</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span><span class="n">worker</span><span class="p">)</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mh">0xfff</span><span class="p">)</span>
+    <span class="c"># catch TimeoutError and get again</span>
+    <span class="k">except</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">TimeoutError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;timeout&#39;</span>
+</pre></div>
+
+
+<h1>REF</h1>
+<ul>
+<li><a href="http://bugs.python.org/issue8296">Python Bug</a></li>
+<li><a href="http://unix.stackexchange.com/a/149756">How Ctrl+c works</a></li>
+<li><a href="http://stackoverflow.com/a/1408476/893981">Keyboard Interrupts with python's multiprocessing Pool</a></li>
+</ul>
+  </div><!-- /.entry-content -->
+  <div class="entry-info">
+    <p> Tags: <a href="http://xcodest.me/tag/python.html">Python</a>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'interrupt-the-python-multiprocesspool-in-graceful-way.html';
+        var disqus_url = 'http://xcodest.me/interrupt-the-python-multiprocesspool-in-graceful-way.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    </div>
+</body>
+</html>

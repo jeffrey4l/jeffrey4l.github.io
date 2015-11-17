@@ -36,16 +36,16 @@ $ virsh capabilities | grep uuid
 &lt;/ul&gt;</summary><category term="Libvirt"></category></entry><entry><title>tun &amp; veth设备</title><link href="http://xcodest.me/tun-vethshe-bei.html" rel="alternate"></link><updated>2015-02-09T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-02-09:tun-vethshe-bei.html</id><summary type="html">&lt;p&gt;OpenStack 的 Neutron 中会建立好多网卡设备。大体上这些网卡可以分为两类 tun 和 veth。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="OpenStack Neutron Network" src="images/neutron-ovs-compute.png" /&gt;&lt;/p&gt;
 &lt;p&gt;用&lt;code&gt;ethtool&lt;/code&gt;可以得到网卡所用的驱动，从而得到网上设备是哪一类。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;ethtool&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="n"&gt;veth4NCTQ1&lt;/span&gt; 
-&lt;span class="nl"&gt;driver:&lt;/span&gt; &lt;span class="n"&gt;veth&lt;/span&gt;
-&lt;span class="nl"&gt;version:&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt;
-&lt;span class="n"&gt;firmware&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;version&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
-&lt;span class="n"&gt;bus&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
-&lt;span class="n"&gt;supports&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;statistics&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;yes&lt;/span&gt;
-&lt;span class="n"&gt;supports&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt;
-&lt;span class="n"&gt;supports&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;eeprom&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;access&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt;
-&lt;span class="n"&gt;supports&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="k"&gt;register&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dump&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt;
-&lt;span class="n"&gt;supports&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;priv&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;flags&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;ethtool -i veth4NCTQ1 
+driver: veth
+version: 1.0
+firmware-version: 
+bus-info: 
+supports-statistics: yes
+supports-test: no
+supports-eeprom-access: no
+supports-register-dump: no
+supports-priv-flags: no
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -59,15 +59,15 @@ $ virsh capabilities | grep uuid
 &lt;p&gt;开源项目openvpn和Vtun都是利用tun/tap驱动实现的隧道封装&lt;/p&gt;
 &lt;p&gt;虽然是出自一个娘，但它们仍然有大的不同。tun是点对点的设备，而tap是一个普通的以太网卡设备。也就是说，tun设备其实完全不需要有物理地址的。它收到和发出的包不需要arp，也不需要有数据链路层的头。而tap设备则是有完整的物理地址和完整的以太网帧。&lt;/p&gt;
 &lt;p&gt;可以通过以下方法创建&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;ip&lt;/span&gt; &lt;span class="n"&gt;tuntap&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="n"&gt;mode&lt;/span&gt; &lt;span class="n"&gt;tap&lt;/span&gt; 
-&lt;span class="n"&gt;ip&lt;/span&gt; &lt;span class="n"&gt;tuntap&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="n"&gt;mode&lt;/span&gt; &lt;span class="n"&gt;tun&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ip tuntap add mode tap 
+ip tuntap add mode tun
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;在 OpenStack 中，主要用tap来做虚拟机的网卡。&lt;/p&gt;
 &lt;h1&gt;veth&lt;/h1&gt;
 &lt;p&gt;veth 从名字上来看是 Virtual ETHernet 的缩写，它的作用很简单，就是要把从一个 network namespace 发出的数据包转发到另一个 namespace。veth 设备是成对的，一个是 container 之中，另一个在 container 之外，即在真实机器上能看到的。 建立 veth 类型的设备可以用下面的命令：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;ip&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="n"&gt;veth0&lt;/span&gt; &lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="n"&gt;veth0&lt;/span&gt; &lt;span class="n"&gt;peer&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="n"&gt;veth1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ip link add name veth0 type veth0 peer name veth1
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -143,5 +143,5 @@ jeffrey-thinkpad:
 &lt;li&gt;https://bugzilla.redhat.com/show_bug.cgi?id=487763&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;把内核升级到3.8之后就可以了。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;apt&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;linux&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;generic&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;lts&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;raring&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;apt-get install linux-image-generic-lts-raring
 &lt;/pre&gt;&lt;/div&gt;</summary><category term="Network"></category></entry></feed>

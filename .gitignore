@@ -2,3 +2,4 @@ output
 pelican.pid
 srv.pid
 cache
+themes/pelican-simplegrey

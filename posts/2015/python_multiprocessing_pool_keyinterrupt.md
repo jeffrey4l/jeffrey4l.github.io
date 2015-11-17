@@ -1,7 +1,8 @@
-title: Interrupt the Python multiprocess.Pool in graceful way
+title: Interrupt the Python multiprocessing.Pool in graceful way
 Date: 2015-11-17
 Tags: Python
 Category: Programming
+Slug: interrupt-the-python-multiprocessing-pool-in-graceful-way
 
 When using `KeyboardInterrupt`(`Ctrl+c`) interrupt the excution of the `multiprocess.Pool`, it will not work as expected. Following is a demo
 

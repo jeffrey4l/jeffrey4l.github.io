@@ -11,3 +11,4 @@ docutils
 pygments
 Typogrify
 pelican-gist
+watchdog

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+          <title> Deploy Docker Registry Service - Xcodest </title>
+        <meta charset="utf-8" />
+
+
+
+    <meta name="tags" contents="Docker" />
+
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
+        <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
+</head>
+
+<body id="index" class="home">
+    <div class="container">
+        <header id="banner" class="body">
+                <span class='site-title'><a href="http://xcodest.me/">Xcodest</a></span><span class="site-subtitle">code for fun</span>
+        </header>
+<section id="content" class="body">
+  <header>
+    <h2 class="entry-title">Deploy Docker Registry Service</h2>
+    <span class="post-date"> 2015-12-15 </span>
+  </header>
+  <div class="entry-content">
+    <p>使用 Docker 时，很多情况下需要搭建自己的 registry 服务。把一些私有的 Image 放到上面用。官方有一个 registry 的<a href="https://hub.docker.com/_/registry/">镜像</a>可以拉下来，直接用。如下：</p>
+<div class="highlight"><pre>docker run -p 5000:5000 -v &lt;HOST_DIR&gt;:/tmp/registry-dev registry
+</pre></div>
+
+
+<p>但是默认没有加上 ssl(如果没有，只能给本机提供服务)， proxy也没有开启。</p>
+<p>我自己写了一个 docker compose, 默认开启了以上两个功能，代码见<a href="https://github.com/jeffrey4l/docker-registry">这里</a>。默认使用了 host 的 /data/docker-registry/data 目录做数据 volume, 所以请保证这个目录存在。</p>
+<p>使用自己建立的 registry 服务时，要修改 docker 的服务启动脚本，加上如下参数：</p>
+<div class="highlight"><pre>--insecure-registry your.domain.com:5000 --registry-mirror=https://your.doamin.com:5000
+</pre></div>
+
+
+<h1>REF</h1>
+<ul>
+<li>https://github.com/jeffrey4l/docker-registry</li>
+<li>https://github.com/docker/distribution/blob/master/docs/mirror.md</li>
+<li>https://hub.docker.com/_/registry/</li>
+</ul>
+  </div><!-- /.entry-content -->
+  <div class="entry-info">
+    <p> Tags: <a href="http://xcodest.me/tag/docker.html">Docker</a>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'deploy-docker-registry-service.html';
+        var disqus_url = 'http://xcodest.me/deploy-docker-registry-service.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    </div>
+</body>
+</html>

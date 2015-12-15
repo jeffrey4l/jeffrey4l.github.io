@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/jeffrey4l.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-11-20T00:00:00+08:00</updated><entry><title>Python Exception init args</title><link href="http://xcodest.me/python-exception-init-args.html" rel="alternate"></link><updated>2015-11-20T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-11-20:python-exception-init-args.html</id><summary type="html">&lt;div style="text-align: center;"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/jeffrey4l.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-12-15T00:00:00+08:00</updated><entry><title>Deploy Docker Registry Service</title><link href="http://xcodest.me/deploy-docker-registry-service.html" rel="alternate"></link><updated>2015-12-15T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-12-15:deploy-docker-registry-service.html</id><summary type="html">&lt;p&gt;使用 Docker 时，很多情况下需要搭建自己的 registry 服务。把一些私有的 Image 放到上面用。官方有一个 registry 的&lt;a href="https://hub.docker.com/_/registry/"&gt;镜像&lt;/a&gt;可以拉下来，直接用。如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;docker run -p 5000:5000 -v &amp;lt;HOST_DIR&amp;gt;:/tmp/registry-dev registry
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;但是默认没有加上 ssl(如果没有，只能给本机提供服务)， proxy也没有开启。&lt;/p&gt;
+&lt;p&gt;我自己写了一个 docker compose, 默认开启了以上两个功能，代码见&lt;a href="https://github.com/jeffrey4l/docker-registry"&gt;这里&lt;/a&gt;。默认使用了 host 的 /data/docker-registry/data 目录做数据 volume, 所以请保证这个目录存在。&lt;/p&gt;
+&lt;p&gt;使用自己建立的 registry 服务时，要修改 docker 的服务启动脚本，加上如下参数：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;--insecure-registry your.domain.com:5000 --registry-mirror=https://your.doamin.com:5000
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;REF&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;https://github.com/jeffrey4l/docker-registry&lt;/li&gt;
+&lt;li&gt;https://github.com/docker/distribution/blob/master/docs/mirror.md&lt;/li&gt;
+&lt;li&gt;https://hub.docker.com/_/registry/&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="Docker"></category></entry><entry><title>Python Exception init args</title><link href="http://xcodest.me/python-exception-init-args.html" rel="alternate"></link><updated>2015-11-20T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-11-20:python-exception-init-args.html</id><summary type="html">&lt;div style="text-align: center;"&gt;
 &lt;img src="images/talk_is_cheap.jpg"/&gt;
 &lt;/div&gt;
 

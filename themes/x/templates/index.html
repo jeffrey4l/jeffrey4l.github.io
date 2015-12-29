@@ -2,11 +2,15 @@
 {% block content %}
 <div class="row">
   <div class="col-md-12 col-xs-12">
-    {% if category %}
-    <div class="page-header">
-      <h3>Category: {{ category }}</h3>
-    </div>
-    {% endif %}
+    <ol class="breadcrumb">
+      <li><a href="{{ SITEURL }}">Home</a></li>
+      {% if category %}
+      <li><a href="#">Category</a></li>
+      <li class="active">{{ category }}</li>
+      {% elif page_name == "index" %}
+      <li class="active"> All Articles</li>
+      {% endif %}
+    </ol>
     <div class="list-group">
     {% for article in articles_page.object_list %}
         <a class="list-group-item" href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}

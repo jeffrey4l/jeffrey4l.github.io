@@ -32,9 +32,7 @@ SOCIALS = (
     ('Github', 'http://github.com/jeffrey4l'),
   )
 
-YEAR_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/index.html'
-MONTH_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/{date:%b}/index.html'
-
+YEAR_ARCHIVE_SAVE_AS = 'posts/{date:%Y}.html'
 
 PLUGIN_PATHS = [os.path.join(ROOT, 'plugins')]
 

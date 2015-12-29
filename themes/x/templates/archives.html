@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Archives for {{ SITENAME }}</h1>
-
+<ol class="breadcrumb">
+  <li><a href="{{ SITEURL }}">Home</a></li>
+  <li class="active"> Archives </li>
+</ol>
 <div class="list-group">
 {% for article in dates %}
   <a class="list-group-item" href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}

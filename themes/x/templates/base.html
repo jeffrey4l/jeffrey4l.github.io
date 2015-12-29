@@ -5,6 +5,7 @@
         <title>{% block title %}{{ page_name }}{% endblock %} - {{ SITENAME }}</title>
         <meta charset="utf-8" />
         {% endblock head %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/bootstrap.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/pygment.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/{{ CSS_FILE }}" type="text/css" charset="utf-8">
@@ -15,9 +16,9 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container-flow">
       <div class="row">
-        <div class="col-md-12 col-xs-12">
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
           <div class="navbar navbar-default">
             <div class="container-fluid">
               <div class="navbar-header">
@@ -42,7 +43,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-3 col-xs-12 hidden-xs hidden-sm" id="sidebar">
+        <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
           <div class="panel panel-default">
             <div class="panel-heading">Categories</div>
             <div class="panel-body">
@@ -54,7 +55,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-9 col-xs-12">
+        <div class="col-md-8 col-xs-12">
         {% block content %} {% endblock %}
         </div>
       </div>

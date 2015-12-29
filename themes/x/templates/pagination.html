@@ -1,11 +1,18 @@
 {% if DEFAULT_PAGINATION %}
-<p class="paginator">
-    {% if articles_page.has_previous() %}
-        <a href="{{ SITEURL }}/{{ articles_previous_page.url }}">&laquo;</a>
-    {% endif %}
-    Page {{ articles_page.number }} / {{ articles_paginator.num_pages }}
-    {% if articles_page.has_next() %}
-        <a href="{{ SITEURL }}/{{ articles_next_page.url }}">&raquo;</a>
-    {% endif %}
-</p>
+<div class="row col-md-4 col-md-offset-5 col-xs-8 col-xs-offset-3">
+<nav>
+  <ul class="pagination">
+    <li{% if not articles_page.has_previous() %} class="disabled"{% endif %}>
+      <a href="{{ SITEURL }}/{{ articles_previous_page.url }}"><span>&laquo;</span></a>
+    </li>
+    {% for num in articles_paginator.page_range %}
+    <li{% if articles_page.number == num %} class="active"{% endif %}><a href="{{ SITEURL }}/{{ page_name }}{% if num != 1 %}{{ num }}{% endif %}.html">{{ num }}</a></li>
+    {% endfor %}
+    <li{% if not articles_page.has_next() %} class="disabled"{% endif %}>
+      <a href="{{ SITEURL }}/{{ articles_next_page.url }}"><span>&raquo;</span></a>
+    </li>
+    <li class="disabled"><a href="#">{{ articles_page.number }} / {{ articles_paginator.num_pages }}</a></li>
+  </ul>
+</nav>
+</div>
 {% endif %}

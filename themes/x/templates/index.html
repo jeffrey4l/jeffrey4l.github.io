@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="row">
-  <div class="col-sm-offset-1 col-sm-8">
-    <ul id="list-group">
+  <div class="col-md-12 col-xs-12">
+    <div class="page-header">
+      {% if category %}
+      <h1>Category: {{ category }}</h1>
+      {% endif %}
+    </div>
+    <ul class="list-group">
     {% for article in articles_page.object_list %}
       <li class="list-group-item">
         <span class="badge">{{ article.date|strftime(DEFAULT_DATE_FORMAT) }}</span>
@@ -10,7 +15,7 @@
       </li>
     {% endfor %}
     </ul><!-- /#posts-list -->
-    {% include 'pagination.html' %}
   </div>
 </div>
+{% include 'pagination.html' %}
 {% endblock content %}

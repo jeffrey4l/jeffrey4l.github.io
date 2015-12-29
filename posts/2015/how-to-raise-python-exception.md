@@ -2,7 +2,7 @@ Title: 论Python的异常的合理抛出姿势
 Slug: How_to_raise_python_exception
 Date: 2015-5-6
 Tags: Python, Exception
-Category: Program
+Category: Programming
 
 
 

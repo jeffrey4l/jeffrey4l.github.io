@@ -2,6 +2,7 @@ Title: Python cString raise exception when feed Unicode
 Date: 2014-9-9
 Tags: Python
 Slug: python-cstring-unicode
+Category: Python
 
 I gett following different result when using these two Class.
 

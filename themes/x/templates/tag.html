@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-md-offset-2 col-md-8 col-xs-12">
+    {% if category %} <h1>Category: {{ category }}</h1> {% endif %}
+    {% if tag %} <h1>Tag: {{ tag }}</h1> {% endif %}
+    <ul class="list-group">
+    {% for article in articles_page.object_list %}
+      <li class="list-group-item">
+        <span class="badge">{{ article.date|strftime(DEFAULT_DATE_FORMAT) }}</span>
+        <a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}</a>
+      </li>
+    {% endfor %}
+    </ul><!-- /#posts-list -->
+  </div>
+</div>
+{% include 'pagination.html' %}
+{% endblock content %}

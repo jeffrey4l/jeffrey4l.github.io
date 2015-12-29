@@ -1,6 +1,6 @@
 Title: Deploy Docker Registry Service
 Date: 2015-12-15
-Category: Docker
+Category: Linux
 Tags: Docker
 
 使用 Docker 时，很多情况下需要搭建自己的 registry 服务。把一些私有的 Image 放到上面用。官方有一个 registry 的[镜像](https://hub.docker.com/_/registry/)可以拉下来，直接用。如下：

@@ -1,6 +1,7 @@
 Title: Migrate SVN to GitLab
 Date: 2014-08-12
 Tags: Git
+Category: Linux
 Email: zhang.lei.fly@gmail.com
 
 * 在GitLab上创建相对应的项目/项目组

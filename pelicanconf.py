@@ -72,3 +72,5 @@ THEME = 'themes/x'
 GITHUB_URL = 'http://githbu.com/jeffrey4l'
 
 DEFAULT_DATE_FORMAT = '%Y-%m-%d'
+
+DEFAULT_PAGINATION = 10

@@ -1,6 +1,7 @@
 Title: Logstash Debug
 Date: 2015-03-23
 slug: logstash_debug
+Category: Linux
 
 
 Logstash 能使用 rubydebug 这个 codec 进行 debug。

@@ -1,6 +1,6 @@
 Title: Oz Templates
 Date: 2015-5-11
-Category:OpenStack
+Category: OpenStack
 Tags: OpenStack
 
 最近利用[OZ](https://github.com/clalancette/oz)做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下

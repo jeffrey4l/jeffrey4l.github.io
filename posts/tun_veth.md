@@ -5,7 +5,7 @@ Category: Linux
 
 OpenStack 的 Neutron 中会建立好多网卡设备。大体上这些网卡可以分为两类 tun 和 veth。
 
-![OpenStack Neutron Network](images/neutron-ovs-compute.png)
+![OpenStack Neutron Network](/images/neutron-ovs-compute.png){.img-responsive}
 
 用`ethtool`可以得到网卡所用的驱动，从而得到网上设备是哪一类。
 

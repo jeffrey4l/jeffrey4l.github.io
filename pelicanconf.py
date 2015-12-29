@@ -36,7 +36,7 @@ YEAR_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/index.html'
 MONTH_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/{date:%b}/index.html'
 
 
-PLUGIN_PATHS = [ os.path.join(ROOT, 'plugins')]
+PLUGIN_PATHS = [os.path.join(ROOT, 'plugins')]
 
 PLUGINS = ['assets', 'gravatar', 'pelican_gist']
 

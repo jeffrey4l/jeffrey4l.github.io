@@ -4,9 +4,8 @@ Category: Programming
 Tags: Python
 Slug: python-exception-init-args
 
-<div style="text-align: center;">
-<img src="images/talk_is_cheap.jpg"/>
-</div>
+![Talk is cheep](/images/talk_is_cheap.jpg){.img-responsive}
+
 
 一直没有搞明白 `Exception` 的 args 和 message 参数, 最近看了一下 CPython 源码，
 终于搞明白了。

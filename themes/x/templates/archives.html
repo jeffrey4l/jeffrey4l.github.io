@@ -2,10 +2,11 @@
 {% block content %}
 <h1>Archives for {{ SITENAME }}</h1>
 
-<dl>
+<div class="list-group">
 {% for article in dates %}
-    <dt>{{ article.locale_date }}</dt>
-    <dd><a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></dd>
+  <a class="list-group-item" href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}
+    <span class="badge">{{ article.date|strftime(DEFAULT_DATE_FORMAT) }}</span>
+  </a>
 {% endfor %}
-</dl>
+</div>
 {% endblock %}

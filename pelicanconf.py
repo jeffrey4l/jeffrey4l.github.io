@@ -28,7 +28,7 @@ LINKS = (('My Git', 'http://github.com/jeffrey4l'),
         )
 
 # Social widget
-SOCIAL = (
+SOCIALS = (
     ('Github', 'http://github.com/jeffrey4l'),
   )
 
@@ -38,7 +38,8 @@ MONTH_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/{date:%b}/index.html'
 
 PLUGIN_PATHS = [os.path.join(ROOT, 'plugins')]
 
-PLUGINS = ['assets', 'gravatar', 'pelican_gist']
+PLUGINS = ['assets', 'gravatar', 'pelican_gist',
+           'neighbors']
 
 SITEMAP= {'format': 'xml'}
 
@@ -48,9 +49,6 @@ EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'}}
 
 
 DISQUS_SITENAME = 'xcodest'
-
-#MONTH_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/{date:%b}/index.html'
-YEAR_ARCHIVE_SAVE_AS = 'posts/{date:%Y}/index.html'
 
 MENUITEMS = (
     ('Archives', '/archives.html'),
@@ -63,14 +61,10 @@ DEFAULT_CATEGORY = 'Others'
 
 AUTHORS_SAVE_AS = ''
 
-DISPLAY_CATEGORIES_ON_MENU = False
-
 ARTICLE_EXCLUDES =  ['themes', 'plugins', 'output']
 
 THEME = 'themes/x'
 
-GITHUB_URL = 'http://githbu.com/jeffrey4l'
-
 DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 
-DEFAULT_PAGINATION = 10
+DEFAULT_PAGINATION = 50

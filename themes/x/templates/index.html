@@ -7,12 +7,11 @@
       <h3>Category: {{ category }}</h3>
     </div>
     {% endif %}
-    <ul class="list-group">
+    <div class="list-group">
     {% for article in articles_page.object_list %}
-      <li class="list-group-item">
-        <span class="badge">{{ article.date|strftime(DEFAULT_DATE_FORMAT) }}</span>
-        <a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}</a>
-      </li>
+        <a class="list-group-item" href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}
+          <span class="badge">{{ article.date|strftime(DEFAULT_DATE_FORMAT) }}</span>
+        </a>
     {% endfor %}
     </ul><!-- /#posts-list -->
   </div>

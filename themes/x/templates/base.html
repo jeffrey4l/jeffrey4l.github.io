@@ -6,7 +6,8 @@
         <meta charset="utf-8" />
         {% endblock head %}
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/bootstrap.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/bootstrap.min.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/pygment.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/{{ CSS_FILE }}" type="text/css" charset="utf-8">
         <script src="{{ SITEURL }}/{{ THEME_STATIC_DIR}}/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
@@ -33,6 +34,9 @@
               </div>
               <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
+                  {% for name, link in MENUITEMS %}
+                  <li><a href="{{ link }}">{{ name }}</a></li>
+                  {% endfor %}
                   {% for page in pages %}
                   <li><a href="#">{{ page }}</a></li>
                   {% endfor %}
@@ -46,12 +50,26 @@
         <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
           <div class="panel panel-default">
             <div class="panel-heading">Categories</div>
-            <div class="panel-body">
-              <ul class="nav nav-pills nav-stacked">
-                {% for cate, arti in categories %}
-                <li{% if cate==category %} class="active"{% endif %}><a href="{{ SITEURL }}/category/{{ cate|lower }}.html">{{ cate }}</a></li>
-                {% endfor %}
-              </ul>
+            <div class="list-group">
+              {% for cate, arti in categories %}
+              <a class="list-group-item{% if cate==category and not article %} active{% endif %}" href="{{ SITEURL }}/category/{{ cate|lower }}.html">{{ cate }}</a>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Social</div>
+            <div class="list-group">
+              {% for name, link in SOCIALS %} 
+              <a class="list-group-item" href="{{ link }}" target="_blank">{{ name }}</a>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Blogroll</div>
+            <div class="list-group">
+              {% for name, link in LINKS %}
+              <a class="list-group-item" href="{{ link }}" target="_blank">{{ name }}</a>
+              {% endfor %}
             </div>
           </div>
         </div>

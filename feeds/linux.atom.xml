@@ -87,7 +87,7 @@ $ virsh capabilities | grep uuid
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://libvirt.org/guide/html/Application_Development_Guide-Connections-Capability_Info.html"&gt;Libvirt Capability Information&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</summary><category term="Libvirt"></category></entry><entry><title>tun &amp; veth设备</title><link href="http://xcodest.me/tun-vethshe-bei.html" rel="alternate"></link><updated>2015-02-09T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-02-09:tun-vethshe-bei.html</id><summary type="html">&lt;p&gt;OpenStack 的 Neutron 中会建立好多网卡设备。大体上这些网卡可以分为两类 tun 和 veth。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="OpenStack Neutron Network" src="images/neutron-ovs-compute.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="OpenStack Neutron Network" class="img-responsive" src="/images/neutron-ovs-compute.png" /&gt;&lt;/p&gt;
 &lt;p&gt;用&lt;code&gt;ethtool&lt;/code&gt;可以得到网卡所用的驱动，从而得到网上设备是哪一类。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;ethtool -i veth4NCTQ1 
 driver: veth

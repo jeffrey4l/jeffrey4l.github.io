@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/programming.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-11-20T00:00:00+08:00</updated><entry><title>Python Exception init args</title><link href="http://xcodest.me/python-exception-init-args.html" rel="alternate"></link><updated>2015-11-20T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-11-20:python-exception-init-args.html</id><summary type="html">&lt;div style="text-align: center;"&gt;
-&lt;img src="images/talk_is_cheap.jpg"/&gt;
-&lt;/div&gt;
-
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/programming.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-11-20T00:00:00+08:00</updated><entry><title>Python Exception init args</title><link href="http://xcodest.me/python-exception-init-args.html" rel="alternate"></link><updated>2015-11-20T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-11-20:python-exception-init-args.html</id><summary type="html">&lt;p&gt;&lt;img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;一直没有搞明白 &lt;code&gt;Exception&lt;/code&gt; 的 args 和 message 参数, 最近看了一下 CPython 源码，
 终于搞明白了。&lt;/p&gt;
 &lt;p&gt;一开始(从2.5开始)的时候是有 &lt;code&gt;args&lt;/code&gt; 和 &lt;code&gt;message&lt;/code&gt; 两个参数的。2.6版本之后，把

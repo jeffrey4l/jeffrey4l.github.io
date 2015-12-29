@@ -67,7 +67,7 @@
   </header>
   <div class="entry-content">
     <p>OpenStack 的 Neutron 中会建立好多网卡设备。大体上这些网卡可以分为两类 tun 和 veth。</p>
-<p><img alt="OpenStack Neutron Network" src="images/neutron-ovs-compute.png" /></p>
+<p><img alt="OpenStack Neutron Network" class="img-responsive" src="/images/neutron-ovs-compute.png" /></p>
 <p>用<code>ethtool</code>可以得到网卡所用的驱动，从而得到网上设备是哪一类。</p>
 <div class="highlight"><pre><span class="nv">$ </span>ethtool -i veth4NCTQ1 
 driver: veth

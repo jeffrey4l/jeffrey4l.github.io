@@ -16,10 +16,7 @@
 &lt;li&gt;https://github.com/jeffrey4l/docker-registry&lt;/li&gt;
 &lt;li&gt;https://github.com/docker/distribution/blob/master/docs/mirror.md&lt;/li&gt;
 &lt;li&gt;https://hub.docker.com/_/registry/&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 15 Dec 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-12-15:deploy-docker-registry-service.html</guid><category>Docker</category></item><item><title>Python Exception init args</title><link>http://xcodest.me/python-exception-init-args.html</link><description>&lt;div style="text-align: center;"&gt;
-&lt;img src="images/talk_is_cheap.jpg"/&gt;
-&lt;/div&gt;
-
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 15 Dec 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-12-15:deploy-docker-registry-service.html</guid><category>Docker</category></item><item><title>Python Exception init args</title><link>http://xcodest.me/python-exception-init-args.html</link><description>&lt;p&gt;&lt;img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;一直没有搞明白 &lt;code&gt;Exception&lt;/code&gt; 的 args 和 message 参数, 最近看了一下 CPython 源码，
 终于搞明白了。&lt;/p&gt;
 &lt;p&gt;一开始(从2.5开始)的时候是有 &lt;code&gt;args&lt;/code&gt; 和 &lt;code&gt;message&lt;/code&gt; 两个参数的。2.6版本之后，把
@@ -663,7 +660,7 @@ $ virsh capabilities | grep uuid
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://libvirt.org/guide/html/Application_Development_Guide-Connections-Capability_Info.html"&gt;Libvirt Capability Information&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 10 Feb 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-02-10:libvirt-uuid.html</guid><category>Libvirt</category></item><item><title>tun &amp; veth设备</title><link>http://xcodest.me/tun-vethshe-bei.html</link><description>&lt;p&gt;OpenStack 的 Neutron 中会建立好多网卡设备。大体上这些网卡可以分为两类 tun 和 veth。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="OpenStack Neutron Network" src="images/neutron-ovs-compute.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="OpenStack Neutron Network" class="img-responsive" src="/images/neutron-ovs-compute.png" /&gt;&lt;/p&gt;
 &lt;p&gt;用&lt;code&gt;ethtool&lt;/code&gt;可以得到网卡所用的驱动，从而得到网上设备是哪一类。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;ethtool -i veth4NCTQ1 
 driver: veth

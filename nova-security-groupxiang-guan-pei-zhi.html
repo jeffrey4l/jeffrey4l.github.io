@@ -9,7 +9,8 @@
     <meta name="tags" contents="Network" />
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
         <script src="http://xcodest.me/theme/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
@@ -36,6 +37,7 @@
               </div>
               <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
+                  <li><a href="/archives.html">Archives</a></li>
                 </ul>
               </div>
             </div>
@@ -46,21 +48,32 @@
         <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
           <div class="panel panel-default">
             <div class="panel-heading">Categories</div>
-            <div class="panel-body">
-              <ul class="nav nav-pills nav-stacked">
-                <li><a href="http://xcodest.me/category/life.html">Life</a></li>
-                <li><a href="http://xcodest.me/category/linux.html">Linux</a></li>
-                <li class="active"><a href="http://xcodest.me/category/openstack.html">OpenStack</a></li>
-                <li><a href="http://xcodest.me/category/programming.html">Programming</a></li>
-                <li><a href="http://xcodest.me/category/python.html">Python</a></li>
-              </ul>
+            <div class="list-group">
+              <a class="list-group-item" href="http://xcodest.me/category/life.html">Life</a>
+              <a class="list-group-item" href="http://xcodest.me/category/linux.html">Linux</a>
+              <a class="list-group-item" href="http://xcodest.me/category/openstack.html">OpenStack</a>
+              <a class="list-group-item" href="http://xcodest.me/category/programming.html">Programming</a>
+              <a class="list-group-item" href="http://xcodest.me/category/python.html">Python</a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Social</div>
+            <div class="list-group">
+ 
+              <a class="list-group-item" href="http://github.com/jeffrey4l" target="_blank">Github</a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Blogroll</div>
+            <div class="list-group">
+              <a class="list-group-item" href="http://github.com/jeffrey4l" target="_blank">My Git</a>
             </div>
           </div>
         </div>
         <div class="col-md-8 col-xs-12">
 <div class="row">
   <div class="col-md-12 col-xs-12">
-<section id="content" class="body">
+  <section id="content" class="body">
   <header>
     <h2 class="entry-title">Nova Security Group相关配置</h2>
     <span class="post-date"> 2015-03-18 </span>
@@ -124,6 +137,14 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 </li>
 </ol>
   </div><!-- /.entry-content -->
+  <div>
+    <nav>
+      <ul class="pager">
+        <li class="previous"><a href="ten-things-you-need-know-abount-loss-weight.html">&larr; Older</a></li>
+        <li class="next"><a href="logstash_debug.html">Newer &rarr;</a></li>
+      </ul>
+    </nav>
+  </div>
   <div class="entry-info">
     <p> Tags: <a href="http://xcodest.me/tag/network.html">Network</a>  </p>
   </div>

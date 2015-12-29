@@ -4,7 +4,8 @@
         <title>category/programming - Xcodest</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
         <script src="http://xcodest.me/theme/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
@@ -31,6 +32,7 @@
               </div>
               <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
+                  <li><a href="/archives.html">Archives</a></li>
                 </ul>
               </div>
             </div>
@@ -41,14 +43,25 @@
         <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
           <div class="panel panel-default">
             <div class="panel-heading">Categories</div>
-            <div class="panel-body">
-              <ul class="nav nav-pills nav-stacked">
-                <li><a href="http://xcodest.me/category/life.html">Life</a></li>
-                <li><a href="http://xcodest.me/category/linux.html">Linux</a></li>
-                <li><a href="http://xcodest.me/category/openstack.html">OpenStack</a></li>
-                <li class="active"><a href="http://xcodest.me/category/programming.html">Programming</a></li>
-                <li><a href="http://xcodest.me/category/python.html">Python</a></li>
-              </ul>
+            <div class="list-group">
+              <a class="list-group-item" href="http://xcodest.me/category/life.html">Life</a>
+              <a class="list-group-item" href="http://xcodest.me/category/linux.html">Linux</a>
+              <a class="list-group-item" href="http://xcodest.me/category/openstack.html">OpenStack</a>
+              <a class="list-group-item active" href="http://xcodest.me/category/programming.html">Programming</a>
+              <a class="list-group-item" href="http://xcodest.me/category/python.html">Python</a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Social</div>
+            <div class="list-group">
+ 
+              <a class="list-group-item" href="http://github.com/jeffrey4l" target="_blank">Github</a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Blogroll</div>
+            <div class="list-group">
+              <a class="list-group-item" href="http://github.com/jeffrey4l" target="_blank">My Git</a>
             </div>
           </div>
         </div>
@@ -58,23 +71,19 @@
     <div class="page-header">
       <h3>Category: Programming</h3>
     </div>
-    <ul class="list-group">
-      <li class="list-group-item">
-        <span class="badge">2015-11-20</span>
-        <a href="http://xcodest.me/python-exception-init-args.html" rel="bookmark" title="Permalink to Python Exception init args">Python Exception init args</a>
-      </li>
-      <li class="list-group-item">
-        <span class="badge">2015-11-17</span>
-        <a href="http://xcodest.me/interrupt-the-python-multiprocessing-pool-in-graceful-way.html" rel="bookmark" title="Permalink to Interrupt the Python multiprocessing.Pool in graceful way">Interrupt the Python multiprocessing.Pool in graceful way</a>
-      </li>
-      <li class="list-group-item">
-        <span class="badge">2015-05-06</span>
-        <a href="http://xcodest.me/How_to_raise_python_exception.html" rel="bookmark" title="Permalink to 论Python的异常的合理抛出姿势">论Python的异常的合理抛出姿势</a>
-      </li>
-      <li class="list-group-item">
-        <span class="badge">2015-01-08</span>
-        <a href="http://xcodest.me/pip-install-from-local.html" rel="bookmark" title="Permalink to PIP install from local">PIP install from local</a>
-      </li>
+    <div class="list-group">
+        <a class="list-group-item" href="http://xcodest.me/python-exception-init-args.html" rel="bookmark" title="Permalink to Python Exception init args">Python Exception init args
+          <span class="badge">2015-11-20</span>
+        </a>
+        <a class="list-group-item" href="http://xcodest.me/interrupt-the-python-multiprocessing-pool-in-graceful-way.html" rel="bookmark" title="Permalink to Interrupt the Python multiprocessing.Pool in graceful way">Interrupt the Python multiprocessing.Pool in graceful way
+          <span class="badge">2015-11-17</span>
+        </a>
+        <a class="list-group-item" href="http://xcodest.me/How_to_raise_python_exception.html" rel="bookmark" title="Permalink to 论Python的异常的合理抛出姿势">论Python的异常的合理抛出姿势
+          <span class="badge">2015-05-06</span>
+        </a>
+        <a class="list-group-item" href="http://xcodest.me/pip-install-from-local.html" rel="bookmark" title="Permalink to PIP install from local">PIP install from local
+          <span class="badge">2015-01-08</span>
+        </a>
     </ul><!-- /#posts-list -->
   </div>
 </div>
@@ -83,13 +92,15 @@
     <nav class="text-center">
       <ul class="pagination">
         <li class="disabled">
-          <a href="http://xcodest.me/"><span>&laquo;</span></a>
+          <a href="#"><span>&laquo;</span></a>
         </li>
-        <li class="active"><a href="http://xcodest.me/category/programming.html">1</a></li>
+        <li class="active">
+          <a href="http://xcodest.me/category/programming.html">1</a>
+        </li>
         <li class="disabled">
           <a href="http://xcodest.me/"><span>&raquo;</span></a>
         </li>
-        <li class="disabled"><a href="#">1 / 1</a></li>
+        <li class="disabled"><a href="javascript:return false;">1 / 1</a></li>
       </ul>
     </nav>
   </div>

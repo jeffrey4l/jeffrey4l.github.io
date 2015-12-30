@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-        <title> - Xcodest</title>
+          <title> Ansible安装 -   - Xcodest</title>
         <meta charset="utf-8" />
+
+
+
+    <meta name="tags" contents="Ansible" />
+
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
@@ -66,46 +71,77 @@
           </div>
         </div>
         <div class="col-md-8 col-xs-12">
-<h1>Archives for 2015</h1>
+<div class="row">
+  <div class="col-md-12 col-xs-12">
+  <section id="content" class="body">
+  <header>
+    <h2 class="entry-title">Ansible安装</h2>
+    <span class="post-date"> 2015-12-30 </span>
+  </header>
+  <div class="entry-content">
+    <p>由于 Ansible 是通过 SSH 进行通讯的，所以只用安装 master 端就可以了。并不像 puppet/SaltStack 那样在 slave/minion 端进行安装。</p>
+<p>由于是用 Python 编写的，安装起来和普通 Python 应用没有太大区别。可以通过源码，pypi, 操作系统的包管理进行安装。</p>
+<h1>系统包管理</h1>
+<h2>RPM 系</h2>
+<div class="highlight"><pre># install epel source
+yum install -y epel-release
+yum install ansible
+</pre></div>
 
-<dl>
-    <dt>2015-12-30</dt>
-    <dd><a href="http://xcodest.me/ansiblean-zhuang.html">Ansible安装</a></dd>
-    <dt>2015-12-15</dt>
-    <dd><a href="http://xcodest.me/deploy-docker-registry-service.html">Deploy Docker Registry Service</a></dd>
-    <dt>2015-11-20</dt>
-    <dd><a href="http://xcodest.me/python-exception-init-args.html">Python Exception init args</a></dd>
-    <dt>2015-11-17</dt>
-    <dd><a href="http://xcodest.me/interrupt-the-python-multiprocessing-pool-in-graceful-way.html">Interrupt the Python multiprocessing.Pool in graceful way</a></dd>
-    <dt>2015-06-04</dt>
-    <dd><a href="http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html">Glance Create Image from Existent Image in Ceph</a></dd>
-    <dt>2015-05-18</dt>
-    <dd><a href="http://xcodest.me/python-metaclass-magic.html">Python MetaClass Magic</a></dd>
-    <dt>2015-05-11</dt>
-    <dd><a href="http://xcodest.me/oz-templates.html">Oz Templates</a></dd>
-    <dt>2015-05-06</dt>
-    <dd><a href="http://xcodest.me/How_to_raise_python_exception.html">论Python的异常的合理抛出姿势</a></dd>
-    <dt>2015-03-23</dt>
-    <dd><a href="http://xcodest.me/logstash_debug.html">Logstash Debug</a></dd>
-    <dt>2015-03-18</dt>
-    <dd><a href="http://xcodest.me/nova-security-groupxiang-guan-pei-zhi.html">Nova Security Group相关配置</a></dd>
-    <dt>2015-03-12</dt>
-    <dd><a href="http://xcodest.me/ten-things-you-need-know-abount-loss-weight.html">关于减肥你应该知道的十件事 - 观后总结</a></dd>
-    <dt>2015-03-10</dt>
-    <dd><a href="http://xcodest.me/cinder-v2-api.html">Cinder V2 API</a></dd>
-    <dt>2015-02-15</dt>
-    <dd><a href="http://xcodest.me/print-the-first-n-characters-of-each-line.html">Print the First N Characters of each Line</a></dd>
-    <dt>2015-02-10</dt>
-    <dd><a href="http://xcodest.me/libvirt-uuid.html">修改 Libvirt 的 UUID</a></dd>
-    <dt>2015-02-09</dt>
-    <dd><a href="http://xcodest.me/tun-vethshe-bei.html">tun & veth设备</a></dd>
-    <dt>2015-02-05</dt>
-    <dd><a href="http://xcodest.me/ecitic9.html">中信9积分</a></dd>
-    <dt>2015-01-14</dt>
-    <dd><a href="http://xcodest.me/mysql-errno-150.html">MySQL Errno 150</a></dd>
-    <dt>2015-01-08</dt>
-    <dd><a href="http://xcodest.me/pip-install-from-local.html">PIP install from local</a></dd>
-</dl>
+
+<h2>Apt 系</h2>
+<div class="highlight"><pre>apt-get install -y software-properties-common
+apt-add-repository -y ppa:ansible/ansible
+apt-get update
+apt-get install -y ansible
+</pre></div>
+
+
+<h1>pypi安装</h1>
+<p>通过pypi相当简单，直接用pip就可安装</p>
+<div class="highlight"><pre>pip install ansible
+</pre></div>
+
+
+<h1>源码安装</h1>
+<div class="highlight"><pre><span class="c"># download the source from github</span>
+<span class="c"># ansible has two git submodules, so the --recursive is required.</span>
+git clone git://github.com/ansible/ansible.git --recursive
+<span class="nb">cd</span> ./ansible
+
+<span class="c"># install</span>
+pip install .
+</pre></div>
+  </div><!-- /.entry-content -->
+  <div>
+    <nav>
+      <ul class="pager">
+        <li class="previous"><a href="deploy-docker-registry-service.html">&larr; Older</a></li>
+        <li class="next disabled"><a href="#">Newer &rarr;</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="entry-info">
+    <p> Tags: <a href="http://xcodest.me/tag/ansible.html">Ansible</a>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'ansiblean-zhuang.html';
+        var disqus_url = 'http://xcodest.me/ansiblean-zhuang.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+</div>
+</div>
         </div>
       </div>
     <script type="text/javascript">

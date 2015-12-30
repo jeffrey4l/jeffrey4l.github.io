@@ -1,5 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/linux.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-12-15T00:00:00+08:00</updated><entry><title>Deploy Docker Registry Service</title><link href="http://xcodest.me/deploy-docker-registry-service.html" rel="alternate"></link><updated>2015-12-15T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-12-15:deploy-docker-registry-service.html</id><summary type="html">&lt;p&gt;使用 Docker 时，很多情况下需要搭建自己的 registry 服务。把一些私有的 Image 放到上面用。官方有一个 registry 的&lt;a href="https://hub.docker.com/_/registry/"&gt;镜像&lt;/a&gt;可以拉下来，直接用。如下：&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/linux.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-12-30T00:00:00+08:00</updated><entry><title>Ansible安装</title><link href="http://xcodest.me/ansiblean-zhuang.html" rel="alternate"></link><updated>2015-12-30T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-12-30:ansiblean-zhuang.html</id><summary type="html">&lt;p&gt;由于 Ansible 是通过 SSH 进行通讯的，所以只用安装 master 端就可以了。并不像 puppet/SaltStack 那样在 slave/minion 端进行安装。&lt;/p&gt;
+&lt;p&gt;由于是用 Python 编写的，安装起来和普通 Python 应用没有太大区别。可以通过源码，pypi, 操作系统的包管理进行安装。&lt;/p&gt;
+&lt;h1&gt;系统包管理&lt;/h1&gt;
+&lt;h2&gt;RPM 系&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;# install epel source
+yum install -y epel-release
+yum install ansible
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Apt 系&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;apt-get install -y software-properties-common
+apt-add-repository -y ppa:ansible/ansible
+apt-get update
+apt-get install -y ansible
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;pypi安装&lt;/h1&gt;
+&lt;p&gt;通过pypi相当简单，直接用pip就可安装&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;pip install ansible
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;源码安装&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# download the source from github&lt;/span&gt;
+&lt;span class="c"&gt;# ansible has two git submodules, so the --recursive is required.&lt;/span&gt;
+git clone git://github.com/ansible/ansible.git --recursive
+&lt;span class="nb"&gt;cd&lt;/span&gt; ./ansible
+
+&lt;span class="c"&gt;# install&lt;/span&gt;
+pip install .
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Ansible"></category></entry><entry><title>Deploy Docker Registry Service</title><link href="http://xcodest.me/deploy-docker-registry-service.html" rel="alternate"></link><updated>2015-12-15T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-12-15:deploy-docker-registry-service.html</id><summary type="html">&lt;p&gt;使用 Docker 时，很多情况下需要搭建自己的 registry 服务。把一些私有的 Image 放到上面用。官方有一个 registry 的&lt;a href="https://hub.docker.com/_/registry/"&gt;镜像&lt;/a&gt;可以拉下来，直接用。如下：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;docker run -p 5000:5000 -v &amp;lt;HOST_DIR&amp;gt;:/tmp/registry-dev registry
 &lt;/pre&gt;&lt;/div&gt;
 

@@ -2,6 +2,7 @@ Title: Ansible安装
 Date: 2015-12-30
 tags: Ansible
 Category: Linux
+Slug: ansible-install
 
 
 由于 Ansible 是通过 SSH 进行通讯的，所以只用安装 master 端就可以了。并不像 puppet/SaltStack 那样在 slave/minion 端进行安装。

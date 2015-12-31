@@ -1,13 +1,8 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-          <title> 修改 Libvirt 的 UUID -   - Xcodest</title>
+        <title>About - Xcodest</title>
         <meta charset="utf-8" />
-
-
-
-    <meta name="tags" contents="Libvirt" />
-
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
@@ -84,66 +79,12 @@
           </div>
         </div>
         <div class="col-md-8 col-xs-12">
-<div class="row">
-  <div class="col-md-12 col-xs-12">
-  <section id="content" class="body">
-  <header>
-    <h2 class="entry-title">修改 Libvirt 的 UUID</h2>
-    <span class="post-date"> 2015-02-10 </span>
-  </header>
-  <div class="entry-content">
-    <p>由于物理机器有限，想做OpenStack的多机环境一直是个问题。之前是在OpenStack上部署OpenStack。由于只有一台物理机，资源相当紧张。不能建太多机器。最近突然想，既然 LXC 现在已经很完善了。能不能就利用它来做 OpenStack 服务间的隔离呢。所以最近一直在搞这东西。搞了几天还是有效果的。基本搭建了 OpenStack + Ceph + Swift 的环境出来。其中网络用的 Neutron + ML2 + OVS + VLAN。由于用 LXC 的隔离的，相对于之前来说相当节省资源。很好的解决了资源的问题。可以做一些大量机器的实验了。之后也会也这其中遇到的一些问题写下来，备忘。</p>
-<p>今天主要写下配置 Live Migration 过程中遇到的一个问题。</p>
-<p>每个 Libvirtd 实例都会有一个 UUID 存在。不同的 libvirt 实例的 UUID 应该是不同的。否则在 migrate 过程中， libvirt 会认为自己是在向自己迁移从而导致迁移失败。这个UUID有一个默认值，是来自于 SMBIOS UUID。这两个UUID可以通过以下方法拿到：</p>
-<div class="highlight"><pre>$ dmidecode  -s system-uuid
-4C4C4544-0032-3210-804C-C7C04F463358
+    <h1>About</h1>
+    
 
-$ virsh capabilities | grep uuid
-<span class="nt">&lt;uuid&gt;</span>44454c4c-3200-1032-804c-c7c04f463358<span class="nt">&lt;/uuid&gt;</span>
-</pre></div>
+    <p>My name is Jeffrey Zhang. I am a Linuxer, Pythoner and OpenStacker.</p>
+<p>You can find me through zhang.lei.fly/gmail/com</p>
 
-
-<p>可以看到这两个值是一样的(不知道为什么有一段顺序不对)。</p>
-<p>当我在不同的 LXC 中启动多个 libvirt 时，就会触发这个问题。所有的 libvirt 使用的是相同的 uuid 从而导致 live migration 失败。</p>
-<p>修改的办法也很简单。这个UUID可以在 libvirt 的配置文件<code>/etc/libvirt/libvirtd.conf</code>中修改后重启libivrt就可以了。</p>
-<div class="highlight"><pre>host_uuid = &quot;8ba976e9-1224-4339-9526-719fe6dee311&quot;
-</pre></div>
-
-
-<h1>REF</h1>
-<ul>
-<li><a href="http://libvirt.org/guide/html/Application_Development_Guide-Connections-Capability_Info.html">Libvirt Capability Information</a></li>
-</ul>
-  </div><!-- /.entry-content -->
-  <div>
-    <nav>
-      <ul class="pager">
-        <li class="previous"><a href="tun-vethshe-bei.html">&larr; Older</a></li>
-        <li class="next"><a href="print-the-first-n-characters-of-each-line.html">Newer &rarr;</a></li>
-      </ul>
-    </nav>
-  </div>
-  <div class="entry-info">
-    <p> Tags: <a href="http://xcodest.me/tag/libvirt.html">Libvirt</a>  </p>
-  </div>
-    <div class="comments">
-      <h2>Comments</h2>
-      <div id="disqus_thread"></div>
-      <script type="text/javascript">
-        var disqus_shortname = 'xcodest';
-        var disqus_identifier = 'libvirt-uuid.html';
-        var disqus_url = 'http://xcodest.me/libvirt-uuid.html';
-        (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//xcodest.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-      </script>
-      <noscript>Please enable JavaScript to view the comments.</noscript>
-    </div>
-</section>
-</div>
-</div>
         </div>
       </div>
     <script type="text/javascript">

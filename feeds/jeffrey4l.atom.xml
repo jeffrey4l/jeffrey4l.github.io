@@ -1,5 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/jeffrey4l.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-12-30T00:00:00+08:00</updated><entry><title>Ansible安装</title><link href="http://xcodest.me/ansiblean-zhuang.html" rel="alternate"></link><updated>2015-12-30T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-12-30:ansiblean-zhuang.html</id><summary type="html">&lt;p&gt;由于 Ansible 是通过 SSH 进行通讯的，所以只用安装 master 端就可以了。并不像 puppet/SaltStack 那样在 slave/minion 端进行安装。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/jeffrey4l.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-12-31T00:00:00+08:00</updated><entry><title>Install Ansible Tower</title><link href="http://xcodest.me/install-ansible-tower.html" rel="alternate"></link><updated>2015-12-31T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-12-31:install-ansible-tower.html</id><summary type="html">&lt;h1&gt;手动安装&lt;/h1&gt;
+&lt;h2&gt;下载安装包&lt;/h2&gt;
+&lt;p&gt;从 http://www.ansible.com/tower-trial 下载，需要填个人信息，提交后会自动下载。&lt;/p&gt;
+&lt;p&gt;把安装包复制到要安装的机器中去，解压准备安装&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;tar xvf ansible-tower-setup-latest.tar.gz
+&lt;span class="nb"&gt;cd &lt;/span&gt;ansible-tower-setup-2.4.3
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;这个安装包本质上是一个playbook。其中&lt;code&gt;configure&lt;/code&gt;是用来生成配置文件的脚本，运行它会有几个问题，让你回答，回答完后就开始自动安装了。也可把这些问答写到一个文件中，让其自动化。建立名为&lt;code&gt;tower_setup_conf.yml&lt;/code&gt; 的文件，其内容为:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l-Scalar-Plain"&gt;admin_password&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;password&lt;/span&gt;
+&lt;span class="l-Scalar-Plain"&gt;database&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;internal&lt;/span&gt;
+&lt;span class="l-Scalar-Plain"&gt;munin_password&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;password&lt;/span&gt;
+&lt;span class="l-Scalar-Plain"&gt;pg_password&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;password&lt;/span&gt;
+&lt;span class="l-Scalar-Plain"&gt;primary_machine&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;localhost&lt;/span&gt;
+&lt;span class="l-Scalar-Plain"&gt;redis_password&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;password&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;开始进行设置&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;./configure --options-file tower_setup_conf.yml
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;如果没有问题，脚本会提示：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;The configuration provided in tower_setup_conf.yml appears complete.
+
+FINISHED!
+You have completed the setup wizard. You may execute the installation of
+Ansible Tower by issuing the following command:
+
+sudo ./setup.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;运行安装脚本&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sudo ./setup.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;其主要工作为&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;如果没有安装ansible, 就安装上ansible&lt;/li&gt;
+&lt;li&gt;使用ansible进行tower的安装&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;安装好后，终端会提示给你访问的地址，用浏览器打开就可以了。输入上面设置的admin账号密码登录。&lt;/p&gt;
+&lt;p&gt;之后会出现设置 Tower License 的界面。可以从 http://www.ansible.com/license 申请到一个10个节点的免费 license。最后把 License 复制进去提交就可以了。&lt;/p&gt;
+&lt;h1&gt;使用 Vagrant 进行安装&lt;/h1&gt;
+&lt;p&gt;官方提供 Vagrant Images, 方便进行安装测试。使用方法&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;vagrant init tower http://vms.ansible.com/ansible-tower-2.4.3-virtualbox.box
+vagrant up
+vagrant ssh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;REF&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;http://docs.ansible.com/ansible-tower/latest/html/installandreference/tower_installer.html&lt;/li&gt;
+&lt;li&gt;http://docs.ansible.com/ansible-tower/latest/html/installandreference/tower_install_wizard.html&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="Ansible"></category></entry><entry><title>Ansible安装</title><link href="http://xcodest.me/ansible-install.html" rel="alternate"></link><updated>2015-12-30T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-12-30:ansible-install.html</id><summary type="html">&lt;p&gt;由于 Ansible 是通过 SSH 进行通讯的，所以只用安装 master 端就可以了。并不像 puppet/SaltStack 那样在 slave/minion 端进行安装。&lt;/p&gt;
 &lt;p&gt;由于是用 Python 编写的，安装起来和普通 Python 应用没有太大区别。可以通过源码，pypi, 操作系统的包管理进行安装。&lt;/p&gt;
 &lt;h1&gt;系统包管理&lt;/h1&gt;
 &lt;h2&gt;RPM 系&lt;/h2&gt;

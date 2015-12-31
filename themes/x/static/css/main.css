@@ -48,3 +48,9 @@ margin-bottom: 0; }
 footer {
     text-align: right;
 }
+
+.toc {
+    border: 1px solid #ccc;
+    padding: 5px;
+    float: right;
+}

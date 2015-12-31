@@ -43,7 +43,7 @@ YEAR_ARCHIVE_SAVE_AS = 'posts/{date:%Y}.html'
 PLUGIN_PATHS = [os.path.join(ROOT, 'plugins')]
 
 PLUGINS = ['assets', 'gravatar', 'pelican_gist',
-           'neighbors']
+           'neighbors', 'extract_toc']
 
 SITEMAP= {'format': 'xml'}
 
@@ -75,3 +75,6 @@ DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 DEFAULT_PAGINATION = 50
 
 DISPLAY_PAGES_ON_MENU = True
+
+MD_EXTENSIONS = ['codehilite(css_class=highlight)',
+                 'extra', 'toc']

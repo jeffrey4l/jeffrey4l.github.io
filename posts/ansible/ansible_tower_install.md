@@ -4,6 +4,8 @@ Tags: Ansible
 Category: Linux
 Slug: install-ansible-tower
 
+[TOC]
+
 # 手动安装
 
 ## 下载安装包
@@ -12,7 +14,7 @@ Slug: install-ansible-tower
 
 把安装包复制到要安装的机器中去，解压准备安装
 
-```bash
+```
 tar xvf ansible-tower-setup-latest.tar.gz
 cd ansible-tower-setup-2.4.3
 ```

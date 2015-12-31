@@ -25,6 +25,9 @@
     <span class="post-date"> {{ article.locale_date }} </span>
   </header>
   <div class="entry-content">
+    {% if article.toc %}
+      {{ article.toc }}
+    {% endif %}
     {{ article.content }}
   </div><!-- /.entry-content -->
   <div>

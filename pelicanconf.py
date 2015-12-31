@@ -50,6 +50,7 @@ DISQUS_SITENAME = 'xcodest'
 
 MENUITEMS = (
     ('Archives', '/archives.html'),
+    ('Tags', '/tags.html'),
     )
 
 GOOGLE_ANALYTICS = 'UA-41808584-2'

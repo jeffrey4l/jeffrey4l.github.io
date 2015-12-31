@@ -24,13 +24,19 @@ CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 
 # Blogroll
-LINKS = (('My Git', 'http://github.com/jeffrey4l'),
-        )
+LINKS = (
+    ('陈沙克日志', 'http://chenshake.com/'),
+    ('酷壳 - CoolShell.Cn', 'http://coolshell.cn'),
+    ('SÉBASTIEN HAN', 'https://sebastien-han.fr/'),
+    ('技术并艺术着', 'http://blog.csdn.net/quqi99'),
+)
 
 # Social widget
 SOCIALS = (
     ('Github', 'http://github.com/jeffrey4l'),
-  )
+    ('Twitter', 'https://twitter.com/Jeffrey4l'),
+    ('微博', 'http://weibo.com/jeffrey4l'),
+)
 
 YEAR_ARCHIVE_SAVE_AS = 'posts/{date:%Y}.html'
 

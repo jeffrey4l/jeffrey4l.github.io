@@ -37,9 +37,11 @@
                   {% for name, link in MENUITEMS %}
                   <li{% if page_name == name|lower%} class="active"{% endif %}><a href="{{ link }}">{{ name }}</a></li>
                   {% endfor %}
+                  {% if DISPLAY_PAGES_ON_MENU %}
                   {% for page in pages %}
-                  <li><a href="#">{{ page }}</a></li>
+                  <li><a href="{{ SITEURL }}/{{ page.url }}">{{ page.title|capitalize }}</a></li>
                   {% endfor %}
+                  {% endif %}
                 </ul>
               </div>
             </div>

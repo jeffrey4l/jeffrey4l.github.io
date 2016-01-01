@@ -16,7 +16,7 @@ glance image-create --id &lt;span class="nv"&gt;$uuid&lt;/span&gt; --name ubuntu
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;[0] &lt;a href="https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179"&gt;https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;[1] &lt;a href="http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf"&gt;http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf&lt;/a&gt;&lt;/li&gt;
@@ -24,7 +24,7 @@ glance image-create --id &lt;span class="nv"&gt;$uuid&lt;/span&gt; --name ubuntu
 &lt;/ul&gt;</summary></entry><entry><title>Oz Templates</title><link href="http://xcodest.me/oz-templates.html" rel="alternate"></link><updated>2015-05-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-11:oz-templates.html</id><summary type="html">&lt;p&gt;最近利用&lt;a href="https://github.com/clalancette/oz"&gt;OZ&lt;/a&gt;做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下&lt;/p&gt;
 &lt;p&gt;项目地址: &lt;a href="https://github.com/jeffrey4l/oz-templates"&gt;https://github.com/jeffrey4l/oz-templates&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;以下是README里的内容。&lt;/p&gt;
-&lt;h2&gt;Usage&lt;/h2&gt;
+&lt;h2 id="usage"&gt;Usage&lt;/h2&gt;
 &lt;p&gt;The isos are located in &lt;code&gt;/data/isos/&lt;/code&gt;. The isos' name are conversionally.
 Including&lt;/p&gt;
 &lt;ul&gt;
@@ -40,13 +40,13 @@ make all
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;Detail&lt;/h2&gt;
+&lt;h2 id="detail"&gt;Detail&lt;/h2&gt;
 &lt;p&gt;The image are configured as following&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;without lvm, which will helpful for partion auto extend.&lt;/li&gt;
 &lt;li&gt;Default image size is 40GB&lt;/li&gt;
 &lt;li&gt;Installed cloud-init with some basic configuration.&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="OpenStack"></category></entry><entry><title>Nova Security Group相关配置</title><link href="http://xcodest.me/nova-security-groupxiang-guan-pei-zhi.html" rel="alternate"></link><updated>2015-03-18T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-18:nova-security-groupxiang-guan-pei-zhi.html</id><summary type="html">&lt;h1&gt;相关配置&lt;/h1&gt;
+&lt;/ul&gt;</summary><category term="OpenStack"></category></entry><entry><title>Nova Security Group相关配置</title><link href="http://xcodest.me/nova-security-groupxiang-guan-pei-zhi.html" rel="alternate"></link><updated>2015-03-18T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-18:nova-security-groupxiang-guan-pei-zhi.html</id><summary type="html">&lt;h1 id="_1"&gt;相关配置&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;network_api_class - 设置 network 模块所用的api&lt;ul&gt;
 &lt;li&gt;&lt;code&gt;nova.network.api.API&lt;/code&gt; - 通过rpc与nova-network交互&lt;/li&gt;
@@ -70,7 +70,7 @@ make all
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1&gt;使用组合：&lt;/h1&gt;
+&lt;h1 id="_2"&gt;使用组合：&lt;/h1&gt;
 &lt;p&gt;nova-network + libvirt&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;nova_api_class=nova.network.api.API
 security_group_ap=nova
@@ -95,7 +95,7 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://kennethjiang.blogspot.jp/2012/02/ebtables-in-openstack-nova-and.html"&gt;ebtables in Openstack Nova&lt;/a&gt; - nwfilter explaination&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://blueprints.launchpad.net/neutron/+spec/arp-spoof-patch-ebtables"&gt;Preventing ARP spoofing via ebtables&lt;/a&gt; - Neutron BP for preventing arp snoofing. Expected in Kilo&lt;ol&gt;
@@ -103,7 +103,7 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;/ol&gt;</summary><category term="Network"></category></entry><entry><title>Cinder V2 API</title><link href="http://xcodest.me/cinder-v2-api.html" rel="alternate"></link><updated>2015-03-10T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-10:cinder-v2-api.html</id><summary type="html">&lt;p&gt;cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).&lt;/p&gt;
-&lt;h1&gt;Enable the v2 in cinder&lt;/h1&gt;
+&lt;h1 id="enable-the-v2-in-cinder"&gt;Enable the v2 in cinder&lt;/h1&gt;
 &lt;p&gt;Change the following config. The v1 and v2 is enabled in default.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# DEPRECATED: Deploy v1 of the Cinder API. (boolean value)&lt;/span&gt;
 &lt;span class="c1"&gt;#enable_v1_api=true&lt;/span&gt;
@@ -113,7 +113,7 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;Enable the cinder v2 api in nova&lt;/h1&gt;
+&lt;h1 id="enable-the-cinder-v2-api-in-nova"&gt;Enable the cinder v2 api in nova&lt;/h1&gt;
 &lt;p&gt;In current nova config ( juno ), the default config like below. Depend on &lt;code&gt;catalog_info&lt;/code&gt; key, it use the v2 first. If v2 is not found, it will fall back to v1 version.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[cinder]&lt;/span&gt;
 
@@ -159,7 +159,7 @@ service cinder-api restart
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;http://docs.openstack.org/havana/install-guide/install/apt/content/cinder-controller.html&lt;/li&gt;
 &lt;li&gt;https://wiki.openstack.org/wiki/CinderAPIv2&lt;/li&gt;
@@ -233,7 +233,7 @@ glance-api加载的pipeline的名字。&lt;/p&gt;
 
 &lt;p&gt;不同的pipeline用到了不同的middleware, 启作用的是cache 和 cachemanagement这两个
 。&lt;/p&gt;
-&lt;h2&gt;REF&lt;/h2&gt;
+&lt;h2 id="ref"&gt;REF&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://docs.openstack.org/developer/glance/cache.html"&gt;The Glance Image Cache&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;</summary><category term="Glance"></category></entry><entry><title>Dhcp lease errors in vlan mode</title><link href="http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html" rel="alternate"></link><updated>2013-08-27T08:50:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2013-08-27:dhcp-lease-errors-in-vlan-mode.html</id><summary type="html">&lt;p&gt;在使用&lt;code&gt;keepalived&lt;/code&gt;的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在&lt;code&gt;/etc/sysconfig/network-scripts/ifcfg-eth0&lt;/code&gt;中加上了如下语句：&lt;/p&gt;
@@ -287,7 +287,7 @@ fixed_ip_disassociate_timeout=1209600
 &lt;li&gt;Ceilometer&lt;/li&gt;
 &lt;li&gt;Baremetal&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1&gt;Keystone&lt;/h1&gt;
+&lt;h1 id="keystone"&gt;Keystone&lt;/h1&gt;
 &lt;p&gt;keystone是Openstack的认证和服务注册模块。其结构比较简单。其功能包括:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;认证&lt;/strong&gt; 主要功能是管理用户和用户组的信息，后端可以绑定ldap, mysql等认证方式。&lt;/li&gt;
@@ -295,7 +295,7 @@ fixed_ip_disassociate_timeout=1209600
 &lt;li&gt;&lt;strong&gt;Token&lt;/strong&gt; 管理。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;相对于其它子项目来说，keystone最近的变化并不是太大。将来一个比较大的变化就是基于domain的权限控制，届时Tenant里也可以细经出管理员和使用者的角色，并有详细的权限功能控制。&lt;/p&gt;
-&lt;h1&gt;Nova&lt;/h1&gt;
+&lt;h1 id="nova"&gt;Nova&lt;/h1&gt;
 &lt;p&gt;Nova是Openstack最早的子项目。现在其它项目如cinder, quantum(Openstack Network)都是来自于该项目。可以说这是Openstack中最复杂，最主要的部分。它负责&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;用户接口(nova-api)。处理来自于用户的请求，并做出合理的响应。&lt;/li&gt;
@@ -303,11 +303,11 @@ fixed_ip_disassociate_timeout=1209600
 &lt;li&gt;虚拟化的管理(nova-compute)。管理虚拟机的适配接口。通过它可以管理真实的虚拟技术驱动的机器，如KVM, XEN, Hypervisor V等。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;当然还有一些功能如nova-network, nova-volume已经从nova项目中迁移出来，成为独立的子项目。将来一段时间的变化，主要集中在nova-network的废弃，nova-conductor的更加完善，新的api(v3)的支持，对于祼机的支持。&lt;/p&gt;
-&lt;h1&gt;Cinder&lt;/h1&gt;
+&lt;h1 id="cinder"&gt;Cinder&lt;/h1&gt;
 &lt;p&gt;Cinder是由nova-volume分化而来，用于管理虚拟机的块存储(block storage), 类似AWS的EBS。其功能主要是创建，维护，删除块存储。后端可以使用LVM, glusterFs, Ceph, NFS等软件技术的存储，也可以使用NetApp, Huawei，IBM等商用解决方案。当然也可以自己编写自己存储的Driver来支持更多的存储类型。&lt;/p&gt;
-&lt;h1&gt;Glance&lt;/h1&gt;
+&lt;h1 id="glance"&gt;Glance&lt;/h1&gt;
 &lt;p&gt;Glance用于管理各种系统的镜像。他后端也可以配置各种存储方案。包括本地，swift, ceph等。&lt;/p&gt;
-&lt;h1&gt;Openstack Network.&lt;/h1&gt;
+&lt;h1 id="openstack-network"&gt;Openstack Network.&lt;/h1&gt;
 &lt;p&gt;(Quantum名称因为商标问题停用）。&lt;/p&gt;
 &lt;p&gt;网络基本是Openstack最复杂的模块，涉及到的技术和协议相当多，也最容易出问题。也正因为此，很有必要将网络模块从越来越笨重的nova的拿出来。&lt;/p&gt;
 &lt;p&gt;Openstack Network提示了强大的网络服务（Network-as-a-service),用来实现L2, L3层的网络。在原有的nova-network的基础之上，增加了相当多的功能&lt;/p&gt;
@@ -317,10 +317,10 @@ fixed_ip_disassociate_timeout=1209600
 &lt;li&gt;为Qos, 流量监控等提供支持。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;现在Quantum还有一些问题，如HA方案不成熟，不太适用于Production。不过根据社区的计划，下一个版本(H)将会把nova-network废弃掉。所以Quantum才是真正的趋势。现在很有必要将其吃透。&lt;/p&gt;
-&lt;h1&gt;LBaaS&lt;/h1&gt;
+&lt;h1 id="lbaas"&gt;LBaaS&lt;/h1&gt;
 &lt;p&gt;Load-Balancer-as-a-service.在Quantum基础上实现的负载均衡。后端既可以使用haproxy,也可以使用cisco, f5等硬件。（不过我还没有功能搭建过这个服务。&lt;/p&gt;
-&lt;h1&gt;Ceilometer&lt;/h1&gt;
+&lt;h1 id="ceilometer"&gt;Ceilometer&lt;/h1&gt;
 &lt;p&gt;Openstack的计量，计费模块。可以统计Cpu, IO, Network使用的详细情况。对公有云和私有云都有极大的好处。现在也有一个Horizon的插件，可以直接在dashboard里显示使用情况（将来，该插件会合并到horizon中）&lt;/p&gt;
-&lt;h1&gt;Baremetal&lt;/h1&gt;
+&lt;h1 id="baremetal"&gt;Baremetal&lt;/h1&gt;
 &lt;p&gt;增加Openstack对裸机的管理功能。可以实现直接对裸机进行系统安装，配置。模糊了虚拟化和物理机之间的界线。现在所有模块包括nova, glance, cinder都在努力增强这方面的功能。
 这个模块，我更期望是可以建立Nested-Openstack。同一个Openstack环境，既管理物理机，又自动在物理机上安装Openstack的模块来成为Openstack的一部分。&lt;/p&gt;</summary></entry></feed>

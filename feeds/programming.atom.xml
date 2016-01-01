@@ -207,7 +207,7 @@ or similar.
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://bugs.python.org/issue8296"&gt;Python Bug&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://unix.stackexchange.com/a/149756"&gt;How Ctrl+c works&lt;/a&gt;&lt;/li&gt;
@@ -262,7 +262,7 @@ or similar.
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html"&gt;Re-raising Exceptions&lt;/a&gt; - by Ian Bicking&lt;/li&gt;
 &lt;/ul&gt;</summary><category term="Python"></category><category term="Exception"></category></entry><entry><title>PIP install from local</title><link href="http://xcodest.me/pip-install-from-local.html" rel="alternate"></link><updated>2015-01-08T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-01-08:pip-install-from-local.html</id><summary type="html">&lt;p&gt;在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。&lt;/p&gt;

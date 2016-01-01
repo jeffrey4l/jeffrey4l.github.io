@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/linux.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-12-31T00:00:00+08:00</updated><entry><title>Install Ansible Tower</title><link href="http://xcodest.me/install-ansible-tower.html" rel="alternate"></link><updated>2015-12-31T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-12-31:install-ansible-tower.html</id><summary type="html">&lt;h1&gt;手动安装&lt;/h1&gt;
-&lt;h2&gt;下载安装包&lt;/h2&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/linux.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-12-31T00:00:00+08:00</updated><entry><title>Install Ansible Tower</title><link href="http://xcodest.me/install-ansible-tower.html" rel="alternate"></link><updated>2015-12-31T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-12-31:install-ansible-tower.html</id><summary type="html">
+&lt;h1 id="_1"&gt;手动安装&lt;/h1&gt;
+&lt;h2 id="_2"&gt;下载安装包&lt;/h2&gt;
 &lt;p&gt;从 http://www.ansible.com/tower-trial 下载，需要填个人信息，提交后会自动下载。&lt;/p&gt;
 &lt;p&gt;把安装包复制到要安装的机器中去，解压准备安装&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;tar xvf ansible-tower-setup-latest.tar.gz
-&lt;span class="nb"&gt;cd &lt;/span&gt;ansible-tower-setup-2.4.3
+cd ansible-tower-setup-2.4.3
 &lt;/pre&gt;&lt;/div&gt;
-
-
 &lt;p&gt;这个安装包本质上是一个playbook。其中&lt;code&gt;configure&lt;/code&gt;是用来生成配置文件的脚本，运行它会有几个问题，让你回答，回答完后就开始自动安装了。也可把这些问答写到一个文件中，让其自动化。建立名为&lt;code&gt;tower_setup_conf.yml&lt;/code&gt; 的文件，其内容为:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l-Scalar-Plain"&gt;admin_password&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;password&lt;/span&gt;
 &lt;span class="l-Scalar-Plain"&gt;database&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;internal&lt;/span&gt;
@@ -16,13 +15,9 @@
 &lt;span class="l-Scalar-Plain"&gt;primary_machine&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;localhost&lt;/span&gt;
 &lt;span class="l-Scalar-Plain"&gt;redis_password&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;password&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-
-
 &lt;p&gt;开始进行设置&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;./configure --options-file tower_setup_conf.yml
 &lt;/pre&gt;&lt;/div&gt;
-
-
 &lt;p&gt;如果没有问题，脚本会提示：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;The configuration provided in tower_setup_conf.yml appears complete.
 
@@ -32,13 +27,9 @@ Ansible Tower by issuing the following command:
 
 sudo ./setup.sh
 &lt;/pre&gt;&lt;/div&gt;
-
-
 &lt;p&gt;运行安装脚本&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;sudo ./setup.sh
 &lt;/pre&gt;&lt;/div&gt;
-
-
 &lt;p&gt;其主要工作为&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;如果没有安装ansible, 就安装上ansible&lt;/li&gt;
@@ -46,29 +37,27 @@ sudo ./setup.sh
 &lt;/ol&gt;
 &lt;p&gt;安装好后，终端会提示给你访问的地址，用浏览器打开就可以了。输入上面设置的admin账号密码登录。&lt;/p&gt;
 &lt;p&gt;之后会出现设置 Tower License 的界面。可以从 http://www.ansible.com/license 申请到一个10个节点的免费 license。最后把 License 复制进去提交就可以了。&lt;/p&gt;
-&lt;h1&gt;使用 Vagrant 进行安装&lt;/h1&gt;
+&lt;h1 id="vagrant"&gt;使用 Vagrant 进行安装&lt;/h1&gt;
 &lt;p&gt;官方提供 Vagrant Images, 方便进行安装测试。使用方法&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;vagrant init tower http://vms.ansible.com/ansible-tower-2.4.3-virtualbox.box
 vagrant up
 vagrant ssh
 &lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h1&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;http://docs.ansible.com/ansible-tower/latest/html/installandreference/tower_installer.html&lt;/li&gt;
 &lt;li&gt;http://docs.ansible.com/ansible-tower/latest/html/installandreference/tower_install_wizard.html&lt;/li&gt;
 &lt;/ul&gt;</summary><category term="Ansible"></category></entry><entry><title>Ansible安装</title><link href="http://xcodest.me/ansible-install.html" rel="alternate"></link><updated>2015-12-30T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-12-30:ansible-install.html</id><summary type="html">&lt;p&gt;由于 Ansible 是通过 SSH 进行通讯的，所以只用安装 master 端就可以了。并不像 puppet/SaltStack 那样在 slave/minion 端进行安装。&lt;/p&gt;
 &lt;p&gt;由于是用 Python 编写的，安装起来和普通 Python 应用没有太大区别。可以通过源码，pypi, 操作系统的包管理进行安装。&lt;/p&gt;
-&lt;h1&gt;系统包管理&lt;/h1&gt;
-&lt;h2&gt;RPM 系&lt;/h2&gt;
+&lt;h1 id="_1"&gt;系统包管理&lt;/h1&gt;
+&lt;h2 id="rpm"&gt;RPM 系&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;# install epel source
 yum install -y epel-release
 yum install ansible
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;Apt 系&lt;/h2&gt;
+&lt;h2 id="apt"&gt;Apt 系&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;apt-get install -y software-properties-common
 apt-add-repository -y ppa:ansible/ansible
 apt-get update
@@ -76,13 +65,13 @@ apt-get install -y ansible
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;pypi安装&lt;/h1&gt;
+&lt;h1 id="pypi"&gt;pypi安装&lt;/h1&gt;
 &lt;p&gt;通过pypi相当简单，直接用pip就可安装&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;pip install ansible
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;源码安装&lt;/h1&gt;
+&lt;h1 id="_2"&gt;源码安装&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# download the source from github&lt;/span&gt;
 &lt;span class="c"&gt;# ansible has two git submodules, so the --recursive is required.&lt;/span&gt;
 git clone git://github.com/ansible/ansible.git --recursive
@@ -102,7 +91,7 @@ pip install .
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;https://github.com/jeffrey4l/docker-registry&lt;/li&gt;
 &lt;li&gt;https://github.com/docker/distribution/blob/master/docs/mirror.md&lt;/li&gt;
@@ -139,7 +128,7 @@ Pipeline started {:level=&amp;gt;:info}
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/codecs/rubydebug"&gt;http://logstash.net/docs/1.4.2/codecs/rubydebug&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/flags"&gt;http://logstash.net/docs/1.4.2/flags&lt;/a&gt;&lt;/li&gt;
@@ -174,7 +163,7 @@ $ virsh capabilities | grep uuid
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://libvirt.org/guide/html/Application_Development_Guide-Connections-Capability_Info.html"&gt;Libvirt Capability Information&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</summary><category term="Libvirt"></category></entry><entry><title>tun &amp; veth设备</title><link href="http://xcodest.me/tun-vethshe-bei.html" rel="alternate"></link><updated>2015-02-09T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-02-09:tun-vethshe-bei.html</id><summary type="html">&lt;p&gt;OpenStack 的 Neutron 中会建立好多网卡设备。大体上这些网卡可以分为两类 tun 和 veth。&lt;/p&gt;
@@ -194,7 +183,7 @@ supports-priv-flags: no
 
 
 &lt;p&gt;下面就这两种设备分别做一下介绍。&lt;/p&gt;
-&lt;h1&gt;tun &amp;amp; tap&lt;/h1&gt;
+&lt;h1 id="tun-tap"&gt;tun &amp;amp; tap&lt;/h1&gt;
 &lt;p&gt;TUN与TAP是操作系统内核中的虚拟网络设备。不同于普通靠硬件网路板卡实现的设备，这些虚拟的网络设备全部用软件实现，并向运行于操作系统上的软件提供与硬件的网络设备完全相同的功能。&lt;/p&gt;
 &lt;p&gt;TAP 等同于一个以太网设备，它操作第二层数据包如以太网数据帧。TUN模拟了网络层设备，操作第三层数据包比如IP数据封包。&lt;/p&gt;
 &lt;p&gt;操作系统通过TUN/TAP设备向绑定该设备的用户空间的程序发送数据，反之，用户空间的程序也可以像操作硬件网络设备那样，通过TUN/TAP设备发送数据。在后种情况下，TUN/TAP设备向操作系统的网络栈投递（或“注入”）数据包，从而模拟从外部接受数据的过程。&lt;/p&gt;
@@ -209,14 +198,14 @@ ip tuntap add mode tun
 
 
 &lt;p&gt;在 OpenStack 中，主要用tap来做虚拟机的网卡。&lt;/p&gt;
-&lt;h1&gt;veth&lt;/h1&gt;
+&lt;h1 id="veth"&gt;veth&lt;/h1&gt;
 &lt;p&gt;veth 从名字上来看是 Virtual ETHernet 的缩写，它的作用很简单，就是要把从一个 network namespace 发出的数据包转发到另一个 namespace。veth 设备是成对的，一个是 container 之中，另一个在 container 之外，即在真实机器上能看到的。 建立 veth 类型的设备可以用下面的命令：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;ip link add name veth0 type veth0 peer name veth1
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;这里建立了一对veth设备，名字分别是 veth0 和 veth1。当向其中一个设备写入数据时，另一个设备就能拿到写入的数据。在 OpenStack 中的使用就是来穿透 namespace.&lt;/p&gt;
-&lt;h1&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://wangcong.org/2011/06/19/-e5-85-b3-e4-ba-8e-tuntap/"&gt;关于 tun/tap 设备&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://wangcong.org/2011/07/03/-e4-bb-80-e4-b9-88-e6-98-af-veth/"&gt;什么是veth&lt;/a&gt;&lt;/li&gt;
@@ -287,7 +276,7 @@ ip tuntap add mode tun
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="https://bugs.launchpad.net/neutron/+bug/1332564"&gt;https://bugs.launchpad.net/neutron/+bug/1332564&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html"&gt;http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html&lt;/a&gt;&lt;/li&gt;
@@ -329,7 +318,7 @@ git push origin --tags
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;参考&lt;/h2&gt;
+&lt;h2 id="_1"&gt;参考&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://git-scm.com/book/en/Git-and-Other-Systems-Migrating-to-Git"&gt;Git and Other Systems - Migrating to Git&lt;/a&gt;&lt;/p&gt;</summary><category term="Git"></category></entry><entry><title>Salt Mine</title><link href="http://xcodest.me/salt-mine.html" rel="alternate"></link><updated>2014-07-16T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-07-16:salt-mine.html</id><summary type="html">&lt;p&gt;Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。&lt;/p&gt;
 &lt;p&gt;可以通过两种方法来配置:&lt;/p&gt;
 &lt;ol&gt;
@@ -375,7 +364,7 @@ jeffrey-thinkpad:
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;REF&lt;/h2&gt;
+&lt;h2 id="ref"&gt;REF&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://docs.saltstack.com/en/latest/topics/mine/"&gt;Salt Mine&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;</summary><category term="SaltStack"></category></entry><entry><title>linux bonding mode 6 break the vms</title><link href="http://xcodest.me/linux-bonding-mode-6-break-the-vms.html" rel="alternate"></link><updated>2014-04-14T19:39:51+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-04-14:linux-bonding-mode-6-break-the-vms.html</id><summary type="html">&lt;p&gt;操作系统： ubuntu 12.04.1

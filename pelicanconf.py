@@ -59,8 +59,6 @@ MENUITEMS = (
     ('Tags', '/tags.html'),
     )
 
-GOOGLE_ANALYTICS = 'UA-41808584-2'
-
 USE_FOLDER_AS_CATEGORY = False
 DEFAULT_CATEGORY = 'Others'
 

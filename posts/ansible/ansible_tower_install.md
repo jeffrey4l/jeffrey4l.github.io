@@ -1,6 +1,6 @@
 Title: Install Ansible Tower
 Date: 2015-12-31
-Tags: Ansible
+Tags: Ansible Tower
 Category: Linux
 Slug: install-ansible-tower
 

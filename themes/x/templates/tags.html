@@ -12,15 +12,11 @@
     </ol>
     <div class="container-fluid">
       <div class="row">
-    {%- for tag, articles in tags|sort %}
-    <div class="col-md-3 col-xs-6">
-    <div class="list-group">
-    <a class="list-group-item" href="{{ SITEURL }}/{{ tag.url }}">
+    {% for tag, articles in tags|sort %}
+    <a class="btn btn-default tag" href="{{ SITEURL }}/{{ tag.url }}">
       {{ tag }}
       <span class="badge">{{ articles|count }}</span>
     </a>
-    </div>
-    </div>
     {% endfor %}
       </div>
     </div>

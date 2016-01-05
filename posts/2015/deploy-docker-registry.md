@@ -16,7 +16,7 @@ docker run -p 5000:5000 -v <HOST_DIR>:/tmp/registry-dev registry
 使用自己建立的 registry 服务时，要修改 docker 的服务启动脚本，加上如下参数：
 
 ```
---insecure-registry your.domain.com:5000 --registry-mirror=https://your.doamin.com:5000
+--insecure-registry your.domain.com:5000 --registry-mirror=https://your.domain.com:5000
 ```
 
 # REF

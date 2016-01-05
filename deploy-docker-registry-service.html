@@ -109,7 +109,7 @@
 <p>但是默认没有加上 ssl(如果没有，只能给本机提供服务)， proxy也没有开启。</p>
 <p>我自己写了一个 docker compose, 默认开启了以上两个功能，代码见<a href="https://github.com/jeffrey4l/docker-registry">这里</a>。默认使用了 host 的 /data/docker-registry/data 目录做数据 volume, 所以请保证这个目录存在。</p>
 <p>使用自己建立的 registry 服务时，要修改 docker 的服务启动脚本，加上如下参数：</p>
-<div class="highlight"><pre>--insecure-registry your.domain.com:5000 --registry-mirror=https://your.doamin.com:5000
+<div class="highlight"><pre>--insecure-registry your.domain.com:5000 --registry-mirror=https://your.domain.com:5000
 </pre></div>
 
 

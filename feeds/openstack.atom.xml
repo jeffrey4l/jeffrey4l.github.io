@@ -1,5 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/openstack.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-06-04T00:00:00+08:00</updated><entry><title>Glance Create Image from Existent Image in Ceph</title><link href="http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html" rel="alternate"></link><updated>2015-06-04T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-06-04:glance-create-image-from-existent-image-in-ceph.html</id><summary type="html">&lt;p&gt;当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/openstack.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2016-01-16T00:00:00+08:00</updated><entry><title>Get all the repo from OpenStack</title><link href="http://xcodest.me/get-all-repos-from-openstack.html" rel="alternate"></link><updated>2016-01-16T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-01-16:get-all-repos-from-openstack.html</id><summary type="html">&lt;p&gt;OpenStack的源因为你我都知道的原因，一直不稳定，导致 devstack 时经常失败。特定写了个脚本，可以拿到所有的仓库地址，方便做本地的mirror。&lt;/p&gt;
+&lt;p&gt;脚本在 gist&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; 上。&lt;/p&gt;
+&lt;p&gt;使用方法：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;pip install PyGithub
+python openstack_repo.py -u &amp;lt;github_username&amp;gt; -p &amp;lt;github_password&amp;gt; \
+    -o repos.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;跑一次才发现，OpenStack 组下已经有了600多个项目。好多啊。&lt;/p&gt;
+&lt;div class="gist"&gt;
+    &lt;script src='https://gist.github.com/b6c36b9f74b743eb4c82.js?file=openstack_repos.py'&gt;&lt;/script&gt;
+    &lt;noscript&gt;
+        &lt;pre&gt;&lt;code&gt;#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import github
+import argparse
+import codecs
+import logging
+
+
+DESCRIPTION=u'''
+
+获取 openstack 和 openstack-dev 下所有仓库的列表，输出格式为：
+
+    组织名 仓库名 仓库地址
+
+username 和 password 不是必须的。但是不填写时，会受到 Github Rate Limit[0].
+有认证的访问限制是每小时5000次。没有认证的访问限制是每小时60次。
+
+[0] https://developer.github.com/v3/#rate-limiting
+'''
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=DESCRIPTION,
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument('-u', '--username',
+                        help='Usename to connect github')
+    parser.add_argument('-p', '--password',
+                        help='Password to connect github')
+    parser.add_argument('-o', '--output',
+                        help='Outout file. Default is stdout')
+    parser.add_argument('-O', '--organization',
+                        default='openstack,openstack-dev',
+                        help='Organization to crawl repos from github')
+    parser.add_argument('-d', '--debug',
+                        action='store_true',
+                        help='Show debug message')
+    parser.add_argument('-v', '--verbose',
+                        action='store_true',
+                        help='Show verbse message')
+
+    conf = parser.parse_args()
+    log_level = logging.WARNING
+    if conf.verbose:
+        log_level = logging.INFO
+    if conf.debug:
+        log_level = logging.DEBUG
+
+    logging.basicConfig(level=log_level)
+    log = logging.getLogger()
+    
+    gh = github.Github(conf.username, conf.password)
+
+    repos = []
+    for org in conf.organization.strip().split(','):
+        organization = gh.get_organization(org)
+        for repo in organization.get_repos():
+            log.info('Get: %s %s %s', org, repo.name, repo.clone_url)
+            repos.append((organization, repo))
+
+    if conf.output:
+        with codecs.open(conf.output, 'w', 'utf8') as output:
+            for org, repo in repos:
+                output.write('{} {} {}\n'.format(org.login,
+                                               repo.name,
+                                               repo.clone_url))
+    else:
+        for org, repo in repos:
+            print('{} {} {}'.format(org.login,
+                                    repo.name,
+                                    repo.clone_url))
+
+if __name__ == "__main__":
+    main()&lt;/code&gt;&lt;/pre&gt;
+    &lt;/noscript&gt;
+&lt;/div&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;https://gist.github.com/jeffrey4l/b6c36b9f74b743eb4c82&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</summary><category term="OpenStach Python"></category></entry><entry><title>Glance Create Image from Existent Image in Ceph</title><link href="http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html" rel="alternate"></link><updated>2015-06-04T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-06-04:glance-create-image-from-existent-image-in-ceph.html</id><summary type="html">&lt;p&gt;当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。&lt;/p&gt;
 &lt;p&gt;可以先用 rbd 上传镜像，转换格式(也会比较慢，还不如直接上传 RAW 格式的镜像)。然后再做好对应的 snap , 并加以保护。是后一步的location必须按格式写(见[0])，这样才会使用rbd的 COW clone 功能。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# image format 2 support layering&lt;/span&gt;
 rbd --image-format &lt;span class="m"&gt;2&lt;/span&gt; import /tmp/ubuntu14.04.2.dsk &lt;span class="nv"&gt;$uuid&lt;/span&gt;

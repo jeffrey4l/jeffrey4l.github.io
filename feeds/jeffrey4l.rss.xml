@@ -1,5 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><atom:link href="http://xcodest.me/feeds/jeffrey4l.rss.xml" rel="self"></atom:link><lastBuildDate>Sat, 02 Jan 2016 00:00:00 +0800</lastBuildDate><item><title>Ansible Tower Usage</title><link>http://xcodest.me/ansible-tower-usage.html</link><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><atom:link href="http://xcodest.me/feeds/jeffrey4l.rss.xml" rel="self"></atom:link><lastBuildDate>Sat, 16 Jan 2016 00:00:00 +0800</lastBuildDate><item><title>Get all the repo from OpenStack</title><link>http://xcodest.me/get-all-repos-from-openstack.html</link><description>&lt;p&gt;OpenStack的源因为你我都知道的原因，一直不稳定，导致 devstack 时经常失败。特定写了个脚本，可以拿到所有的仓库地址，方便做本地的mirror。&lt;/p&gt;
+&lt;p&gt;脚本在 gist&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; 上。&lt;/p&gt;
+&lt;p&gt;使用方法：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;pip install PyGithub
+python openstack_repo.py -u &amp;lt;github_username&amp;gt; -p &amp;lt;github_password&amp;gt; \
+    -o repos.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;跑一次才发现，OpenStack 组下已经有了600多个项目。好多啊。&lt;/p&gt;
+&lt;div class="gist"&gt;
+    &lt;script src='https://gist.github.com/b6c36b9f74b743eb4c82.js?file=openstack_repos.py'&gt;&lt;/script&gt;
+    &lt;noscript&gt;
+        &lt;pre&gt;&lt;code&gt;#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import github
+import argparse
+import codecs
+import logging
+
+
+DESCRIPTION=u'''
+
+获取 openstack 和 openstack-dev 下所有仓库的列表，输出格式为：
+
+    组织名 仓库名 仓库地址
+
+username 和 password 不是必须的。但是不填写时，会受到 Github Rate Limit[0].
+有认证的访问限制是每小时5000次。没有认证的访问限制是每小时60次。
+
+[0] https://developer.github.com/v3/#rate-limiting
+'''
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=DESCRIPTION,
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument('-u', '--username',
+                        help='Usename to connect github')
+    parser.add_argument('-p', '--password',
+                        help='Password to connect github')
+    parser.add_argument('-o', '--output',
+                        help='Outout file. Default is stdout')
+    parser.add_argument('-O', '--organization',
+                        default='openstack,openstack-dev',
+                        help='Organization to crawl repos from github')
+    parser.add_argument('-d', '--debug',
+                        action='store_true',
+                        help='Show debug message')
+    parser.add_argument('-v', '--verbose',
+                        action='store_true',
+                        help='Show verbse message')
+
+    conf = parser.parse_args()
+    log_level = logging.WARNING
+    if conf.verbose:
+        log_level = logging.INFO
+    if conf.debug:
+        log_level = logging.DEBUG
+
+    logging.basicConfig(level=log_level)
+    log = logging.getLogger()
+    
+    gh = github.Github(conf.username, conf.password)
+
+    repos = []
+    for org in conf.organization.strip().split(','):
+        organization = gh.get_organization(org)
+        for repo in organization.get_repos():
+            log.info('Get: %s %s %s', org, repo.name, repo.clone_url)
+            repos.append((organization, repo))
+
+    if conf.output:
+        with codecs.open(conf.output, 'w', 'utf8') as output:
+            for org, repo in repos:
+                output.write('{} {} {}\n'.format(org.login,
+                                               repo.name,
+                                               repo.clone_url))
+    else:
+        for org, repo in repos:
+            print('{} {} {}'.format(org.login,
+                                    repo.name,
+                                    repo.clone_url))
+
+if __name__ == "__main__":
+    main()&lt;/code&gt;&lt;/pre&gt;
+    &lt;/noscript&gt;
+&lt;/div&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;https://gist.github.com/jeffrey4l/b6c36b9f74b743eb4c82&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 16 Jan 2016 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2016-01-16:get-all-repos-from-openstack.html</guid><category>OpenStach Python</category></item><item><title>Ansible Tower Usage</title><link>http://xcodest.me/ansible-tower-usage.html</link><description>
 &lt;p&gt;安装好后的 Tower 如下图(图1)&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Ansible Tower" class="img-responsive" src="images/ansible/tower_preview.png"/&gt;&lt;/p&gt;
 &lt;div class="text-center"&gt;

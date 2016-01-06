@@ -1,5 +1,5 @@
 Title: Get all the repo from OpenStack
-Date: 2016-1-16
+Date: 2016-1-6
 Slug: get-all-repos-from-openstack
 Category: OpenStack
 Tags: OpenStach Python

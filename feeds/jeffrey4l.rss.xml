@@ -1,14 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><atom:link href="http://xcodest.me/feeds/jeffrey4l.rss.xml" rel="self"></atom:link><lastBuildDate>Wed, 06 Jan 2016 00:00:00 +0800</lastBuildDate><item><title>Get all the repo from OpenStack</title><link>http://xcodest.me/get-all-repos-from-openstack.html</link><description>&lt;p&gt;OpenStack的源因为你我都知道的原因，一直不稳定，导致 devstack 时经常失败。特定写了个脚本，可以拿到所有的仓库地址，方便做本地的mirror。&lt;/p&gt;
-&lt;p&gt;脚本在 gist&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; 上。&lt;/p&gt;
-&lt;p&gt;使用方法：&lt;/p&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><atom:link href="http://xcodest.me/feeds/jeffrey4l.rss.xml" rel="self"></atom:link><lastBuildDate>Mon, 11 Jan 2016 00:00:00 +0800</lastBuildDate><item><title>OpenStack Kolla 项目介绍</title><link>http://xcodest.me/kolla-introduce.html</link><description>
+&lt;h1 id="_1"&gt; 项目目标 &lt;/h1&gt;
+&lt;p&gt;Kolla 提供了生产级别的 OpenStack Service Containers。基于社区的最佳实践，提供了
+更好，更快，更可靠的 , 操作 OpenStack 的部署工具。&lt;/p&gt;
+&lt;h1 id="_2"&gt; 解决的问题 &lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt; 平滑的升级 / 回滚 OpenStack&lt;/li&gt;
+&lt;li&gt; 隔离 OpenStack 的不同组件的依赖环境。尤其是那些使用同一模块不同版本的情况。&lt;/li&gt;
+&lt;li&gt; 保证环境的一致性。解决由于安装时间不同，造成的包版本不一致的情况。&lt;/li&gt;
+&lt;li&gt; 支持多种安装源：源代码安装，CentOS binary 安装等。可以替代掉 devstack。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; 其实这些问题只要是由 Docker 来解决的。这也是 Kolla 使用 Docker 的原因。&lt;/p&gt;
+&lt;h1 id="_3"&gt; 架构 &lt;/h1&gt;
+&lt;p&gt;kolla 代码在 &lt;a href="https://github.com/openstack/kolla"&gt;https://github.com/openstack/kolla&lt;/a&gt;。现在 Kolla 主要分成两个部分。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Docker Images Build &lt;/li&gt;
+&lt;li&gt;Ansible 部署 ( 这部分将来会迁移到 kolla-ansible 项目 )&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="docker-image-build"&gt;Docker Image Build&lt;/h2&gt;
+&lt;p&gt; 主要使用 Jinja2 模板生成 Dockerfile 文件。如果是源代码安装，还会把代码下载好。之后会通过 Docker-py 驱动 Docker 进行镜像构建。构建完成，还可以根据配置将镜像推送的指定的 Registry 服务器。&lt;/p&gt;
+&lt;p&gt; 现在支持的不同的 Linux 发行版本 (Redhat 系和 Debian 系 ) 和不同的 OpenStack 安装包 ( 源代码和二进制包 )&lt;/p&gt;
+&lt;p&gt; 下图是现在所有镜像的依赖关系。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Kolla Image Dependency Tree" class="img-responsive" src="images/kolla/image-dependency-201512.png"/&gt;&lt;/p&gt;
+&lt;h2 id="ansible"&gt;Ansible 部署 &lt;/h2&gt;
+&lt;p&gt; 提供一个完整的 Ansible Playbook，来部署 Docker 的镜像。并提供 all-in-one 和
+multihost 的环境 &lt;/p&gt;
+&lt;h1 id="_4"&gt; 开发人员情况 &lt;/h1&gt;
+&lt;p&gt; 以下是 Kolla 项目截至到 2015-12-31 日的 review, commit 情况 &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Kolla Review" class="img-responsive" src="images/kolla/kolla_review_stackalytics_201512.png"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Kolla Commit 201512" class="img-responsive" src="images/kolla/kolla_commit_stackalytics_201512.png"/&gt;&lt;/p&gt;
+&lt;p&gt; 可以看出，主流的几大 OpenStack 厂商均贡献的大部分的代码。包括 Mirantis, RedHat, Oracle, Intel, 99Cloud, Cisco, Rakespace。&lt;/p&gt;
+&lt;h1 id="_5"&gt; 近况 &lt;/h1&gt;
+&lt;h2 id="201512"&gt;201512&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt; 废弃使用 Ansible 自带的 Docker module。使用自己实现的 docker 模块 &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;, 并已经完成了所有 ansible roles 的改造。主要原因是：&lt;ol&gt;
+&lt;li&gt; 官方 Docker module 有 bug&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;, 在 docker 1.8.3 及以上的版本工作不正常 , 而且进展缓慢。而 Kolla 使用的 Docker 版本只能锁定在 1.8.2，不能进行升级。&lt;/li&gt;
+&lt;li&gt;Ansible 使用的是 GPL，而 OpenStack 项目使用的 Apache License。不能直接修改 Ansible 的代码放到 Kolla 里使用。&lt;/li&gt;
+&lt;li&gt; 不想受限制于官方功能开发。有些想用的功能 ( 比方说新加进去的 &lt;code&gt;common_option&lt;/code&gt;, 官方是不会增加的 )。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt; 使用 oslo.config 模块替代掉了原来的 argparser 代码 &lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;。并加上了使用 &lt;code&gt;oslo-config-generator&lt;/code&gt; 的功能自动生成配置文件。&lt;/li&gt;
+&lt;li&gt; 完善 Ubuntu Binary Container 的安装 &lt;sup id="fnref:6"&gt;&lt;a class="footnote-ref" href="#fn:6" rel="footnote"&gt;6&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref:7"&gt;&lt;a class="footnote-ref" href="#fn:7" rel="footnote"&gt;7&lt;/a&gt;&lt;/sup&gt;&lt;ul&gt;
+&lt;li&gt; 由于 Ubuntu 并没有类似 RDO 的 relorean 源。倒是有一个 Mitaka Staging&lt;sup id="fnref:5"&gt;&lt;a class="footnote-ref" href="#fn:5" rel="footnote"&gt;5&lt;/a&gt;&lt;/sup&gt; 源，但是好久没有更新报。所以社区之前一直没有加上这部分功能。现在虽然加上了，但是也是基于 Liberty 版本的。并不是 Master 上的代码。不过。&lt;/li&gt;
+&lt;li&gt; 另一方面，Ubuntu 方面也正在积极的解决这个问题 &lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4" rel="footnote"&gt;4&lt;/a&gt;&lt;/sup&gt;。相信不久就会有 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt; 升级的 playbook 基本完成来 &lt;sup id="fnref:8"&gt;&lt;a class="footnote-ref" href="#fn:8" rel="footnote"&gt;8&lt;/a&gt;&lt;/sup&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="_6"&gt; 使用到的技术 &lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Docker/LXC&lt;/li&gt;
+&lt;li&gt;Ansible&lt;/li&gt;
+&lt;li&gt;Python &lt;ul&gt;
+&lt;li&gt;docker-py&lt;/li&gt;
+&lt;li&gt;Jinja2&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="_7"&gt; 近期规划 &lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt; 拆分 ansible 部分到新的项目 kolla-ansible。kolla 项目只用来做 docker images build. 部署工作由 kolla-ansible, kolla-mesos&lt;sup id="fnref:9"&gt;&lt;a class="footnote-ref" href="#fn:9" rel="footnote"&gt;9&lt;/a&gt;&lt;/sup&gt; 等工具来实现。&lt;/li&gt;
+&lt;li&gt; 如何进行平滑的 OpenStack 升级 &lt;/li&gt;
+&lt;li&gt;ELK 的集成 &lt;/li&gt;
+&lt;li&gt;Swift 自动化 &lt;/li&gt;
+&lt;li&gt;Ceilometer Container&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://wiki.openstack.org/wiki/Kolla"&gt;Kolla Wiki Page&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="footnote"&gt;
+&lt;hr/&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/248812/"&gt;Add docker module in Kolla&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;&lt;a href="https://github.com/ansible/ansible-modules-core/issues/2257"&gt;Docker 1.8.3 is broken under certain conditions&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:3"&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/260389/"&gt;use oslo.config instead of raw argparse.ArgumentParser&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:4"&gt;
+&lt;p&gt;&lt;a href="http://lists.openstack.org/pipermail/openstack-dev/2015-December/083089.html"&gt;Mail List: Adding Ubuntu Liberty to Kolla-Mitaka&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:5"&gt;
+&lt;p&gt;&lt;a href="https://launchpad.net/~ubuntu-cloud-archive/+archive/ubuntu/mitaka-staging"&gt;Staging PPA for mitaka&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:6"&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/261957/"&gt;Gerrit: Base and openstack-base ubuntu binary containers&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 6 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:7"&gt;
+&lt;p&gt;&lt;a href="https://blueprints.launchpad.net/kolla/+spec/binary-ubuntu"&gt;BP:Ubuntu binary containers&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:7" rev="footnote" title="Jump back to footnote 7 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:8"&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/257568/"&gt;Gerrit: Playbook for keystone upgradel&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:8" rev="footnote" title="Jump back to footnote 8 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:9"&gt;
+&lt;p&gt;&lt;a href="https://github.com/openstack/kolla-mesos"&gt;kolla-mesos&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:9" rev="footnote" title="Jump back to footnote 9 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 11 Jan 2016 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2016-01-11:kolla-introduce.html</guid><category>Kolla</category><category>OpenStack</category></item><item><title>Get all the repo from OpenStack</title><link>http://xcodest.me/get-all-repos-from-openstack.html</link><description>&lt;p&gt;OpenStack 的源因为你我都知道的原因，一直不稳定，导致 devstack 时经常失败。特定写了个脚本，可以拿到所有的仓库地址，方便做本地的 mirror。&lt;/p&gt;
+&lt;p&gt; 脚本在 gist&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; 上。&lt;/p&gt;
+&lt;p&gt; 使用方法：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;pip install PyGithub
 python openstack_repo.py -u &amp;lt;github_username&amp;gt; -p &amp;lt;github_password&amp;gt; \
     -o repos.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;跑一次才发现，OpenStack 组下已经有了600多个项目。好多啊。&lt;/p&gt;
+&lt;p&gt; 跑一次才发现，OpenStack 组下已经有了 600 多个项目。好多啊。&lt;/p&gt;
 &lt;div class="gist"&gt;
     &lt;script src='https://gist.github.com/b6c36b9f74b743eb4c82.js?file=openstack_repos.py'&gt;&lt;/script&gt;
     &lt;noscript&gt;
@@ -96,60 +197,60 @@ if __name__ == "__main__":
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 06 Jan 2016 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2016-01-06:get-all-repos-from-openstack.html</guid><category>OpenStach Python</category></item><item><title>Ansible Tower Usage</title><link>http://xcodest.me/ansible-tower-usage.html</link><description>
-&lt;p&gt;安装好后的 Tower 如下图(图1)&lt;/p&gt;
+&lt;p&gt; 安装好后的 Tower 如下图 ( 图 1)&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Ansible Tower" class="img-responsive" src="images/ansible/tower_preview.png"/&gt;&lt;/p&gt;
 &lt;div class="text-center"&gt;
-&lt;p&gt;&lt;strong&gt;图1&lt;/strong&gt; &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; 图 1&lt;/strong&gt; &lt;/p&gt;
 &lt;/div&gt;
-&lt;p&gt;从上面看，主要有 Projects, Inventories, Job Templates, Jobs 几个功能点。
-还有一个主要的是后面的 Setup。我们一个一个来介绍下都是做什么用的。并建立起一个简单的例子&lt;/p&gt;
+&lt;p&gt; 从上面看，主要有 Projects, Inventories, Job Templates, Jobs 几个功能点。
+还有一个主要的是后面的 Setup。我们一个一个来介绍下都是做什么用的。并建立起一个简单的例子 &lt;/p&gt;
 &lt;h1 id="projects"&gt;Projects&lt;/h1&gt;
-&lt;p&gt;Projects 里的主要内容是一个 Playbook 的代码地址，可选项为Manual(手动指定位置)，Git, Mercutail, Subversion。&lt;/p&gt;
-&lt;p&gt;我在Github上建立了一个简单的 PlayBook。我们来创建一个新的 Project。&lt;/p&gt;
+&lt;p&gt;Projects 里的主要内容是一个 Playbook 的代码地址，可选项为 Manual( 手动指定位置 )，Git, Mercutail, Subversion。&lt;/p&gt;
+&lt;p&gt; 我在 Github 上建立了一个简单的 PlayBook。我们来创建一个新的 Project。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;project_demo&lt;/span&gt;
 &lt;span class="n"&gt;Organization&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Default&lt;/span&gt;
 &lt;span class="n"&gt;SCM&lt;/span&gt; &lt;span class="n"&gt;Type&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Git&lt;/span&gt;
 &lt;span class="n"&gt;SCM&lt;/span&gt; &lt;span class="n"&gt;URL&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="o"&gt;://&lt;/span&gt;&lt;span class="n"&gt;github&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;com&lt;/span&gt;&lt;span class="sr"&gt;/jeffrey4l/&lt;/span&gt;&lt;span class="n"&gt;tower_test&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;git&lt;/span&gt;
 &lt;span class="n"&gt;SCM&lt;/span&gt; &lt;span class="n"&gt;Branch&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;master&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;保存就可以创建好一个Project. &lt;/p&gt;
+&lt;p&gt; 保存就可以创建好一个 Project. &lt;/p&gt;
 &lt;p&gt;&lt;img alt="Tower Project List" class="img-responsive" src="images/ansible/tower_project_list.png"/&gt;
-&lt;div class="text-center" markdown="1"&gt; &lt;strong&gt;图2&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;在(图2)中，可以看到刚刚创建的 Project (project_demo)。后面是有4个操作按钮，分别是更新代码，定时更新，修改和删除。&lt;/p&gt;
-&lt;p&gt;基中更新代码的其实就是启了一个ansible playbook去update你在创建Project时填入的项目地址。&lt;/p&gt;
+&lt;div class="text-center" markdown="1"&gt; &lt;strong&gt; 图 2&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;
+&lt;p&gt; 在 ( 图 2) 中，可以看到刚刚创建的 Project (project_demo)。后面是有 4 个操作按钮，分别是更新代码，定时更新，修改和删除。&lt;/p&gt;
+&lt;p&gt; 基中更新代码的其实就是启了一个 ansible playbook 去 update 你在创建 Project 时填入的项目地址。&lt;/p&gt;
 &lt;h1 id="inventories"&gt;Inventories&lt;/h1&gt;
-&lt;p&gt;这里的 Inventories 和在 Ansible里的概念是一样的。在这可以创建一个若干 Inventories。每个里面可以像在 Ansible 里一样，创建机器和群组。&lt;/p&gt;
-&lt;p&gt;我们来创建一个 localhost 的机器。点击 + 号，在弹出的对话框里输入 localhost 就可以了。&lt;/p&gt;
+&lt;p&gt; 这里的 Inventories 和在 Ansible 里的概念是一样的。在这可以创建一个若干 Inventories。每个里面可以像在 Ansible 里一样，创建机器和群组。&lt;/p&gt;
+&lt;p&gt; 我们来创建一个 localhost 的机器。点击 + 号，在弹出的对话框里输入 localhost 就可以了。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Tower add host" class="img-responsive" src="images/ansible/tower_add_host.png"/&gt;
-&lt;div class="text-center" markdown="1"&gt; &lt;strong&gt;图3&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;在里面，还可以增加 Host 对应的变量。Group 里还可以嵌套 Group, 这和Ansible是一样的。&lt;/p&gt;
+&lt;div class="text-center" markdown="1"&gt; &lt;strong&gt; 图 3&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;
+&lt;p&gt; 在里面，还可以增加 Host 对应的变量。Group 里还可以嵌套 Group, 这和 Ansible 是一样的。&lt;/p&gt;
 &lt;h1 id="job-templates"&gt;Job Templates&lt;/h1&gt;
-&lt;p&gt;这里是来定义 Job 的模板。定义好后，就可以手动或自动的跑 Job 了。这之前，我们还可创建一个认证信息，用来登录机器用。&lt;/p&gt;
-&lt;p&gt;在 setup -&amp;gt; Credentials 里可以看到所有的认证信息。我们来创建一个基于 SSH Key的认证，用来登录 localhost, 跑我们的 project demo 项目。&lt;/p&gt;
+&lt;p&gt; 这里是来定义 Job 的模板。定义好后，就可以手动或自动的跑 Job 了。这之前，我们还可创建一个认证信息，用来登录机器用。&lt;/p&gt;
+&lt;p&gt; 在 setup -&amp;gt; Credentials 里可以看到所有的认证信息。我们来创建一个基于 SSH Key 的认证，用来登录 localhost, 跑我们的 project demo 项目。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;
 &lt;span class="n"&gt;User&lt;/span&gt; &lt;span class="n"&gt;that&lt;/span&gt; &lt;span class="n"&gt;owns&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt; &lt;span class="n"&gt;creidential&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;admin&lt;/span&gt;
 &lt;span class="n"&gt;Type&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Machine&lt;/span&gt;
 &lt;span class="n"&gt;Username&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;
 &lt;span class="n"&gt;Private&lt;/span&gt; &lt;span class="n"&gt;Key&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;generated&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="n"&gt;ssh&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;keygen&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;并把上面的 Key 配置的本机上。&lt;/p&gt;
-&lt;p&gt;接下来，创建我们的 Job Template&lt;/p&gt;
+&lt;p&gt; 并把上面的 Key 配置的本机上。&lt;/p&gt;
+&lt;p&gt; 接下来，创建我们的 Job Template&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Tower add job template" class="img-responsive" src="images/ansible/tower_add_job_template.png"/&gt;
-&lt;div class="text-center" markdown="1"&gt; &lt;strong&gt;图4&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;
+&lt;div class="text-center" markdown="1"&gt; &lt;strong&gt; 图 4&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;
 &lt;h1 id="job"&gt;Job&lt;/h1&gt;
-&lt;p&gt;创建好模板后，直接在 template 界面里点 start 就可以运行了。点击后，会跳转到 Job 运行界面。稍等一会，就可以看到运行结果了。&lt;/p&gt;
+&lt;p&gt; 创建好模板后，直接在 template 界面里点 start 就可以运行了。点击后，会跳转到 Job 运行界面。稍等一会，就可以看到运行结果了。&lt;/p&gt;
 &lt;h1 id="portal"&gt;Portal&lt;/h1&gt;
-&lt;p&gt;Tower 还有一个 Portal 模式。很方便非开发运维人员使用。左面是Job Template, 点击直接运行, 右面是运行结果。&lt;/p&gt;
+&lt;p&gt;Tower 还有一个 Portal 模式。很方便非开发运维人员使用。左面是 Job Template, 点击直接运行 , 右面是运行结果。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Tower Portal Mode" class="img-responsive" src="images/ansible/tower_portal.png"/&gt;
-&lt;div class="text-center" markdown="1"&gt; &lt;strong&gt;图5&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 02 Jan 2016 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2016-01-02:ansible-tower-usage.html</guid><category>Ansible Tower</category></item><item><title>Install Ansible Tower</title><link>http://xcodest.me/install-ansible-tower.html</link><description>
-&lt;h1 id="_1"&gt;手动安装&lt;/h1&gt;
-&lt;h2 id="_2"&gt;下载安装包&lt;/h2&gt;
-&lt;p&gt;从 http://www.ansible.com/tower-trial 下载，需要填个人信息，提交后会自动下载。&lt;/p&gt;
-&lt;p&gt;把安装包复制到要安装的机器中去，解压准备安装&lt;/p&gt;
+&lt;div class="text-center" markdown="1"&gt; &lt;strong&gt; 图 5&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 02 Jan 2016 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2016-01-02:ansible-tower-usage.html</guid><category>Ansible Tower</category></item><item><title>Install Ansible Tower</title><link>http://xcodest.me/install-ansible-tower.html</link><description>
+&lt;h1 id="_1"&gt; 手动安装 &lt;/h1&gt;
+&lt;h2 id="_2"&gt; 下载安装包 &lt;/h2&gt;
+&lt;p&gt; 从 http://www.ansible.com/tower-trial 下载，需要填个人信息，提交后会自动下载。&lt;/p&gt;
+&lt;p&gt; 把安装包复制到要安装的机器中去，解压准备安装 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;tar xvf ansible-tower-setup-latest.tar.gz
 cd ansible-tower-setup-2.4.3
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;这个安装包本质上是一个playbook。其中&lt;code&gt;configure&lt;/code&gt;是用来生成配置文件的脚本，运行它会有几个问题，让你回答，回答完后就开始自动安装了。也可把这些问答写到一个文件中，让其自动化。建立名为&lt;code&gt;tower_setup_conf.yml&lt;/code&gt; 的文件，其内容为:&lt;/p&gt;
+&lt;p&gt; 这个安装包本质上是一个 playbook。其中 &lt;code&gt;configure&lt;/code&gt; 是用来生成配置文件的脚本，运行它会有几个问题，让你回答，回答完后就开始自动安装了。也可把这些问答写到一个文件中，让其自动化。建立名为 &lt;code&gt;tower_setup_conf.yml&lt;/code&gt; 的文件，其内容为 :&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l-Scalar-Plain"&gt;admin_password&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;password&lt;/span&gt;
 &lt;span class="l-Scalar-Plain"&gt;database&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;internal&lt;/span&gt;
 &lt;span class="l-Scalar-Plain"&gt;munin_password&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;password&lt;/span&gt;
@@ -157,10 +258,10 @@ cd ansible-tower-setup-2.4.3
 &lt;span class="l-Scalar-Plain"&gt;primary_machine&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;localhost&lt;/span&gt;
 &lt;span class="l-Scalar-Plain"&gt;redis_password&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;password&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;开始进行设置&lt;/p&gt;
+&lt;p&gt; 开始进行设置 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;./configure --options-file tower_setup_conf.yml
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;如果没有问题，脚本会提示：&lt;/p&gt;
+&lt;p&gt; 如果没有问题，脚本会提示：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;The configuration provided in tower_setup_conf.yml appears complete.
 
 FINISHED!
@@ -169,18 +270,18 @@ Ansible Tower by issuing the following command:
 
 sudo ./setup.sh
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;运行安装脚本&lt;/p&gt;
+&lt;p&gt; 运行安装脚本 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;sudo ./setup.sh
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;其主要工作为&lt;/p&gt;
+&lt;p&gt; 其主要工作为 &lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;如果没有安装ansible, 就安装上ansible&lt;/li&gt;
-&lt;li&gt;使用ansible进行tower的安装&lt;/li&gt;
+&lt;li&gt; 如果没有安装 ansible, 就安装上 ansible&lt;/li&gt;
+&lt;li&gt; 使用 ansible 进行 tower 的安装 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;安装好后，终端会提示给你访问的地址，用浏览器打开就可以了。输入上面设置的admin账号密码登录。&lt;/p&gt;
-&lt;p&gt;之后会出现设置 Tower License 的界面。可以从 http://www.ansible.com/license 申请到一个10个节点的免费 license。最后把 License 复制进去提交就可以了。&lt;/p&gt;
-&lt;h1 id="vagrant"&gt;使用 Vagrant 进行安装&lt;/h1&gt;
-&lt;p&gt;官方提供 Vagrant Images, 方便进行安装测试。使用方法&lt;/p&gt;
+&lt;p&gt; 安装好后，终端会提示给你访问的地址，用浏览器打开就可以了。输入上面设置的 admin 账号密码登录。&lt;/p&gt;
+&lt;p&gt; 之后会出现设置 Tower License 的界面。可以从 http://www.ansible.com/license 申请到一个 10 个节点的免费 license。最后把 License 复制进去提交就可以了。&lt;/p&gt;
+&lt;h1 id="vagrant"&gt; 使用 Vagrant 进行安装 &lt;/h1&gt;
+&lt;p&gt; 官方提供 Vagrant Images, 方便进行安装测试。使用方法 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;vagrant init tower http://vms.ansible.com/ansible-tower-2.4.3-virtualbox.box
 vagrant up
 vagrant ssh
@@ -189,17 +290,17 @@ vagrant ssh
 &lt;ul&gt;
 &lt;li&gt;http://docs.ansible.com/ansible-tower/latest/html/installandreference/tower_installer.html&lt;/li&gt;
 &lt;li&gt;http://docs.ansible.com/ansible-tower/latest/html/installandreference/tower_install_wizard.html&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 31 Dec 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-12-31:install-ansible-tower.html</guid><category>Ansible Tower</category></item><item><title>Ansible安装</title><link>http://xcodest.me/ansible-install.html</link><description>&lt;p&gt;由于 Ansible 是通过 SSH 进行通讯的，所以只用安装 master 端就可以了。并不像 puppet/SaltStack 那样在 slave/minion 端进行安装。&lt;/p&gt;
-&lt;p&gt;由于是用 Python 编写的，安装起来和普通 Python 应用没有太大区别。可以通过源码，pypi, 操作系统的包管理进行安装。&lt;/p&gt;
-&lt;h1 id="_1"&gt;系统包管理&lt;/h1&gt;
-&lt;h2 id="rpm"&gt;RPM 系&lt;/h2&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 31 Dec 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-12-31:install-ansible-tower.html</guid><category>Ansible Tower</category></item><item><title>Ansible安装</title><link>http://xcodest.me/ansible-install.html</link><description>&lt;p&gt; 由于 Ansible 是通过 SSH 进行通讯的，所以只用安装 master 端就可以了。并不像 puppet/SaltStack 那样在 slave/minion 端进行安装。&lt;/p&gt;
+&lt;p&gt; 由于是用 Python 编写的，安装起来和普通 Python 应用没有太大区别。可以通过源码，pypi, 操作系统的包管理进行安装。&lt;/p&gt;
+&lt;h1 id="_1"&gt; 系统包管理 &lt;/h1&gt;
+&lt;h2 id="rpm"&gt;RPM 系 &lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;# install epel source
 yum install -y epel-release
 yum install ansible
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id="apt"&gt;Apt 系&lt;/h2&gt;
+&lt;h2 id="apt"&gt;Apt 系 &lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;apt-get install -y software-properties-common
 apt-add-repository -y ppa:ansible/ansible
 apt-get update
@@ -207,13 +308,13 @@ apt-get install -y ansible
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="pypi"&gt;pypi安装&lt;/h1&gt;
-&lt;p&gt;通过pypi相当简单，直接用pip就可安装&lt;/p&gt;
+&lt;h1 id="pypi"&gt;pypi 安装 &lt;/h1&gt;
+&lt;p&gt; 通过 pypi 相当简单，直接用 pip 就可安装 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;pip install ansible
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="_2"&gt;源码安装&lt;/h1&gt;
+&lt;h1 id="_2"&gt; 源码安装 &lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# download the source from github&lt;/span&gt;
 &lt;span class="c"&gt;# ansible has two git submodules, so the --recursive is required.&lt;/span&gt;
 git clone git://github.com/ansible/ansible.git --recursive
@@ -221,14 +322,14 @@ git clone git://github.com/ansible/ansible.git --recursive
 
 &lt;span class="c"&gt;# install&lt;/span&gt;
 pip install .
-&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 30 Dec 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-12-30:ansible-install.html</guid><category>Ansible</category></item><item><title>Deploy Docker Registry Service</title><link>http://xcodest.me/deploy-docker-registry-service.html</link><description>&lt;p&gt;使用 Docker 时，很多情况下需要搭建自己的 registry 服务。把一些私有的 Image 放到上面用。官方有一个 registry 的&lt;a href="https://hub.docker.com/_/registry/"&gt;镜像&lt;/a&gt;可以拉下来，直接用。如下：&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 30 Dec 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-12-30:ansible-install.html</guid><category>Ansible</category></item><item><title>Deploy Docker Registry Service</title><link>http://xcodest.me/deploy-docker-registry-service.html</link><description>&lt;p&gt; 使用 Docker 时，很多情况下需要搭建自己的 registry 服务。把一些私有的 Image 放到上面用。官方有一个 registry 的 &lt;a href="https://hub.docker.com/_/registry/"&gt; 镜像 &lt;/a&gt; 可以拉下来，直接用。如下：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;docker run -p 5000:5000 -v &amp;lt;HOST_DIR&amp;gt;:/tmp/registry-dev registry
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;但是默认没有加上 ssl(如果没有，只能给本机提供服务)， proxy也没有开启。&lt;/p&gt;
-&lt;p&gt;我自己写了一个 docker compose, 默认开启了以上两个功能，代码见&lt;a href="https://github.com/jeffrey4l/docker-registry"&gt;这里&lt;/a&gt;。默认使用了 host 的 /data/docker-registry/data 目录做数据 volume, 所以请保证这个目录存在。&lt;/p&gt;
-&lt;p&gt;使用自己建立的 registry 服务时，要修改 docker 的服务启动脚本，加上如下参数：&lt;/p&gt;
+&lt;p&gt; 但是默认没有加上 ssl( 如果没有，只能给本机提供服务 )， proxy 也没有开启。&lt;/p&gt;
+&lt;p&gt; 我自己写了一个 docker compose, 默认开启了以上两个功能，代码见 &lt;a href="https://github.com/jeffrey4l/docker-registry"&gt; 这里 &lt;/a&gt;。默认使用了 host 的 /data/docker-registry/data 目录做数据 volume, 所以请保证这个目录存在。&lt;/p&gt;
+&lt;p&gt; 使用自己建立的 registry 服务时，要修改 docker 的服务启动脚本，加上如下参数：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;--insecure-registry your.domain.com:5000 --registry-mirror=https://your.domain.com:5000
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -239,11 +340,11 @@ pip install .
 &lt;li&gt;https://github.com/docker/distribution/blob/master/docs/mirror.md&lt;/li&gt;
 &lt;li&gt;https://hub.docker.com/_/registry/&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 15 Dec 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-12-15:deploy-docker-registry-service.html</guid><category>Docker</category></item><item><title>Python Exception init args</title><link>http://xcodest.me/python-exception-init-args.html</link><description>&lt;p&gt;&lt;img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;一直没有搞明白 &lt;code&gt;Exception&lt;/code&gt; 的 args 和 message 参数, 最近看了一下 CPython 源码，
+&lt;p&gt; 一直没有搞明白 &lt;code&gt;Exception&lt;/code&gt; 的 args 和 message 参数 , 最近看了一下 CPython 源码，
 终于搞明白了。&lt;/p&gt;
-&lt;p&gt;一开始(从2.5开始)的时候是有 &lt;code&gt;args&lt;/code&gt; 和 &lt;code&gt;message&lt;/code&gt; 两个参数的。2.6版本之后，把
+&lt;p&gt; 一开始 ( 从 2.5 开始 ) 的时候是有 &lt;code&gt;args&lt;/code&gt; 和 &lt;code&gt;message&lt;/code&gt; 两个参数的。2.6 版本之后，把
 &lt;code&gt;message&lt;/code&gt; 废弃掉了，只留下了一个任意长度的 &lt;code&gt;args&lt;/code&gt;。&lt;/p&gt;
-&lt;p&gt;以下是2.5以后的代码，可以看到，如果args 长度是1，就会把 &lt;code&gt;self.message = args[0]&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt; 以下是 2.5 以后的代码，可以看到，如果 args 长度是 1，就会把 &lt;code&gt;self.message = args[0]&lt;/code&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
 &lt;span class="nf"&gt;BaseException_new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyTypeObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;kwds&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="p"&gt;{&lt;/span&gt;
@@ -290,10 +391,10 @@ pip install .
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;本来 message 就是 Exception的一个属性，在2.6以后，把它变成了一个 descriptor, 当
+&lt;p&gt; 本来 message 就是 Exception 的一个属性，在 2.6 以后，把它变成了一个 descriptor, 当
 调用时，如果它在 &lt;code&gt;self.__dict__&lt;/code&gt; 里，就直接打印，否则就返回 &lt;code&gt;self.message&lt;/code&gt; 的信息
-并打印出一个 &lt;code&gt;Warning&lt;/code&gt;。如果已经赋过一个值的话&lt;code&gt;self.message = xxxx&lt;/code&gt;, 它就会存在
-&lt;code&gt;self.__dict__&lt;/code&gt;里。&lt;/p&gt;
+并打印出一个 &lt;code&gt;Warning&lt;/code&gt;。如果已经赋过一个值的话 &lt;code&gt;self.message = xxxx&lt;/code&gt;, 它就会存在
+&lt;code&gt;self.__dict__&lt;/code&gt; 里。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
 &lt;span class="nf"&gt;BaseException_get_message&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyBaseExceptionObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;self&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="p"&gt;{&lt;/span&gt;
@@ -347,8 +448,8 @@ pip install .
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;在 python3 中，message 相关的信息已经完全删除掉了。&lt;/p&gt;
-&lt;p&gt;所以，一般使用 &lt;code&gt;message&lt;/code&gt; 属性的话，推荐这样使用&lt;/p&gt;
+&lt;p&gt; 在 python3 中，message 相关的信息已经完全删除掉了。&lt;/p&gt;
+&lt;p&gt; 所以，一般使用 &lt;code&gt;message&lt;/code&gt; 属性的话，推荐这样使用 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;MyException&lt;/span&gt;(&lt;span class="nb"&gt;Exception&lt;/span&gt;):
     &lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;__init__&lt;/span&gt;(&lt;span class="k"&gt;self&lt;/span&gt;, &lt;span class="n"&gt;message&lt;/span&gt;):
         &lt;span class="k"&gt;self&lt;/span&gt;.&lt;span class="n"&gt;message&lt;/span&gt; = &lt;span class="n"&gt;message&lt;/span&gt;
@@ -451,8 +552,8 @@ or similar.
 &lt;li&gt;&lt;a href="http://bugs.python.org/issue8296"&gt;Python Bug&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://unix.stackexchange.com/a/149756"&gt;How Ctrl+c works&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://stackoverflow.com/a/1408476/893981"&gt;Keyboard Interrupts with python's multiprocessing Pool&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 17 Nov 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-11-17:interrupt-the-python-multiprocessing-pool-in-graceful-way.html</guid><category>Python</category></item><item><title>Glance Create Image from Existent Image in Ceph</title><link>http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html</link><description>&lt;p&gt;当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。&lt;/p&gt;
-&lt;p&gt;可以先用 rbd 上传镜像，转换格式(也会比较慢，还不如直接上传 RAW 格式的镜像)。然后再做好对应的 snap , 并加以保护。是后一步的location必须按格式写(见[0])，这样才会使用rbd的 COW clone 功能。&lt;/p&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 17 Nov 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-11-17:interrupt-the-python-multiprocessing-pool-in-graceful-way.html</guid><category>Python</category></item><item><title>Glance Create Image from Existent Image in Ceph</title><link>http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html</link><description>&lt;p&gt; 当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。&lt;/p&gt;
+&lt;p&gt; 可以先用 rbd 上传镜像，转换格式 ( 也会比较慢，还不如直接上传 RAW 格式的镜像 )。然后再做好对应的 snap , 并加以保护。是后一步的 location 必须按格式写 ( 见 [0])，这样才会使用 rbd 的 COW clone 功能。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# image format 2 support layering&lt;/span&gt;
 rbd --image-format &lt;span class="m"&gt;2&lt;/span&gt; import /tmp/ubuntu14.04.2.dsk &lt;span class="nv"&gt;$uuid&lt;/span&gt;
 
@@ -473,13 +574,13 @@ glance image-create --id &lt;span class="nv"&gt;$uuid&lt;/span&gt; --name ubuntu
 &lt;li&gt;[0] &lt;a href="https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179"&gt;https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;[1] &lt;a href="http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf"&gt;http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;[2] &lt;a href="http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/"&gt;http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 04 Jun 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-06-04:glance-create-image-from-existent-image-in-ceph.html</guid></item><item><title>Python MetaClass Magic</title><link>http://xcodest.me/python-metaclass-magic.html</link><description>&lt;p&gt;在 Nova 代码中[&lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075"&gt;0&lt;/a&gt;]发现一个神奇的应用，利用 decrator 来区分同名的函数，根据 decrator 上面定义的版本，来调用不同的方法。仔细学习了一下。它是用到了 MetaClass。主要思路是：&lt;/p&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 04 Jun 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-06-04:glance-create-image-from-existent-image-in-ceph.html</guid></item><item><title>Python MetaClass Magic</title><link>http://xcodest.me/python-metaclass-magic.html</link><description>&lt;p&gt; 在 Nova 代码中 [&lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075"&gt;0&lt;/a&gt;] 发现一个神奇的应用，利用 decrator 来区分同名的函数，根据 decrator 上面定义的版本，来调用不同的方法。仔细学习了一下。它是用到了 MetaClass。主要思路是：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;在 decrator 里面，把被装饰的方法存在类的一个属性里面(version_methods)&lt;/li&gt;
-&lt;li&gt;使用自定义的metaclass, 删除掉父类上的version_methods，并把这个属性放到子类中。这样做是为了防止子类共享父类的version_methods属性。&lt;/li&gt;
-&lt;li&gt;在子类里面，重写&lt;code&gt;__getattribute__&lt;/code&gt;方法，当所需要的属性存在于&lt;code&gt;version_methods&lt;/code&gt;时，根据特定的条件，返回期望的方法。如果没有，就调用父类的方法。&lt;/li&gt;
+&lt;li&gt; 在 decrator 里面，把被装饰的方法存在类的一个属性里面 (version_methods)&lt;/li&gt;
+&lt;li&gt; 使用自定义的 metaclass, 删除掉父类上的 version_methods，并把这个属性放到子类中。这样做是为了防止子类共享父类的 version_methods 属性。&lt;/li&gt;
+&lt;li&gt; 在子类里面，重写 &lt;code&gt;__getattribute__&lt;/code&gt; 方法，当所需要的属性存在于 &lt;code&gt;version_methods&lt;/code&gt; 时，根据特定的条件，返回期望的方法。如果没有，就调用父类的方法。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;以下是示例代码&lt;/p&gt;
+&lt;p&gt; 以下是示例代码 &lt;/p&gt;
 &lt;div class="gist"&gt;
     &lt;script src='https://gist.github.com/0b974aaea1be25cde67d.js?file=version_method.py'&gt;&lt;/script&gt;
     &lt;noscript&gt;
@@ -584,9 +685,9 @@ SubClass2().foo({"version": "2.0"})
 &lt;/div&gt;
 &lt;ul&gt;
 &lt;li&gt;[0] &lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075"&gt;https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 18 May 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-05-18:python-metaclass-magic.html</guid><category>Python</category></item><item><title>Oz Templates</title><link>http://xcodest.me/oz-templates.html</link><description>&lt;p&gt;最近利用&lt;a href="https://github.com/clalancette/oz"&gt;OZ&lt;/a&gt;做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下&lt;/p&gt;
-&lt;p&gt;项目地址: &lt;a href="https://github.com/jeffrey4l/oz-templates"&gt;https://github.com/jeffrey4l/oz-templates&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;以下是README里的内容。&lt;/p&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 18 May 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-05-18:python-metaclass-magic.html</guid><category>Python</category></item><item><title>Oz Templates</title><link>http://xcodest.me/oz-templates.html</link><description>&lt;p&gt; 最近利用 &lt;a href="https://github.com/clalancette/oz"&gt;OZ&lt;/a&gt; 做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下 &lt;/p&gt;
+&lt;p&gt; 项目地址 : &lt;a href="https://github.com/jeffrey4l/oz-templates"&gt;https://github.com/jeffrey4l/oz-templates&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt; 以下是 README 里的内容。&lt;/p&gt;
 &lt;h2 id="usage"&gt;Usage&lt;/h2&gt;
 &lt;p&gt;The isos are located in &lt;code&gt;/data/isos/&lt;/code&gt;. The isos' name are conversionally.
 Including&lt;/p&gt;
@@ -609,7 +710,7 @@ make all
 &lt;li&gt;without lvm, which will helpful for partion auto extend.&lt;/li&gt;
 &lt;li&gt;Default image size is 40GB&lt;/li&gt;
 &lt;li&gt;Installed cloud-init with some basic configuration.&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 11 May 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-05-11:oz-templates.html</guid><category>OpenStack</category></item><item><title>论Python的异常的合理抛出姿势</title><link>http://xcodest.me/How_to_raise_python_exception.html</link><description>&lt;p&gt;当需要重新抛出 Python 的异常时，很多人都处理不好。本文总结了一些处理方法。&lt;/p&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 11 May 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-05-11:oz-templates.html</guid><category>OpenStack</category></item><item><title>论Python的异常的合理抛出姿势</title><link>http://xcodest.me/How_to_raise_python_exception.html</link><description>&lt;p&gt; 当需要重新抛出 Python 的异常时，很多人都处理不好。本文总结了一些处理方法。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -617,7 +718,7 @@ make all
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;这种处理会直接把内部异常吃掉，当有问题/Bug时，会很难处理，所以不推荐。&lt;/p&gt;
+&lt;p&gt; 这种处理会直接把内部异常吃掉，当有问题 /Bug 时，会很难处理，所以不推荐。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;Exception&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -629,7 +730,7 @@ make all
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;这种直接打印的，一是不能很好的输出到日志里。二是不能把错误交到上层调用者，不能让其知道这是有问题。&lt;/p&gt;
+&lt;p&gt; 这种直接打印的，一是不能很好的输出到日志里。二是不能把错误交到上层调用者，不能让其知道这是有问题。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_somethink&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
 &lt;span class="n"&gt;except&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
@@ -638,8 +739,8 @@ make all
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;用这种，主要是为了做cleanup。直接&lt;code&gt;raise&lt;/code&gt;后，异常会抛向上层。没有catch的效果一样。&lt;/p&gt;
-&lt;p&gt;这里还有一种和上面这个类似的效果的&lt;/p&gt;
+&lt;p&gt; 用这种，主要是为了做 cleanup。直接 &lt;code&gt;raise&lt;/code&gt; 后，异常会抛向上层。没有 catch 的效果一样。&lt;/p&gt;
+&lt;p&gt; 这里还有一种和上面这个类似的效果的 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -649,7 +750,7 @@ make all
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;最后，当要抛出自己重新包装后的异常时，最好把原始的异常也带上。这样有利于问题的debug。&lt;/p&gt;
+&lt;p&gt; 最后，当要抛出自己重新包装后的异常时，最好把原始的异常也带上。这样有利于问题的 debug。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -675,12 +776,12 @@ output {
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;用 logstash 手动启动&lt;/p&gt;
+&lt;p&gt; 用 logstash 手动启动 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;logstash -f debug.conf --verbose --debug
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;直接输入数据，能得到详细的输出报告&lt;/p&gt;
+&lt;p&gt; 直接输入数据，能得到详细的输出报告 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;./logstash -f debug --verbose --debug                            
 a
 Pipeline started {:level=&amp;gt;:info}
@@ -698,31 +799,31 @@ Pipeline started {:level=&amp;gt;:info}
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/codecs/rubydebug"&gt;http://logstash.net/docs/1.4.2/codecs/rubydebug&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/flags"&gt;http://logstash.net/docs/1.4.2/flags&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 23 Mar 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-03-23:logstash_debug.html</guid></item><item><title>Nova Security Group相关配置</title><link>http://xcodest.me/nova-security-groupxiang-guan-pei-zhi.html</link><description>&lt;h1 id="_1"&gt;相关配置&lt;/h1&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 23 Mar 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-03-23:logstash_debug.html</guid></item><item><title>Nova Security Group相关配置</title><link>http://xcodest.me/nova-security-groupxiang-guan-pei-zhi.html</link><description>&lt;h1 id="_1"&gt; 相关配置 &lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;network_api_class - 设置 network 模块所用的api&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;nova.network.api.API&lt;/code&gt; - 通过rpc与nova-network交互&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;nova.network.neutronv2.API&lt;/code&gt; - 通过http与neutron-server交互&lt;/li&gt;
+&lt;li&gt;network_api_class - 设置 network 模块所用的 api&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nova.network.api.API&lt;/code&gt; - 通过 rpc 与 nova-network 交互 &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nova.network.neutronv2.API&lt;/code&gt; - 通过 http 与 neutron-server 交互 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;security_group_api - 设置 security group 模块所用的api类&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;nova&lt;/code&gt; (&lt;code&gt;nova.compute.api.SecurityGroupAPI&lt;/code&gt;) - 通过rcp与nova-compute交互&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;neutron&lt;/code&gt; ( &lt;code&gt;nova.network.security_group.neutron_driver.SecurityGroupAPI&lt;/code&gt; ) - 通过http与neutron-server交互&lt;/li&gt;
+&lt;li&gt;security_group_api - 设置 security group 模块所用的 api 类 &lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nova&lt;/code&gt; (&lt;code&gt;nova.compute.api.SecurityGroupAPI&lt;/code&gt;) - 通过 rcp 与 nova-compute 交互 &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;neutron&lt;/code&gt; ( &lt;code&gt;nova.network.security_group.neutron_driver.SecurityGroupAPI&lt;/code&gt; ) - 通过 http 与 neutron-server 交互 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;linuxnet_interface_driver - 在机器与 ethernet interface plug&amp;amp;unplug时调用 。&lt;ul&gt;
+&lt;li&gt;linuxnet_interface_driver - 在机器与 ethernet interface plug&amp;amp;unplug 时调用 。&lt;ul&gt;
 &lt;li&gt;&lt;code&gt;nova.network.linux_net.LinuxBridgeInterfaceDriver&lt;/code&gt; - used in nova-network&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;nova.network.linux_net.linuxOVSInterfaceDriver&lt;/code&gt; - use in neutron + ml2 + ovs&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver&lt;/code&gt; - use in neutron + ml2 + linuxbridge&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;firewall_driver - 虚拟化层所用的 firewall。在nova-network时代，security group由iptables和ebtables实现。在neutron时代，这个已经不需要了。但是neutron里现在还有arp-spoofing的bug, 参见[2]&lt;ul&gt;
+&lt;li&gt;firewall_driver - 虚拟化层所用的 firewall。在 nova-network 时代，security group 由 iptables 和 ebtables 实现。在 neutron 时代，这个已经不需要了。但是 neutron 里现在还有 arp-spoofing 的 bug, 参见 [2]&lt;ul&gt;
 &lt;li&gt;&lt;code&gt;nova.virt.firewall.IptablesFirewallDrive&lt;/code&gt; - &lt;/li&gt;
 &lt;li&gt;&lt;code&gt;nova.virt.firewall.NoopFirewallDriver&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="_2"&gt;使用组合：&lt;/h1&gt;
+&lt;h1 id="_2"&gt; 使用组合：&lt;/h1&gt;
 &lt;p&gt;nova-network + libvirt&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;nova_api_class=nova.network.api.API
 security_group_ap=nova
@@ -754,38 +855,38 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 &lt;li&gt;&lt;a href="https://bugs.launchpad.net/neutron/+bug/1274034"&gt;Neutron firewall anti-spoofing does not prevent ARP poisoning&lt;/a&gt; - Related bug&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
-&lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 18 Mar 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-03-18:nova-security-groupxiang-guan-pei-zhi.html</guid><category>Network</category></item><item><title>关于减肥你应该知道的十件事 - 观后总结</title><link>http://xcodest.me/ten-things-you-need-know-abount-loss-weight.html</link><description>&lt;p&gt;看了BBC出的"BBC：关于减肥你应该知道的十件事"，做了一些笔记。&lt;/p&gt;
+&lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 18 Mar 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-03-18:nova-security-groupxiang-guan-pei-zhi.html</guid><category>Network</category></item><item><title>关于减肥你应该知道的十件事 - 观后总结</title><link>http://xcodest.me/ten-things-you-need-know-abount-loss-weight.html</link><description>&lt;p&gt; 看了 BBC 出的 "BBC：关于减肥你应该知道的十件事 "，做了一些笔记。&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;瘦人也可能脂肪高&lt;ul&gt;
-&lt;li&gt;主要存在于内脏。增加有2型糖尿病和胰岛素抵抗病的风险。内脏脂肪还能释放某些物质损坏心脏周围的动脉，导致心脏病。这些物质还能增加癌症的风险。肝脏释放的化学物质很容易进入肝脏，影响肝脏清除血液中胰岛素的能力，从而有可能引发2型糖尿病。减肥时，最先减掉的就是自己内脏里的脂肪。&lt;/li&gt;
+&lt;li&gt; 瘦人也可能脂肪高 &lt;ul&gt;
+&lt;li&gt; 主要存在于内脏。增加有 2 型糖尿病和胰岛素抵抗病的风险。内脏脂肪还能释放某些物质损坏心脏周围的动脉，导致心脏病。这些物质还能增加癌症的风险。肝脏释放的化学物质很容易进入肝脏，影响肝脏清除血液中胰岛素的能力，从而有可能引发 2 型糖尿病。减肥时，最先减掉的就是自己内脏里的脂肪。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;不应该减少正餐的次数。&lt;ul&gt;
-&lt;li&gt;当饥饿时，大脑更偏向于选择高热量的食物。当不饿时，大脑会高热量和低热量的食物的反应差不多。这是大脑会脑肠肽激素的反应，当胃里排空时，脑肠肽就会向大脑发出信息，进食高热量的食物。&lt;/li&gt;
+&lt;li&gt; 不应该减少正餐的次数。&lt;ul&gt;
+&lt;li&gt; 当饥饿时，大脑更偏向于选择高热量的食物。当不饿时，大脑会高热量和低热量的食物的反应差不多。这是大脑会脑肠肽激素的反应，当胃里排空时，脑肠肽就会向大脑发出信息，进食高热量的食物。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;选用更小的餐具能减少食物的摄入量。可以减少23%的摄入量。&lt;/li&gt;
-&lt;li&gt;尽量选用低热量的食物。有可能让一天的摄入热量减少50%。&lt;/li&gt;
-&lt;li&gt;多数人都会低估自己每天的摄入量(大概50%)。计算摄入量时，一些看似健康的食物也要加上。&lt;/li&gt;
-&lt;li&gt;增加蛋白的摄入量能有效的缓解饥饿感。&lt;ul&gt;
-&lt;li&gt;相比其它的食物，蛋白能够更多的释放酪酪肽，通过血液告诉大脑现在不饿。&lt;/li&gt;
+&lt;li&gt; 选用更小的餐具能减少食物的摄入量。可以减少 23% 的摄入量。&lt;/li&gt;
+&lt;li&gt; 尽量选用低热量的食物。有可能让一天的摄入热量减少 50%。&lt;/li&gt;
+&lt;li&gt; 多数人都会低估自己每天的摄入量 ( 大概 50%)。计算摄入量时，一些看似健康的食物也要加上。&lt;/li&gt;
+&lt;li&gt; 增加蛋白的摄入量能有效的缓解饥饿感。&lt;ul&gt;
+&lt;li&gt; 相比其它的食物，蛋白能够更多的释放酪酪肽，通过血液告诉大脑现在不饿。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;相同的食物，弄成粥羹后食用，会延长胃排空的时间。&lt;ul&gt;
-&lt;li&gt;因为水会比粥更快的排出胃里，从而使胃里的食物变少。而粥会持续更长的时间。&lt;/li&gt;
+&lt;li&gt; 相同的食物，弄成粥羹后食用，会延长胃排空的时间。&lt;ul&gt;
+&lt;li&gt; 因为水会比粥更快的排出胃里，从而使胃里的食物变少。而粥会持续更长的时间。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;人类进化上，会偏向于多样化的食物。所以面对于自助餐，会让人吃的更多。(可以尽量减少自己进食的多样化，让其只有有限的几种)&lt;/li&gt;
-&lt;li&gt;低脂奶制品中的乳钙能有效的去除脂肪。乳钙和脂肪分子结合变成类似于皂质的物质，而人体的小肠不能吸收。&lt;/li&gt;
-&lt;li&gt;运动开始后，脂肪是在一直燃烧的，甚至在睡觉的时候。&lt;ul&gt;
-&lt;li&gt;运动完成后，脂肪还是会持续燃烧，而且它的消耗量比运动时还大(指单位时间内)。也就是说，运动完后的第二天，脂肪的消耗量比运动当天还大的多。运动时，肌肉主要使用更容易被身体燃烧的碳水化合物，然后身体需要22个小时来进行补充恢复被消耗掉的碳水化合物，在比期间，身体会被迫燃烧脂肪。&lt;/li&gt;
+&lt;li&gt; 人类进化上，会偏向于多样化的食物。所以面对于自助餐，会让人吃的更多。( 可以尽量减少自己进食的多样化，让其只有有限的几种 )&lt;/li&gt;
+&lt;li&gt; 低脂奶制品中的乳钙能有效的去除脂肪。乳钙和脂肪分子结合变成类似于皂质的物质，而人体的小肠不能吸收。&lt;/li&gt;
+&lt;li&gt; 运动开始后，脂肪是在一直燃烧的，甚至在睡觉的时候。&lt;ul&gt;
+&lt;li&gt; 运动完成后，脂肪还是会持续燃烧，而且它的消耗量比运动时还大 ( 指单位时间内 )。也就是说，运动完后的第二天，脂肪的消耗量比运动当天还大的多。运动时，肌肉主要使用更容易被身体燃烧的碳水化合物，然后身体需要 22 个小时来进行补充恢复被消耗掉的碳水化合物，在比期间，身体会被迫燃烧脂肪。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;对于不爱运动的人来说，生活说小的改变，能让热量消耗有很大的不同。如多走几步路等。&lt;/li&gt;
+&lt;li&gt; 对于不爱运动的人来说，生活说小的改变，能让热量消耗有很大的不同。如多走几步路等。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="http://open.163.com/movie/2013/5/E/1/M8TBLASMF_M8TBLJSE1.html"&gt;BBC：关于减肥你应该知道的十件事&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://open.163.com/movie/2013/5/E/1/M8TBLASMF_M8TBLJSE1.html"&gt;BBC：关于减肥你应该知道的十件事 &lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 12 Mar 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-03-12:ten-things-you-need-know-abount-loss-weight.html</guid></item><item><title>Cinder V2 API</title><link>http://xcodest.me/cinder-v2-api.html</link><description>&lt;p&gt;cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).&lt;/p&gt;
 &lt;h1 id="enable-the-v2-in-cinder"&gt;Enable the v2 in cinder&lt;/h1&gt;
 &lt;p&gt;Change the following config. The v1 and v2 is enabled in default.&lt;/p&gt;
@@ -847,22 +948,22 @@ service cinder-api restart
 &lt;ul&gt;
 &lt;li&gt;http://docs.openstack.org/havana/install-guide/install/apt/content/cinder-controller.html&lt;/li&gt;
 &lt;li&gt;https://wiki.openstack.org/wiki/CinderAPIv2&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 10 Mar 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-03-10:cinder-v2-api.html</guid><category>Cinder</category><category>OpenStack</category></item><item><title>Print the First N Characters of each Line</title><link>http://xcodest.me/print-the-first-n-characters-of-each-line.html</link><description>&lt;p&gt;在使用 Shell 的过程中，经常会遇到一行过长，导致输出折行，相当难看的情况出现。而且多数据情况下，我们只用每行的前 N 个字符就可以了。这时可以用以下方法来截断每行的长度。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;方法1&lt;/strong&gt;： 使用 &lt;code&gt;awk&lt;/code&gt;&lt;/p&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 10 Mar 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-03-10:cinder-v2-api.html</guid><category>Cinder</category><category>OpenStack</category></item><item><title>Print the First N Characters of each Line</title><link>http://xcodest.me/print-the-first-n-characters-of-each-line.html</link><description>&lt;p&gt; 在使用 Shell 的过程中，经常会遇到一行过长，导致输出折行，相当难看的情况出现。而且多数据情况下，我们只用每行的前 N 个字符就可以了。这时可以用以下方法来截断每行的长度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; 方法 1&lt;/strong&gt;： 使用 &lt;code&gt;awk&lt;/code&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;cat filename | awk &amp;#39;{print substr($0, 0, 20)}&amp;#39;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;strong&gt;方法2&lt;/strong&gt;: 使用 &lt;code&gt;sed&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; 方法 2&lt;/strong&gt;: 使用 &lt;code&gt;sed&lt;/code&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;cat filename | sed &amp;#39;s/\(.\{20\}\).*/\1/&amp;#39;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;strong&gt; 方法3&lt;/strong&gt;: 使用 &lt;code&gt;sed -r&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; 方法 3&lt;/strong&gt;: 使用 &lt;code&gt;sed -r&lt;/code&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;cat filename | sed -r &amp;#39;s/(.{20}).*/\1/&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sun, 15 Feb 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-02-15:print-the-first-n-characters-of-each-line.html</guid><category>Shell</category></item><item><title>修改 Libvirt 的 UUID</title><link>http://xcodest.me/libvirt-uuid.html</link><description>&lt;p&gt;由于物理机器有限，想做OpenStack的多机环境一直是个问题。之前是在OpenStack上部署OpenStack。由于只有一台物理机，资源相当紧张。不能建太多机器。最近突然想，既然 LXC 现在已经很完善了。能不能就利用它来做 OpenStack 服务间的隔离呢。所以最近一直在搞这东西。搞了几天还是有效果的。基本搭建了 OpenStack + Ceph + Swift 的环境出来。其中网络用的 Neutron + ML2 + OVS + VLAN。由于用 LXC 的隔离的，相对于之前来说相当节省资源。很好的解决了资源的问题。可以做一些大量机器的实验了。之后也会也这其中遇到的一些问题写下来，备忘。&lt;/p&gt;
-&lt;p&gt;今天主要写下配置 Live Migration 过程中遇到的一个问题。&lt;/p&gt;
-&lt;p&gt;每个 Libvirtd 实例都会有一个 UUID 存在。不同的 libvirt 实例的 UUID 应该是不同的。否则在 migrate 过程中， libvirt 会认为自己是在向自己迁移从而导致迁移失败。这个UUID有一个默认值，是来自于 SMBIOS UUID。这两个UUID可以通过以下方法拿到：&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sun, 15 Feb 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-02-15:print-the-first-n-characters-of-each-line.html</guid><category>Shell</category></item><item><title>修改 Libvirt 的 UUID</title><link>http://xcodest.me/libvirt-uuid.html</link><description>&lt;p&gt; 由于物理机器有限，想做 OpenStack 的多机环境一直是个问题。之前是在 OpenStack 上部署 OpenStack。由于只有一台物理机，资源相当紧张。不能建太多机器。最近突然想，既然 LXC 现在已经很完善了。能不能就利用它来做 OpenStack 服务间的隔离呢。所以最近一直在搞这东西。搞了几天还是有效果的。基本搭建了 OpenStack + Ceph + Swift 的环境出来。其中网络用的 Neutron + ML2 + OVS + VLAN。由于用 LXC 的隔离的，相对于之前来说相当节省资源。很好的解决了资源的问题。可以做一些大量机器的实验了。之后也会也这其中遇到的一些问题写下来，备忘。&lt;/p&gt;
+&lt;p&gt; 今天主要写下配置 Live Migration 过程中遇到的一个问题。&lt;/p&gt;
+&lt;p&gt; 每个 Libvirtd 实例都会有一个 UUID 存在。不同的 libvirt 实例的 UUID 应该是不同的。否则在 migrate 过程中， libvirt 会认为自己是在向自己迁移从而导致迁移失败。这个 UUID 有一个默认值，是来自于 SMBIOS UUID。这两个 UUID 可以通过以下方法拿到：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;$ dmidecode  -s system-uuid
 4C4C4544-0032-3210-804C-C7C04F463358
 
@@ -871,9 +972,9 @@ $ virsh capabilities | grep uuid
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;可以看到这两个值是一样的(不知道为什么有一段顺序不对)。&lt;/p&gt;
-&lt;p&gt;当我在不同的 LXC 中启动多个 libvirt 时，就会触发这个问题。所有的 libvirt 使用的是相同的 uuid 从而导致 live migration 失败。&lt;/p&gt;
-&lt;p&gt;修改的办法也很简单。这个UUID可以在 libvirt 的配置文件&lt;code&gt;/etc/libvirt/libvirtd.conf&lt;/code&gt;中修改后重启libivrt就可以了。&lt;/p&gt;
+&lt;p&gt; 可以看到这两个值是一样的 ( 不知道为什么有一段顺序不对 )。&lt;/p&gt;
+&lt;p&gt; 当我在不同的 LXC 中启动多个 libvirt 时，就会触发这个问题。所有的 libvirt 使用的是相同的 uuid 从而导致 live migration 失败。&lt;/p&gt;
+&lt;p&gt; 修改的办法也很简单。这个 UUID 可以在 libvirt 的配置文件 &lt;code&gt;/etc/libvirt/libvirtd.conf&lt;/code&gt; 中修改后重启 libivrt 就可以了。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;host_uuid = &amp;quot;8ba976e9-1224-4339-9526-719fe6dee311&amp;quot;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -883,7 +984,7 @@ $ virsh capabilities | grep uuid
 &lt;li&gt;&lt;a href="http://libvirt.org/guide/html/Application_Development_Guide-Connections-Capability_Info.html"&gt;Libvirt Capability Information&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 10 Feb 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-02-10:libvirt-uuid.html</guid><category>Libvirt</category></item><item><title>tun &amp; veth设备</title><link>http://xcodest.me/tun-vethshe-bei.html</link><description>&lt;p&gt;OpenStack 的 Neutron 中会建立好多网卡设备。大体上这些网卡可以分为两类 tun 和 veth。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="OpenStack Neutron Network" class="img-responsive" src="/images/neutron-ovs-compute.png" /&gt;&lt;/p&gt;
-&lt;p&gt;用&lt;code&gt;ethtool&lt;/code&gt;可以得到网卡所用的驱动，从而得到网上设备是哪一类。&lt;/p&gt;
+&lt;p&gt; 用 &lt;code&gt;ethtool&lt;/code&gt; 可以得到网卡所用的驱动，从而得到网上设备是哪一类。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;ethtool -i veth4NCTQ1 
 driver: veth
 version: 1.0
@@ -897,61 +998,61 @@ supports-priv-flags: no
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;下面就这两种设备分别做一下介绍。&lt;/p&gt;
+&lt;p&gt; 下面就这两种设备分别做一下介绍。&lt;/p&gt;
 &lt;h1 id="tun-tap"&gt;tun &amp;amp; tap&lt;/h1&gt;
-&lt;p&gt;TUN与TAP是操作系统内核中的虚拟网络设备。不同于普通靠硬件网路板卡实现的设备，这些虚拟的网络设备全部用软件实现，并向运行于操作系统上的软件提供与硬件的网络设备完全相同的功能。&lt;/p&gt;
-&lt;p&gt;TAP 等同于一个以太网设备，它操作第二层数据包如以太网数据帧。TUN模拟了网络层设备，操作第三层数据包比如IP数据封包。&lt;/p&gt;
-&lt;p&gt;操作系统通过TUN/TAP设备向绑定该设备的用户空间的程序发送数据，反之，用户空间的程序也可以像操作硬件网络设备那样，通过TUN/TAP设备发送数据。在后种情况下，TUN/TAP设备向操作系统的网络栈投递（或“注入”）数据包，从而模拟从外部接受数据的过程。&lt;/p&gt;
-&lt;p&gt;tun/tap 驱动程序实现了虚拟网卡的功能，tun表示虚拟的是点对点设备，tap表示虚拟的是以太网设备，这两种设备针对网络包实施不同的封装。&lt;/p&gt;
-&lt;p&gt;利用tun/tap 驱动，可以将tcp/ip协议栈处理好的网络分包传给任何一个使用tun/tap驱动的进程，由进程重新处理后再发到物理链路中。&lt;/p&gt;
-&lt;p&gt;开源项目openvpn和Vtun都是利用tun/tap驱动实现的隧道封装&lt;/p&gt;
-&lt;p&gt;虽然是出自一个娘，但它们仍然有大的不同。tun是点对点的设备，而tap是一个普通的以太网卡设备。也就是说，tun设备其实完全不需要有物理地址的。它收到和发出的包不需要arp，也不需要有数据链路层的头。而tap设备则是有完整的物理地址和完整的以太网帧。&lt;/p&gt;
-&lt;p&gt;可以通过以下方法创建&lt;/p&gt;
+&lt;p&gt;TUN 与 TAP 是操作系统内核中的虚拟网络设备。不同于普通靠硬件网路板卡实现的设备，这些虚拟的网络设备全部用软件实现，并向运行于操作系统上的软件提供与硬件的网络设备完全相同的功能。&lt;/p&gt;
+&lt;p&gt;TAP 等同于一个以太网设备，它操作第二层数据包如以太网数据帧。TUN 模拟了网络层设备，操作第三层数据包比如 IP 数据封包。&lt;/p&gt;
+&lt;p&gt; 操作系统通过 TUN/TAP 设备向绑定该设备的用户空间的程序发送数据，反之，用户空间的程序也可以像操作硬件网络设备那样，通过 TUN/TAP 设备发送数据。在后种情况下，TUN/TAP 设备向操作系统的网络栈投递（或 “ 注入 ”）数据包，从而模拟从外部接受数据的过程。&lt;/p&gt;
+&lt;p&gt;tun/tap 驱动程序实现了虚拟网卡的功能，tun 表示虚拟的是点对点设备，tap 表示虚拟的是以太网设备，这两种设备针对网络包实施不同的封装。&lt;/p&gt;
+&lt;p&gt; 利用 tun/tap 驱动，可以将 tcp/ip 协议栈处理好的网络分包传给任何一个使用 tun/tap 驱动的进程，由进程重新处理后再发到物理链路中。&lt;/p&gt;
+&lt;p&gt; 开源项目 openvpn 和 Vtun 都是利用 tun/tap 驱动实现的隧道封装 &lt;/p&gt;
+&lt;p&gt; 虽然是出自一个娘，但它们仍然有大的不同。tun 是点对点的设备，而 tap 是一个普通的以太网卡设备。也就是说，tun 设备其实完全不需要有物理地址的。它收到和发出的包不需要 arp，也不需要有数据链路层的头。而 tap 设备则是有完整的物理地址和完整的以太网帧。&lt;/p&gt;
+&lt;p&gt; 可以通过以下方法创建 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;ip tuntap add mode tap 
 ip tuntap add mode tun
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;在 OpenStack 中，主要用tap来做虚拟机的网卡。&lt;/p&gt;
+&lt;p&gt; 在 OpenStack 中，主要用 tap 来做虚拟机的网卡。&lt;/p&gt;
 &lt;h1 id="veth"&gt;veth&lt;/h1&gt;
 &lt;p&gt;veth 从名字上来看是 Virtual ETHernet 的缩写，它的作用很简单，就是要把从一个 network namespace 发出的数据包转发到另一个 namespace。veth 设备是成对的，一个是 container 之中，另一个在 container 之外，即在真实机器上能看到的。 建立 veth 类型的设备可以用下面的命令：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;ip link add name veth0 type veth0 peer name veth1
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;这里建立了一对veth设备，名字分别是 veth0 和 veth1。当向其中一个设备写入数据时，另一个设备就能拿到写入的数据。在 OpenStack 中的使用就是来穿透 namespace.&lt;/p&gt;
+&lt;p&gt; 这里建立了一对 veth 设备，名字分别是 veth0 和 veth1。当向其中一个设备写入数据时，另一个设备就能拿到写入的数据。在 OpenStack 中的使用就是来穿透 namespace.&lt;/p&gt;
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="http://wangcong.org/2011/06/19/-e5-85-b3-e4-ba-8e-tuntap/"&gt;关于 tun/tap 设备&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://wangcong.org/2011/07/03/-e4-bb-80-e4-b9-88-e6-98-af-veth/"&gt;什么是veth&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://www.51know.info/system_base/tun_tap.html"&gt;linux下TUN/TAP虚拟网卡的使用&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 09 Feb 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-02-09:tun-vethshe-bei.html</guid><category>Network</category></item><item><title>中信9积分</title><link>http://xcodest.me/ecitic9.html</link><description>&lt;p&gt;中信的i白金是张好卡，也是我的主力使用卡。其中9积分的活动还是比较厚道的。这个羊毛可以薅一薅。但是参加的店和地址还不少。我把北京西城这边的统计了一下。&lt;/p&gt;
+&lt;li&gt;&lt;a href="http://wangcong.org/2011/06/19/-e5-85-b3-e4-ba-8e-tuntap/"&gt; 关于 tun/tap 设备 &lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://wangcong.org/2011/07/03/-e4-bb-80-e4-b9-88-e6-98-af-veth/"&gt; 什么是 veth&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.51know.info/system_base/tun_tap.html"&gt;linux 下 TUN/TAP 虚拟网卡的使用 &lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 09 Feb 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-02-09:tun-vethshe-bei.html</guid><category>Network</category></item><item><title>中信9积分</title><link>http://xcodest.me/ecitic9.html</link><description>&lt;p&gt; 中信的 i 白金是张好卡，也是我的主力使用卡。其中 9 积分的活动还是比较厚道的。这个羊毛可以薅一薅。但是参加的店和地址还不少。我把北京西城这边的统计了一下。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;西树泡芙 - 9积分换36元消费金1次&lt;ul&gt;
-&lt;li&gt;西单北大街131号西单大悦城3F-B14&lt;/li&gt;
+&lt;li&gt; 西树泡芙 - 9 积分换 36 元消费金 1 次 &lt;ul&gt;
+&lt;li&gt; 西单北大街 131 号西单大悦城 3F-B14&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;星巴克 - 9积分兑换大杯手工调制咖啡一杯&lt;/li&gt;
-&lt;li&gt;哈根达斯 - 9积分兑换单球冰淇淋1个&lt;ul&gt;
-&lt;li&gt;复兴门内大街101号百盛购物中心南楼一层哈根达斯&lt;/li&gt;
-&lt;li&gt;西单北大街133号君太百货一层&lt;/li&gt;
+&lt;li&gt; 星巴克 - 9 积分兑换大杯手工调制咖啡一杯 &lt;/li&gt;
+&lt;li&gt; 哈根达斯 - 9 积分兑换单球冰淇淋 1 个 &lt;ul&gt;
+&lt;li&gt; 复兴门内大街 101 号百盛购物中心南楼一层哈根达斯 &lt;/li&gt;
+&lt;li&gt; 西单北大街 133 号君太百货一层 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;万宁 - 9积分=30元消费金&lt;ul&gt;
-&lt;li&gt;阜外大街2号北京万通新世界商品批发市场第一层1A086-1A090、1A100-1A109号商铺&lt;/li&gt;
-&lt;li&gt;西单北大街131号大悦城B2-29至31&lt;/li&gt;
+&lt;li&gt; 万宁 - 9 积分 =30 元消费金 &lt;ul&gt;
+&lt;li&gt; 阜外大街 2 号北京万通新世界商品批发市场第一层 1A086-1A090、1A100-1A109 号商铺 &lt;/li&gt;
+&lt;li&gt; 西单北大街 131 号大悦城 B2-29 至 31&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;汉堡王 - 皇堡/天椒皇堡套餐&lt;ul&gt;
-&lt;li&gt;西单北大街131号西单大悦城3F—20&lt;/li&gt;
+&lt;li&gt; 汉堡王 - 皇堡 / 天椒皇堡套餐 &lt;ul&gt;
+&lt;li&gt; 西单北大街 131 号西单大悦城 3F—20&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;歌帝梵商户 - 巧克力一条&lt;ul&gt;
-&lt;li&gt;西单北大街133号君太太平洋百货2F-B-02及3F-A-11及A-12&lt;/li&gt;
+&lt;li&gt; 歌帝梵商户 - 巧克力一条 &lt;ul&gt;
+&lt;li&gt; 西单北大街 133 号君太太平洋百货 2F-B-02 及 3F-A-11 及 A-12&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;另活动页面在 &lt;a href="http://creditcard.ecitic.com/youhui/120926/wanning.shtml"&gt;http://creditcard.ecitic.com/youhui/120926/wanning.shtml&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 05 Feb 2015 20:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-02-05:ecitic9.html</guid></item><item><title>MySQL Errno 150</title><link>http://xcodest.me/mysql-errno-150.html</link><description>&lt;p&gt;做OpenStack icehouse 升级到 Juno过程中，升级Neutron数据库时遇到这个错误。&lt;/p&gt;
+&lt;p&gt; 另活动页面在 &lt;a href="http://creditcard.ecitic.com/youhui/120926/wanning.shtml"&gt;http://creditcard.ecitic.com/youhui/120926/wanning.shtml&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 05 Feb 2015 20:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-02-05:ecitic9.html</guid></item><item><title>MySQL Errno 150</title><link>http://xcodest.me/mysql-errno-150.html</link><description>&lt;p&gt; 做 OpenStack icehouse 升级到 Juno 过程中，升级 Neutron 数据库时遇到这个错误。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="n"&gt;neutron&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;migration&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;migrate_to_ml2&lt;/span&gt; &lt;span class="n"&gt;openvswitch&lt;/span&gt; &lt;span class="nl"&gt;mysql&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//USER:PASSWORD@10.251.1.8/neutron&lt;/span&gt;
 &lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
   &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/runpy.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;162&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_run_module_as_main&lt;/span&gt;
@@ -1000,7 +1101,7 @@ ip tuntap add mode tun
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;原因是 Mysql 有对外键约束[1]，仔细查数据里发现 networks 表的 collcation 和新建上述表时的默认数据库 collcation 不一样。以下是Mysql对外键约束的描述[1]，我遇到的是第二条错误(加粗的部分)。&lt;/p&gt;
+&lt;p&gt; 原因是 Mysql 有对外键约束 [1]，仔细查数据里发现 networks 表的 collcation 和新建上述表时的默认数据库 collcation 不一样。以下是 Mysql 对外键约束的描述 [1]，我遇到的是第二条错误 ( 加粗的部分 )。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;Foreign key relationships involve a parent table that holds the central data values, and a child table with identical values pointing back to its parent. The FOREIGN KEY clause is specified in the child table. The parent and child tables must use the same storage engine. They must not be TEMPORARY tables.&lt;/li&gt;
@@ -1012,7 +1113,7 @@ ip tuntap add mode tun
 &lt;li&gt;InnoDB does not currently support foreign keys for tables with user-defined partitioning. This includes both parent and child tables.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;strong&gt;解决方法是&lt;/strong&gt;：将 database 及 table 的 character 和 collcation 改成一样的就行了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; 解决方法是 &lt;/strong&gt;：将 database 及 table 的 character 和 collcation 改成一样的就行了。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;alter&lt;/span&gt; &lt;span class="k"&gt;database&lt;/span&gt; &lt;span class="n"&gt;neutron&lt;/span&gt; &lt;span class="k"&gt;DEFAULT&lt;/span&gt; &lt;span class="k"&gt;character&lt;/span&gt; &lt;span class="kt"&gt;set&lt;/span&gt; &lt;span class="n"&gt;utf8&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -1021,22 +1122,22 @@ ip tuntap add mode tun
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="https://bugs.launchpad.net/neutron/+bug/1332564"&gt;https://bugs.launchpad.net/neutron/+bug/1332564&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html"&gt;http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 14 Jan 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-01-14:mysql-errno-150.html</guid><category>MySQL</category></item><item><title>PIP install from local</title><link>http://xcodest.me/pip-install-from-local.html</link><description>&lt;p&gt;在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。&lt;/p&gt;
-&lt;p&gt;先在有网络的环境中下载下来所有需要的包：&lt;/p&gt;
+&lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 14 Jan 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-01-14:mysql-errno-150.html</guid><category>MySQL</category></item><item><title>PIP install from local</title><link>http://xcodest.me/pip-install-from-local.html</link><description>&lt;p&gt; 在一些特殊环境中，服务器是不能联网的。此时要通过 pip 安装包会有一些麻烦。这时可以使用 pip 的 download 到本地的功能，来加速安装。&lt;/p&gt;
+&lt;p&gt; 先在有网络的环境中下载下来所有需要的包：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;在把这些包拷贝到目标环境中去，使用下面的命令来安装：&lt;/p&gt;
+&lt;p&gt; 在把这些包拷贝到目标环境中去，使用下面的命令来安装：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;pip install --no-index --find-links &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;所有需要的包就安装上了。&lt;/p&gt;
-&lt;p&gt;为了方便使用，还可以把这两个命令弄成alias来使用&lt;/p&gt;
+&lt;p&gt; 所有需要的包就安装上了。&lt;/p&gt;
+&lt;p&gt; 为了方便使用，还可以把这两个命令弄成 alias 来使用 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;alias pipcache=&amp;#39;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages&amp;#39;
 alias pipinstall=&amp;#39;pip install --no-index --find-links=file://&lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages/&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 08 Jan 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-01-08:pip-install-from-local.html</guid><category>Python</category></item><item><title>Nova flavor init</title><link>http://xcodest.me/nova-flavor-init.html</link><description>&lt;p&gt;ustack的flavor做的还是挺全的，所以用了一个脚本来创建和其一样的flavor类型。&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 08 Jan 2015 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2015-01-08:pip-install-from-local.html</guid><category>Python</category></item><item><title>Nova flavor init</title><link>http://xcodest.me/nova-flavor-init.html</link><description>&lt;p&gt;ustack 的 flavor 做的还是挺全的，所以用了一个脚本来创建和其一样的 flavor 类型。&lt;/p&gt;
 &lt;div class="gist"&gt;
     &lt;script src='https://gist.github.com/ecee9fcb00412cd67fe7.js?file=nova-flavor-init.sh'&gt;&lt;/script&gt;
     &lt;noscript&gt;
@@ -1081,27 +1182,27 @@ nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $D
 &lt;blockquote&gt;
 &lt;p&gt;Unlike the StringIO module, this module is not able to accept Unicode strings that cannot be encoded as plain ASCII strings.&lt;/p&gt;
 &lt;/blockquote&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 09 Sep 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-09-09:python-cstring-unicode.html</guid><category>Python</category></item><item><title>Migrate SVN to GitLab</title><link>http://xcodest.me/migrate-svn-to-gitlab.html</link><description>&lt;ul&gt;
-&lt;li&gt;在GitLab上创建相对应的项目/项目组&lt;/li&gt;
-&lt;li&gt;准备''users.txt''文件，来修正提交用户名。并手动修改users.txt的正确性 &lt;/li&gt;
+&lt;li&gt; 在 GitLab 上创建相对应的项目 / 项目组 &lt;/li&gt;
+&lt;li&gt; 准备 ''users.txt'' 文件，来修正提交用户名。并手动修改 users.txt 的正确性 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;svn log &amp;lt;svn-url&amp;gt; --xml | grep -P &amp;quot;^&amp;lt;author&amp;quot; | sort -u | perl -pe &amp;#39;s/&amp;lt;author&amp;gt;(.*?)&amp;lt;\/author&amp;gt;/$1 = /&amp;#39; &amp;gt; users.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;users.txt的文件格式如下&lt;/p&gt;
+&lt;p&gt;users.txt 的文件格式如下 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;Lei Zhang = Lei Zhang &amp;lt;zhang.lei.fly#gmail.com&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;ul&gt;
-&lt;li&gt;把SVN项目使用git-svn进行克隆 &lt;/li&gt;
+&lt;li&gt; 把 SVN 项目使用 git-svn 进行克隆 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;git svn clone --no-metadata --authors-file users.txt -s &amp;lt;svn-url&amp;gt; &amp;lt;project&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;ul&gt;
-&lt;li&gt;处理SVN的分支和标签 &lt;/li&gt;
+&lt;li&gt; 处理 SVN 的分支和标签 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;cd &lt;span class="nt"&gt;&amp;lt;project&amp;gt;&lt;/span&gt;
 git for-each-ref refs/remotes/tags | cut -d / -f 4- | grep -v @ | while read tagname; do git tag &amp;quot;$tagname&amp;quot; &amp;quot;tags/$tagname&amp;quot;; git branch -r -d &amp;quot;tags/$tagname&amp;quot;; done
@@ -1110,7 +1211,7 @@ git for-each-ref refs/remotes | cut -d / -f 3- | grep -v @ | while read branchna
 
 
 &lt;ul&gt;
-&lt;li&gt;Push到Gitlab上的仓库&lt;/li&gt;
+&lt;li&gt;Push 到 Gitlab 上的仓库 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;git remote add origin &amp;lt;git-repo-url&amp;gt;
 git push origin --all
@@ -1118,74 +1219,74 @@ git push origin --tags
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id="_1"&gt;参考&lt;/h2&gt;
-&lt;p&gt;&lt;a href="http://git-scm.com/book/en/Git-and-Other-Systems-Migrating-to-Git"&gt;Git and Other Systems - Migrating to Git&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 12 Aug 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-08-12:migrate-svn-to-gitlab.html</guid><category>Git</category></item><item><title>硬派健身-减肥篇 阅读笔记</title><link>http://xcodest.me/hard-gym-reading-note.html</link><description>&lt;h2 id="_1"&gt;战肥肉有氧不敌，强塑身无氧超神&lt;/h2&gt;
+&lt;h2 id="_1"&gt; 参考 &lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://git-scm.com/book/en/Git-and-Other-Systems-Migrating-to-Git"&gt;Git and Other Systems - Migrating to Git&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 12 Aug 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-08-12:migrate-svn-to-gitlab.html</guid><category>Git</category></item><item><title>硬派健身-减肥篇 阅读笔记</title><link>http://xcodest.me/hard-gym-reading-note.html</link><description>&lt;h2 id="_1"&gt; 战肥肉有氧不敌，强塑身无氧超神 &lt;/h2&gt;
 &lt;ol&gt;
-&lt;li&gt;长时间有氧运动——似是而非的减肥妙计&lt;ol&gt;
-&lt;li&gt;当我们的身体状态稳定，身体素质、生活习惯变化不大时，我们的体重和体脂含量都是只能加，不能减，只能胖，不能瘦。这就是我们序章介绍过的体重设定点理论。&lt;/li&gt;
-&lt;li&gt;很多实验都证实，单纯增加能量支出，做长时间、中高强度的有氧运动，无法有效地帮正常人减重。&lt;/li&gt;
-&lt;li&gt;你的身体也是一样，当它打定主意把你的体重维持在一个设定点上，就会有非常多的手段可以调节这些体重和脂肪。比如，瘦素是一种能减肥和帮助我们抑制食欲的身体激素。研究发现，如果我们单纯进行长时间有氧耐力运动减肥，增加了热量的支出，我们身体会减少瘦素的分泌，让我们多吃，多增长脂肪。效果可以持续好几天，&lt;/li&gt;
-&lt;li&gt;还有研究发现，马拉松运动员的瘦素分泌量仅为普通人的三分之一。&lt;/li&gt;
+&lt;li&gt; 长时间有氧运动 —— 似是而非的减肥妙计 &lt;ol&gt;
+&lt;li&gt; 当我们的身体状态稳定，身体素质、生活习惯变化不大时，我们的体重和体脂含量都是只能加，不能减，只能胖，不能瘦。这就是我们序章介绍过的体重设定点理论。&lt;/li&gt;
+&lt;li&gt; 很多实验都证实，单纯增加能量支出，做长时间、中高强度的有氧运动，无法有效地帮正常人减重。&lt;/li&gt;
+&lt;li&gt; 你的身体也是一样，当它打定主意把你的体重维持在一个设定点上，就会有非常多的手段可以调节这些体重和脂肪。比如，瘦素是一种能减肥和帮助我们抑制食欲的身体激素。研究发现，如果我们单纯进行长时间有氧耐力运动减肥，增加了热量的支出，我们身体会减少瘦素的分泌，让我们多吃，多增长脂肪。效果可以持续好几天，&lt;/li&gt;
+&lt;li&gt; 还有研究发现，马拉松运动员的瘦素分泌量仅为普通人的三分之一。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
-&lt;li&gt;共振——跑步会伤害胖胖的你……&lt;ol&gt;
-&lt;li&gt;这也就是说，跑步等运动会在脂肪和关节等部位引起共振，共振的效应最后会引起身体与关节的损伤。目前的研究发现，脂肪的体积越大，重量越重，共振的效果越强，对身体的伤害也就越强烈。冲击力的输入振动频率是10hz左右，脂肪的固定振动频率是2-10hz，可以引起共振，伤害到自己的身体组织&lt;/li&gt;
+&lt;li&gt; 共振 —— 跑步会伤害胖胖的你 ……&lt;ol&gt;
+&lt;li&gt; 这也就是说，跑步等运动会在脂肪和关节等部位引起共振，共振的效应最后会引起身体与关节的损伤。目前的研究发现，脂肪的体积越大，重量越重，共振的效果越强，对身体的伤害也就越强烈。冲击力的输入振动频率是 10hz 左右，脂肪的固定振动频率是 2-10hz，可以引起共振，伤害到自己的身体组织 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
-&lt;li&gt;世上减肥万法，唯有肌肉无敌&lt;ol&gt;
-&lt;li&gt;肉和脂肪的密度差异。要知道，肌肉的密度大概是1.12，而脂肪大概是0.79。&lt;/li&gt;
-&lt;li&gt;在维持日常活动量的情况下，达拉斯有氧研究协会发现，每磅肌肉24小时基础热量消耗是30-50卡，但脂肪呢？还是只有可怜的2卡……（脂肪：伦家又不动啦~）&lt;/li&gt;
-&lt;li&gt;一般人，二十五岁之后，每年就会损失2.5千克的肌肉&lt;/li&gt;
+&lt;li&gt; 世上减肥万法，唯有肌肉无敌 &lt;ol&gt;
+&lt;li&gt; 肉和脂肪的密度差异。要知道，肌肉的密度大概是 1.12，而脂肪大概是 0.79。&lt;/li&gt;
+&lt;li&gt; 在维持日常活动量的情况下，达拉斯有氧研究协会发现，每磅肌肉 24 小时基础热量消耗是 30-50 卡，但脂肪呢？还是只有可怜的 2 卡 ……（脂肪：伦家又不动啦 ~）&lt;/li&gt;
+&lt;li&gt; 一般人，二十五岁之后，每年就会损失 2.5 千克的肌肉 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
-&lt;li&gt;先有训练基础，之后减脂更佳&lt;ol&gt;
-&lt;li&gt;但是经过一定训练积累的人，再参加有氧运动的效果绝对强于普通人太多&lt;/li&gt;
-&lt;li&gt;力量训练超容易，持续效果超耐久&lt;/li&gt;
-&lt;li&gt;加州理工大学一项运动研究表明，刚参加力量训练的人在经过两个月的系统负重训练后，他们的肌肉力量增长了47%，肌肉总量增长了9%。随后让他们在两个月里不参加任何形式的力量训练，肌肉保持松懈，却只让他们的肌肉力量减少了23%，肌肉总量只减少4%。&lt;/li&gt;
-&lt;li&gt;有氧运动的好处就十分有限，目前比较有效的只有降低血压，同时，血压降低的好处，会随着有氧运动的停止而停止。&lt;/li&gt;
+&lt;li&gt; 先有训练基础，之后减脂更佳 &lt;ol&gt;
+&lt;li&gt; 但是经过一定训练积累的人，再参加有氧运动的效果绝对强于普通人太多 &lt;/li&gt;
+&lt;li&gt; 力量训练超容易，持续效果超耐久 &lt;/li&gt;
+&lt;li&gt; 加州理工大学一项运动研究表明，刚参加力量训练的人在经过两个月的系统负重训练后，他们的肌肉力量增长了 47%，肌肉总量增长了 9%。随后让他们在两个月里不参加任何形式的力量训练，肌肉保持松懈，却只让他们的肌肉力量减少了 23%，肌肉总量只减少 4%。&lt;/li&gt;
+&lt;li&gt; 有氧运动的好处就十分有限，目前比较有效的只有降低血压，同时，血压降低的好处，会随着有氧运动的停止而停止。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
-&lt;li&gt;女童鞋们，你们不可能练成肌肉女&lt;ol&gt;
-&lt;li&gt;睾丸酮水平决定了肌肉总量和水平。男女间，睾丸酮效用（睾酮水平及AR受体等影响）差了百倍，所以女性想练成金刚芭比是很难的。&lt;/li&gt;
+&lt;li&gt; 女童鞋们，你们不可能练成肌肉女 &lt;ol&gt;
+&lt;li&gt; 睾丸酮水平决定了肌肉总量和水平。男女间，睾丸酮效用（睾酮水平及 AR 受体等影响）差了百倍，所以女性想练成金刚芭比是很难的。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2 id="_2"&gt;巧减重高强间歇，好身材双剑合璧&lt;/h2&gt;
-&lt;p&gt;无敌天下的两项力量训练入门神功。一项是深蹲，一项是平板支撑。&lt;/p&gt;
-&lt;h3 id="_3"&gt;深蹲&lt;/h3&gt;
+&lt;h2 id="_2"&gt; 巧减重高强间歇，好身材双剑合璧 &lt;/h2&gt;
+&lt;p&gt; 无敌天下的两项力量训练入门神功。一项是深蹲，一项是平板支撑。&lt;/p&gt;
+&lt;h3 id="_3"&gt; 深蹲 &lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;深蹲在运动时能训练到三分之一的肌肉（骨骼肌）。训练肌肉体积可占全身四分之三以上。主训的是人体最强两肌，股四头肌和臀大肌。辅助的是人体次强两肌，腓肠肌和股二头肌。深蹲号称无氧运动之王。练好深蹲，不仅能增强各种运动表现，而且由于训练肌群多、大，消耗的能量也非常可观。&lt;/li&gt;
-&lt;li&gt;杜鲁门州立大学的科学家们测试卡路里燃烧的数量，最后发现，深蹲类运动比普通固定器械运动能多消耗50%的热量！并认为这是因为深蹲涉及了更多的稳定性肌肉。需求稳定性的大重量多关节训练是最佳力量燃脂训练之一。&lt;/li&gt;
-&lt;li&gt;另外，因为深蹲涉及如此多的肌肉纤维，使得它成为所有训练中最好的推动生长荷尔蒙水平的一种训练。正如日本研究者在2006年的一项研究中发现的那样，更多的生长荷尔蒙意味着更多的肌肉增长。&lt;/li&gt;
-&lt;li&gt;臀大肌是人体体积最大的肌肉之一，&lt;/li&gt;
+&lt;li&gt; 深蹲在运动时能训练到三分之一的肌肉（骨骼肌）。训练肌肉体积可占全身四分之三以上。主训的是人体最强两肌，股四头肌和臀大肌。辅助的是人体次强两肌，腓肠肌和股二头肌。深蹲号称无氧运动之王。练好深蹲，不仅能增强各种运动表现，而且由于训练肌群多、大，消耗的能量也非常可观。&lt;/li&gt;
+&lt;li&gt; 杜鲁门州立大学的科学家们测试卡路里燃烧的数量，最后发现，深蹲类运动比普通固定器械运动能多消耗 50% 的热量！并认为这是因为深蹲涉及了更多的稳定性肌肉。需求稳定性的大重量多关节训练是最佳力量燃脂训练之一。&lt;/li&gt;
+&lt;li&gt; 另外，因为深蹲涉及如此多的肌肉纤维，使得它成为所有训练中最好的推动生长荷尔蒙水平的一种训练。正如日本研究者在 2006 年的一项研究中发现的那样，更多的生长荷尔蒙意味着更多的肌肉增长。&lt;/li&gt;
+&lt;li&gt; 臀大肌是人体体积最大的肌肉之一，&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id="_4"&gt;如何做好深蹲&lt;/h3&gt;
+&lt;h3 id="_4"&gt; 如何做好深蹲 &lt;/h3&gt;
 &lt;ol&gt;
-&lt;li&gt;首先，找一个高40公分左右的小平凳（茶几沙发均可，只要是这个高度），要结实稳定哦（测试，当你照下文做时，你的大腿角度平行略低于水平，换句话说，小腿和大腿的角略小于90°）。&lt;/li&gt;
-&lt;li&gt;手抱头，眼看前方。背挺直、反弓，屁股向后面的板凳坐下（向后坐，不是蹲马扎的向下坐，是接近蹲马桶的向后坐），想象自己有根儿尾巴（赛亚人、变身！），尾巴要冲着天。&lt;/li&gt;
-&lt;li&gt;向后坐时，绝对不要放松地重重向后坐。而是下肢紧张地向后，想象凳子是烧红的烙铁，绝不能放心放松坐实。因为深蹲时下半部肌肉要采取超等长收缩，也就是如同橡皮筋一样拉伸蓄满力量。此时感觉臀部被拉伸。换言之，注意力在髋关节和屁股。&lt;/li&gt;
-&lt;li&gt;屁股一碰到板凳茶几立即弹起，此时就能感觉是屁股发力了，臀大肌从拉伸状态变成收缩。大腿也跟着发力，整个脚踏实地面，整个人站起。&lt;/li&gt;
-&lt;li&gt;如果你觉得上述动作轻松做上20个不是事儿，请把最后动作环节改成发全身之力跳起！唤作板凳深蹲跳！在回落过程中应以前脚掌着地，膝关节角度为140到150。关节角度尽量不变。保证肌腱等弹性成分受到的刺激强度。膝盖不好和体重过大者，慎用此动作。&lt;/li&gt;
+&lt;li&gt; 首先，找一个高 40 公分左右的小平凳（茶几沙发均可，只要是这个高度），要结实稳定哦（测试，当你照下文做时，你的大腿角度平行略低于水平，换句话说，小腿和大腿的角略小于 90°）。&lt;/li&gt;
+&lt;li&gt; 手抱头，眼看前方。背挺直、反弓，屁股向后面的板凳坐下（向后坐，不是蹲马扎的向下坐，是接近蹲马桶的向后坐），想象自己有根儿尾巴（赛亚人、变身！），尾巴要冲着天。&lt;/li&gt;
+&lt;li&gt; 向后坐时，绝对不要放松地重重向后坐。而是下肢紧张地向后，想象凳子是烧红的烙铁，绝不能放心放松坐实。因为深蹲时下半部肌肉要采取超等长收缩，也就是如同橡皮筋一样拉伸蓄满力量。此时感觉臀部被拉伸。换言之，注意力在髋关节和屁股。&lt;/li&gt;
+&lt;li&gt; 屁股一碰到板凳茶几立即弹起，此时就能感觉是屁股发力了，臀大肌从拉伸状态变成收缩。大腿也跟着发力，整个脚踏实地面，整个人站起。&lt;/li&gt;
+&lt;li&gt; 如果你觉得上述动作轻松做上 20 个不是事儿，请把最后动作环节改成发全身之力跳起！唤作板凳深蹲跳！在回落过程中应以前脚掌着地，膝关节角度为 140 到 150。关节角度尽量不变。保证肌腱等弹性成分受到的刺激强度。膝盖不好和体重过大者，慎用此动作。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h3 id="_5"&gt;如何做平板支撑&lt;/h3&gt;
-&lt;p&gt;动作是身体俯卧，双肘弯曲支撑在地面上，肩膀和肘关节垂直于地面，双脚踩地，身体离开地面，躯干伸直，头部、肩部、胯部和踝部保持在同一平面，腹肌收紧，腰不可以向下掉，腹部要紧张，另外臀也要夹紧，别掉下去！
-，摆出普通的平板支撑动作，然后双手稍微向前移至躯干前方，同时缩短双肘之间的距离，从而延长力臂，减小支撑面的宽&lt;/p&gt;
-&lt;h3 id="hiit"&gt;HIIT——最强燃脂，最强塑身&lt;/h3&gt;
-&lt;p&gt;而HIIT由于在某种程度上是无氧肌肉训练和有氧训练的结合，实际上是从根本上改变了体质。把体重的设定点往下调整。&lt;/p&gt;
+&lt;h3 id="_5"&gt; 如何做平板支撑 &lt;/h3&gt;
+&lt;p&gt; 动作是身体俯卧，双肘弯曲支撑在地面上，肩膀和肘关节垂直于地面，双脚踩地，身体离开地面，躯干伸直，头部、肩部、胯部和踝部保持在同一平面，腹肌收紧，腰不可以向下掉，腹部要紧张，另外臀也要夹紧，别掉下去！
+，摆出普通的平板支撑动作，然后双手稍微向前移至躯干前方，同时缩短双肘之间的距离，从而延长力臂，减小支撑面的宽 &lt;/p&gt;
+&lt;h3 id="hiit"&gt;HIIT—— 最强燃脂，最强塑身 &lt;/h3&gt;
+&lt;p&gt; 而 HIIT 由于在某种程度上是无氧肌肉训练和有氧训练的结合，实际上是从根本上改变了体质。把体重的设定点往下调整。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;日常跑步计划：学校操场，半圈快跑（有能力冲刺）半圈慢跑（也别走着）。&lt;/li&gt;
-&lt;li&gt;跑步机计划：半分钟快跑，半分钟慢跑，然后一分钟快跑，一分钟慢跑，然后再半分钟快跑，半分钟慢跑。快跑慢跑的速度自己掌握，我认为快跑用最快速度的80%以上，慢跑用最快速度的50%比较合理。&lt;/li&gt;
-&lt;li&gt;自行车、动感单车：8秒冲刺，12秒普通骑。这是澳大利亚研究者实验中采用的方式。效果很好，受试人员体重平均减去2.3千克，有氧代谢能力增加了15%。&lt;/li&gt;
-&lt;li&gt;跳绳：跳半分钟来组双摇，大概20个。跳不了双摇的童鞋，可以快跳半分钟，慢跳半分钟。
+&lt;li&gt; 日常跑步计划：学校操场，半圈快跑（有能力冲刺）半圈慢跑（也别走着）。&lt;/li&gt;
+&lt;li&gt; 跑步机计划：半分钟快跑，半分钟慢跑，然后一分钟快跑，一分钟慢跑，然后再半分钟快跑，半分钟慢跑。快跑慢跑的速度自己掌握，我认为快跑用最快速度的 80% 以上，慢跑用最快速度的 50% 比较合理。&lt;/li&gt;
+&lt;li&gt; 自行车、动感单车：8 秒冲刺，12 秒普通骑。这是澳大利亚研究者实验中采用的方式。效果很好，受试人员体重平均减去 2.3 千克，有氧代谢能力增加了 15%。&lt;/li&gt;
+&lt;li&gt; 跳绳：跳半分钟来组双摇，大概 20 个。跳不了双摇的童鞋，可以快跳半分钟，慢跳半分钟。
 家里的计划：&lt;/li&gt;
-&lt;li&gt;我觉得比较靠谱的是直接上HIIT的操课，这个问题有人也问过我。我后来看了看大家推荐的比较多的郑多燕和insanity。我觉得insanity比较，郑多燕的强度恐怕低了点。其中insanity的第八套强度不错，我觉得适合单跳，其他的适合搭配后面推荐的无氧运动双璧来一起做。当然也要看个人实际情况&lt;/li&gt;
+&lt;li&gt; 我觉得比较靠谱的是直接上 HIIT 的操课，这个问题有人也问过我。我后来看了看大家推荐的比较多的郑多燕和 insanity。我觉得 insanity 比较，郑多燕的强度恐怕低了点。其中 insanity 的第八套强度不错，我觉得适合单跳，其他的适合搭配后面推荐的无氧运动双璧来一起做。当然也要看个人实际情况 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id="hiit_1"&gt;HIIT训练的重点：&lt;/h4&gt;
-&lt;p&gt;HIIT运动实际上就是间歇性地提高与降低运动强度，某种程度上自己可以排列组合。只要是大肌群训练（臀腿主要发力），高低强度交替，持续10-20分钟，就能够达到HIIT的健身目的。
-至于高低强度交替的规律，我建议变化间隔要短，不要5分钟高强度，5分钟低强度。因为高强度时间太长，无法保证强度忠实完成。最后还是成为中等或低强度的训练。另外，变化的间隔越短，对于脂肪的供能比提升越多。据猜测这可能与身体的预适应有关。有很多人提到了HIIT的强度过大，无法完成。我的建议是，循序渐进。你如果做不了一个insanity的全程，可以找个强度低一点的、二三十分钟的先练，慢慢来。如果你做不到十五分钟的冲刺交替跑，你可以只是快慢跑交替，慢慢进阶。锻炼的成果，更看重的是坚持。人的适应性是很强的，已经有很多朋友联系我说，他们做了我推荐的运动，第一次很难，第二次还可以，现在已经相对轻松了。HIIT训练也是一样的。如果坚持，身体就能不断进步。最后达到希望的效果。&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 19 Jul 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-07-19:hard-gym-reading-note.html</guid><category>Book</category></item><item><title>Glance Image Cache</title><link>http://xcodest.me/glance-image-cache.html</link><description>&lt;p&gt;Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定
+&lt;h4 id="hiit_1"&gt;HIIT 训练的重点：&lt;/h4&gt;
+&lt;p&gt;HIIT 运动实际上就是间歇性地提高与降低运动强度，某种程度上自己可以排列组合。只要是大肌群训练（臀腿主要发力），高低强度交替，持续 10-20 分钟，就能够达到 HIIT 的健身目的。
+至于高低强度交替的规律，我建议变化间隔要短，不要 5 分钟高强度，5 分钟低强度。因为高强度时间太长，无法保证强度忠实完成。最后还是成为中等或低强度的训练。另外，变化的间隔越短，对于脂肪的供能比提升越多。据猜测这可能与身体的预适应有关。有很多人提到了 HIIT 的强度过大，无法完成。我的建议是，循序渐进。你如果做不了一个 insanity 的全程，可以找个强度低一点的、二三十分钟的先练，慢慢来。如果你做不到十五分钟的冲刺交替跑，你可以只是快慢跑交替，慢慢进阶。锻炼的成果，更看重的是坚持。人的适应性是很强的，已经有很多朋友联系我说，他们做了我推荐的运动，第一次很难，第二次还可以，现在已经相对轻松了。HIIT 训练也是一样的。如果坚持，身体就能不断进步。最后达到希望的效果。&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 19 Jul 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-07-19:hard-gym-reading-note.html</guid><category>Book</category></item><item><title>Glance Image Cache</title><link>http://xcodest.me/glance-image-cache.html</link><description>&lt;p&gt;Glance 增加了一层 cache 的 Middleware，用来缓存从 file store 后端取过来的镜像。一定
 程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。&lt;/p&gt;
-&lt;p&gt;因为是通过middleware来控制的，所以只要修改一下paster的配置就行。更简单的是指定
-glance-api加载的pipeline的名字。&lt;/p&gt;
+&lt;p&gt; 因为是通过 middleware 来控制的，所以只要修改一下 paster 的配置就行。更简单的是指定
+glance-api 加载的 pipeline 的名字。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[deploy]&lt;/span&gt;
 &lt;span class="c1"&gt;# possible value: none, cachine, keystone, keystone+caching, &lt;/span&gt;
 &lt;span class="c1"&gt;# keystone+cachemanagement&lt;/span&gt;
@@ -1194,7 +1295,7 @@ glance-api加载的pipeline的名字。&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;具体看下&lt;code&gt;glance-api-paster.conf&lt;/code&gt;文件就能明白。&lt;/p&gt;
+&lt;p&gt; 具体看下 &lt;code&gt;glance-api-paster.conf&lt;/code&gt; 文件就能明白。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[pipeline:glance-api]&lt;/span&gt;
 &lt;span class="na"&gt;pipeline&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;versionnegotiation unauthenticated-context rootapp&lt;/span&gt;
 
@@ -1220,18 +1321,18 @@ glance-api加载的pipeline的名字。&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;不同的pipeline用到了不同的middleware, 启作用的是cache 和 cachemanagement这两个
+&lt;p&gt; 不同的 pipeline 用到了不同的 middleware, 启作用的是 cache 和 cachemanagement 这两个
 。&lt;/p&gt;
 &lt;h2 id="ref"&gt;REF&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://docs.openstack.org/developer/glance/cache.html"&gt;The Glance Image Cache&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 17 Jul 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-07-17:glance-image-cache.html</guid><category>Glance</category></item><item><title>Salt Mine</title><link>http://xcodest.me/salt-mine.html</link><description>&lt;p&gt;Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。&lt;/p&gt;
-&lt;p&gt;可以通过两种方法来配置:&lt;/p&gt;
+&lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 17 Jul 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-07-17:glance-image-cache.html</guid><category>Glance</category></item><item><title>Salt Mine</title><link>http://xcodest.me/salt-mine.html</link><description>&lt;p&gt;Salt mine 可以在一定的控制内让 minion 拿到其它 minion 的信息。实现原理是：通过配置，让 minion 定期 ( 最短为 1 分钟 ) 的向 master 发送数据，而其它 minion 可以从 master 拿到这些数据。一定程度上实现的 minion 之间的通迅。在搭建 cluster 时，十分有用。&lt;/p&gt;
+&lt;p&gt; 可以通过两种方法来配置 :&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;minion的配置文件&lt;/li&gt;
-&lt;li&gt;master的pillar&lt;/li&gt;
+&lt;li&gt;minion 的配置文件 &lt;/li&gt;
+&lt;li&gt;master 的 pillar&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;使用minion配置时，要直接修改minion的配置文件，在&lt;code&gt;/etc/salt/minion.d/mine.conf&lt;/code&gt; 加入如下内容&lt;/p&gt;
+&lt;p&gt; 使用 minion 配置时，要直接修改 minion 的配置文件，在 &lt;code&gt;/etc/salt/minion.d/mine.conf&lt;/code&gt; 加入如下内容 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l-Scalar-Plain"&gt;mine_functions&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
   &lt;span class="l-Scalar-Plain"&gt;test.ping&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p-Indicator"&gt;[]&lt;/span&gt;
   &lt;span class="l-Scalar-Plain"&gt;network.ip_addrs&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
@@ -1239,7 +1340,7 @@ glance-api加载的pipeline的名字。&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;使用pillar时配置时，只需要修改master的pillar配置即可。如在&lt;code&gt;/srv/pillar/mine.conf&lt;/code&gt; 中加入如下内容&lt;/p&gt;
+&lt;p&gt; 使用 pillar 时配置时，只需要修改 master 的 pillar 配置即可。如在 &lt;code&gt;/srv/pillar/mine.conf&lt;/code&gt; 中加入如下内容 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l-Scalar-Plain"&gt;mine_functions&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
   &lt;span class="l-Scalar-Plain"&gt;test.ping&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p-Indicator"&gt;[]&lt;/span&gt;
   &lt;span class="l-Scalar-Plain"&gt;network.ip_addrs&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
@@ -1247,14 +1348,14 @@ glance-api加载的pipeline的名字。&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;然后把&lt;code&gt;mine.conf&lt;/code&gt;加入到&lt;code&gt;/srv/pillar/top.sls&lt;/code&gt;, 这时可以指定哪些minion来配置mine_functions。相比较而言，这种方式更加灵活一些。&lt;/p&gt;
+&lt;p&gt; 然后把 &lt;code&gt;mine.conf&lt;/code&gt; 加入到 &lt;code&gt;/srv/pillar/top.sls&lt;/code&gt;, 这时可以指定哪些 minion 来配置 mine_functions。相比较而言，这种方式更加灵活一些。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l-Scalar-Plain"&gt;base&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
   &lt;span class="s"&gt;&amp;#39;controller*&amp;#39;&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
     &lt;span class="p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;mine&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;之后就可以使用如下语句拿到mine上报上来的结果的(其实这个结果是保存在master的&lt;code&gt;/var/cache/salt/master/minions/*/mine.p&lt;/code&gt;的文件下就可找到上报上来的内容。&lt;/p&gt;
+&lt;p&gt; 之后就可以使用如下语句拿到 mine 上报上来的结果的 ( 其实这个结果是保存在 master 的 &lt;code&gt;/var/cache/salt/master/minions/*/mine.p&lt;/code&gt; 的文件下就可找到上报上来的内容。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;salt &lt;span class="s1"&gt;&amp;#39;jeffrey-thinkpad&amp;#39;&lt;/span&gt; mine.get &lt;span class="s1"&gt;&amp;#39;*&amp;#39;&lt;/span&gt; network.ip_addrs
 jeffrey-thinkpad:
     ----------
@@ -1265,7 +1366,7 @@ jeffrey-thinkpad:
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;另外，可以在minion上来修改上报的时间间隔。方法是增加/修改&lt;code&gt;/etc/salt/minion.d/mine.conf&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt; 另外，可以在 minion 上来修改上报的时间间隔。方法是增加 / 修改 &lt;code&gt;/etc/salt/minion.d/mine.conf&lt;/code&gt;。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;mine_interval&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -1273,9 +1374,9 @@ jeffrey-thinkpad:
 &lt;h2 id="ref"&gt;REF&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://docs.saltstack.com/en/latest/topics/mine/"&gt;Salt Mine&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 16 Jul 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-07-16:salt-mine.html</guid><category>SaltStack</category></item><item><title>linux bonding mode 6 break the vms</title><link>http://xcodest.me/linux-bonding-mode-6-break-the-vms.html</link><description>&lt;p&gt;操作系统： ubuntu 12.04.1
+&lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 16 Jul 2014 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2014-07-16:salt-mine.html</guid><category>SaltStack</category></item><item><title>linux bonding mode 6 break the vms</title><link>http://xcodest.me/linux-bonding-mode-6-break-the-vms.html</link><description>&lt;p&gt; 操作系统： ubuntu 12.04.1
 内核 linux 3.2&lt;/p&gt;
-&lt;p&gt;今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。&lt;/p&gt;
+&lt;p&gt; 今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;    +---- host1 -------+         +---- host2 ----+
                      eth0 ---- eth0 
                    /                \
@@ -1285,19 +1386,19 @@ jeffrey-thinkpad:
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;机器的连接方式如上图，经检查发现，问题简化成两边的 br1 是不通的，现像是ping时，接收方收不到包，包只走到bond0就给丢弃了。原因在于内核上有问题。在网络上查到以下两个连接 &lt;/p&gt;
+&lt;p&gt; 机器的连接方式如上图，经检查发现，问题简化成两边的 br1 是不通的，现像是 ping 时，接收方收不到包，包只走到 bond0 就给丢弃了。原因在于内核上有问题。在网络上查到以下两个连接 &lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302 &lt;/li&gt;
 &lt;li&gt;https://bugzilla.redhat.com/show_bug.cgi?id=487763&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;把内核升级到3.8之后就可以了。&lt;/p&gt;
+&lt;p&gt; 把内核升级到 3.8 之后就可以了。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;apt-get install linux-image-generic-lts-raring
-&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 14 Apr 2014 19:39:51 +0800</pubDate><guid>tag:xcodest.me,2014-04-14:linux-bonding-mode-6-break-the-vms.html</guid><category>Network</category></item><item><title>Dhcp lease errors in vlan mode</title><link>http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html</link><description>&lt;p&gt;在使用&lt;code&gt;keepalived&lt;/code&gt;的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在&lt;code&gt;/etc/sysconfig/network-scripts/ifcfg-eth0&lt;/code&gt;中加上了如下语句：&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 14 Apr 2014 19:39:51 +0800</pubDate><guid>tag:xcodest.me,2014-04-14:linux-bonding-mode-6-break-the-vms.html</guid><category>Network</category></item><item><title>Dhcp lease errors in vlan mode</title><link>http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html</link><description>&lt;p&gt; 在使用 &lt;code&gt;keepalived&lt;/code&gt; 的过程中，出现了 dhcp 失败，而导致 keepalived 工作不正常的问题。而且之前也出现过 dhcp 偶尔失败，导致虚拟机不能得到 IP, 从而不能访问的情况。虽然在 &lt;code&gt;/etc/sysconfig/network-scripts/ifcfg-eth0&lt;/code&gt; 中加上了如下语句：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;PERSISTENT_DHCLIENT=1
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个&lt;a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results"&gt;邮件列表&lt;/a&gt;中找到原因，如下：&lt;/p&gt;
+&lt;p&gt; 使得 dhcp 单次失败后，继续重试。但是仔细查看 dhclient 的日志后，发现它有大量的 dhcp request 失败 / 超时。在一个 &lt;a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results"&gt; 邮件列表 &lt;/a&gt; 中找到原因，如下：&lt;/p&gt;
 &lt;p&gt;To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1&lt;/p&gt;
 &lt;p&gt;THE LONG VERSION&lt;/p&gt;
 &lt;p&gt;There is an issue with the way nova uses dnsmasq in VLAN mode. It starts up a
@@ -1332,7 +1433,7 @@ fixed_ip_disassociate_timeout=1209600
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;This is also documented &lt;a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues"&gt; Known issue with failed DHCP leases in VLAN configuration&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 27 Aug 2013 08:50:00 +0800</pubDate><guid>tag:xcodest.me,2013-08-27:dhcp-lease-errors-in-vlan-mode.html</guid><category>DHCP</category><category>Network</category><category>VLAN</category></item><item><title>Openstack Brief</title><link>http://xcodest.me/openstack-brief.html</link><description>&lt;p&gt;自从Openstack诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于Grizzly的版本来写的。&lt;/p&gt;
+&lt;p&gt;This is also documented &lt;a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues"&gt; Known issue with failed DHCP leases in VLAN configuration&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 27 Aug 2013 08:50:00 +0800</pubDate><guid>tag:xcodest.me,2013-08-27:dhcp-lease-errors-in-vlan-mode.html</guid><category>DHCP</category><category>Network</category><category>VLAN</category></item><item><title>Openstack Brief</title><link>http://xcodest.me/openstack-brief.html</link><description>&lt;p&gt; 自从 Openstack 诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack 下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于 Grizzly 的版本来写的。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Keystone&lt;/li&gt;
 &lt;li&gt;Nova&lt;/li&gt;
@@ -1344,39 +1445,39 @@ fixed_ip_disassociate_timeout=1209600
 &lt;li&gt;Baremetal&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h1 id="keystone"&gt;Keystone&lt;/h1&gt;
-&lt;p&gt;keystone是Openstack的认证和服务注册模块。其结构比较简单。其功能包括:&lt;/p&gt;
+&lt;p&gt;keystone 是 Openstack 的认证和服务注册模块。其结构比较简单。其功能包括 :&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;认证&lt;/strong&gt; 主要功能是管理用户和用户组的信息，后端可以绑定ldap, mysql等认证方式。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;服务注册模块&lt;/strong&gt; 主要用于管理Openstack相关服务的地址，所有的服务都要先注册到Keystone中，才可以使用。它可使用基于文件的模板，也可以使用数据库存储。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt; 认证 &lt;/strong&gt; 主要功能是管理用户和用户组的信息，后端可以绑定 ldap, mysql 等认证方式。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt; 服务注册模块 &lt;/strong&gt; 主要用于管理 Openstack 相关服务的地址，所有的服务都要先注册到 Keystone 中，才可以使用。它可使用基于文件的模板，也可以使用数据库存储。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Token&lt;/strong&gt; 管理。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;相对于其它子项目来说，keystone最近的变化并不是太大。将来一个比较大的变化就是基于domain的权限控制，届时Tenant里也可以细经出管理员和使用者的角色，并有详细的权限功能控制。&lt;/p&gt;
+&lt;p&gt; 相对于其它子项目来说，keystone 最近的变化并不是太大。将来一个比较大的变化就是基于 domain 的权限控制，届时 Tenant 里也可以细经出管理员和使用者的角色，并有详细的权限功能控制。&lt;/p&gt;
 &lt;h1 id="nova"&gt;Nova&lt;/h1&gt;
-&lt;p&gt;Nova是Openstack最早的子项目。现在其它项目如cinder, quantum(Openstack Network)都是来自于该项目。可以说这是Openstack中最复杂，最主要的部分。它负责&lt;/p&gt;
+&lt;p&gt;Nova 是 Openstack 最早的子项目。现在其它项目如 cinder, quantum(Openstack Network) 都是来自于该项目。可以说这是 Openstack 中最复杂，最主要的部分。它负责 &lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;用户接口(nova-api)。处理来自于用户的请求，并做出合理的响应。&lt;/li&gt;
-&lt;li&gt;计算调度(nova-scheduler)。用于在物理之前进行资源的调配。&lt;/li&gt;
-&lt;li&gt;虚拟化的管理(nova-compute)。管理虚拟机的适配接口。通过它可以管理真实的虚拟技术驱动的机器，如KVM, XEN, Hypervisor V等。&lt;/li&gt;
+&lt;li&gt; 用户接口 (nova-api)。处理来自于用户的请求，并做出合理的响应。&lt;/li&gt;
+&lt;li&gt; 计算调度 (nova-scheduler)。用于在物理之前进行资源的调配。&lt;/li&gt;
+&lt;li&gt; 虚拟化的管理 (nova-compute)。管理虚拟机的适配接口。通过它可以管理真实的虚拟技术驱动的机器，如 KVM, XEN, Hypervisor V 等。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;当然还有一些功能如nova-network, nova-volume已经从nova项目中迁移出来，成为独立的子项目。将来一段时间的变化，主要集中在nova-network的废弃，nova-conductor的更加完善，新的api(v3)的支持，对于祼机的支持。&lt;/p&gt;
+&lt;p&gt; 当然还有一些功能如 nova-network, nova-volume 已经从 nova 项目中迁移出来，成为独立的子项目。将来一段时间的变化，主要集中在 nova-network 的废弃，nova-conductor 的更加完善，新的 api(v3) 的支持，对于祼机的支持。&lt;/p&gt;
 &lt;h1 id="cinder"&gt;Cinder&lt;/h1&gt;
-&lt;p&gt;Cinder是由nova-volume分化而来，用于管理虚拟机的块存储(block storage), 类似AWS的EBS。其功能主要是创建，维护，删除块存储。后端可以使用LVM, glusterFs, Ceph, NFS等软件技术的存储，也可以使用NetApp, Huawei，IBM等商用解决方案。当然也可以自己编写自己存储的Driver来支持更多的存储类型。&lt;/p&gt;
+&lt;p&gt;Cinder 是由 nova-volume 分化而来，用于管理虚拟机的块存储 (block storage), 类似 AWS 的 EBS。其功能主要是创建，维护，删除块存储。后端可以使用 LVM, glusterFs, Ceph, NFS 等软件技术的存储，也可以使用 NetApp, Huawei，IBM 等商用解决方案。当然也可以自己编写自己存储的 Driver 来支持更多的存储类型。&lt;/p&gt;
 &lt;h1 id="glance"&gt;Glance&lt;/h1&gt;
-&lt;p&gt;Glance用于管理各种系统的镜像。他后端也可以配置各种存储方案。包括本地，swift, ceph等。&lt;/p&gt;
+&lt;p&gt;Glance 用于管理各种系统的镜像。他后端也可以配置各种存储方案。包括本地，swift, ceph 等。&lt;/p&gt;
 &lt;h1 id="openstack-network"&gt;Openstack Network.&lt;/h1&gt;
-&lt;p&gt;(Quantum名称因为商标问题停用）。&lt;/p&gt;
-&lt;p&gt;网络基本是Openstack最复杂的模块，涉及到的技术和协议相当多，也最容易出问题。也正因为此，很有必要将网络模块从越来越笨重的nova的拿出来。&lt;/p&gt;
-&lt;p&gt;Openstack Network提示了强大的网络服务（Network-as-a-service),用来实现L2, L3层的网络。在原有的nova-network的基础之上，增加了相当多的功能&lt;/p&gt;
+&lt;p&gt;(Quantum 名称因为商标问题停用）。&lt;/p&gt;
+&lt;p&gt; 网络基本是 Openstack 最复杂的模块，涉及到的技术和协议相当多，也最容易出问题。也正因为此，很有必要将网络模块从越来越笨重的 nova 的拿出来。&lt;/p&gt;
+&lt;p&gt;Openstack Network 提示了强大的网络服务（Network-as-a-service), 用来实现 L2, L3 层的网络。在原有的 nova-network 的基础之上，增加了相当多的功能 &lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;加上了xvlan, gre等网络技术，并可以编写自己的插件，来增加其功能&lt;/li&gt;
-&lt;li&gt;使用者可以创建更加丰富的网络模型，如私用路由器等&lt;/li&gt;
-&lt;li&gt;为Qos, 流量监控等提供支持。&lt;/li&gt;
+&lt;li&gt; 加上了 xvlan, gre 等网络技术，并可以编写自己的插件，来增加其功能 &lt;/li&gt;
+&lt;li&gt; 使用者可以创建更加丰富的网络模型，如私用路由器等 &lt;/li&gt;
+&lt;li&gt; 为 Qos, 流量监控等提供支持。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;现在Quantum还有一些问题，如HA方案不成熟，不太适用于Production。不过根据社区的计划，下一个版本(H)将会把nova-network废弃掉。所以Quantum才是真正的趋势。现在很有必要将其吃透。&lt;/p&gt;
+&lt;p&gt; 现在 Quantum 还有一些问题，如 HA 方案不成熟，不太适用于 Production。不过根据社区的计划，下一个版本 (H) 将会把 nova-network 废弃掉。所以 Quantum 才是真正的趋势。现在很有必要将其吃透。&lt;/p&gt;
 &lt;h1 id="lbaas"&gt;LBaaS&lt;/h1&gt;
-&lt;p&gt;Load-Balancer-as-a-service.在Quantum基础上实现的负载均衡。后端既可以使用haproxy,也可以使用cisco, f5等硬件。（不过我还没有功能搭建过这个服务。&lt;/p&gt;
+&lt;p&gt;Load-Balancer-as-a-service. 在 Quantum 基础上实现的负载均衡。后端既可以使用 haproxy, 也可以使用 cisco, f5 等硬件。（不过我还没有功能搭建过这个服务。&lt;/p&gt;
 &lt;h1 id="ceilometer"&gt;Ceilometer&lt;/h1&gt;
-&lt;p&gt;Openstack的计量，计费模块。可以统计Cpu, IO, Network使用的详细情况。对公有云和私有云都有极大的好处。现在也有一个Horizon的插件，可以直接在dashboard里显示使用情况（将来，该插件会合并到horizon中）&lt;/p&gt;
+&lt;p&gt;Openstack 的计量，计费模块。可以统计 Cpu, IO, Network 使用的详细情况。对公有云和私有云都有极大的好处。现在也有一个 Horizon 的插件，可以直接在 dashboard 里显示使用情况（将来，该插件会合并到 horizon 中）&lt;/p&gt;
 &lt;h1 id="baremetal"&gt;Baremetal&lt;/h1&gt;
-&lt;p&gt;增加Openstack对裸机的管理功能。可以实现直接对裸机进行系统安装，配置。模糊了虚拟化和物理机之间的界线。现在所有模块包括nova, glance, cinder都在努力增强这方面的功能。
-这个模块，我更期望是可以建立Nested-Openstack。同一个Openstack环境，既管理物理机，又自动在物理机上安装Openstack的模块来成为Openstack的一部分。&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 17 Jun 2013 23:08:00 +0800</pubDate><guid>tag:xcodest.me,2013-06-17:openstack-brief.html</guid></item></channel></rss>
+&lt;p&gt; 增加 Openstack 对裸机的管理功能。可以实现直接对裸机进行系统安装，配置。模糊了虚拟化和物理机之间的界线。现在所有模块包括 nova, glance, cinder 都在努力增强这方面的功能。
+这个模块，我更期望是可以建立 Nested-Openstack。同一个 Openstack 环境，既管理物理机，又自动在物理机上安装 Openstack 的模块来成为 Openstack 的一部分。&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 17 Jun 2013 23:08:00 +0800</pubDate><guid>tag:xcodest.me,2013-06-17:openstack-brief.html</guid></item></channel></rss>

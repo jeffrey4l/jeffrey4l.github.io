@@ -103,12 +103,12 @@
     <span class="post-date"> 2013-08-27 </span>
   </header>
   <div class="entry-content">
-    <p>在使用<code>keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
+    <p> 在使用 <code>keepalived</code> 的过程中，出现了 dhcp 失败，而导致 keepalived 工作不正常的问题。而且之前也出现过 dhcp 偶尔失败，导致虚拟机不能得到 IP, 从而不能访问的情况。虽然在 <code>/etc/sysconfig/network-scripts/ifcfg-eth0</code> 中加上了如下语句：</p>
 <div class="highlight"><pre>PERSISTENT_DHCLIENT=1
 </pre></div>
 
 
-<p>使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个<a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results">邮件列表</a>中找到原因，如下：</p>
+<p> 使得 dhcp 单次失败后，继续重试。但是仔细查看 dhclient 的日志后，发现它有大量的 dhcp request 失败 / 超时。在一个 <a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results"> 邮件列表 </a> 中找到原因，如下：</p>
 <p>To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1</p>
 <p>THE LONG VERSION</p>
 <p>There is an issue with the way nova uses dnsmasq in VLAN mode. It starts up a

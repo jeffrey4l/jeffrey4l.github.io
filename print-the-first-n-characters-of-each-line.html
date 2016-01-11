@@ -101,18 +101,18 @@
     <span class="post-date"> 2015-02-15 </span>
   </header>
   <div class="entry-content">
-    <p>在使用 Shell 的过程中，经常会遇到一行过长，导致输出折行，相当难看的情况出现。而且多数据情况下，我们只用每行的前 N 个字符就可以了。这时可以用以下方法来截断每行的长度。</p>
-<p><strong>方法1</strong>： 使用 <code>awk</code></p>
+    <p> 在使用 Shell 的过程中，经常会遇到一行过长，导致输出折行，相当难看的情况出现。而且多数据情况下，我们只用每行的前 N 个字符就可以了。这时可以用以下方法来截断每行的长度。</p>
+<p><strong> 方法 1</strong>： 使用 <code>awk</code></p>
 <div class="highlight"><pre>cat filename | awk &#39;{print substr($0, 0, 20)}&#39;
 </pre></div>
 
 
-<p><strong>方法2</strong>: 使用 <code>sed</code></p>
+<p><strong> 方法 2</strong>: 使用 <code>sed</code></p>
 <div class="highlight"><pre>cat filename | sed &#39;s/\(.\{20\}\).*/\1/&#39;
 </pre></div>
 
 
-<p><strong> 方法3</strong>: 使用 <code>sed -r</code></p>
+<p><strong> 方法 3</strong>: 使用 <code>sed -r</code></p>
 <div class="highlight"><pre>cat filename | sed -r &#39;s/(.{20}).*/\1/&#39;
 </pre></div>
   </div><!-- /.entry-content -->

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/programming.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-11-20T00:00:00+08:00</updated><entry><title>Python Exception init args</title><link href="http://xcodest.me/python-exception-init-args.html" rel="alternate"></link><updated>2015-11-20T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-11-20:python-exception-init-args.html</id><summary type="html">&lt;p&gt;&lt;img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;一直没有搞明白 &lt;code&gt;Exception&lt;/code&gt; 的 args 和 message 参数, 最近看了一下 CPython 源码，
+&lt;p&gt; 一直没有搞明白 &lt;code&gt;Exception&lt;/code&gt; 的 args 和 message 参数 , 最近看了一下 CPython 源码，
 终于搞明白了。&lt;/p&gt;
-&lt;p&gt;一开始(从2.5开始)的时候是有 &lt;code&gt;args&lt;/code&gt; 和 &lt;code&gt;message&lt;/code&gt; 两个参数的。2.6版本之后，把
+&lt;p&gt; 一开始 ( 从 2.5 开始 ) 的时候是有 &lt;code&gt;args&lt;/code&gt; 和 &lt;code&gt;message&lt;/code&gt; 两个参数的。2.6 版本之后，把
 &lt;code&gt;message&lt;/code&gt; 废弃掉了，只留下了一个任意长度的 &lt;code&gt;args&lt;/code&gt;。&lt;/p&gt;
-&lt;p&gt;以下是2.5以后的代码，可以看到，如果args 长度是1，就会把 &lt;code&gt;self.message = args[0]&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt; 以下是 2.5 以后的代码，可以看到，如果 args 长度是 1，就会把 &lt;code&gt;self.message = args[0]&lt;/code&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
 &lt;span class="nf"&gt;BaseException_new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyTypeObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;kwds&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="p"&gt;{&lt;/span&gt;
@@ -51,10 +51,10 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;本来 message 就是 Exception的一个属性，在2.6以后，把它变成了一个 descriptor, 当
+&lt;p&gt; 本来 message 就是 Exception 的一个属性，在 2.6 以后，把它变成了一个 descriptor, 当
 调用时，如果它在 &lt;code&gt;self.__dict__&lt;/code&gt; 里，就直接打印，否则就返回 &lt;code&gt;self.message&lt;/code&gt; 的信息
-并打印出一个 &lt;code&gt;Warning&lt;/code&gt;。如果已经赋过一个值的话&lt;code&gt;self.message = xxxx&lt;/code&gt;, 它就会存在
-&lt;code&gt;self.__dict__&lt;/code&gt;里。&lt;/p&gt;
+并打印出一个 &lt;code&gt;Warning&lt;/code&gt;。如果已经赋过一个值的话 &lt;code&gt;self.message = xxxx&lt;/code&gt;, 它就会存在
+&lt;code&gt;self.__dict__&lt;/code&gt; 里。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
 &lt;span class="nf"&gt;BaseException_get_message&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyBaseExceptionObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;self&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="p"&gt;{&lt;/span&gt;
@@ -108,8 +108,8 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;在 python3 中，message 相关的信息已经完全删除掉了。&lt;/p&gt;
-&lt;p&gt;所以，一般使用 &lt;code&gt;message&lt;/code&gt; 属性的话，推荐这样使用&lt;/p&gt;
+&lt;p&gt; 在 python3 中，message 相关的信息已经完全删除掉了。&lt;/p&gt;
+&lt;p&gt; 所以，一般使用 &lt;code&gt;message&lt;/code&gt; 属性的话，推荐这样使用 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;MyException&lt;/span&gt;(&lt;span class="nb"&gt;Exception&lt;/span&gt;):
     &lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;__init__&lt;/span&gt;(&lt;span class="k"&gt;self&lt;/span&gt;, &lt;span class="n"&gt;message&lt;/span&gt;):
         &lt;span class="k"&gt;self&lt;/span&gt;.&lt;span class="n"&gt;message&lt;/span&gt; = &lt;span class="n"&gt;message&lt;/span&gt;
@@ -212,7 +212,7 @@ or similar.
 &lt;li&gt;&lt;a href="http://bugs.python.org/issue8296"&gt;Python Bug&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://unix.stackexchange.com/a/149756"&gt;How Ctrl+c works&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://stackoverflow.com/a/1408476/893981"&gt;Keyboard Interrupts with python's multiprocessing Pool&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="Python"></category></entry><entry><title>论Python的异常的合理抛出姿势</title><link href="http://xcodest.me/How_to_raise_python_exception.html" rel="alternate"></link><updated>2015-05-06T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-06:How_to_raise_python_exception.html</id><summary type="html">&lt;p&gt;当需要重新抛出 Python 的异常时，很多人都处理不好。本文总结了一些处理方法。&lt;/p&gt;
+&lt;/ul&gt;</summary><category term="Python"></category></entry><entry><title>论Python的异常的合理抛出姿势</title><link href="http://xcodest.me/How_to_raise_python_exception.html" rel="alternate"></link><updated>2015-05-06T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-06:How_to_raise_python_exception.html</id><summary type="html">&lt;p&gt; 当需要重新抛出 Python 的异常时，很多人都处理不好。本文总结了一些处理方法。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -220,7 +220,7 @@ or similar.
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;这种处理会直接把内部异常吃掉，当有问题/Bug时，会很难处理，所以不推荐。&lt;/p&gt;
+&lt;p&gt; 这种处理会直接把内部异常吃掉，当有问题 /Bug 时，会很难处理，所以不推荐。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;Exception&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -232,7 +232,7 @@ or similar.
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;这种直接打印的，一是不能很好的输出到日志里。二是不能把错误交到上层调用者，不能让其知道这是有问题。&lt;/p&gt;
+&lt;p&gt; 这种直接打印的，一是不能很好的输出到日志里。二是不能把错误交到上层调用者，不能让其知道这是有问题。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_somethink&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
 &lt;span class="n"&gt;except&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
@@ -241,8 +241,8 @@ or similar.
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;用这种，主要是为了做cleanup。直接&lt;code&gt;raise&lt;/code&gt;后，异常会抛向上层。没有catch的效果一样。&lt;/p&gt;
-&lt;p&gt;这里还有一种和上面这个类似的效果的&lt;/p&gt;
+&lt;p&gt; 用这种，主要是为了做 cleanup。直接 &lt;code&gt;raise&lt;/code&gt; 后，异常会抛向上层。没有 catch 的效果一样。&lt;/p&gt;
+&lt;p&gt; 这里还有一种和上面这个类似的效果的 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -252,7 +252,7 @@ or similar.
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;最后，当要抛出自己重新包装后的异常时，最好把原始的异常也带上。这样有利于问题的debug。&lt;/p&gt;
+&lt;p&gt; 最后，当要抛出自己重新包装后的异常时，最好把原始的异常也带上。这样有利于问题的 debug。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -265,19 +265,19 @@ or similar.
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html"&gt;Re-raising Exceptions&lt;/a&gt; - by Ian Bicking&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="Python"></category><category term="Exception"></category></entry><entry><title>PIP install from local</title><link href="http://xcodest.me/pip-install-from-local.html" rel="alternate"></link><updated>2015-01-08T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-01-08:pip-install-from-local.html</id><summary type="html">&lt;p&gt;在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。&lt;/p&gt;
-&lt;p&gt;先在有网络的环境中下载下来所有需要的包：&lt;/p&gt;
+&lt;/ul&gt;</summary><category term="Python"></category><category term="Exception"></category></entry><entry><title>PIP install from local</title><link href="http://xcodest.me/pip-install-from-local.html" rel="alternate"></link><updated>2015-01-08T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-01-08:pip-install-from-local.html</id><summary type="html">&lt;p&gt; 在一些特殊环境中，服务器是不能联网的。此时要通过 pip 安装包会有一些麻烦。这时可以使用 pip 的 download 到本地的功能，来加速安装。&lt;/p&gt;
+&lt;p&gt; 先在有网络的环境中下载下来所有需要的包：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;在把这些包拷贝到目标环境中去，使用下面的命令来安装：&lt;/p&gt;
+&lt;p&gt; 在把这些包拷贝到目标环境中去，使用下面的命令来安装：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;pip install --no-index --find-links &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;所有需要的包就安装上了。&lt;/p&gt;
-&lt;p&gt;为了方便使用，还可以把这两个命令弄成alias来使用&lt;/p&gt;
+&lt;p&gt; 所有需要的包就安装上了。&lt;/p&gt;
+&lt;p&gt; 为了方便使用，还可以把这两个命令弄成 alias 来使用 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;alias pipcache=&amp;#39;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages&amp;#39;
 alias pipinstall=&amp;#39;pip install --no-index --find-links=file://&lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages/&amp;#39;
 &lt;/pre&gt;&lt;/div&gt;</summary><category term="Python"></category></entry></feed>

@@ -1,14 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/openstack.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2016-01-06T00:00:00+08:00</updated><entry><title>Get all the repo from OpenStack</title><link href="http://xcodest.me/get-all-repos-from-openstack.html" rel="alternate"></link><updated>2016-01-06T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-01-06:get-all-repos-from-openstack.html</id><summary type="html">&lt;p&gt;OpenStack的源因为你我都知道的原因，一直不稳定，导致 devstack 时经常失败。特定写了个脚本，可以拿到所有的仓库地址，方便做本地的mirror。&lt;/p&gt;
-&lt;p&gt;脚本在 gist&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; 上。&lt;/p&gt;
-&lt;p&gt;使用方法：&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/openstack.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2016-01-11T00:00:00+08:00</updated><entry><title>OpenStack Kolla 项目介绍</title><link href="http://xcodest.me/kolla-introduce.html" rel="alternate"></link><updated>2016-01-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-01-11:kolla-introduce.html</id><summary type="html">
+&lt;h1 id="_1"&gt; 项目目标 &lt;/h1&gt;
+&lt;p&gt;Kolla 提供了生产级别的 OpenStack Service Containers。基于社区的最佳实践，提供了
+更好，更快，更可靠的 , 操作 OpenStack 的部署工具。&lt;/p&gt;
+&lt;h1 id="_2"&gt; 解决的问题 &lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt; 平滑的升级 / 回滚 OpenStack&lt;/li&gt;
+&lt;li&gt; 隔离 OpenStack 的不同组件的依赖环境。尤其是那些使用同一模块不同版本的情况。&lt;/li&gt;
+&lt;li&gt; 保证环境的一致性。解决由于安装时间不同，造成的包版本不一致的情况。&lt;/li&gt;
+&lt;li&gt; 支持多种安装源：源代码安装，CentOS binary 安装等。可以替代掉 devstack。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; 其实这些问题只要是由 Docker 来解决的。这也是 Kolla 使用 Docker 的原因。&lt;/p&gt;
+&lt;h1 id="_3"&gt; 架构 &lt;/h1&gt;
+&lt;p&gt;kolla 代码在 &lt;a href="https://github.com/openstack/kolla"&gt;https://github.com/openstack/kolla&lt;/a&gt;。现在 Kolla 主要分成两个部分。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Docker Images Build &lt;/li&gt;
+&lt;li&gt;Ansible 部署 ( 这部分将来会迁移到 kolla-ansible 项目 )&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="docker-image-build"&gt;Docker Image Build&lt;/h2&gt;
+&lt;p&gt; 主要使用 Jinja2 模板生成 Dockerfile 文件。如果是源代码安装，还会把代码下载好。之后会通过 Docker-py 驱动 Docker 进行镜像构建。构建完成，还可以根据配置将镜像推送的指定的 Registry 服务器。&lt;/p&gt;
+&lt;p&gt; 现在支持的不同的 Linux 发行版本 (Redhat 系和 Debian 系 ) 和不同的 OpenStack 安装包 ( 源代码和二进制包 )&lt;/p&gt;
+&lt;p&gt; 下图是现在所有镜像的依赖关系。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Kolla Image Dependency Tree" class="img-responsive" src="images/kolla/image-dependency-201512.png"/&gt;&lt;/p&gt;
+&lt;h2 id="ansible"&gt;Ansible 部署 &lt;/h2&gt;
+&lt;p&gt; 提供一个完整的 Ansible Playbook，来部署 Docker 的镜像。并提供 all-in-one 和
+multihost 的环境 &lt;/p&gt;
+&lt;h1 id="_4"&gt; 开发人员情况 &lt;/h1&gt;
+&lt;p&gt; 以下是 Kolla 项目截至到 2015-12-31 日的 review, commit 情况 &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Kolla Review" class="img-responsive" src="images/kolla/kolla_review_stackalytics_201512.png"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Kolla Commit 201512" class="img-responsive" src="images/kolla/kolla_commit_stackalytics_201512.png"/&gt;&lt;/p&gt;
+&lt;p&gt; 可以看出，主流的几大 OpenStack 厂商均贡献的大部分的代码。包括 Mirantis, RedHat, Oracle, Intel, 99Cloud, Cisco, Rakespace。&lt;/p&gt;
+&lt;h1 id="_5"&gt; 近况 &lt;/h1&gt;
+&lt;h2 id="201512"&gt;201512&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt; 废弃使用 Ansible 自带的 Docker module。使用自己实现的 docker 模块 &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;, 并已经完成了所有 ansible roles 的改造。主要原因是：&lt;ol&gt;
+&lt;li&gt; 官方 Docker module 有 bug&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;, 在 docker 1.8.3 及以上的版本工作不正常 , 而且进展缓慢。而 Kolla 使用的 Docker 版本只能锁定在 1.8.2，不能进行升级。&lt;/li&gt;
+&lt;li&gt;Ansible 使用的是 GPL，而 OpenStack 项目使用的 Apache License。不能直接修改 Ansible 的代码放到 Kolla 里使用。&lt;/li&gt;
+&lt;li&gt; 不想受限制于官方功能开发。有些想用的功能 ( 比方说新加进去的 &lt;code&gt;common_option&lt;/code&gt;, 官方是不会增加的 )。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt; 使用 oslo.config 模块替代掉了原来的 argparser 代码 &lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;。并加上了使用 &lt;code&gt;oslo-config-generator&lt;/code&gt; 的功能自动生成配置文件。&lt;/li&gt;
+&lt;li&gt; 完善 Ubuntu Binary Container 的安装 &lt;sup id="fnref:6"&gt;&lt;a class="footnote-ref" href="#fn:6" rel="footnote"&gt;6&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref:7"&gt;&lt;a class="footnote-ref" href="#fn:7" rel="footnote"&gt;7&lt;/a&gt;&lt;/sup&gt;&lt;ul&gt;
+&lt;li&gt; 由于 Ubuntu 并没有类似 RDO 的 relorean 源。倒是有一个 Mitaka Staging&lt;sup id="fnref:5"&gt;&lt;a class="footnote-ref" href="#fn:5" rel="footnote"&gt;5&lt;/a&gt;&lt;/sup&gt; 源，但是好久没有更新报。所以社区之前一直没有加上这部分功能。现在虽然加上了，但是也是基于 Liberty 版本的。并不是 Master 上的代码。不过。&lt;/li&gt;
+&lt;li&gt; 另一方面，Ubuntu 方面也正在积极的解决这个问题 &lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4" rel="footnote"&gt;4&lt;/a&gt;&lt;/sup&gt;。相信不久就会有 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt; 升级的 playbook 基本完成来 &lt;sup id="fnref:8"&gt;&lt;a class="footnote-ref" href="#fn:8" rel="footnote"&gt;8&lt;/a&gt;&lt;/sup&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="_6"&gt; 使用到的技术 &lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Docker/LXC&lt;/li&gt;
+&lt;li&gt;Ansible&lt;/li&gt;
+&lt;li&gt;Python &lt;ul&gt;
+&lt;li&gt;docker-py&lt;/li&gt;
+&lt;li&gt;Jinja2&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="_7"&gt; 近期规划 &lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt; 拆分 ansible 部分到新的项目 kolla-ansible。kolla 项目只用来做 docker images build. 部署工作由 kolla-ansible, kolla-mesos&lt;sup id="fnref:9"&gt;&lt;a class="footnote-ref" href="#fn:9" rel="footnote"&gt;9&lt;/a&gt;&lt;/sup&gt; 等工具来实现。&lt;/li&gt;
+&lt;li&gt; 如何进行平滑的 OpenStack 升级 &lt;/li&gt;
+&lt;li&gt;ELK 的集成 &lt;/li&gt;
+&lt;li&gt;Swift 自动化 &lt;/li&gt;
+&lt;li&gt;Ceilometer Container&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://wiki.openstack.org/wiki/Kolla"&gt;Kolla Wiki Page&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="footnote"&gt;
+&lt;hr/&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/248812/"&gt;Add docker module in Kolla&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;&lt;a href="https://github.com/ansible/ansible-modules-core/issues/2257"&gt;Docker 1.8.3 is broken under certain conditions&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:3"&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/260389/"&gt;use oslo.config instead of raw argparse.ArgumentParser&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:4"&gt;
+&lt;p&gt;&lt;a href="http://lists.openstack.org/pipermail/openstack-dev/2015-December/083089.html"&gt;Mail List: Adding Ubuntu Liberty to Kolla-Mitaka&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:5"&gt;
+&lt;p&gt;&lt;a href="https://launchpad.net/~ubuntu-cloud-archive/+archive/ubuntu/mitaka-staging"&gt;Staging PPA for mitaka&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:6"&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/261957/"&gt;Gerrit: Base and openstack-base ubuntu binary containers&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 6 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:7"&gt;
+&lt;p&gt;&lt;a href="https://blueprints.launchpad.net/kolla/+spec/binary-ubuntu"&gt;BP:Ubuntu binary containers&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:7" rev="footnote" title="Jump back to footnote 7 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:8"&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/257568/"&gt;Gerrit: Playbook for keystone upgradel&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:8" rev="footnote" title="Jump back to footnote 8 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:9"&gt;
+&lt;p&gt;&lt;a href="https://github.com/openstack/kolla-mesos"&gt;kolla-mesos&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:9" rev="footnote" title="Jump back to footnote 9 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</summary><category term="Kolla"></category><category term="OpenStack"></category></entry><entry><title>Get all the repo from OpenStack</title><link href="http://xcodest.me/get-all-repos-from-openstack.html" rel="alternate"></link><updated>2016-01-06T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-01-06:get-all-repos-from-openstack.html</id><summary type="html">&lt;p&gt;OpenStack 的源因为你我都知道的原因，一直不稳定，导致 devstack 时经常失败。特定写了个脚本，可以拿到所有的仓库地址，方便做本地的 mirror。&lt;/p&gt;
+&lt;p&gt; 脚本在 gist&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; 上。&lt;/p&gt;
+&lt;p&gt; 使用方法：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;pip install PyGithub
 python openstack_repo.py -u &amp;lt;github_username&amp;gt; -p &amp;lt;github_password&amp;gt; \
     -o repos.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;跑一次才发现，OpenStack 组下已经有了600多个项目。好多啊。&lt;/p&gt;
+&lt;p&gt; 跑一次才发现，OpenStack 组下已经有了 600 多个项目。好多啊。&lt;/p&gt;
 &lt;div class="gist"&gt;
     &lt;script src='https://gist.github.com/b6c36b9f74b743eb4c82.js?file=openstack_repos.py'&gt;&lt;/script&gt;
     &lt;noscript&gt;
@@ -95,8 +196,8 @@ if __name__ == "__main__":
 &lt;p&gt;https://gist.github.com/jeffrey4l/b6c36b9f74b743eb4c82&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;</summary><category term="OpenStach Python"></category></entry><entry><title>Glance Create Image from Existent Image in Ceph</title><link href="http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html" rel="alternate"></link><updated>2015-06-04T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-06-04:glance-create-image-from-existent-image-in-ceph.html</id><summary type="html">&lt;p&gt;当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。&lt;/p&gt;
-&lt;p&gt;可以先用 rbd 上传镜像，转换格式(也会比较慢，还不如直接上传 RAW 格式的镜像)。然后再做好对应的 snap , 并加以保护。是后一步的location必须按格式写(见[0])，这样才会使用rbd的 COW clone 功能。&lt;/p&gt;
+&lt;/div&gt;</summary><category term="OpenStach Python"></category></entry><entry><title>Glance Create Image from Existent Image in Ceph</title><link href="http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html" rel="alternate"></link><updated>2015-06-04T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-06-04:glance-create-image-from-existent-image-in-ceph.html</id><summary type="html">&lt;p&gt; 当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。&lt;/p&gt;
+&lt;p&gt; 可以先用 rbd 上传镜像，转换格式 ( 也会比较慢，还不如直接上传 RAW 格式的镜像 )。然后再做好对应的 snap , 并加以保护。是后一步的 location 必须按格式写 ( 见 [0])，这样才会使用 rbd 的 COW clone 功能。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# image format 2 support layering&lt;/span&gt;
 rbd --image-format &lt;span class="m"&gt;2&lt;/span&gt; import /tmp/ubuntu14.04.2.dsk &lt;span class="nv"&gt;$uuid&lt;/span&gt;
 
@@ -117,9 +218,9 @@ glance image-create --id &lt;span class="nv"&gt;$uuid&lt;/span&gt; --name ubuntu
 &lt;li&gt;[0] &lt;a href="https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179"&gt;https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;[1] &lt;a href="http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf"&gt;http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;[2] &lt;a href="http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/"&gt;http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</summary></entry><entry><title>Oz Templates</title><link href="http://xcodest.me/oz-templates.html" rel="alternate"></link><updated>2015-05-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-11:oz-templates.html</id><summary type="html">&lt;p&gt;最近利用&lt;a href="https://github.com/clalancette/oz"&gt;OZ&lt;/a&gt;做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下&lt;/p&gt;
-&lt;p&gt;项目地址: &lt;a href="https://github.com/jeffrey4l/oz-templates"&gt;https://github.com/jeffrey4l/oz-templates&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;以下是README里的内容。&lt;/p&gt;
+&lt;/ul&gt;</summary></entry><entry><title>Oz Templates</title><link href="http://xcodest.me/oz-templates.html" rel="alternate"></link><updated>2015-05-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-11:oz-templates.html</id><summary type="html">&lt;p&gt; 最近利用 &lt;a href="https://github.com/clalancette/oz"&gt;OZ&lt;/a&gt; 做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下 &lt;/p&gt;
+&lt;p&gt; 项目地址 : &lt;a href="https://github.com/jeffrey4l/oz-templates"&gt;https://github.com/jeffrey4l/oz-templates&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt; 以下是 README 里的内容。&lt;/p&gt;
 &lt;h2 id="usage"&gt;Usage&lt;/h2&gt;
 &lt;p&gt;The isos are located in &lt;code&gt;/data/isos/&lt;/code&gt;. The isos' name are conversionally.
 Including&lt;/p&gt;
@@ -142,31 +243,31 @@ make all
 &lt;li&gt;without lvm, which will helpful for partion auto extend.&lt;/li&gt;
 &lt;li&gt;Default image size is 40GB&lt;/li&gt;
 &lt;li&gt;Installed cloud-init with some basic configuration.&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="OpenStack"></category></entry><entry><title>Nova Security Group相关配置</title><link href="http://xcodest.me/nova-security-groupxiang-guan-pei-zhi.html" rel="alternate"></link><updated>2015-03-18T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-18:nova-security-groupxiang-guan-pei-zhi.html</id><summary type="html">&lt;h1 id="_1"&gt;相关配置&lt;/h1&gt;
+&lt;/ul&gt;</summary><category term="OpenStack"></category></entry><entry><title>Nova Security Group相关配置</title><link href="http://xcodest.me/nova-security-groupxiang-guan-pei-zhi.html" rel="alternate"></link><updated>2015-03-18T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-18:nova-security-groupxiang-guan-pei-zhi.html</id><summary type="html">&lt;h1 id="_1"&gt; 相关配置 &lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;network_api_class - 设置 network 模块所用的api&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;nova.network.api.API&lt;/code&gt; - 通过rpc与nova-network交互&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;nova.network.neutronv2.API&lt;/code&gt; - 通过http与neutron-server交互&lt;/li&gt;
+&lt;li&gt;network_api_class - 设置 network 模块所用的 api&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nova.network.api.API&lt;/code&gt; - 通过 rpc 与 nova-network 交互 &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nova.network.neutronv2.API&lt;/code&gt; - 通过 http 与 neutron-server 交互 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;security_group_api - 设置 security group 模块所用的api类&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;nova&lt;/code&gt; (&lt;code&gt;nova.compute.api.SecurityGroupAPI&lt;/code&gt;) - 通过rcp与nova-compute交互&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;neutron&lt;/code&gt; ( &lt;code&gt;nova.network.security_group.neutron_driver.SecurityGroupAPI&lt;/code&gt; ) - 通过http与neutron-server交互&lt;/li&gt;
+&lt;li&gt;security_group_api - 设置 security group 模块所用的 api 类 &lt;ul&gt;
+&lt;li&gt;&lt;code&gt;nova&lt;/code&gt; (&lt;code&gt;nova.compute.api.SecurityGroupAPI&lt;/code&gt;) - 通过 rcp 与 nova-compute 交互 &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;neutron&lt;/code&gt; ( &lt;code&gt;nova.network.security_group.neutron_driver.SecurityGroupAPI&lt;/code&gt; ) - 通过 http 与 neutron-server 交互 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;linuxnet_interface_driver - 在机器与 ethernet interface plug&amp;amp;unplug时调用 。&lt;ul&gt;
+&lt;li&gt;linuxnet_interface_driver - 在机器与 ethernet interface plug&amp;amp;unplug 时调用 。&lt;ul&gt;
 &lt;li&gt;&lt;code&gt;nova.network.linux_net.LinuxBridgeInterfaceDriver&lt;/code&gt; - used in nova-network&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;nova.network.linux_net.linuxOVSInterfaceDriver&lt;/code&gt; - use in neutron + ml2 + ovs&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver&lt;/code&gt; - use in neutron + ml2 + linuxbridge&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;firewall_driver - 虚拟化层所用的 firewall。在nova-network时代，security group由iptables和ebtables实现。在neutron时代，这个已经不需要了。但是neutron里现在还有arp-spoofing的bug, 参见[2]&lt;ul&gt;
+&lt;li&gt;firewall_driver - 虚拟化层所用的 firewall。在 nova-network 时代，security group 由 iptables 和 ebtables 实现。在 neutron 时代，这个已经不需要了。但是 neutron 里现在还有 arp-spoofing 的 bug, 参见 [2]&lt;ul&gt;
 &lt;li&gt;&lt;code&gt;nova.virt.firewall.IptablesFirewallDrive&lt;/code&gt; - &lt;/li&gt;
 &lt;li&gt;&lt;code&gt;nova.virt.firewall.NoopFirewallDriver&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="_2"&gt;使用组合：&lt;/h1&gt;
+&lt;h1 id="_2"&gt; 使用组合：&lt;/h1&gt;
 &lt;p&gt;nova-network + libvirt&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;nova_api_class=nova.network.api.API
 security_group_ap=nova
@@ -259,7 +360,7 @@ service cinder-api restart
 &lt;ul&gt;
 &lt;li&gt;http://docs.openstack.org/havana/install-guide/install/apt/content/cinder-controller.html&lt;/li&gt;
 &lt;li&gt;https://wiki.openstack.org/wiki/CinderAPIv2&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="Cinder"></category><category term="OpenStack"></category></entry><entry><title>Nova flavor init</title><link href="http://xcodest.me/nova-flavor-init.html" rel="alternate"></link><updated>2014-09-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-09-11:nova-flavor-init.html</id><summary type="html">&lt;p&gt;ustack的flavor做的还是挺全的，所以用了一个脚本来创建和其一样的flavor类型。&lt;/p&gt;
+&lt;/ul&gt;</summary><category term="Cinder"></category><category term="OpenStack"></category></entry><entry><title>Nova flavor init</title><link href="http://xcodest.me/nova-flavor-init.html" rel="alternate"></link><updated>2014-09-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-09-11:nova-flavor-init.html</id><summary type="html">&lt;p&gt;ustack 的 flavor 做的还是挺全的，所以用了一个脚本来创建和其一样的 flavor 类型。&lt;/p&gt;
 &lt;div class="gist"&gt;
     &lt;script src='https://gist.github.com/ecee9fcb00412cd67fe7.js?file=nova-flavor-init.sh'&gt;&lt;/script&gt;
     &lt;noscript&gt;
@@ -289,10 +390,10 @@ nova-manage flavor create --name compute-8 --cpu 8 --memory 8192 --root_gb $DEFA
 nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $DEFAULT_ROOT_GB --is_public True
 &lt;/code&gt;&lt;/pre&gt;
     &lt;/noscript&gt;
-&lt;/div&gt;</summary><category term="OpenStack"></category><category term="Nova"></category></entry><entry><title>Glance Image Cache</title><link href="http://xcodest.me/glance-image-cache.html" rel="alternate"></link><updated>2014-07-17T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-07-17:glance-image-cache.html</id><summary type="html">&lt;p&gt;Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定
+&lt;/div&gt;</summary><category term="OpenStack"></category><category term="Nova"></category></entry><entry><title>Glance Image Cache</title><link href="http://xcodest.me/glance-image-cache.html" rel="alternate"></link><updated>2014-07-17T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-07-17:glance-image-cache.html</id><summary type="html">&lt;p&gt;Glance 增加了一层 cache 的 Middleware，用来缓存从 file store 后端取过来的镜像。一定
 程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。&lt;/p&gt;
-&lt;p&gt;因为是通过middleware来控制的，所以只要修改一下paster的配置就行。更简单的是指定
-glance-api加载的pipeline的名字。&lt;/p&gt;
+&lt;p&gt; 因为是通过 middleware 来控制的，所以只要修改一下 paster 的配置就行。更简单的是指定
+glance-api 加载的 pipeline 的名字。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[deploy]&lt;/span&gt;
 &lt;span class="c1"&gt;# possible value: none, cachine, keystone, keystone+caching, &lt;/span&gt;
 &lt;span class="c1"&gt;# keystone+cachemanagement&lt;/span&gt;
@@ -301,7 +402,7 @@ glance-api加载的pipeline的名字。&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;具体看下&lt;code&gt;glance-api-paster.conf&lt;/code&gt;文件就能明白。&lt;/p&gt;
+&lt;p&gt; 具体看下 &lt;code&gt;glance-api-paster.conf&lt;/code&gt; 文件就能明白。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[pipeline:glance-api]&lt;/span&gt;
 &lt;span class="na"&gt;pipeline&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;versionnegotiation unauthenticated-context rootapp&lt;/span&gt;
 
@@ -327,17 +428,17 @@ glance-api加载的pipeline的名字。&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;不同的pipeline用到了不同的middleware, 启作用的是cache 和 cachemanagement这两个
+&lt;p&gt; 不同的 pipeline 用到了不同的 middleware, 启作用的是 cache 和 cachemanagement 这两个
 。&lt;/p&gt;
 &lt;h2 id="ref"&gt;REF&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://docs.openstack.org/developer/glance/cache.html"&gt;The Glance Image Cache&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</summary><category term="Glance"></category></entry><entry><title>Dhcp lease errors in vlan mode</title><link href="http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html" rel="alternate"></link><updated>2013-08-27T08:50:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2013-08-27:dhcp-lease-errors-in-vlan-mode.html</id><summary type="html">&lt;p&gt;在使用&lt;code&gt;keepalived&lt;/code&gt;的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在&lt;code&gt;/etc/sysconfig/network-scripts/ifcfg-eth0&lt;/code&gt;中加上了如下语句：&lt;/p&gt;
+&lt;/ol&gt;</summary><category term="Glance"></category></entry><entry><title>Dhcp lease errors in vlan mode</title><link href="http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html" rel="alternate"></link><updated>2013-08-27T08:50:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2013-08-27:dhcp-lease-errors-in-vlan-mode.html</id><summary type="html">&lt;p&gt; 在使用 &lt;code&gt;keepalived&lt;/code&gt; 的过程中，出现了 dhcp 失败，而导致 keepalived 工作不正常的问题。而且之前也出现过 dhcp 偶尔失败，导致虚拟机不能得到 IP, 从而不能访问的情况。虽然在 &lt;code&gt;/etc/sysconfig/network-scripts/ifcfg-eth0&lt;/code&gt; 中加上了如下语句：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;PERSISTENT_DHCLIENT=1
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个&lt;a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results"&gt;邮件列表&lt;/a&gt;中找到原因，如下：&lt;/p&gt;
+&lt;p&gt; 使得 dhcp 单次失败后，继续重试。但是仔细查看 dhclient 的日志后，发现它有大量的 dhcp request 失败 / 超时。在一个 &lt;a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results"&gt; 邮件列表 &lt;/a&gt; 中找到原因，如下：&lt;/p&gt;
 &lt;p&gt;To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1&lt;/p&gt;
 &lt;p&gt;THE LONG VERSION&lt;/p&gt;
 &lt;p&gt;There is an issue with the way nova uses dnsmasq in VLAN mode. It starts up a
@@ -372,7 +473,7 @@ fixed_ip_disassociate_timeout=1209600
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;This is also documented &lt;a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues"&gt; Known issue with failed DHCP leases in VLAN configuration&lt;/a&gt;&lt;/p&gt;</summary><category term="DHCP"></category><category term="Network"></category><category term="VLAN"></category></entry><entry><title>Openstack Brief</title><link href="http://xcodest.me/openstack-brief.html" rel="alternate"></link><updated>2013-06-17T23:08:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2013-06-17:openstack-brief.html</id><summary type="html">&lt;p&gt;自从Openstack诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于Grizzly的版本来写的。&lt;/p&gt;
+&lt;p&gt;This is also documented &lt;a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues"&gt; Known issue with failed DHCP leases in VLAN configuration&lt;/a&gt;&lt;/p&gt;</summary><category term="DHCP"></category><category term="Network"></category><category term="VLAN"></category></entry><entry><title>Openstack Brief</title><link href="http://xcodest.me/openstack-brief.html" rel="alternate"></link><updated>2013-06-17T23:08:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2013-06-17:openstack-brief.html</id><summary type="html">&lt;p&gt; 自从 Openstack 诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack 下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于 Grizzly 的版本来写的。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Keystone&lt;/li&gt;
 &lt;li&gt;Nova&lt;/li&gt;
@@ -384,39 +485,39 @@ fixed_ip_disassociate_timeout=1209600
 &lt;li&gt;Baremetal&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h1 id="keystone"&gt;Keystone&lt;/h1&gt;
-&lt;p&gt;keystone是Openstack的认证和服务注册模块。其结构比较简单。其功能包括:&lt;/p&gt;
+&lt;p&gt;keystone 是 Openstack 的认证和服务注册模块。其结构比较简单。其功能包括 :&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;认证&lt;/strong&gt; 主要功能是管理用户和用户组的信息，后端可以绑定ldap, mysql等认证方式。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;服务注册模块&lt;/strong&gt; 主要用于管理Openstack相关服务的地址，所有的服务都要先注册到Keystone中，才可以使用。它可使用基于文件的模板，也可以使用数据库存储。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt; 认证 &lt;/strong&gt; 主要功能是管理用户和用户组的信息，后端可以绑定 ldap, mysql 等认证方式。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt; 服务注册模块 &lt;/strong&gt; 主要用于管理 Openstack 相关服务的地址，所有的服务都要先注册到 Keystone 中，才可以使用。它可使用基于文件的模板，也可以使用数据库存储。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Token&lt;/strong&gt; 管理。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;相对于其它子项目来说，keystone最近的变化并不是太大。将来一个比较大的变化就是基于domain的权限控制，届时Tenant里也可以细经出管理员和使用者的角色，并有详细的权限功能控制。&lt;/p&gt;
+&lt;p&gt; 相对于其它子项目来说，keystone 最近的变化并不是太大。将来一个比较大的变化就是基于 domain 的权限控制，届时 Tenant 里也可以细经出管理员和使用者的角色，并有详细的权限功能控制。&lt;/p&gt;
 &lt;h1 id="nova"&gt;Nova&lt;/h1&gt;
-&lt;p&gt;Nova是Openstack最早的子项目。现在其它项目如cinder, quantum(Openstack Network)都是来自于该项目。可以说这是Openstack中最复杂，最主要的部分。它负责&lt;/p&gt;
+&lt;p&gt;Nova 是 Openstack 最早的子项目。现在其它项目如 cinder, quantum(Openstack Network) 都是来自于该项目。可以说这是 Openstack 中最复杂，最主要的部分。它负责 &lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;用户接口(nova-api)。处理来自于用户的请求，并做出合理的响应。&lt;/li&gt;
-&lt;li&gt;计算调度(nova-scheduler)。用于在物理之前进行资源的调配。&lt;/li&gt;
-&lt;li&gt;虚拟化的管理(nova-compute)。管理虚拟机的适配接口。通过它可以管理真实的虚拟技术驱动的机器，如KVM, XEN, Hypervisor V等。&lt;/li&gt;
+&lt;li&gt; 用户接口 (nova-api)。处理来自于用户的请求，并做出合理的响应。&lt;/li&gt;
+&lt;li&gt; 计算调度 (nova-scheduler)。用于在物理之前进行资源的调配。&lt;/li&gt;
+&lt;li&gt; 虚拟化的管理 (nova-compute)。管理虚拟机的适配接口。通过它可以管理真实的虚拟技术驱动的机器，如 KVM, XEN, Hypervisor V 等。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;当然还有一些功能如nova-network, nova-volume已经从nova项目中迁移出来，成为独立的子项目。将来一段时间的变化，主要集中在nova-network的废弃，nova-conductor的更加完善，新的api(v3)的支持，对于祼机的支持。&lt;/p&gt;
+&lt;p&gt; 当然还有一些功能如 nova-network, nova-volume 已经从 nova 项目中迁移出来，成为独立的子项目。将来一段时间的变化，主要集中在 nova-network 的废弃，nova-conductor 的更加完善，新的 api(v3) 的支持，对于祼机的支持。&lt;/p&gt;
 &lt;h1 id="cinder"&gt;Cinder&lt;/h1&gt;
-&lt;p&gt;Cinder是由nova-volume分化而来，用于管理虚拟机的块存储(block storage), 类似AWS的EBS。其功能主要是创建，维护，删除块存储。后端可以使用LVM, glusterFs, Ceph, NFS等软件技术的存储，也可以使用NetApp, Huawei，IBM等商用解决方案。当然也可以自己编写自己存储的Driver来支持更多的存储类型。&lt;/p&gt;
+&lt;p&gt;Cinder 是由 nova-volume 分化而来，用于管理虚拟机的块存储 (block storage), 类似 AWS 的 EBS。其功能主要是创建，维护，删除块存储。后端可以使用 LVM, glusterFs, Ceph, NFS 等软件技术的存储，也可以使用 NetApp, Huawei，IBM 等商用解决方案。当然也可以自己编写自己存储的 Driver 来支持更多的存储类型。&lt;/p&gt;
 &lt;h1 id="glance"&gt;Glance&lt;/h1&gt;
-&lt;p&gt;Glance用于管理各种系统的镜像。他后端也可以配置各种存储方案。包括本地，swift, ceph等。&lt;/p&gt;
+&lt;p&gt;Glance 用于管理各种系统的镜像。他后端也可以配置各种存储方案。包括本地，swift, ceph 等。&lt;/p&gt;
 &lt;h1 id="openstack-network"&gt;Openstack Network.&lt;/h1&gt;
-&lt;p&gt;(Quantum名称因为商标问题停用）。&lt;/p&gt;
-&lt;p&gt;网络基本是Openstack最复杂的模块，涉及到的技术和协议相当多，也最容易出问题。也正因为此，很有必要将网络模块从越来越笨重的nova的拿出来。&lt;/p&gt;
-&lt;p&gt;Openstack Network提示了强大的网络服务（Network-as-a-service),用来实现L2, L3层的网络。在原有的nova-network的基础之上，增加了相当多的功能&lt;/p&gt;
+&lt;p&gt;(Quantum 名称因为商标问题停用）。&lt;/p&gt;
+&lt;p&gt; 网络基本是 Openstack 最复杂的模块，涉及到的技术和协议相当多，也最容易出问题。也正因为此，很有必要将网络模块从越来越笨重的 nova 的拿出来。&lt;/p&gt;
+&lt;p&gt;Openstack Network 提示了强大的网络服务（Network-as-a-service), 用来实现 L2, L3 层的网络。在原有的 nova-network 的基础之上，增加了相当多的功能 &lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;加上了xvlan, gre等网络技术，并可以编写自己的插件，来增加其功能&lt;/li&gt;
-&lt;li&gt;使用者可以创建更加丰富的网络模型，如私用路由器等&lt;/li&gt;
-&lt;li&gt;为Qos, 流量监控等提供支持。&lt;/li&gt;
+&lt;li&gt; 加上了 xvlan, gre 等网络技术，并可以编写自己的插件，来增加其功能 &lt;/li&gt;
+&lt;li&gt; 使用者可以创建更加丰富的网络模型，如私用路由器等 &lt;/li&gt;
+&lt;li&gt; 为 Qos, 流量监控等提供支持。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;现在Quantum还有一些问题，如HA方案不成熟，不太适用于Production。不过根据社区的计划，下一个版本(H)将会把nova-network废弃掉。所以Quantum才是真正的趋势。现在很有必要将其吃透。&lt;/p&gt;
+&lt;p&gt; 现在 Quantum 还有一些问题，如 HA 方案不成熟，不太适用于 Production。不过根据社区的计划，下一个版本 (H) 将会把 nova-network 废弃掉。所以 Quantum 才是真正的趋势。现在很有必要将其吃透。&lt;/p&gt;
 &lt;h1 id="lbaas"&gt;LBaaS&lt;/h1&gt;
-&lt;p&gt;Load-Balancer-as-a-service.在Quantum基础上实现的负载均衡。后端既可以使用haproxy,也可以使用cisco, f5等硬件。（不过我还没有功能搭建过这个服务。&lt;/p&gt;
+&lt;p&gt;Load-Balancer-as-a-service. 在 Quantum 基础上实现的负载均衡。后端既可以使用 haproxy, 也可以使用 cisco, f5 等硬件。（不过我还没有功能搭建过这个服务。&lt;/p&gt;
 &lt;h1 id="ceilometer"&gt;Ceilometer&lt;/h1&gt;
-&lt;p&gt;Openstack的计量，计费模块。可以统计Cpu, IO, Network使用的详细情况。对公有云和私有云都有极大的好处。现在也有一个Horizon的插件，可以直接在dashboard里显示使用情况（将来，该插件会合并到horizon中）&lt;/p&gt;
+&lt;p&gt;Openstack 的计量，计费模块。可以统计 Cpu, IO, Network 使用的详细情况。对公有云和私有云都有极大的好处。现在也有一个 Horizon 的插件，可以直接在 dashboard 里显示使用情况（将来，该插件会合并到 horizon 中）&lt;/p&gt;
 &lt;h1 id="baremetal"&gt;Baremetal&lt;/h1&gt;
-&lt;p&gt;增加Openstack对裸机的管理功能。可以实现直接对裸机进行系统安装，配置。模糊了虚拟化和物理机之间的界线。现在所有模块包括nova, glance, cinder都在努力增强这方面的功能。
-这个模块，我更期望是可以建立Nested-Openstack。同一个Openstack环境，既管理物理机，又自动在物理机上安装Openstack的模块来成为Openstack的一部分。&lt;/p&gt;</summary></entry></feed>
+&lt;p&gt; 增加 Openstack 对裸机的管理功能。可以实现直接对裸机进行系统安装，配置。模糊了虚拟化和物理机之间的界线。现在所有模块包括 nova, glance, cinder 都在努力增强这方面的功能。
+这个模块，我更期望是可以建立 Nested-Openstack。同一个 Openstack 环境，既管理物理机，又自动在物理机上安装 Openstack 的模块来成为 Openstack 的一部分。&lt;/p&gt;</summary></entry></feed>

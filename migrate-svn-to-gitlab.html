@@ -102,27 +102,27 @@
   </header>
   <div class="entry-content">
     <ul>
-<li>在GitLab上创建相对应的项目/项目组</li>
-<li>准备''users.txt''文件，来修正提交用户名。并手动修改users.txt的正确性 </li>
+<li> 在 GitLab 上创建相对应的项目 / 项目组 </li>
+<li> 准备 ''users.txt'' 文件，来修正提交用户名。并手动修改 users.txt 的正确性 </li>
 </ul>
 <div class="highlight"><pre>svn log &lt;svn-url&gt; --xml | grep -P &quot;^&lt;author&quot; | sort -u | perl -pe &#39;s/&lt;author&gt;(.*?)&lt;\/author&gt;/$1 = /&#39; &gt; users.txt
 </pre></div>
 
 
-<p>users.txt的文件格式如下</p>
+<p>users.txt 的文件格式如下 </p>
 <div class="highlight"><pre>Lei Zhang = Lei Zhang &lt;zhang.lei.fly#gmail.com&gt;
 </pre></div>
 
 
 <ul>
-<li>把SVN项目使用git-svn进行克隆 </li>
+<li> 把 SVN 项目使用 git-svn 进行克隆 </li>
 </ul>
 <div class="highlight"><pre>git svn clone --no-metadata --authors-file users.txt -s &lt;svn-url&gt; &lt;project&gt;
 </pre></div>
 
 
 <ul>
-<li>处理SVN的分支和标签 </li>
+<li> 处理 SVN 的分支和标签 </li>
 </ul>
 <div class="highlight"><pre>cd <span class="nt">&lt;project&gt;</span>
 git for-each-ref refs/remotes/tags | cut -d / -f 4- | grep -v @ | while read tagname; do git tag &quot;$tagname&quot; &quot;tags/$tagname&quot;; git branch -r -d &quot;tags/$tagname&quot;; done
@@ -131,7 +131,7 @@ git for-each-ref refs/remotes | cut -d / -f 3- | grep -v @ | while read branchna
 
 
 <ul>
-<li>Push到Gitlab上的仓库</li>
+<li>Push 到 Gitlab 上的仓库 </li>
 </ul>
 <div class="highlight"><pre>git remote add origin &lt;git-repo-url&gt;
 git push origin --all
@@ -139,7 +139,7 @@ git push origin --tags
 </pre></div>
 
 
-<h2 id="_1">参考</h2>
+<h2 id="_1"> 参考 </h2>
 <p><a href="http://git-scm.com/book/en/Git-and-Other-Systems-Migrating-to-Git">Git and Other Systems - Migrating to Git</a></p>
   </div><!-- /.entry-content -->
   <div>

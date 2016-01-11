@@ -101,13 +101,13 @@
     <span class="post-date"> 2014-07-16 </span>
   </header>
   <div class="entry-content">
-    <p>Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。</p>
-<p>可以通过两种方法来配置:</p>
+    <p>Salt mine 可以在一定的控制内让 minion 拿到其它 minion 的信息。实现原理是：通过配置，让 minion 定期 ( 最短为 1 分钟 ) 的向 master 发送数据，而其它 minion 可以从 master 拿到这些数据。一定程度上实现的 minion 之间的通迅。在搭建 cluster 时，十分有用。</p>
+<p> 可以通过两种方法来配置 :</p>
 <ol>
-<li>minion的配置文件</li>
-<li>master的pillar</li>
+<li>minion 的配置文件 </li>
+<li>master 的 pillar</li>
 </ol>
-<p>使用minion配置时，要直接修改minion的配置文件，在<code>/etc/salt/minion.d/mine.conf</code> 加入如下内容</p>
+<p> 使用 minion 配置时，要直接修改 minion 的配置文件，在 <code>/etc/salt/minion.d/mine.conf</code> 加入如下内容 </p>
 <div class="highlight"><pre><span class="l-Scalar-Plain">mine_functions</span><span class="p-Indicator">:</span>
   <span class="l-Scalar-Plain">test.ping</span><span class="p-Indicator">:</span> <span class="p-Indicator">[]</span>
   <span class="l-Scalar-Plain">network.ip_addrs</span><span class="p-Indicator">:</span>
@@ -115,7 +115,7 @@
 </pre></div>
 
 
-<p>使用pillar时配置时，只需要修改master的pillar配置即可。如在<code>/srv/pillar/mine.conf</code> 中加入如下内容</p>
+<p> 使用 pillar 时配置时，只需要修改 master 的 pillar 配置即可。如在 <code>/srv/pillar/mine.conf</code> 中加入如下内容 </p>
 <div class="highlight"><pre><span class="l-Scalar-Plain">mine_functions</span><span class="p-Indicator">:</span>
   <span class="l-Scalar-Plain">test.ping</span><span class="p-Indicator">:</span> <span class="p-Indicator">[]</span>
   <span class="l-Scalar-Plain">network.ip_addrs</span><span class="p-Indicator">:</span>
@@ -123,14 +123,14 @@
 </pre></div>
 
 
-<p>然后把<code>mine.conf</code>加入到<code>/srv/pillar/top.sls</code>, 这时可以指定哪些minion来配置mine_functions。相比较而言，这种方式更加灵活一些。</p>
+<p> 然后把 <code>mine.conf</code> 加入到 <code>/srv/pillar/top.sls</code>, 这时可以指定哪些 minion 来配置 mine_functions。相比较而言，这种方式更加灵活一些。</p>
 <div class="highlight"><pre><span class="l-Scalar-Plain">base</span><span class="p-Indicator">:</span>
   <span class="s">&#39;controller*&#39;</span><span class="p-Indicator">:</span>
     <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">mine</span>
 </pre></div>
 
 
-<p>之后就可以使用如下语句拿到mine上报上来的结果的(其实这个结果是保存在master的<code>/var/cache/salt/master/minions/*/mine.p</code>的文件下就可找到上报上来的内容。</p>
+<p> 之后就可以使用如下语句拿到 mine 上报上来的结果的 ( 其实这个结果是保存在 master 的 <code>/var/cache/salt/master/minions/*/mine.p</code> 的文件下就可找到上报上来的内容。</p>
 <div class="highlight"><pre><span class="nv">$ </span>salt <span class="s1">&#39;jeffrey-thinkpad&#39;</span> mine.get <span class="s1">&#39;*&#39;</span> network.ip_addrs
 jeffrey-thinkpad:
     ----------
@@ -141,7 +141,7 @@ jeffrey-thinkpad:
 </pre></div>
 
 
-<p>另外，可以在minion上来修改上报的时间间隔。方法是增加/修改<code>/etc/salt/minion.d/mine.conf</code>。</p>
+<p> 另外，可以在 minion 上来修改上报的时间间隔。方法是增加 / 修改 <code>/etc/salt/minion.d/mine.conf</code>。</p>
 <div class="highlight"><pre><span class="n">mine_interval</span><span class="o">:</span> <span class="mi">1</span>
 </pre></div>
 

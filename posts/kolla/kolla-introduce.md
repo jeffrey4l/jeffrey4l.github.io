@@ -44,11 +44,11 @@ multihost 的环境
 
 # 开发人员情况
 
-以下是 Kolla 项目截至到 2015-12-31 日的 review, commit 情况
+以下是 Kolla 项目截至到 2016-01-20 日的 review, commit 情况
 
-![Kolla Review](images/kolla/kolla_review_stackalytics_201512.png){.img-responsive}
+![Kolla Review 20160120](images/kolla/kolla_review_stackalytics_20160120.png){.img-responsive}
 
-![Kolla Commit 201512](images/kolla/kolla_commit_stackalytics_201512.png){.img-responsive}
+![Kolla Commit 20160120](images/kolla/kolla_commit_stackalytics_20160120.png){.img-responsive}
 
 可以看出，主流的几大 OpenStack 厂商均贡献的大部分的代码。包括 Mirantis, RedHat, Oracle, Intel, 99Cloud, Cisco, Rakespace。
 
@@ -62,8 +62,8 @@ multihost 的环境
     3. 不想受限制于官方功能开发。有些想用的功能(比方说新加进去的`common_option`, 官方是不会增加的)。
 * 使用 oslo.config 模块替代掉了原来的 argparser 代码[^3]。并加上了使用 `oslo-config-generator` 的功能自动生成配置文件。
 * 完善 Ubuntu Binary Container 的安装[^6][^7]
-    * 由于 Ubuntu 并没有类似 RDO 的 relorean 源。倒是有一个 Mitaka Staging[^5]源，但是好久没有更新报。所以社区之前一直没有加上这部分功能。现在虽然加上了，但是也是基于 Liberty 版本的。并不是 Master 上的代码。不过。
-    * 另一方面，Ubuntu 方面也正在积极的解决这个问题[^4]。相信不久就会有
+    * 由于 Ubuntu 并没有类似 RDO 的 relorean 源。倒是有一个 Mitaka Staging[^5]源，但是好久没有更新。所以社区之前一直没有加上这部分功能。现在虽然加上了，但是也是基于 Liberty 版本的。并不是 Master 上的代码。
+    * 另一方面，Ubuntu 方面也正在积极的解决这个问题[^4]。相信不久就会有。
 * 升级的 playbook 基本完成来[^8]。
 
 # 使用到的技术

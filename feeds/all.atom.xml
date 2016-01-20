@@ -26,9 +26,9 @@
 &lt;p&gt; 提供一个完整的 Ansible Playbook，来部署 Docker 的镜像。并提供 all-in-one 和
 multihost 的环境 &lt;/p&gt;
 &lt;h1 id="_4"&gt; 开发人员情况 &lt;/h1&gt;
-&lt;p&gt; 以下是 Kolla 项目截至到 2015-12-31 日的 review, commit 情况 &lt;/p&gt;
-&lt;p&gt;&lt;img alt="Kolla Review" class="img-responsive" src="images/kolla/kolla_review_stackalytics_201512.png"/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Kolla Commit 201512" class="img-responsive" src="images/kolla/kolla_commit_stackalytics_201512.png"/&gt;&lt;/p&gt;
+&lt;p&gt; 以下是 Kolla 项目截至到 2016-01-20 日的 review, commit 情况 &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Kolla Review 20160120" class="img-responsive" src="images/kolla/kolla_review_stackalytics_20160120.png"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Kolla Commit 20160120" class="img-responsive" src="images/kolla/kolla_commit_stackalytics_20160120.png"/&gt;&lt;/p&gt;
 &lt;p&gt; 可以看出，主流的几大 OpenStack 厂商均贡献的大部分的代码。包括 Mirantis, RedHat, Oracle, Intel, 99Cloud, Cisco, Rakespace。&lt;/p&gt;
 &lt;h1 id="_5"&gt; 近况 &lt;/h1&gt;
 &lt;h2 id="201512"&gt;201512&lt;/h2&gt;
@@ -41,8 +41,8 @@ multihost 的环境 &lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt; 使用 oslo.config 模块替代掉了原来的 argparser 代码 &lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;。并加上了使用 &lt;code&gt;oslo-config-generator&lt;/code&gt; 的功能自动生成配置文件。&lt;/li&gt;
 &lt;li&gt; 完善 Ubuntu Binary Container 的安装 &lt;sup id="fnref:6"&gt;&lt;a class="footnote-ref" href="#fn:6" rel="footnote"&gt;6&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref:7"&gt;&lt;a class="footnote-ref" href="#fn:7" rel="footnote"&gt;7&lt;/a&gt;&lt;/sup&gt;&lt;ul&gt;
-&lt;li&gt; 由于 Ubuntu 并没有类似 RDO 的 relorean 源。倒是有一个 Mitaka Staging&lt;sup id="fnref:5"&gt;&lt;a class="footnote-ref" href="#fn:5" rel="footnote"&gt;5&lt;/a&gt;&lt;/sup&gt; 源，但是好久没有更新报。所以社区之前一直没有加上这部分功能。现在虽然加上了，但是也是基于 Liberty 版本的。并不是 Master 上的代码。不过。&lt;/li&gt;
-&lt;li&gt; 另一方面，Ubuntu 方面也正在积极的解决这个问题 &lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4" rel="footnote"&gt;4&lt;/a&gt;&lt;/sup&gt;。相信不久就会有 &lt;/li&gt;
+&lt;li&gt; 由于 Ubuntu 并没有类似 RDO 的 relorean 源。倒是有一个 Mitaka Staging&lt;sup id="fnref:5"&gt;&lt;a class="footnote-ref" href="#fn:5" rel="footnote"&gt;5&lt;/a&gt;&lt;/sup&gt; 源，但是好久没有更新。所以社区之前一直没有加上这部分功能。现在虽然加上了，但是也是基于 Liberty 版本的。并不是 Master 上的代码。&lt;/li&gt;
+&lt;li&gt; 另一方面，Ubuntu 方面也正在积极的解决这个问题 &lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4" rel="footnote"&gt;4&lt;/a&gt;&lt;/sup&gt;。相信不久就会有。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt; 升级的 playbook 基本完成来 &lt;sup id="fnref:8"&gt;&lt;a class="footnote-ref" href="#fn:8" rel="footnote"&gt;8&lt;/a&gt;&lt;/sup&gt;。&lt;/li&gt;

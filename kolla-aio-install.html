@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+          <title> OpenStack Kolla AIO Install -   - Xcodest</title>
+        <meta charset="utf-8" />
+
+
+
+    <meta name="tags" contents="Kolla" />
+    <meta name="tags" contents="OpenStack" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
+        <script src="http://xcodest.me/theme/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://xcodest.me/theme/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://xcodest.me/theme/js/xcodest.js" type="text/javascript" charset="utf-8"></script>
+        <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
+</head>
+
+<body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+          <div class="navbar navbar-default">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target="#sidebar">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://xcodest.me">
+                  Xcodest
+                </a>
+              </div>
+              <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                  <li><a href="/archives.html">Archives</a></li>
+                  <li><a href="/tags.html">Tags</a></li>
+                  <li>
+                    <a href="http://xcodest.me/pages/about.html">About</a>
+                  </li>
+                </ul>
+                <form class="navbar-form navbar-right" action="https://google.com/search" target="_blank">
+                  <div class="input-group">
+                    <input name="q" type="text" class="form-control" required placeholder="Search Xcodest.com..."/>
+                    <input type="hidden" name="sitesearch" value="xcodest.me"/>
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                      </button>
+                    </span>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
+          <div class="panel panel-default">
+            <div class="panel-heading">Categories</div>
+            <div class="list-group">
+              <a class="list-group-item" href="http://xcodest.me/category/life.html">Life</a>
+              <a class="list-group-item" href="http://xcodest.me/category/linux.html">Linux</a>
+              <a class="list-group-item" href="http://xcodest.me/category/openstack.html">OpenStack</a>
+              <a class="list-group-item" href="http://xcodest.me/category/programming.html">Programming</a>
+              <a class="list-group-item" href="http://xcodest.me/category/python.html">Python</a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Social</div>
+            <div class="list-group">
+ 
+              <a class="list-group-item" href="http://github.com/jeffrey4l" target="_blank">Github</a>
+ 
+              <a class="list-group-item" href="https://twitter.com/Jeffrey4l" target="_blank">Twitter</a>
+ 
+              <a class="list-group-item" href="http://weibo.com/jeffrey4l" target="_blank">微博</a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Blogroll</div>
+            <div class="list-group">
+              <a class="list-group-item" href="http://chenshake.com/" target="_blank">陈沙克日志</a>
+              <a class="list-group-item" href="http://coolshell.cn" target="_blank">酷壳 - CoolShell.Cn</a>
+              <a class="list-group-item" href="https://sebastien-han.fr/" target="_blank">SÉBASTIEN HAN</a>
+              <a class="list-group-item" href="http://blog.csdn.net/quqi99" target="_blank">技术并艺术着</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 col-xs-12">
+<div class="row">
+  <div class="col-md-12 col-xs-12">
+  <section id="content" class="body">
+  <header>
+    <h2 class="entry-title">OpenStack Kolla AIO Install</h2>
+    <span class="post-date"> 2016-01-31 </span>
+  </header>
+  <div class="entry-content">
+      <div class="toc">
+<ul>
+<li><a href="#_1">安装</a><ul>
+<li><a href="#_2">源</a></li>
+<li><a href="#kolla">安装 Kolla 所需依赖</a></li>
+<li><a href="#kolla_1">下载 Kolla 代码并安装依赖</a></li>
+</ul>
+</li>
+<li><a href="#build-docker-image">Build Docker Image</a></li>
+<li><a href="#deploy">Deploy</a></li>
+<li><a href="#_3">查看安装后的状态</a></li>
+</ul>
+</div>
+    
+<p>Kolla 依赖于以下几个主要组件 </p>
+<ul>
+<li>Ansible &gt; 1.9.4, &lt; 2.0</li>
+<li>Docker &gt; 1.9.0</li>
+<li>docker-py &gt; 1.6.0</li>
+<li>python jinja2 &gt; 2.6.0</li>
+</ul>
+<p> 几点说明：</p>
+<ul>
+<li> 机器使用的是 kvm 虚拟机进行的测试。配置上使用 4G RAM, 2 CPU, 2 网卡的配置 </li>
+<li> 由于使用了 Docker，所以对于底层系统并还没什么要求，本文使用 CentOS 7 系统。</li>
+<li>Kolla master 分支上使用的是 RDO master 上的源，打包极不稳定，时常会有 Bug 出现。所以本文使用的是 CentOS + 源码的安装方式 </li>
+<li> 由于国内网络原因，一些国外的源 ( 这些源还没有国内镜像 ) 会相当慢，所以 build docker image 时会很慢，推荐使用 VPN</li>
+</ul>
+<h1 id="_1"> 安装 </h1>
+<p> 安装好操作系统后，依次进行如下配置 </p>
+<h2 id="_2"> 源 </h2>
+<p> 加入 Docker 的源 </p>
+<div class="highlight"><pre><span class="x">sudo tee /etc/yum.repos.d/docker.repo &lt;&lt; 'EOF'</span>
+<span class="x">[dockerrepo]</span>
+<span class="x">name=Docker Repository</span>
+<span class="x">baseurl=https://yum.dockerproject.org/repo/main/centos/</span><span class="p">$</span><span class="nv">releasever</span><span class="x">/</span>
+<span class="x">enabled=1</span>
+<span class="x">gpgcheck=1</span>
+<span class="x">gpgkey=https://yum.dockerproject.org/gpg</span>
+<span class="x">EOF</span>
+</pre></div>
+<p> 加入 EPEL 源 </p>
+<div class="highlight"><pre>yum install -y epel-release
+</pre></div>
+<h2 id="kolla"> 安装 Kolla 所需依赖 </h2>
+<div class="highlight"><pre>yum install -y ansible docker-engine git gcc python-setuptools
+easy_install -U pip
+</pre></div>
+<p> 并启动 Docker 服务 </p>
+<div class="highlight"><pre>systemctl enable docker
+systemctl start docker
+</pre></div>
+<h2 id="kolla_1"> 下载 Kolla 代码并安装依赖 </h2>
+<div class="highlight"><pre>git clone https://github.com/openstack/kolla.git
+cd kolla
+pip install -r requirements.txt -r test-requirements.txt tox
+</pre></div>
+<h1 id="build-docker-image">Build Docker Image</h1>
+<p> 以下如果没有特别说明，所有的操作都是在 Kolla 项目的目录里进行 </p>
+<p> 首先要先生成并修改配置文件 </p>
+<div class="highlight"><pre>tox -e genconfig
+cp -rv etc/kolla /etc/
+</pre></div>
+<p> 然后修改 <code>/etc/kolla/kolla-build.conf</code> 文件，它是用来控制 kolla build 过程的。修改后，其主要内容如下 :</p>
+<div class="highlight"><pre><span class="k">[DEFAULT]</span>
+<span class="na">base</span> <span class="o">=</span> <span class="s">centos</span>
+<span class="na">install_type</span> <span class="o">=</span> <span class="s">soruce</span>
+<span class="na">namespace</span> <span class="o">=</span> <span class="s">lokolla</span>
+<span class="na">push</span> <span class="o">=</span> <span class="s">false</span>
+</pre></div>
+<p> 接下来就是进行漫长的 build, 这个过程主要依赖机器性能和网速。如果快的话，20 多分钟就完成。如果有问题的话，会很久。不过依赖于 Docker Build 的 Cache 功能，就算重跑的话，之前已经 Build 好的也会很快完成。</p>
+<div class="highlight"><pre>./tool/build.py -p main
+</pre></div>
+<p> 参数中的 <code>-p main</code> 是指定了只 build 主要的 image, 包括 : cinder, ceilometer, glance, heat, horizon, keystone, neutron, nova, swift. 这些可以只生成的 <code>kolla-build.conf</code> 里找到。</p>
+<p> 如果 Build 完成之后，使用 <code>docker images</code> 能看到所有已经 build 好的镜像。</p>
+<h1 id="deploy">Deploy</h1>
+<p> 依然是先修改配置文件，与 Deploy 相关的主要是两个配置文件 <code>/etc/kolla/passwords.yml</code> 和 <code>/etc/kolla/globals.yml</code>。他们为 ansible 提供一些变量的设定。主要需要修改的是 <code>globals.yml</code> 文件。修改后，其主要内容为 :</p>
+<div class="highlight"><pre><span class="l l-Scalar l-Scalar-Plain">config_strategy</span><span class="p p-Indicator">:</span> <span class="s">"COPY_ALWAYS"</span>
+
+<span class="l l-Scalar l-Scalar-Plain">kolla_base_distro</span><span class="p p-Indicator">:</span> <span class="s">"centos"</span>
+<span class="l l-Scalar l-Scalar-Plain">kolla_install_type</span><span class="p p-Indicator">:</span> <span class="s">"source"</span>
+<span class="l l-Scalar l-Scalar-Plain">kolla_internal_address</span><span class="p p-Indicator">:</span> <span class="s">"10.2.0.254"</span>
+
+<span class="l l-Scalar l-Scalar-Plain">network_interface</span><span class="p p-Indicator">:</span> <span class="s">"eth0"</span>
+<span class="l l-Scalar l-Scalar-Plain">neutron_external_interface</span><span class="p p-Indicator">:</span> <span class="s">"eth1"</span>
+<span class="l l-Scalar l-Scalar-Plain">openstack_logging_debug</span><span class="p p-Indicator">:</span> <span class="s">"true"</span>
+
+<span class="l l-Scalar l-Scalar-Plain">enable_cinder</span><span class="p p-Indicator">:</span> <span class="s">"no"</span>
+<span class="l l-Scalar l-Scalar-Plain">enable_heat</span><span class="p p-Indicator">:</span> <span class="s">"no"</span>
+</pre></div>
+<p>kolla 使用一个名为 <code>kolla-ansible</code> 的封装脚本， 并提供以下几个命令 </p>
+<div class="highlight"><pre>./tools/kolla-ansible -h
+Usage: ./tools/kolla-ansible COMMAND [options]
+
+Options:
+    --inventory, -i &lt;inventory_path&gt; Specify path to ansible inventory file
+    --playbook, -p &lt;playbook_path&gt;   Specify path to ansible playbook file
+    --keyfile, -k &lt;key_file&gt;         Specify path to ansible vault keyfile
+    --help, -h                       Show this usage information
+    --tags, -t &lt;tags&gt;                Only run plays and tasks tagged with these values
+
+Commands:
+    prechecks    Do pre-deployment checks for hosts
+    deploy       Deploy and start all kolla containers
+    post-deploy  Do post deploy on deploy node
+    pull         Pull all images for containers (only pulls, no runnnig container changes)
+</pre></div>
+<p> 可以使用 <code>./tools/kolla-ansible prechecks</code> 来检查一个机器是否满足安装条件。</p>
+<p> 使用 <code>./tools/kolla-ansible deploy</code> 来开始正式安装。安装会很快，我机器上，几分钟就安装完成了。</p>
+<p> 最后，使用 <code>./tools/kolla-ansible post-deploy</code> 来生成 <code>/etc/kolla/admin-openrc.sh</code> 文件用来加载认证变量。</p>
+<h1 id="_3"> 查看安装后的状态 </h1>
+<div class="highlight"><pre>$ docker ps
+IMAGE                                                   COMMAND                 STATUS              PORTS               NAMES
+lokolla/centos-source-horizon:2.0.0                     <span class="s2">"kolla_start"</span>           Up <span class="m">15</span> minutes                           horizon
+lokolla/centos-source-heat-engine:2.0.0                 <span class="s2">"kolla_start"</span>           Up <span class="m">16</span> minutes                           heat_engine
+lokolla/centos-source-heat-api-cfn:2.0.0                <span class="s2">"kolla_start"</span>           Up <span class="m">16</span> minutes                           heat_api_cfn
+lokolla/centos-source-heat-api:2.0.0                    <span class="s2">"kolla_start"</span>           Up <span class="m">16</span> minutes                           heat_api
+lokolla/centos-source-neutron-agents:2.0.0              <span class="s2">"/start.sh"</span>             Up <span class="m">16</span> minutes                           neutron_agents
+lokolla/centos-source-neutron-openvswitch-agent:2.0.0   <span class="s2">"kolla_start"</span>           Up <span class="m">16</span> minutes                           neutron_openvswitch_agent
+lokolla/centos-source-neutron-server:2.0.0              <span class="s2">"kolla_start"</span>           Up <span class="m">16</span> minutes                           neutron_server
+lokolla/centos-source-openvswitch-vswitchd:2.0.0        <span class="s2">"kolla_start"</span>           Up <span class="m">16</span> minutes                           openvswitch_vswitchd
+lokolla/centos-source-openvswitch-db-server:2.0.0       <span class="s2">"kolla_start"</span>           Up <span class="m">16</span> minutes                           openvswitch_db
+lokolla/centos-source-nova-compute:2.0.0                <span class="s2">"kolla_start"</span>           Up <span class="m">17</span> minutes                           nova_compute
+lokolla/centos-source-nova-scheduler:2.0.0              <span class="s2">"kolla_start"</span>           Up <span class="m">17</span> minutes                           nova_scheduler
+lokolla/centos-source-nova-novncproxy:2.0.0             <span class="s2">"kolla_start"</span>           Up <span class="m">17</span> minutes                           nova_novncproxy
+lokolla/centos-source-nova-consoleauth:2.0.0            <span class="s2">"kolla_start"</span>           Up <span class="m">17</span> minutes                           nova_consoleauth
+lokolla/centos-source-nova-conductor:2.0.0              <span class="s2">"kolla_start"</span>           Up <span class="m">17</span> minutes                           nova_conductor
+lokolla/centos-source-nova-api:2.0.0                    <span class="s2">"kolla_start"</span>           Up <span class="m">17</span> minutes                           nova_api
+lokolla/centos-source-nova-libvirt:2.0.0                <span class="s2">"kolla_start"</span>           Up <span class="m">17</span> minutes                           nova_libvirt
+lokolla/centos-source-glance-api:2.0.0                  <span class="s2">"kolla_start"</span>           Up <span class="m">17</span> minutes                           glance_api
+lokolla/centos-source-glance-registry:2.0.0             <span class="s2">"kolla_start"</span>           Up <span class="m">17</span> minutes                           glance_registry
+lokolla/centos-source-keystone:2.0.0                    <span class="s2">"kolla_start"</span>           Up <span class="m">18</span> minutes                           keystone
+lokolla/centos-source-rabbitmq:2.0.0                    <span class="s2">"kolla_start"</span>           Up <span class="m">18</span> minutes                           rabbitmq
+lokolla/centos-source-data:2.0.0                        <span class="s2">"/bin/sleep infinity"</span>   Up <span class="m">18</span> minutes                           rabbitmq_data
+lokolla/centos-source-mariadb:2.0.0                     <span class="s2">"kolla_start"</span>           Up <span class="m">19</span> minutes                           mariadb
+lokolla/centos-source-memcached:2.0.0                   <span class="s2">"kolla_start"</span>           Up <span class="m">19</span> minutes                           memcached
+lokolla/centos-source-haproxy:2.0.0                     <span class="s2">"kolla_start"</span>           Up <span class="m">20</span> minutes                           haproxy
+lokolla/centos-source-keepalived:2.0.0                  <span class="s2">"kolla_start"</span>           Up <span class="m">20</span> minutes                           keepalived
+lokolla/centos-source-kolla-ansible:2.0.0               <span class="s2">"/bin/sleep infinity"</span>   Up <span class="m">20</span> minutes                           kolla_ansible
+lokolla/centos-source-rsyslog:2.0.0                     <span class="s2">"kolla_start"</span>           Up <span class="m">20</span> minutes                           rsyslog
+</pre></div>
+<p> 为了显示好看，我去掉了一些无关的列。通过上面，可以看出 </p>
+<ul>
+<li> 多数 container 里是由 kolla_start 这个脚本启动起来的 </li>
+<li> 由于 kolla 使用的是 <code>--net=host</code> 网络，所以没有必要做端口映射 </li>
+<li> 每个模块拆分成了多个 container, 如 nova 被拆分成了 nova_api, nova_libvirt, nova_conductor, nova_novncproxy, nova_compute 等多个 container。很好的遵守了一个容器一个进程的原则。</li>
+</ul>
+  </div><!-- /.entry-content -->
+  <div>
+    <nav>
+      <ul class="pager">
+        <li class="previous"><a href="kolla-introduce.html">&larr; Older</a></li>
+        <li class="next disabled"><a href="#">Newer &rarr;</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="entry-info">
+    <p> Tags: <a href="http://xcodest.me/tag/kolla.html">Kolla</a> <a href="http://xcodest.me/tag/openstack.html">OpenStack</a>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'kolla-aio-install.html';
+        var disqus_url = 'http://xcodest.me/kolla-aio-install.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+</div>
+</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12 text-center footer">
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1257099267'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1257099267' type='text/javascript'%3E%3C/script%3E"));</script>
+        </div>
+    </div>
+</body>
+</html>

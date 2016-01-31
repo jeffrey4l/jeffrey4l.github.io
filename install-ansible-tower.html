@@ -120,12 +120,12 @@
 cd ansible-tower-setup-2.4.3
 </pre></div>
 <p> 这个安装包本质上是一个 playbook。其中 <code>configure</code> 是用来生成配置文件的脚本，运行它会有几个问题，让你回答，回答完后就开始自动安装了。也可把这些问答写到一个文件中，让其自动化。建立名为 <code>tower_setup_conf.yml</code> 的文件，其内容为 :</p>
-<div class="highlight"><pre><span class="l-Scalar-Plain">admin_password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">password</span>
-<span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">internal</span>
-<span class="l-Scalar-Plain">munin_password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">password</span>
-<span class="l-Scalar-Plain">pg_password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">password</span>
-<span class="l-Scalar-Plain">primary_machine</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">localhost</span>
-<span class="l-Scalar-Plain">redis_password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">password</span>
+<div class="highlight"><pre><span class="l l-Scalar l-Scalar-Plain">admin_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
+<span class="l l-Scalar l-Scalar-Plain">database</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">internal</span>
+<span class="l l-Scalar l-Scalar-Plain">munin_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
+<span class="l l-Scalar l-Scalar-Plain">pg_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
+<span class="l l-Scalar l-Scalar-Plain">primary_machine</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<span class="l l-Scalar l-Scalar-Plain">redis_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
 </pre></div>
 <p> 开始进行设置 </p>
 <div class="highlight"><pre>./configure --options-file tower_setup_conf.yml

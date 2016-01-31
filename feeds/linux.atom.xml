@@ -54,12 +54,12 @@
 cd ansible-tower-setup-2.4.3
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 这个安装包本质上是一个 playbook。其中 &lt;code&gt;configure&lt;/code&gt; 是用来生成配置文件的脚本，运行它会有几个问题，让你回答，回答完后就开始自动安装了。也可把这些问答写到一个文件中，让其自动化。建立名为 &lt;code&gt;tower_setup_conf.yml&lt;/code&gt; 的文件，其内容为 :&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l-Scalar-Plain"&gt;admin_password&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;password&lt;/span&gt;
-&lt;span class="l-Scalar-Plain"&gt;database&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;internal&lt;/span&gt;
-&lt;span class="l-Scalar-Plain"&gt;munin_password&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;password&lt;/span&gt;
-&lt;span class="l-Scalar-Plain"&gt;pg_password&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;password&lt;/span&gt;
-&lt;span class="l-Scalar-Plain"&gt;primary_machine&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;localhost&lt;/span&gt;
-&lt;span class="l-Scalar-Plain"&gt;redis_password&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;password&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;admin_password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;database&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;internal&lt;/span&gt;
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;munin_password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pg_password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;primary_machine&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;localhost&lt;/span&gt;
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;redis_password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 开始进行设置 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;./configure --options-file tower_setup_conf.yml
@@ -118,12 +118,12 @@ apt-get install -y ansible
 
 
 &lt;h1 id="_2"&gt; 源码安装 &lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# download the source from github&lt;/span&gt;
-&lt;span class="c"&gt;# ansible has two git submodules, so the --recursive is required.&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# download the source from github&lt;/span&gt;
+&lt;span class="c1"&gt;# ansible has two git submodules, so the --recursive is required.&lt;/span&gt;
 git clone git://github.com/ansible/ansible.git --recursive
 &lt;span class="nb"&gt;cd&lt;/span&gt; ./ansible
 
-&lt;span class="c"&gt;# install&lt;/span&gt;
+&lt;span class="c1"&gt;# install&lt;/span&gt;
 pip install .
 &lt;/pre&gt;&lt;/div&gt;</summary><category term="Ansible"></category></entry><entry><title>Deploy Docker Registry Service</title><link href="http://xcodest.me/deploy-docker-registry-service.html" rel="alternate"></link><updated>2015-12-15T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-12-15:deploy-docker-registry-service.html</id><summary type="html">&lt;p&gt; 使用 Docker 时，很多情况下需要搭建自己的 registry 服务。把一些私有的 Image 放到上面用。官方有一个 registry 的 &lt;a href="https://hub.docker.com/_/registry/"&gt; 镜像 &lt;/a&gt; 可以拉下来，直接用。如下：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;docker run -p 5000:5000 -v &amp;lt;HOST_DIR&amp;gt;:/tmp/registry-dev registry
@@ -215,7 +215,7 @@ $ virsh capabilities | grep uuid
 &lt;/ul&gt;</summary><category term="Libvirt"></category></entry><entry><title>tun &amp; veth设备</title><link href="http://xcodest.me/tun-vethshe-bei.html" rel="alternate"></link><updated>2015-02-09T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-02-09:tun-vethshe-bei.html</id><summary type="html">&lt;p&gt;OpenStack 的 Neutron 中会建立好多网卡设备。大体上这些网卡可以分为两类 tun 和 veth。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="OpenStack Neutron Network" class="img-responsive" src="/images/neutron-ovs-compute.png" /&gt;&lt;/p&gt;
 &lt;p&gt; 用 &lt;code&gt;ethtool&lt;/code&gt; 可以得到网卡所用的驱动，从而得到网上设备是哪一类。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;ethtool -i veth4NCTQ1 
+&lt;div class="highlight"&gt;&lt;pre&gt;$ ethtool -i veth4NCTQ1 
 driver: veth
 version: 1.0
 firmware-version: 
@@ -372,30 +372,30 @@ git push origin --tags
 &lt;li&gt;master 的 pillar&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt; 使用 minion 配置时，要直接修改 minion 的配置文件，在 &lt;code&gt;/etc/salt/minion.d/mine.conf&lt;/code&gt; 加入如下内容 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l-Scalar-Plain"&gt;mine_functions&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
-  &lt;span class="l-Scalar-Plain"&gt;test.ping&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p-Indicator"&gt;[]&lt;/span&gt;
-  &lt;span class="l-Scalar-Plain"&gt;network.ip_addrs&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
-    &lt;span class="l-Scalar-Plain"&gt;interface&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;eth0&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;mine_functions&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;test.ping&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;[]&lt;/span&gt;
+  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;network.ip_addrs&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;interface&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;eth0&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt; 使用 pillar 时配置时，只需要修改 master 的 pillar 配置即可。如在 &lt;code&gt;/srv/pillar/mine.conf&lt;/code&gt; 中加入如下内容 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l-Scalar-Plain"&gt;mine_functions&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
-  &lt;span class="l-Scalar-Plain"&gt;test.ping&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p-Indicator"&gt;[]&lt;/span&gt;
-  &lt;span class="l-Scalar-Plain"&gt;network.ip_addrs&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
-    &lt;span class="l-Scalar-Plain"&gt;interface&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;eth0&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;mine_functions&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;test.ping&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;[]&lt;/span&gt;
+  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;network.ip_addrs&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;interface&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;eth0&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt; 然后把 &lt;code&gt;mine.conf&lt;/code&gt; 加入到 &lt;code&gt;/srv/pillar/top.sls&lt;/code&gt;, 这时可以指定哪些 minion 来配置 mine_functions。相比较而言，这种方式更加灵活一些。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l-Scalar-Plain"&gt;base&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
-  &lt;span class="s"&gt;&amp;#39;controller*&amp;#39;&lt;/span&gt;&lt;span class="p-Indicator"&gt;:&lt;/span&gt;
-    &lt;span class="p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l-Scalar-Plain"&gt;mine&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;base&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+  &lt;span class="s"&gt;&amp;#39;controller*&amp;#39;&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+    &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;mine&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt; 之后就可以使用如下语句拿到 mine 上报上来的结果的 ( 其实这个结果是保存在 master 的 &lt;code&gt;/var/cache/salt/master/minions/*/mine.p&lt;/code&gt; 的文件下就可找到上报上来的内容。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;salt &lt;span class="s1"&gt;&amp;#39;jeffrey-thinkpad&amp;#39;&lt;/span&gt; mine.get &lt;span class="s1"&gt;&amp;#39;*&amp;#39;&lt;/span&gt; network.ip_addrs
+&lt;div class="highlight"&gt;&lt;pre&gt;$ salt &lt;span class="s1"&gt;&amp;#39;jeffrey-thinkpad&amp;#39;&lt;/span&gt; mine.get &lt;span class="s1"&gt;&amp;#39;*&amp;#39;&lt;/span&gt; network.ip_addrs
 jeffrey-thinkpad:
     ----------
     icehouse-compute:

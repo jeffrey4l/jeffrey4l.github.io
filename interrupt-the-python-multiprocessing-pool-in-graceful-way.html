@@ -117,7 +117,7 @@
 
 
 <p>When run the code and try to <code>Ctrl+C</code> to stop it, it will never be stopped.</p>
-<div class="highlight"><pre><span class="nv">$ </span>python2 b.py                                                                      
+<div class="highlight"><pre>$ python2 b.py                                                                      
 ^CProcess PoolWorker-1:
 Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
   File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/process.py&quot;</span>, line 258, in _bootstrap
@@ -175,9 +175,9 @@ or similar.
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">worker_init</span><span class="p">():</span>
-    <span class="c"># ignore the SIGINI in sub process, just print a log</span>
+    <span class="c1"># ignore the SIGINI in sub process, just print a log</span>
     <span class="k">def</span> <span class="nf">sig_int</span><span class="p">(</span><span class="n">signal_num</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-        <span class="k">print</span> <span class="s">&#39;signal: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">signal_num</span>
+        <span class="k">print</span> <span class="s1">&#39;signal: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">signal_num</span>
     <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">sig_int</span><span class="p">)</span>
 
 
@@ -186,9 +186,9 @@ or similar.
 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mh">0xfff</span><span class="p">)</span>
-    <span class="c"># catch TimeoutError and get again</span>
+    <span class="c1"># catch TimeoutError and get again</span>
     <span class="k">except</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">TimeoutError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&#39;timeout&#39;</span>
+        <span class="k">print</span> <span class="s1">&#39;timeout&#39;</span>
 </pre></div>
 
 

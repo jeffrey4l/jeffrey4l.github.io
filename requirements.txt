@@ -12,3 +12,4 @@ pygments
 Typogrify
 pelican-gist
 watchdog
+beautifulsoup4

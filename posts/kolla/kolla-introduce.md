@@ -92,5 +92,5 @@ multihost 的环境
 [^5]: [Staging PPA for mitaka](https://launchpad.net/~ubuntu-cloud-archive/+archive/ubuntu/mitaka-staging)
 [^6]: [Gerrit: Base and openstack-base ubuntu binary containers](https://review.openstack.org/#/c/261957/)
 [^7]: [BP:Ubuntu binary containers](https://blueprints.launchpad.net/kolla/+spec/binary-ubuntu)
-[^8]: [Gerrit: Playbook for keystone upgradel](https://review.openstack.org/#/c/257568/)
+[^8]: [Gerrit: Playbook for keystone upgrade](https://review.openstack.org/#/c/257568/)
 [^9]: [kolla-mesos](https://github.com/openstack/kolla-mesos)

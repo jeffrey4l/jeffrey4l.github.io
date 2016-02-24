@@ -12,7 +12,7 @@ Category: OpenStack
 
 首先对本次讨论进行了优先级安排[^1]。
 
-* Upgrades： 这是现在的重中之重。如何能对现有的Kolla进行平滑的升级。包括 OpenStack 组件和基础服务组件(如 MariaDb 等)。
+* Upgrades： 这是现在的重中之重。如何能对现有的Kolla进行平滑的升级。包括 OpenStack 组件和基础服务组件(如 MariaDB 等)。
 * diagnostics/logging: 主要是指 ELK。
 * stability of deployment
 * Security
@@ -88,7 +88,17 @@ Liberty 是 Kolla Release 的第一个版本。而在现在的 Master 分支中�
 
 # Roadmap
 
-Netron, Ocata， P版本的功路线图[^7]。你更期待什么功能呢?
+Mitaka, Netron, Ocata， P版本的功路线图[^7]。你更期待什么功能呢?
+
+## Mitaka-3 Roadmap
+
+Mitaka 进入最后的阶段，还有一些重要功能在开发中，现在主要还有以下几点。
+
+- diagnostics
+- reconfigure services on a redeploy
+- infrastructure services upgrades such as mariadb
+- migration path for data volumes
+- functional tests in gate (boot a vm &amp; ping test)
 
 ## Newton Roadmap
 - voting gates

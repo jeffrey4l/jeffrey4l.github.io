@@ -104,7 +104,7 @@
     <p> 操作系统： ubuntu 12.04.1
 内核 linux 3.2</p>
 <p> 今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。</p>
-<div class="highlight"><pre>    +---- host1 -------+         +---- host2 ----+
+<div class="highlight"><pre><span></span>    +---- host1 -------+         +---- host2 ----+
                      eth0 ---- eth0 
                    /                \
     br1 ---- bond0                   bond0 ---- br1 
@@ -119,7 +119,7 @@
 <li>https://bugzilla.redhat.com/show_bug.cgi?id=487763</li>
 </ol>
 <p> 把内核升级到 3.8 之后就可以了。</p>
-<div class="highlight"><pre>apt-get install linux-image-generic-lts-raring
+<div class="highlight"><pre><span></span>apt-get install linux-image-generic-lts-raring
 </pre></div>
   </div><!-- /.entry-content -->
   <div>

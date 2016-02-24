@@ -103,7 +103,7 @@
   </header>
   <div class="entry-content">
     <p> 当需要重新抛出 Python 的异常时，很多人都处理不好。本文总结了一些处理方法。</p>
-<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">do_something</span><span class="p">()</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="n">do_cleanup</span><span class="p">()</span>
@@ -111,7 +111,7 @@
 
 
 <p> 这种处理会直接把内部异常吃掉，当有问题 /Bug 时，会很难处理，所以不推荐。</p>
-<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">do_something</span><span class="p">()</span>
 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
     <span class="n">do_cleanup</span><span class="p">()</span>
@@ -123,7 +123,7 @@
 
 
 <p> 这种直接打印的，一是不能很好的输出到日志里。二是不能把错误交到上层调用者，不能让其知道这是有问题。</p>
-<div class="highlight"><pre><span class="k">try</span><span class="o">:</span>
+<div class="highlight"><pre><span></span><span class="k">try</span><span class="o">:</span>
     <span class="n">do_somethink</span><span class="o">()</span>
 <span class="n">except</span><span class="o">:</span>
     <span class="n">do_cleanup</span><span class="o">()</span>
@@ -133,7 +133,7 @@
 
 <p> 用这种，主要是为了做 cleanup。直接 <code>raise</code> 后，异常会抛向上层。没有 catch 的效果一样。</p>
 <p> 这里还有一种和上面这个类似的效果的 </p>
-<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">do_something</span><span class="p">()</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">sys</span>
@@ -143,7 +143,7 @@
 
 
 <p> 最后，当要抛出自己重新包装后的异常时，最好把原始的异常也带上。这样有利于问题的 debug。</p>
-<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">do_something</span><span class="p">()</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">sys</span>

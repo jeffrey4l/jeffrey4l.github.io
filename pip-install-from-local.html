@@ -103,18 +103,18 @@
   <div class="entry-content">
     <p> 在一些特殊环境中，服务器是不能联网的。此时要通过 pip 安装包会有一些麻烦。这时可以使用 pip 的 download 到本地的功能，来加速安装。</p>
 <p> 先在有网络的环境中下载下来所有需要的包：</p>
-<div class="highlight"><pre>pip install --download <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages -r requirement.txt
+<div class="highlight"><pre><span></span>pip install --download <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages -r requirement.txt
 </pre></div>
 
 
 <p> 在把这些包拷贝到目标环境中去，使用下面的命令来安装：</p>
-<div class="highlight"><pre>pip install --no-index --find-links <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages -r requirement.txt
+<div class="highlight"><pre><span></span>pip install --no-index --find-links <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages -r requirement.txt
 </pre></div>
 
 
 <p> 所有需要的包就安装上了。</p>
 <p> 为了方便使用，还可以把这两个命令弄成 alias 来使用 </p>
-<div class="highlight"><pre>alias pipcache=&#39;pip install --download <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages&#39;
+<div class="highlight"><pre><span></span>alias pipcache=&#39;pip install --download <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages&#39;
 alias pipinstall=&#39;pip install --no-index --find-links=file://<span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages/&#39;
 </pre></div>
   </div><!-- /.entry-content -->

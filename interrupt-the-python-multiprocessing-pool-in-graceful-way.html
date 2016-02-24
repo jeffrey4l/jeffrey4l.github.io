@@ -102,7 +102,7 @@
   </header>
   <div class="entry-content">
     <p>When using <code>KeyboardInterrupt</code>(<code>Ctrl+c</code>) interrupt the excution of the <code>multiprocess.Pool</code>, it will not work as expected. Following is a demo</p>
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">time</span>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
 
 
@@ -117,7 +117,7 @@
 
 
 <p>When run the code and try to <code>Ctrl+C</code> to stop it, it will never be stopped.</p>
-<div class="highlight"><pre>$ python2 b.py                                                                      
+<div class="highlight"><pre><span></span>$ python2 b.py                                                                      
 ^CProcess PoolWorker-1:
 Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
   File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/process.py&quot;</span>, line 258, in _bootstrap
@@ -163,7 +163,7 @@ or similar.
 
 <p>By using this, we can interrupt the Pool by using <code>Ctrl+c</code>.</p>
 <p>Here is a better version.</p>
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">multiprocessing</span>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">signal</span>

@@ -1,5 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/openstack.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2016-02-16T00:00:00+08:00</updated><entry><title>Kolla Mitaka Midcycle Discuss</title><link href="http://xcodest.me/kolla-mitaka-midcycle-discuss.html" rel="alternate"></link><updated>2016-02-16T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-02-16:kolla-mitaka-midcycle-discuss.html</id><summary type="html">
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/openstack.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2016-02-24T00:00:00+08:00</updated><entry><title>OpenStack Kolla AIO Install</title><link href="http://xcodest.me/kolla-aio-install.html" rel="alternate"></link><updated>2016-02-24T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-02-24:kolla-aio-install.html</id><summary type="html">
+&lt;p&gt;Kolla 依赖于以下几个主要组件 &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ansible &amp;gt; 1.9.4, &amp;lt; 2.0&lt;/li&gt;
+&lt;li&gt;Docker &amp;gt; 1.10.0&lt;/li&gt;
+&lt;li&gt;docker-py &amp;gt; 1.7.0&lt;/li&gt;
+&lt;li&gt;python jinja2 &amp;gt; 2.6.0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; 几点说明：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; 机器使用的是 kvm 虚拟机进行的测试。配置上使用 4G RAM, 2 CPU, 2 网卡的配置 &lt;/li&gt;
+&lt;li&gt; 由于使用了 Docker，所以对于底层系统并还没什么要求，本文使用 CentOS 7 系统。&lt;/li&gt;
+&lt;li&gt;Kolla master 分支上使用的是 RDO master 上的源，打包极不稳定，时常会有 Bug 出现。所以本文使用的是 CentOS + 源码的安装方式 &lt;/li&gt;
+&lt;li&gt; 由于国内网络原因，一些国外的源 ( 这些源还没有国内镜像 ) 会相当慢，所以 build docker image 时会很慢，推荐使用 VPN&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="_1"&gt; 安装 &lt;/h1&gt;
+&lt;p&gt; 安装好操作系统后，依次进行如下配置 &lt;/p&gt;
+&lt;h2 id="_2"&gt; 源 &lt;/h2&gt;
+&lt;p&gt; 加入 Docker 的源 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;sudo tee /etc/yum.repos.d/docker.repo &amp;lt;&amp;lt; 'EOF'&lt;/span&gt;
+&lt;span class="x"&gt;[dockerrepo]&lt;/span&gt;
+&lt;span class="x"&gt;name=Docker Repository&lt;/span&gt;
+&lt;span class="x"&gt;baseurl=https://yum.dockerproject.org/repo/main/centos/&lt;/span&gt;&lt;span class="p"&gt;$&lt;/span&gt;&lt;span class="nv"&gt;releasever&lt;/span&gt;&lt;span class="x"&gt;/&lt;/span&gt;
+&lt;span class="x"&gt;enabled=1&lt;/span&gt;
+&lt;span class="x"&gt;gpgcheck=1&lt;/span&gt;
+&lt;span class="x"&gt;gpgkey=https://yum.dockerproject.org/gpg&lt;/span&gt;
+&lt;span class="x"&gt;EOF&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 加入 EPEL 源 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;yum install -y epel-release
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id="kolla"&gt; 安装 Kolla 所需依赖 &lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;yum install -y ansible docker-engine git gcc python-setuptools
+easy_install -U pip
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Docker 现在使用了 shared mount 功能，默认没有打开，需要手动修改 Docker 启动文件 &lt;code&gt;/usr/lib/systemd/system/docker.service&lt;/code&gt; 的 MountFlags&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sed -i 's/MountFlags.*/MountFlags=shared/' /usr/lib/systemd/system/docker.service
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 启动 Docker 服务 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;systemctl daemon-reload
+systemctl enable docker
+systemctl start docker
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id="kolla_1"&gt; 下载 Kolla 代码并安装依赖 &lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/openstack/kolla.git
+cd kolla
+pip install -r requirements.txt -r test-requirements.txt tox
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h1 id="build-docker-image"&gt;Build Docker Image&lt;/h1&gt;
+&lt;p&gt; 以下如果没有特别说明，所有的操作都是在 Kolla 项目的目录里进行 &lt;/p&gt;
+&lt;p&gt; 首先要先生成并修改配置文件 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tox -e genconfig
+cp -rv etc/kolla /etc/
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 然后修改 &lt;code&gt;/etc/kolla/kolla-build.conf&lt;/code&gt; 文件，它是用来控制 kolla build 过程的。修改后，其主要内容如下 :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[DEFAULT]&lt;/span&gt;
+&lt;span class="na"&gt;base&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;centos&lt;/span&gt;
+&lt;span class="na"&gt;install_type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;soruce&lt;/span&gt;
+&lt;span class="na"&gt;namespace&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;lokolla&lt;/span&gt;
+&lt;span class="na"&gt;push&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;false&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 接下来就是进行漫长的 build, 这个过程主要依赖机器性能和网速。如果快的话，20 多分钟就完成。如果有问题的话，会很久。不过依赖于 Docker Build 的 Cache 功能，就算重跑的话，之前已经 Build 好的也会很快完成。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./tool/build.py -p default
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 参数中的 &lt;code&gt;-p default&lt;/code&gt; 是指定了只 build 主要的 image, 包括 : mariadb, rabbitmq, cinder, ceilometer, glance, heat, horizon, keystone, neutron, nova, swift 等 . 这些可以只生成的 &lt;code&gt;kolla-build.conf&lt;/code&gt; 里找到。&lt;/p&gt;
+&lt;p&gt; 如果 Build 完成之后，使用 &lt;code&gt;docker images&lt;/code&gt; 能看到所有已经 build 好的镜像。&lt;/p&gt;
+&lt;h1 id="deploy"&gt;Deploy&lt;/h1&gt;
+&lt;p&gt; 依然是先修改配置文件，与 Deploy 相关的主要是两个配置文件 &lt;code&gt;/etc/kolla/passwords.yml&lt;/code&gt; 和 &lt;code&gt;/etc/kolla/globals.yml&lt;/code&gt;。他们为 ansible 提供一些变量的设定。主要需要修改的是 &lt;code&gt;globals.yml&lt;/code&gt; 文件。修改后，其主要内容为 :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;config_strategy&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"COPY_ALWAYS"&lt;/span&gt;
+
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;kolla_base_distro&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"centos"&lt;/span&gt;
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;kolla_install_type&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"source"&lt;/span&gt;
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;kolla_internal_address&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"10.2.0.254"&lt;/span&gt;
+
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;network_interface&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"eth0"&lt;/span&gt;
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;neutron_external_interface&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"eth1"&lt;/span&gt;
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;openstack_logging_debug&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"true"&lt;/span&gt;
+
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;enable_cinder&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"no"&lt;/span&gt;
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;enable_heat&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"no"&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;kolla 使用一个名为 &lt;code&gt;kolla-ansible&lt;/code&gt; 的封装脚本， 并提供以下几个命令 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./tools/kolla-ansible -h
+Usage: ./tools/kolla-ansible COMMAND [options]
+
+Options:
+    --inventory, -i &amp;lt;inventory_path&amp;gt; Specify path to ansible inventory file
+    --playbook, -p &amp;lt;playbook_path&amp;gt;   Specify path to ansible playbook file
+    --keyfile, -k &amp;lt;key_file&amp;gt;         Specify path to ansible vault keyfile
+    --help, -h                       Show this usage information
+    --tags, -t &amp;lt;tags&amp;gt;                Only run plays and tasks tagged with these values
+
+Commands:
+    prechecks    Do pre-deployment checks for hosts
+    deploy       Deploy and start all kolla containers
+    post-deploy  Do post deploy on deploy node
+    pull         Pull all images for containers (only pulls, no runnnig container changes)
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 可以使用 &lt;code&gt;./tools/kolla-ansible prechecks&lt;/code&gt; 来检查一个机器是否满足安装条件。&lt;/p&gt;
+&lt;p&gt; 使用 &lt;code&gt;./tools/kolla-ansible deploy&lt;/code&gt; 来开始正式安装。安装会很快，我机器上，几分钟就安装完成了。&lt;/p&gt;
+&lt;p&gt; 最后，使用 &lt;code&gt;./tools/kolla-ansible post-deploy&lt;/code&gt; 来生成 &lt;code&gt;/etc/kolla/admin-openrc.sh&lt;/code&gt; 文件用来加载认证变量。&lt;/p&gt;
+&lt;h1 id="_3"&gt; 查看安装后的状态 &lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;IMAGE                                                  COMMAND                 NAMES
+lokolla/centos-source-keystone:2.0.0                   "kolla_start"           keystone
+lokolla/centos-source-horizon:2.0.0                    "kolla_start"           horizon
+lokolla/centos-source-neutron-metadata-agent:2.0.0     "kolla_start"           neutron_metadata_agent
+lokolla/centos-source-neutron-l3-agent:2.0.0           "kolla_start"           neutron_l3_agent
+lokolla/centos-source-neutron-dhcp-agent:2.0.0         "kolla_start"           neutron_dhcp_agent
+lokolla/centos-source-neutron-openvswitch-agent:2.0.0  "kolla_start"           neutron_openvswitch_agent
+lokolla/centos-source-neutron-server:2.0.0             "kolla_start"           neutron_server
+lokolla/centos-source-openvswitch-vswitchd:2.0.0       "kolla_start"           openvswitch_vswitchd
+lokolla/centos-source-openvswitch-db-server:2.0.0      "kolla_start"           openvswitch_db
+lokolla/centos-source-nova-compute:2.0.0               "kolla_start"           nova_compute
+lokolla/centos-source-nova-libvirt:2.0.0               "kolla_start"           nova_libvirt
+lokolla/centos-source-nova-conductor:2.0.0             "kolla_start"           nova_conductor
+lokolla/centos-source-nova-scheduler:2.0.0             "kolla_start"           nova_scheduler
+lokolla/centos-source-nova-novncproxy:2.0.0            "kolla_start"           nova_novncproxy
+lokolla/centos-source-nova-consoleauth:2.0.0           "kolla_start"           nova_consoleauth
+lokolla/centos-source-nova-api:2.0.0                   "kolla_start"           nova_api
+lokolla/centos-source-glance-api:2.0.0                 "kolla_start"           glance_api
+lokolla/centos-source-glance-registry:2.0.0            "kolla_start"           glance_registry
+lokolla/centos-source-rabbitmq:2.0.0                   "kolla_start"           rabbitmq
+lokolla/centos-source-mariadb:2.0.0                    "kolla_start"           mariadb
+lokolla/centos-source-memcached:2.0.0                  "kolla_start"           memcached
+lokolla/centos-source-keepalived:2.0.0                 "kolla_start"           keepalived
+lokolla/centos-source-haproxy:2.0.0                    "kolla_start"           haproxy
+lokolla/centos-source-kolla-toolbox:2.0.0              "/bin/sleep infinity"   kolla_toolbox
+lokolla/centos-source-heka:2.0.0                       "kolla_start"           heka
+lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           rsyslog
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 为了显示好看，我去掉了一些无关的列。通过上面，可以看出 &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; 多数 container 里是由 kolla_start 这个脚本启动起来的 &lt;/li&gt;
+&lt;li&gt; 由于 kolla 使用的是 &lt;code&gt;--net=host&lt;/code&gt; 网络，所以没有必要做端口映射 &lt;/li&gt;
+&lt;li&gt; 每个模块拆分成了多个 container, 如 nova 被拆分成了 nova_api, nova_libvirt, nova_conductor, nova_novncproxy, nova_compute 等多个 container。很好的遵守了一个容器一个进程的原则。&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="Kolla"></category><category term="OpenStack"></category></entry><entry><title>Kolla Mitaka Midcycle Discuss</title><link href="http://xcodest.me/kolla-mitaka-midcycle-discuss.html" rel="alternate"></link><updated>2016-02-16T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-02-16:kolla-mitaka-midcycle-discuss.html</id><summary type="html">
 &lt;p&gt;2016 年 2 月 9 日 -10 日，Kolla Team 举办了 Mitaka 的中期会议，对遇到的问题、解决的方法及接下来的工作内容做了深入讨论。&lt;/p&gt;
 &lt;h1 id="_1"&gt; 讨论的优先级安排 &lt;/h1&gt;
 &lt;p&gt; 首先对本次讨论进行了优先级安排 &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
@@ -141,140 +276,7 @@
 &lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-kolla-code-sharing"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-kolla-code-sharing&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:9" rev="footnote" title="Jump back to footnote 9 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;</summary><category term="Kolla"></category></entry><entry><title>OpenStack Kolla AIO Install</title><link href="http://xcodest.me/kolla-aio-install.html" rel="alternate"></link><updated>2016-01-31T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-01-31:kolla-aio-install.html</id><summary type="html">
-&lt;p&gt;Kolla 依赖于以下几个主要组件 &lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Ansible &amp;gt; 1.9.4, &amp;lt; 2.0&lt;/li&gt;
-&lt;li&gt;Docker &amp;gt; 1.9.0&lt;/li&gt;
-&lt;li&gt;docker-py &amp;gt; 1.6.0&lt;/li&gt;
-&lt;li&gt;python jinja2 &amp;gt; 2.6.0&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt; 几点说明：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt; 机器使用的是 kvm 虚拟机进行的测试。配置上使用 4G RAM, 2 CPU, 2 网卡的配置 &lt;/li&gt;
-&lt;li&gt; 由于使用了 Docker，所以对于底层系统并还没什么要求，本文使用 CentOS 7 系统。&lt;/li&gt;
-&lt;li&gt;Kolla master 分支上使用的是 RDO master 上的源，打包极不稳定，时常会有 Bug 出现。所以本文使用的是 CentOS + 源码的安装方式 &lt;/li&gt;
-&lt;li&gt; 由于国内网络原因，一些国外的源 ( 这些源还没有国内镜像 ) 会相当慢，所以 build docker image 时会很慢，推荐使用 VPN&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1 id="_1"&gt; 安装 &lt;/h1&gt;
-&lt;p&gt; 安装好操作系统后，依次进行如下配置 &lt;/p&gt;
-&lt;h2 id="_2"&gt; 源 &lt;/h2&gt;
-&lt;p&gt; 加入 Docker 的源 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="x"&gt;sudo tee /etc/yum.repos.d/docker.repo &amp;lt;&amp;lt; 'EOF'&lt;/span&gt;
-&lt;span class="x"&gt;[dockerrepo]&lt;/span&gt;
-&lt;span class="x"&gt;name=Docker Repository&lt;/span&gt;
-&lt;span class="x"&gt;baseurl=https://yum.dockerproject.org/repo/main/centos/&lt;/span&gt;&lt;span class="p"&gt;$&lt;/span&gt;&lt;span class="nv"&gt;releasever&lt;/span&gt;&lt;span class="x"&gt;/&lt;/span&gt;
-&lt;span class="x"&gt;enabled=1&lt;/span&gt;
-&lt;span class="x"&gt;gpgcheck=1&lt;/span&gt;
-&lt;span class="x"&gt;gpgkey=https://yum.dockerproject.org/gpg&lt;/span&gt;
-&lt;span class="x"&gt;EOF&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt; 加入 EPEL 源 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;yum install -y epel-release
-&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id="kolla"&gt; 安装 Kolla 所需依赖 &lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;yum install -y ansible docker-engine git gcc python-setuptools
-easy_install -U pip
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt; 并启动 Docker 服务 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;systemctl enable docker
-systemctl start docker
-&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id="kolla_1"&gt; 下载 Kolla 代码并安装依赖 &lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;git clone https://github.com/openstack/kolla.git
-cd kolla
-pip install -r requirements.txt -r test-requirements.txt tox
-&lt;/pre&gt;&lt;/div&gt;
-&lt;h1 id="build-docker-image"&gt;Build Docker Image&lt;/h1&gt;
-&lt;p&gt; 以下如果没有特别说明，所有的操作都是在 Kolla 项目的目录里进行 &lt;/p&gt;
-&lt;p&gt; 首先要先生成并修改配置文件 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;tox -e genconfig
-cp -rv etc/kolla /etc/
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt; 然后修改 &lt;code&gt;/etc/kolla/kolla-build.conf&lt;/code&gt; 文件，它是用来控制 kolla build 过程的。修改后，其主要内容如下 :&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[DEFAULT]&lt;/span&gt;
-&lt;span class="na"&gt;base&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;centos&lt;/span&gt;
-&lt;span class="na"&gt;install_type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;soruce&lt;/span&gt;
-&lt;span class="na"&gt;namespace&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;lokolla&lt;/span&gt;
-&lt;span class="na"&gt;push&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;false&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt; 接下来就是进行漫长的 build, 这个过程主要依赖机器性能和网速。如果快的话，20 多分钟就完成。如果有问题的话，会很久。不过依赖于 Docker Build 的 Cache 功能，就算重跑的话，之前已经 Build 好的也会很快完成。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;./tool/build.py -p main
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt; 参数中的 &lt;code&gt;-p main&lt;/code&gt; 是指定了只 build 主要的 image, 包括 : cinder, ceilometer, glance, heat, horizon, keystone, neutron, nova, swift. 这些可以只生成的 &lt;code&gt;kolla-build.conf&lt;/code&gt; 里找到。&lt;/p&gt;
-&lt;p&gt; 如果 Build 完成之后，使用 &lt;code&gt;docker images&lt;/code&gt; 能看到所有已经 build 好的镜像。&lt;/p&gt;
-&lt;h1 id="deploy"&gt;Deploy&lt;/h1&gt;
-&lt;p&gt; 依然是先修改配置文件，与 Deploy 相关的主要是两个配置文件 &lt;code&gt;/etc/kolla/passwords.yml&lt;/code&gt; 和 &lt;code&gt;/etc/kolla/globals.yml&lt;/code&gt;。他们为 ansible 提供一些变量的设定。主要需要修改的是 &lt;code&gt;globals.yml&lt;/code&gt; 文件。修改后，其主要内容为 :&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;config_strategy&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"COPY_ALWAYS"&lt;/span&gt;
-
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;kolla_base_distro&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"centos"&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;kolla_install_type&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"source"&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;kolla_internal_address&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"10.2.0.254"&lt;/span&gt;
-
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;network_interface&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"eth0"&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;neutron_external_interface&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"eth1"&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;openstack_logging_debug&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"true"&lt;/span&gt;
-
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;enable_cinder&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"no"&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;enable_heat&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"no"&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;kolla 使用一个名为 &lt;code&gt;kolla-ansible&lt;/code&gt; 的封装脚本， 并提供以下几个命令 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;./tools/kolla-ansible -h
-Usage: ./tools/kolla-ansible COMMAND [options]
-
-Options:
-    --inventory, -i &amp;lt;inventory_path&amp;gt; Specify path to ansible inventory file
-    --playbook, -p &amp;lt;playbook_path&amp;gt;   Specify path to ansible playbook file
-    --keyfile, -k &amp;lt;key_file&amp;gt;         Specify path to ansible vault keyfile
-    --help, -h                       Show this usage information
-    --tags, -t &amp;lt;tags&amp;gt;                Only run plays and tasks tagged with these values
-
-Commands:
-    prechecks    Do pre-deployment checks for hosts
-    deploy       Deploy and start all kolla containers
-    post-deploy  Do post deploy on deploy node
-    pull         Pull all images for containers (only pulls, no runnnig container changes)
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt; 可以使用 &lt;code&gt;./tools/kolla-ansible prechecks&lt;/code&gt; 来检查一个机器是否满足安装条件。&lt;/p&gt;
-&lt;p&gt; 使用 &lt;code&gt;./tools/kolla-ansible deploy&lt;/code&gt; 来开始正式安装。安装会很快，我机器上，几分钟就安装完成了。&lt;/p&gt;
-&lt;p&gt; 最后，使用 &lt;code&gt;./tools/kolla-ansible post-deploy&lt;/code&gt; 来生成 &lt;code&gt;/etc/kolla/admin-openrc.sh&lt;/code&gt; 文件用来加载认证变量。&lt;/p&gt;
-&lt;h1 id="_3"&gt; 查看安装后的状态 &lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;$ docker ps
-IMAGE                                                   COMMAND                 STATUS              PORTS               NAMES
-lokolla/centos-source-horizon:2.0.0                     &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;15&lt;/span&gt; minutes                           horizon
-lokolla/centos-source-heat-engine:2.0.0                 &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;16&lt;/span&gt; minutes                           heat_engine
-lokolla/centos-source-heat-api-cfn:2.0.0                &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;16&lt;/span&gt; minutes                           heat_api_cfn
-lokolla/centos-source-heat-api:2.0.0                    &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;16&lt;/span&gt; minutes                           heat_api
-lokolla/centos-source-neutron-agents:2.0.0              &lt;span class="s2"&gt;"/start.sh"&lt;/span&gt;             Up &lt;span class="m"&gt;16&lt;/span&gt; minutes                           neutron_agents
-lokolla/centos-source-neutron-openvswitch-agent:2.0.0   &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;16&lt;/span&gt; minutes                           neutron_openvswitch_agent
-lokolla/centos-source-neutron-server:2.0.0              &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;16&lt;/span&gt; minutes                           neutron_server
-lokolla/centos-source-openvswitch-vswitchd:2.0.0        &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;16&lt;/span&gt; minutes                           openvswitch_vswitchd
-lokolla/centos-source-openvswitch-db-server:2.0.0       &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;16&lt;/span&gt; minutes                           openvswitch_db
-lokolla/centos-source-nova-compute:2.0.0                &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;17&lt;/span&gt; minutes                           nova_compute
-lokolla/centos-source-nova-scheduler:2.0.0              &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;17&lt;/span&gt; minutes                           nova_scheduler
-lokolla/centos-source-nova-novncproxy:2.0.0             &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;17&lt;/span&gt; minutes                           nova_novncproxy
-lokolla/centos-source-nova-consoleauth:2.0.0            &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;17&lt;/span&gt; minutes                           nova_consoleauth
-lokolla/centos-source-nova-conductor:2.0.0              &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;17&lt;/span&gt; minutes                           nova_conductor
-lokolla/centos-source-nova-api:2.0.0                    &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;17&lt;/span&gt; minutes                           nova_api
-lokolla/centos-source-nova-libvirt:2.0.0                &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;17&lt;/span&gt; minutes                           nova_libvirt
-lokolla/centos-source-glance-api:2.0.0                  &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;17&lt;/span&gt; minutes                           glance_api
-lokolla/centos-source-glance-registry:2.0.0             &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;17&lt;/span&gt; minutes                           glance_registry
-lokolla/centos-source-keystone:2.0.0                    &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;18&lt;/span&gt; minutes                           keystone
-lokolla/centos-source-rabbitmq:2.0.0                    &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;18&lt;/span&gt; minutes                           rabbitmq
-lokolla/centos-source-data:2.0.0                        &lt;span class="s2"&gt;"/bin/sleep infinity"&lt;/span&gt;   Up &lt;span class="m"&gt;18&lt;/span&gt; minutes                           rabbitmq_data
-lokolla/centos-source-mariadb:2.0.0                     &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;19&lt;/span&gt; minutes                           mariadb
-lokolla/centos-source-memcached:2.0.0                   &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;19&lt;/span&gt; minutes                           memcached
-lokolla/centos-source-haproxy:2.0.0                     &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;20&lt;/span&gt; minutes                           haproxy
-lokolla/centos-source-keepalived:2.0.0                  &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;20&lt;/span&gt; minutes                           keepalived
-lokolla/centos-source-kolla-ansible:2.0.0               &lt;span class="s2"&gt;"/bin/sleep infinity"&lt;/span&gt;   Up &lt;span class="m"&gt;20&lt;/span&gt; minutes                           kolla_ansible
-lokolla/centos-source-rsyslog:2.0.0                     &lt;span class="s2"&gt;"kolla_start"&lt;/span&gt;           Up &lt;span class="m"&gt;20&lt;/span&gt; minutes                           rsyslog
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt; 为了显示好看，我去掉了一些无关的列。通过上面，可以看出 &lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt; 多数 container 里是由 kolla_start 这个脚本启动起来的 &lt;/li&gt;
-&lt;li&gt; 由于 kolla 使用的是 &lt;code&gt;--net=host&lt;/code&gt; 网络，所以没有必要做端口映射 &lt;/li&gt;
-&lt;li&gt; 每个模块拆分成了多个 container, 如 nova 被拆分成了 nova_api, nova_libvirt, nova_conductor, nova_novncproxy, nova_compute 等多个 container。很好的遵守了一个容器一个进程的原则。&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="Kolla"></category><category term="OpenStack"></category></entry><entry><title>OpenStack Kolla 项目介绍</title><link href="http://xcodest.me/kolla-introduce.html" rel="alternate"></link><updated>2016-01-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-01-11:kolla-introduce.html</id><summary type="html">
+&lt;/div&gt;</summary><category term="Kolla"></category></entry><entry><title>OpenStack Kolla 项目介绍</title><link href="http://xcodest.me/kolla-introduce.html" rel="alternate"></link><updated>2016-01-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-01-11:kolla-introduce.html</id><summary type="html">
 &lt;h1 id="_1"&gt; 项目目标 &lt;/h1&gt;
 &lt;p&gt;Kolla 提供了生产级别的 OpenStack Service Containers。基于社区的最佳实践，提供了
 更好，更快，更可靠的 , 操作 OpenStack 的部署工具。&lt;/p&gt;
@@ -378,7 +380,7 @@ multihost 的环境 &lt;/p&gt;
 &lt;/div&gt;</summary><category term="Kolla"></category><category term="OpenStack"></category></entry><entry><title>Get all the repo from OpenStack</title><link href="http://xcodest.me/get-all-repos-from-openstack.html" rel="alternate"></link><updated>2016-01-06T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-01-06:get-all-repos-from-openstack.html</id><summary type="html">&lt;p&gt;OpenStack 的源因为你我都知道的原因，一直不稳定，导致 devstack 时经常失败。特定写了个脚本，可以拿到所有的仓库地址，方便做本地的 mirror。&lt;/p&gt;
 &lt;p&gt; 脚本在 gist&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; 上。&lt;/p&gt;
 &lt;p&gt; 使用方法：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;pip install PyGithub
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install PyGithub
 python openstack_repo.py -u &amp;lt;github_username&amp;gt; -p &amp;lt;github_password&amp;gt; \
     -o repos.txt
 &lt;/pre&gt;&lt;/div&gt;
@@ -473,7 +475,7 @@ if __name__ == "__main__":
 &lt;/ol&gt;
 &lt;/div&gt;</summary><category term="OpenStach Python"></category></entry><entry><title>Glance Create Image from Existent Image in Ceph</title><link href="http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html" rel="alternate"></link><updated>2015-06-04T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-06-04:glance-create-image-from-existent-image-in-ceph.html</id><summary type="html">&lt;p&gt; 当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。&lt;/p&gt;
 &lt;p&gt; 可以先用 rbd 上传镜像，转换格式 ( 也会比较慢，还不如直接上传 RAW 格式的镜像 )。然后再做好对应的 snap , 并加以保护。是后一步的 location 必须按格式写 ( 见 [0])，这样才会使用 rbd 的 COW clone 功能。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# image format 2 support layering&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# image format 2 support layering&lt;/span&gt;
 rbd --image-format &lt;span class="m"&gt;2&lt;/span&gt; import /tmp/ubuntu14.04.2.dsk $uuid
 
 &lt;span class="c1"&gt;# Convert to raw image type&lt;/span&gt;
@@ -504,7 +506,7 @@ Including&lt;/p&gt;
 &lt;li&gt;RHEL-6.3-x86_64-DVD.iso&lt;/li&gt;
 &lt;li&gt;ubuntu-14.04.1-server-amd64.iso&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;git clone https://github.com/clalancette/oz.git
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/clalancette/oz.git
 cd oz
 git clone https://github.com/jeffrey4l/oz-templates.git
 cd oz-templates
@@ -544,7 +546,7 @@ make all
 &lt;/ul&gt;
 &lt;h1 id="_2"&gt; 使用组合：&lt;/h1&gt;
 &lt;p&gt;nova-network + libvirt&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;nova_api_class=nova.network.api.API
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nova_api_class=nova.network.api.API
 security_group_ap=nova
 linuxnet_interface_driver=nova.network.linux_net.LinuxBridgeInterfaceDriver
 firewall_driver=nova.virt.firewall.IptablesFirewallDrive
@@ -552,7 +554,7 @@ firewall_driver=nova.virt.firewall.IptablesFirewallDrive
 
 
 &lt;p&gt;neutron + ml2 + linuxbridge plugin + libvirt&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;nova_api_class=nova.network.neutronv2.API
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nova_api_class=nova.network.neutronv2.API
 security_group_ap=neutron
 linuxnet_interface_driver=nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
 firewall_driver=nova.virt.firewall.NoopFirewallDriver
@@ -560,7 +562,7 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 
 
 &lt;p&gt;neutron + ml2 + ovs plugin + libvirt&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;nova_api_class=nova.network.neutronv2.API
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nova_api_class=nova.network.neutronv2.API
 security_group_ap=neutron
 linuxnet_interface_driver=nova.network.linux_net.linuxOVSInterfaceDriver
 firewall_driver=nova.virt.firewall.NoopFirewallDriver
@@ -577,7 +579,7 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 &lt;/ol&gt;</summary><category term="Network"></category></entry><entry><title>Cinder V2 API</title><link href="http://xcodest.me/cinder-v2-api.html" rel="alternate"></link><updated>2015-03-10T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-10:cinder-v2-api.html</id><summary type="html">&lt;p&gt;cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).&lt;/p&gt;
 &lt;h1 id="enable-the-v2-in-cinder"&gt;Enable the v2 in cinder&lt;/h1&gt;
 &lt;p&gt;Change the following config. The v1 and v2 is enabled in default.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# DEPRECATED: Deploy v1 of the Cinder API. (boolean value)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# DEPRECATED: Deploy v1 of the Cinder API. (boolean value)&lt;/span&gt;
 &lt;span class="c1"&gt;#enable_v1_api=true&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Deploy v2 of the Cinder API. (boolean value)&lt;/span&gt;
@@ -587,7 +589,7 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 
 &lt;h1 id="enable-the-cinder-v2-api-in-nova"&gt;Enable the cinder v2 api in nova&lt;/h1&gt;
 &lt;p&gt;In current nova config ( juno ), the default config like below. Depend on &lt;code&gt;catalog_info&lt;/code&gt; key, it use the v2 first. If v2 is not found, it will fall back to v1 version.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[cinder]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[cinder]&lt;/span&gt;
 
 &lt;span class="c1"&gt;#&lt;/span&gt;
 &lt;span class="c1"&gt;# Options defined in nova.volume.cinder&lt;/span&gt;
@@ -617,7 +619,7 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 
 
 &lt;p&gt;You can just add the endpoint to the keystone to enable the cinder v2 api.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;keystone service-create --name&lt;span class="o"&gt;=&lt;/span&gt;cinderv2 --type&lt;span class="o"&gt;=&lt;/span&gt;volumev2 &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;keystone service-create --name&lt;span class="o"&gt;=&lt;/span&gt;cinderv2 --type&lt;span class="o"&gt;=&lt;/span&gt;volumev2 &lt;span class="se"&gt;\&lt;/span&gt;
   --description&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Cinder Volume Service V2&amp;quot;&lt;/span&gt;
 
 keystone endpoint-create &lt;span class="se"&gt;\&lt;/span&gt;
@@ -669,7 +671,7 @@ nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $D
 程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。&lt;/p&gt;
 &lt;p&gt; 因为是通过 middleware 来控制的，所以只要修改一下 paster 的配置就行。更简单的是指定
 glance-api 加载的 pipeline 的名字。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[deploy]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[deploy]&lt;/span&gt;
 &lt;span class="c1"&gt;# possible value: none, cachine, keystone, keystone+caching, &lt;/span&gt;
 &lt;span class="c1"&gt;# keystone+cachemanagement&lt;/span&gt;
 &lt;span class="c1"&gt;# This value can get from glance-api-paste.conf file&lt;/span&gt;
@@ -678,7 +680,7 @@ glance-api 加载的 pipeline 的名字。&lt;/p&gt;
 
 
 &lt;p&gt; 具体看下 &lt;code&gt;glance-api-paster.conf&lt;/code&gt; 文件就能明白。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[pipeline:glance-api]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[pipeline:glance-api]&lt;/span&gt;
 &lt;span class="na"&gt;pipeline&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;versionnegotiation unauthenticated-context rootapp&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Use this pipeline for image caching and no auth&lt;/span&gt;
@@ -709,7 +711,7 @@ glance-api 加载的 pipeline 的名字。&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://docs.openstack.org/developer/glance/cache.html"&gt;The Glance Image Cache&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;</summary><category term="Glance"></category></entry><entry><title>Dhcp lease errors in vlan mode</title><link href="http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html" rel="alternate"></link><updated>2013-08-27T08:50:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2013-08-27:dhcp-lease-errors-in-vlan-mode.html</id><summary type="html">&lt;p&gt; 在使用 &lt;code&gt;keepalived&lt;/code&gt; 的过程中，出现了 dhcp 失败，而导致 keepalived 工作不正常的问题。而且之前也出现过 dhcp 偶尔失败，导致虚拟机不能得到 IP, 从而不能访问的情况。虽然在 &lt;code&gt;/etc/sysconfig/network-scripts/ifcfg-eth0&lt;/code&gt; 中加上了如下语句：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;PERSISTENT_DHCLIENT=1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;PERSISTENT_DHCLIENT=1
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -739,7 +741,7 @@ to deal with this issue by upgrading dnsmasq. It would be great if the various
 distributionss could upgrade as well, or at least try to patch in the fix. If
 upgrading dnsmasq is out of the question, a possible workaround is to minimize
 lease renewals with something like the following combination of config options.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;# release leases immediately on terminate
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# release leases immediately on terminate
 force_dhcp_release=true
 # one week lease time
 dhcp_lease_time=604800

@@ -105,14 +105,14 @@
 <p> 由于是用 Python 编写的，安装起来和普通 Python 应用没有太大区别。可以通过源码，pypi, 操作系统的包管理进行安装。</p>
 <h1 id="_1"> 系统包管理 </h1>
 <h2 id="rpm">RPM 系 </h2>
-<div class="highlight"><pre># install epel source
+<div class="highlight"><pre><span></span># install epel source
 yum install -y epel-release
 yum install ansible
 </pre></div>
 
 
 <h2 id="apt">Apt 系 </h2>
-<div class="highlight"><pre>apt-get install -y software-properties-common
+<div class="highlight"><pre><span></span>apt-get install -y software-properties-common
 apt-add-repository -y ppa:ansible/ansible
 apt-get update
 apt-get install -y ansible
@@ -121,12 +121,12 @@ apt-get install -y ansible
 
 <h1 id="pypi">pypi 安装 </h1>
 <p> 通过 pypi 相当简单，直接用 pip 就可安装 </p>
-<div class="highlight"><pre>pip install ansible
+<div class="highlight"><pre><span></span>pip install ansible
 </pre></div>
 
 
 <h1 id="_2"> 源码安装 </h1>
-<div class="highlight"><pre><span class="c1"># download the source from github</span>
+<div class="highlight"><pre><span></span><span class="c1"># download the source from github</span>
 <span class="c1"># ansible has two git submodules, so the --recursive is required.</span>
 git clone git://github.com/ansible/ansible.git --recursive
 <span class="nb">cd</span> ./ansible

@@ -139,7 +139,7 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;h1 id="_1"&gt; 讨论的优先级安排 &lt;/h1&gt;
 &lt;p&gt; 首先对本次讨论进行了优先级安排 &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Upgrades： 这是现在的重中之重。如何能对现有的 Kolla 进行平滑的升级。包括 OpenStack 组件和基础服务组件 ( 如 MariaDb 等 )。&lt;/li&gt;
+&lt;li&gt;Upgrades： 这是现在的重中之重。如何能对现有的 Kolla 进行平滑的升级。包括 OpenStack 组件和基础服务组件 ( 如 MariaDB 等 )。&lt;/li&gt;
 &lt;li&gt;diagnostics/logging: 主要是指 ELK。&lt;/li&gt;
 &lt;li&gt;stability of deployment&lt;/li&gt;
 &lt;li&gt;Security&lt;/li&gt;
@@ -202,7 +202,16 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;li&gt; 创新一个新的仓库包含一些共用的模板 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h1 id="roadmap"&gt;Roadmap&lt;/h1&gt;
-&lt;p&gt;Netron, Ocata， P 版本的功路线图 &lt;sup id="fnref:7"&gt;&lt;a class="footnote-ref" href="#fn:7" rel="footnote"&gt;7&lt;/a&gt;&lt;/sup&gt;。你更期待什么功能呢 ?&lt;/p&gt;
+&lt;p&gt;Mitaka, Netron, Ocata， P 版本的功路线图 &lt;sup id="fnref:7"&gt;&lt;a class="footnote-ref" href="#fn:7" rel="footnote"&gt;7&lt;/a&gt;&lt;/sup&gt;。你更期待什么功能呢 ?&lt;/p&gt;
+&lt;h2 id="mitaka-3-roadmap"&gt;Mitaka-3 Roadmap&lt;/h2&gt;
+&lt;p&gt;Mitaka 进入最后的阶段，还有一些重要功能在开发中，现在主要还有以下几点。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;diagnostics&lt;/li&gt;
+&lt;li&gt;reconfigure services on a redeploy&lt;/li&gt;
+&lt;li&gt;infrastructure services upgrades such as mariadb&lt;/li&gt;
+&lt;li&gt;migration path for data volumes&lt;/li&gt;
+&lt;li&gt;functional tests in gate (boot a vm &amp;amp; ping test)&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id="newton-roadmap"&gt;Newton Roadmap&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;voting gates&lt;/li&gt;

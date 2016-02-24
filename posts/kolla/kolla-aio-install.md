@@ -1,5 +1,5 @@
 title: OpenStack Kolla AIO Install
-date: 2016-1-31
+date: 2016-2-24
 tags: Kolla, OpenStack
 category: OpenStack
 slug: kolla-aio-install
@@ -10,8 +10,8 @@ slug: kolla-aio-install
 Kolla 依赖于以下几个主要组件
 
 * Ansible &gt; 1.9.4, &lt; 2.0
-* Docker &gt; 1.9.0
-* docker-py &gt; 1.6.0
+* Docker &gt; 1.10.0
+* docker-py &gt; 1.7.0
 * python jinja2 &gt; 2.6.0
 
 几点说明：
@@ -53,9 +53,16 @@ yum install -y ansible docker-engine git gcc python-setuptools
 easy_install -U pip
 ```
 
-并启动 Docker 服务
+Docker 现在使用了 shared mount 功能，默认没有打开，需要手动修改 Docker 启动文件 `/usr/lib/systemd/system/docker.service` 的 MountFlags
 
 ```
+sed -i 's/MountFlags.*/MountFlags=shared/' /usr/lib/systemd/system/docker.service
+```
+
+启动 Docker 服务
+
+```
+systemctl daemon-reload
 systemctl enable docker
 systemctl start docker
 ```
@@ -92,10 +99,10 @@ push = false
 接下来就是进行漫长的 build, 这个过程主要依赖机器性能和网速。如果快的话，20多分钟就完成。如果有问题的话，会很久。不过依赖于 Docker Build 的 Cache 功能，就算重跑的话，之前已经 Build 好的也会很快完成。
 
 ```
-./tool/build.py -p main
+./tool/build.py -p default
 ```
 
-参数中的 `-p main` 是指定了只 build 主要的 image, 包括: cinder, ceilometer, glance, heat, horizon, keystone, neutron, nova, swift. 这些可以只生成的 `kolla-build.conf` 里找到。
+参数中的 `-p default` 是指定了只 build 主要的 image, 包括: mariadb, rabbitmq, cinder, ceilometer, glance, heat, horizon, keystone, neutron, nova, swift等 . 这些可以只生成的 `kolla-build.conf` 里找到。
 
 如果 Build 完成之后，使用 `docker images` 能看到所有已经 build 好的镜像。
 
@@ -147,35 +154,33 @@ Commands:
 # 查看安装后的状态
 
 ```
-$ docker ps
-IMAGE                                                   COMMAND                 STATUS              PORTS               NAMES
-lokolla/centos-source-horizon:2.0.0                     "kolla_start"           Up 15 minutes                           horizon
-lokolla/centos-source-heat-engine:2.0.0                 "kolla_start"           Up 16 minutes                           heat_engine
-lokolla/centos-source-heat-api-cfn:2.0.0                "kolla_start"           Up 16 minutes                           heat_api_cfn
-lokolla/centos-source-heat-api:2.0.0                    "kolla_start"           Up 16 minutes                           heat_api
-lokolla/centos-source-neutron-agents:2.0.0              "/start.sh"             Up 16 minutes                           neutron_agents
-lokolla/centos-source-neutron-openvswitch-agent:2.0.0   "kolla_start"           Up 16 minutes                           neutron_openvswitch_agent
-lokolla/centos-source-neutron-server:2.0.0              "kolla_start"           Up 16 minutes                           neutron_server
-lokolla/centos-source-openvswitch-vswitchd:2.0.0        "kolla_start"           Up 16 minutes                           openvswitch_vswitchd
-lokolla/centos-source-openvswitch-db-server:2.0.0       "kolla_start"           Up 16 minutes                           openvswitch_db
-lokolla/centos-source-nova-compute:2.0.0                "kolla_start"           Up 17 minutes                           nova_compute
-lokolla/centos-source-nova-scheduler:2.0.0              "kolla_start"           Up 17 minutes                           nova_scheduler
-lokolla/centos-source-nova-novncproxy:2.0.0             "kolla_start"           Up 17 minutes                           nova_novncproxy
-lokolla/centos-source-nova-consoleauth:2.0.0            "kolla_start"           Up 17 minutes                           nova_consoleauth
-lokolla/centos-source-nova-conductor:2.0.0              "kolla_start"           Up 17 minutes                           nova_conductor
-lokolla/centos-source-nova-api:2.0.0                    "kolla_start"           Up 17 minutes                           nova_api
-lokolla/centos-source-nova-libvirt:2.0.0                "kolla_start"           Up 17 minutes                           nova_libvirt
-lokolla/centos-source-glance-api:2.0.0                  "kolla_start"           Up 17 minutes                           glance_api
-lokolla/centos-source-glance-registry:2.0.0             "kolla_start"           Up 17 minutes                           glance_registry
-lokolla/centos-source-keystone:2.0.0                    "kolla_start"           Up 18 minutes                           keystone
-lokolla/centos-source-rabbitmq:2.0.0                    "kolla_start"           Up 18 minutes                           rabbitmq
-lokolla/centos-source-data:2.0.0                        "/bin/sleep infinity"   Up 18 minutes                           rabbitmq_data
-lokolla/centos-source-mariadb:2.0.0                     "kolla_start"           Up 19 minutes                           mariadb
-lokolla/centos-source-memcached:2.0.0                   "kolla_start"           Up 19 minutes                           memcached
-lokolla/centos-source-haproxy:2.0.0                     "kolla_start"           Up 20 minutes                           haproxy
-lokolla/centos-source-keepalived:2.0.0                  "kolla_start"           Up 20 minutes                           keepalived
-lokolla/centos-source-kolla-ansible:2.0.0               "/bin/sleep infinity"   Up 20 minutes                           kolla_ansible
-lokolla/centos-source-rsyslog:2.0.0                     "kolla_start"           Up 20 minutes                           rsyslog
+IMAGE                                                  COMMAND                 NAMES
+lokolla/centos-source-keystone:2.0.0                   "kolla_start"           keystone
+lokolla/centos-source-horizon:2.0.0                    "kolla_start"           horizon
+lokolla/centos-source-neutron-metadata-agent:2.0.0     "kolla_start"           neutron_metadata_agent
+lokolla/centos-source-neutron-l3-agent:2.0.0           "kolla_start"           neutron_l3_agent
+lokolla/centos-source-neutron-dhcp-agent:2.0.0         "kolla_start"           neutron_dhcp_agent
+lokolla/centos-source-neutron-openvswitch-agent:2.0.0  "kolla_start"           neutron_openvswitch_agent
+lokolla/centos-source-neutron-server:2.0.0             "kolla_start"           neutron_server
+lokolla/centos-source-openvswitch-vswitchd:2.0.0       "kolla_start"           openvswitch_vswitchd
+lokolla/centos-source-openvswitch-db-server:2.0.0      "kolla_start"           openvswitch_db
+lokolla/centos-source-nova-compute:2.0.0               "kolla_start"           nova_compute
+lokolla/centos-source-nova-libvirt:2.0.0               "kolla_start"           nova_libvirt
+lokolla/centos-source-nova-conductor:2.0.0             "kolla_start"           nova_conductor
+lokolla/centos-source-nova-scheduler:2.0.0             "kolla_start"           nova_scheduler
+lokolla/centos-source-nova-novncproxy:2.0.0            "kolla_start"           nova_novncproxy
+lokolla/centos-source-nova-consoleauth:2.0.0           "kolla_start"           nova_consoleauth
+lokolla/centos-source-nova-api:2.0.0                   "kolla_start"           nova_api
+lokolla/centos-source-glance-api:2.0.0                 "kolla_start"           glance_api
+lokolla/centos-source-glance-registry:2.0.0            "kolla_start"           glance_registry
+lokolla/centos-source-rabbitmq:2.0.0                   "kolla_start"           rabbitmq
+lokolla/centos-source-mariadb:2.0.0                    "kolla_start"           mariadb
+lokolla/centos-source-memcached:2.0.0                  "kolla_start"           memcached
+lokolla/centos-source-keepalived:2.0.0                 "kolla_start"           keepalived
+lokolla/centos-source-haproxy:2.0.0                    "kolla_start"           haproxy
+lokolla/centos-source-kolla-toolbox:2.0.0              "/bin/sleep infinity"   kolla_toolbox
+lokolla/centos-source-heka:2.0.0                       "kolla_start"           heka
+lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           rsyslog
 ```
 
 为了显示好看，我去掉了一些无关的列。通过上面，可以看出

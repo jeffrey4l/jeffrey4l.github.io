@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+          <title> Code Review 神器 -- Gertty -   - Xcodest</title>
+        <meta charset="utf-8" />
+
+
+
+    <meta name="tags" contents="CodeReview" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
+        <script src="http://xcodest.me/theme/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://xcodest.me/theme/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://xcodest.me/theme/js/xcodest.js" type="text/javascript" charset="utf-8"></script>
+        <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
+</head>
+
+<body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+          <div class="navbar navbar-default">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target="#sidebar">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://xcodest.me">
+                  Xcodest
+                </a>
+              </div>
+              <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                  <li><a href="/archives.html">Archives</a></li>
+                  <li><a href="/tags.html">Tags</a></li>
+                  <li>
+                    <a href="http://xcodest.me/pages/about.html">About</a>
+                  </li>
+                </ul>
+                <form class="navbar-form navbar-right" action="https://google.com/search" target="_blank">
+                  <div class="input-group">
+                    <input name="q" type="text" class="form-control" required placeholder="Search Xcodest.com..."/>
+                    <input type="hidden" name="sitesearch" value="xcodest.me"/>
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                      </button>
+                    </span>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
+          <div class="panel panel-default">
+            <div class="panel-heading">Categories</div>
+            <div class="list-group">
+              <a class="list-group-item" href="http://xcodest.me/category/life.html">Life</a>
+              <a class="list-group-item" href="http://xcodest.me/category/linux.html">Linux</a>
+              <a class="list-group-item" href="http://xcodest.me/category/openstack.html">OpenStack</a>
+              <a class="list-group-item" href="http://xcodest.me/category/programming.html">Programming</a>
+              <a class="list-group-item" href="http://xcodest.me/category/python.html">Python</a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Social</div>
+            <div class="list-group">
+ 
+              <a class="list-group-item" href="http://github.com/jeffrey4l" target="_blank">Github</a>
+ 
+              <a class="list-group-item" href="https://twitter.com/Jeffrey4l" target="_blank">Twitter</a>
+ 
+              <a class="list-group-item" href="http://weibo.com/jeffrey4l" target="_blank">微博</a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Blogroll</div>
+            <div class="list-group">
+              <a class="list-group-item" href="http://chenshake.com/" target="_blank">陈沙克日志</a>
+              <a class="list-group-item" href="http://coolshell.cn" target="_blank">酷壳 - CoolShell.Cn</a>
+              <a class="list-group-item" href="https://sebastien-han.fr/" target="_blank">SÉBASTIEN HAN</a>
+              <a class="list-group-item" href="http://blog.csdn.net/quqi99" target="_blank">技术并艺术着</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 col-xs-12">
+<div class="row">
+  <div class="col-md-12 col-xs-12">
+  <section id="content" class="body">
+  <header>
+    <h2 class="entry-title">Code Review 神器 -- Gertty</h2>
+    <span class="post-date"> 2016-04-11 </span>
+  </header>
+  <div class="entry-content">
+      <div class="toc">
+<ul>
+<li><a href="#_1">安装</a></li>
+<li><a href="#_2">配置</a></li>
+<li><a href="#_3">总结</a></li>
+<li><a href="#ref">REF</a></li>
+</ul>
+</div>
+    
+<p> 现在很多项目都使用 Gerrit 做为代码 Review 工具。OpenStack 所有的项目就是放在 Gerrit 上的。Gerrit 提供了一个 Web 页面来做 Code Review。今天我介绍一个更加高效的工具来处理 Gerrit Review。它的名字叫 gertty。</p>
+<p>Gertty 的 OpenStack 下面的一个项目 <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>，官方的介绍是：Gertty is a console-based interface to the Gerrit Code Review system。就是一个基于终端的 Gerrit 代码 Review 工具。</p>
+<p> 相比较 Web 版本，它的优势体现在 </p>
+<ul>
+<li> 工作流程 - Gertty 的界面设计和邮件、网络消息的设计很类似，很容易上手。而且它特别适合多个项目时处理大量 Review 请求。</li>
+<li> 离线使用 - Gertty 会把 Gerrit 上你订阅的项目的所有的数据同步到本地。包括 Git 仓库，所有的 Review 信息。你本地所有的 Review 操作也会同步到 Gertty。</li>
+<li> 速度 - 因为 Gertty 会把数据都同步到本地，你的操作也会存放到本地，之后在统一同步到服务器，所以速度是很快的。</li>
+<li> 方便 - Gertty 把所有的 Changes 都同步到了本地，你可以很方便的 checkout 到正在 Review 的代码 </li>
+</ul>
+<h1 id="_1"> 安装 </h1>
+<p>gertty 就是一个 Python 写的应用，所以安装很方便。可以从 pypi 安装，也可以从直接从源码安装。</p>
+<div class="highlight"><pre><span></span>pip install gertty
+</pre></div>
+<p> 从源码安装 </p>
+<div class="highlight"><pre><span></span>git clone https://github.com/openstack/gertty.git
+cd gertty
+pip install .
+</pre></div>
+<h1 id="_2"> 配置 </h1>
+<p>Gertty 使用一个 YAML 格式的配置文件。可以从源码里找到一些例子 <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>。我们以 OpenStack 为例。</p>
+<p> 首先要选配置在 Gerrit 上面配置自己的 HTTP Passowrd。打开 https://review.openstack.org/#/settings/http-password , 去修改里面的 Password</p>
+<p><img alt="Gerrit HTTP Password" class="img-responsive" src="images/openstack_gerrit_http_password.png"/></p>
+<p> 如果使用源码安装，请把把源码里的 <code>examples/openstack-gertty.yaml</code> 文件拷贝到 <code>~/.gertty.yml</code>，修改该文件内容如下 ( 主要是 servers 下面的内容 )，其它部分不用修改：</p>
+<p> 如果使用 pip 安装的，在 <code>/usr/local/share/gertty/examples/openstack-gertty.yaml</code> 这个位置可以找到所需要的文件。</p>
+<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">servers</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">openstack</span>
+    <span class="l l-Scalar l-Scalar-Plain">url</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">https://review.openstack.org/</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Jeffrey4l</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">xxxx</span>
+    <span class="l l-Scalar l-Scalar-Plain">git-root</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">~/</span>
+</pre></div>
+<p> 直接运行 <code>gertty</code>, 看到如下欢迎界面。</p>
+<p><img alt="Gertty Welcome" class="img-responsive" src="images/gertty_welcome.png"/></p>
+<p> 如里面的说明，按 <code>F1</code> 或 <code>?</code> 进帮助， 我们按 <code>L</code> 进项目列表，找到自己感兴趣的项目按 <code>s</code> 进行订阅。</p>
+<p><img alt="Gertty Welcome" class="img-responsive" src="images/gertty_subscribe_project.png"/></p>
+<p> 按 <code>F2</code> 可以看到自己的 changes</p>
+<p><img alt="Gertty Welcome" class="img-responsive" src="images/gertty_my_opened_changes.png"/></p>
+<p> 按 <code>F3</code> 可以看到需要自己 review 的代码 </p>
+<p><img alt="Gertty Welcome" class="img-responsive" src="images/gertty_incoming_changes.png"/></p>
+<p> 基中，高亮的是需要自己 review 的代码，灰色的是已经 review 过的。</p>
+<p> 选择一个进入后，能看到已经所有的 review 信息。包括 CI 的结果，评论，所有的 PatchSet。</p>
+<p><img alt="Gertty Review Code" class="img-responsive" src="images/gertty_review_changeset.png"/></p>
+<p> 再按 <code>d</code>， 可以查看修改的 diff</p>
+<p><img alt="Gerrty Code Diff" class="img-responsive" src="images/gertty_code_diff.png"/></p>
+<p> 在任何界面都可以按 <code>F1</code> 或 <code>?</code> 打开帮助，查看该界面下有哪些按键可以用。</p>
+<h1 id="_3"> 总结 </h1>
+<ul>
+<li> 由于 gertty 把所有数据都同步下来了，做 review 确实很快。</li>
+<li>gertty.yaml 配置文件里支持修改按键功能，如果觉得默认键位不舒服，可以进行修改，可定制性很高。更多的配置项信息可以看 <code>examples/reference-gertty.yml</code> 文件里的内容 </li>
+</ul>
+<h1 id="ref">REF</h1>
+<div class="footnote">
+<hr/>
+<ol>
+<li id="fn:1">
+<p><a href="https://github.com/openstack/gertty">https://github.com/openstack/gertty</a> <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+</li>
+<li id="fn:2">
+<p><a href="https://github.com/openstack/gertty/tree/master/examples">https://github.com/openstack/gertty/tree/master/examples</a> <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
+</li>
+</ol>
+</div>
+  </div><!-- /.entry-content -->
+  <div>
+    <nav>
+      <ul class="pager">
+        <li class="previous"><a href="cloud-init-cause-vm-boot-slow.html">&larr; Older</a></li>
+        <li class="next disabled"><a href="#">Newer &rarr;</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="entry-info">
+    <p> Tags: <a href="http://xcodest.me/tag/codereview.html">CodeReview</a>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'effective-code-review-tool-gertty.html';
+        var disqus_url = 'http://xcodest.me/effective-code-review-tool-gertty.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+</div>
+</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12 text-center footer">
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1257099267'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1257099267' type='text/javascript'%3E%3C/script%3E"));</script>
+        </div>
+    </div>
+</body>
+</html>

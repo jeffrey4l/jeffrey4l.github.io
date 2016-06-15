@@ -1,5 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/openstack.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2016-02-24T00:00:00+08:00</updated><entry><title>OpenStack Kolla AIO Install</title><link href="http://xcodest.me/kolla-aio-install.html" rel="alternate"></link><updated>2016-02-24T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-02-24:kolla-aio-install.html</id><summary type="html">
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/openstack.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2016-04-10T00:00:00+08:00</updated><entry><title>cloud-init 导致虚拟机启动太慢</title><link href="http://xcodest.me/cloud-init-cause-vm-boot-slow.html" rel="alternate"></link><updated>2016-04-10T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-04-10:cloud-init-cause-vm-boot-slow.html</id><summary type="html">
+&lt;h1 id="_1"&gt; 问题 &lt;/h1&gt;
+&lt;p&gt; 在一个准生产环境中，一直发现虚拟机启动太慢的问题，现像是虚拟机很早就能 ping 到，但是就是 ssh 不进去。要么报端口没有开启，要么就 Public Key 不对。整个过程大概要 2 分多钟才能直接 ssh 进去。&lt;/p&gt;
+&lt;h1 id="_2"&gt; 背景知识 &lt;/h1&gt;
+&lt;p&gt;cloud-init 这个服务是从 AWS 学来的。它安装在虚拟机中，在启动虚拟机时，做一些初始化工作。如：硬盘分区自动扩展，SSH Public Key 注入，用户创建等。用户甚至可以注入一些 shell 脚本到虚拟机中运行。在自动化方便启了很大的作用。Heat 的实现就依赖于 cloud-init 服务。&lt;/p&gt;
+&lt;p&gt; 在 OpenStack 上，cloud-init 应该从 &lt;code&gt;http://169.254.169.254&lt;/code&gt; 去拿到所需要的信息。而这个服务是通过 iptables 转到了 neutron-metadata-agent 服务上 &lt;/p&gt;
+&lt;h1 id="_3"&gt; 环境 &lt;/h1&gt;
+&lt;p&gt; 使用 Kolla 安装的 OpenStack Mitaka 版本的多机环境，镜像使用的是 CentOS 7 和 Ubuntu 14.04, 均是从官方下载的。由于一些安全限制，虚拟机不能访问外网。&lt;/p&gt;
+&lt;h1 id="_4"&gt; 调试 &lt;/h1&gt;
+&lt;p&gt; 测试虚拟机用的 CentOS 7 系统，&lt;/p&gt;
+&lt;p&gt; 首先看虚拟机的 console log, 发现如下信息 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Starting kdump:[  OK  ]
+Starting cloud-init: Cloud-init v. 0.7.5 running 'init' at Wed, 30 Mar 2016 14:58:36 +0000. Up 40.68 seconds.
+...
+Starting cloud-init: Cloud-init v. 0.7.5 running 'modules:config' at Wed, 30 Mar 2016 14:59:59 +0000. Up 124.27 seconds.
+Starting cloud-init: Cloud-init v. 0.7.5 running 'modules:final' at Wed, 30 Mar 2016 15:00:01 +0000. Up 126.22 seconds.
+...
+Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource DataSourceOpenStack [net,ver=2].  Up 126.41 seconds
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 发现 : cloud-init 服务从开始启动到最后完成，花了 80 多秒，大部分的时间都是花在了 init 环节上。按说是不应该的。&lt;/p&gt;
+&lt;p&gt; 一开始我怀疑是硬盘分区自动扩展慢导致的，但把自动扩展关掉了也还是一样，时间基本没有变化。肯定是其它问题。&lt;/p&gt;
+&lt;p&gt; 万事找日志，要找真正的原因，还是从日志找起。&lt;/p&gt;
+&lt;p&gt; 在 &lt;code&gt;/var/log/&lt;/code&gt; 下找日志，只发现了少量日志。大概看了一个 cloud-init 的源代码，日志应该会有很多的才对。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;-rw-r--r--. &lt;span class="m"&gt;1&lt;/span&gt; root root    &lt;span class="m"&gt;0&lt;/span&gt; Mar &lt;span class="m"&gt;30&lt;/span&gt; 14:58 cloud-init.log
+-rw-r--r--. &lt;span class="m"&gt;1&lt;/span&gt; root root 1.7K Mar &lt;span class="m"&gt;30&lt;/span&gt; 15:00 cloud-init-output.log
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 又尝试修改了 &lt;code&gt;cloud.cfg&lt;/code&gt; 的配置，把日志都都打印到特定文件，如下。但是结果还是一样，没有啥新日志信息。( 其时后来才发现，这个配置默认就存在，在 &lt;code&gt;/etc/cloud/cloud.cfg.d/&lt;/code&gt; 下面 )&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;output&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;{&lt;/span&gt;&lt;span class="nv"&gt;all&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;'|&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;tee&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;-a&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;/var/log/cloud-init-output.log'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 联想到 CentOS 7 用的 systemd 管理器，试图从 systemd 里找日志。先找到了所有的 cloud-init 相关的服务 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ systemctl list-units &lt;span class="p"&gt;|&lt;/span&gt; grep cloud
+cloud-config.service       Apply the settings specified in cloud-config
+cloud-final.service        Execute cloud user/final scripts
+cloud-init-local.service   Initial cloud-init job &lt;span class="o"&gt;(&lt;/span&gt;pre-networking&lt;span class="o"&gt;)&lt;/span&gt;
+cloud-init.service         Initial cloud-init job &lt;span class="o"&gt;(&lt;/span&gt;metadata service crawler&lt;span class="o"&gt;)&lt;/span&gt;
+cloud-config.target        Cloud-config availability
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 可以看到，cloud-init 安装的服务还是有多个的。不同的服务的启动时间点和所做的事情是不一样的。使用 &lt;code&gt;journalctl&lt;/code&gt; 挨个排查后，找到以下日志：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ journalctl -u cloud-init
+...
+Apr &lt;span class="m"&gt;03&lt;/span&gt; 13:19:33 cloud-init&lt;span class="o"&gt;[&lt;/span&gt;780&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="o"&gt;[&lt;/span&gt;CLOUDINIT&lt;span class="o"&gt;]&lt;/span&gt; __init__.py&lt;span class="o"&gt;[&lt;/span&gt;DEBUG&lt;span class="o"&gt;]&lt;/span&gt;: Merging using located merger
+Apr &lt;span class="m"&gt;03&lt;/span&gt; 13:21:13 cloud-init&lt;span class="o"&gt;[&lt;/span&gt;780&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="o"&gt;[&lt;/span&gt;CLOUDINIT&lt;span class="o"&gt;]&lt;/span&gt; DataSourceGCE.py&lt;span class="o"&gt;[&lt;/span&gt;DEBUG&lt;span class="o"&gt;]&lt;/span&gt;: http://metadata.google.internal./computeMetadata/v1/ is not resolvable
+...
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 注意前面的时间点，这两行日志间差了 60 多秒，而且后面是一个错误，明显是在等一个超时，时间是花在这的。至此原因找到了。&lt;/p&gt;
+&lt;h1 id="_5"&gt; 原因分析 &lt;/h1&gt;
+&lt;p&gt;cloud-init 是一个通用程序，能兼容多个云环境。他会从多个数据源里去读 Metadata 数据。其默认的顺序中，GoogleGCE 在 OpenStack 之前，而 GoogleGCE 的源里面，会访问一个 http://metadata.google.internal. 的网址，加上虚拟机不能访问外网，程序会卡在这里，直到超时。才会继续测试 OpenStack 的源是否可用。&lt;/p&gt;
+&lt;h1 id="_6"&gt; 解决方法 &lt;/h1&gt;
+&lt;p&gt; 尽量不要直接使用官方的源，而是自己制作，尤其是 cloud-init 的配置项。要手动修改掉其默认的数据源，以避免以上情况的发生。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# /etc/cloud/cloud.cfg&lt;/span&gt;
+&lt;span class="l l-Scalar l-Scalar-Plain"&gt;datasource_list&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'ConfigDrive'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'OpenStack'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'Ec2'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h1 id="_7"&gt; 总结 &lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;cloud-init 的配置是通用配置，默认情况下适用于多种云环境。如 OpenStack， GoogleGCE 等 &lt;/li&gt;
+&lt;li&gt; 日志很重要，很方便进行程序分析 &lt;/li&gt;
+&lt;li&gt; 镜像还是要自己制作比较好，最好能利用工具做成自动化的。&lt;/li&gt;
+&lt;li&gt; 在使用 systemd 服务的系统里，有一部分日志会打到 systemd 里面。需要使用 &lt;code&gt;journalctl&lt;/code&gt; 来进行查看 &lt;/li&gt;
+&lt;li&gt; 在第二天的一个培训环境中，我发现有同样的问题，就此看来，这个问题还是很常见并很容易触发。如果有条件，还是修复了得好，要不太影响用户体验了。&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="OpenStack"></category></entry><entry><title>OpenStack Kolla AIO Install</title><link href="http://xcodest.me/kolla-aio-install.html" rel="alternate"></link><updated>2016-02-24T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-02-24:kolla-aio-install.html</id><summary type="html">
 &lt;p&gt;Kolla 依赖于以下几个主要组件 &lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Ansible &amp;gt; 1.9.4, &amp;lt; 2.0&lt;/li&gt;
@@ -179,7 +238,7 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt; 解决方法有三种：&lt;/p&gt;
+&lt;p&gt; 解决方法有四种：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt; 直接把 stable/liberty 分支移动到 master 的位置。但是个人感觉不靠谱。&lt;/li&gt;
 &lt;li&gt; 把所有的 commmit squash 后提交到 stable/liberty 分支上 &lt;/li&gt;

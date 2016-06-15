@@ -25,6 +25,7 @@ TRANSLATION_FEED_ATOM = None
 
 # Blogroll
 LINKS = (
+    ('99cloud(九州云)', 'http://99cloud.net'),
     ('陈沙克日志', 'http://chenshake.com/'),
     ('酷壳 - CoolShell.Cn', 'http://coolshell.cn'),
     ('SÉBASTIEN HAN', 'https://sebastien-han.fr/'),

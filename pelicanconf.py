@@ -53,8 +53,6 @@ STATIC_PATHS = ['images', 'extra/CNAME']
 EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'}}
 
 
-DISQUS_SITENAME = 'xcodest'
-
 MENUITEMS = (
     ('Archives', '/archives.html'),
     ('Tags', '/tags.html'),

@@ -28,6 +28,7 @@ LINKS = (
     ('99cloud(九州云)', 'http://99cloud.net'),
     ('陈沙克日志', 'http://chenshake.com/'),
     ('酷壳 - CoolShell.Cn', 'http://coolshell.cn'),
+    ('Steven Dake', 'https://sdake.io/'),
     ('SÉBASTIEN HAN', 'https://sebastien-han.fr/'),
     ('技术并艺术着', 'http://blog.csdn.net/quqi99'),
 )

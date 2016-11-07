@@ -89,6 +89,9 @@ ssh_upload: publish
 rsync_upload: publish
 	rsync -P -rvz --delete $(OUTPUTDIR)/ $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET_DIR) --cvs-exclude
 
+vps: html
+	rsync -P -rvz --delete $(OUTPUTDIR)/ vps:/var/www/blog/
+
 dropbox_upload: publish
 	cp -r $(OUTPUTDIR)/* $(DROPBOX_DIR)
 

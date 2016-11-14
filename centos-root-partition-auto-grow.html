@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-        <title>Category/others - Xcodest</title>
+          <title> CentOS 根分区自动扩展 -   - Xcodest</title>
         <meta charset="utf-8" />
+
+
+
+
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
@@ -62,7 +66,7 @@
               <a class="list-group-item" href="http://xcodest.me/category/life.html">Life</a>
               <a class="list-group-item" href="http://xcodest.me/category/linux.html">Linux</a>
               <a class="list-group-item" href="http://xcodest.me/category/openstack.html">OpenStack</a>
-              <a class="list-group-item active" href="http://xcodest.me/category/others.html">Others</a>
+              <a class="list-group-item" href="http://xcodest.me/category/others.html">Others</a>
               <a class="list-group-item" href="http://xcodest.me/category/programming.html">Programming</a>
               <a class="list-group-item" href="http://xcodest.me/category/python.html">Python</a>
             </div>
@@ -93,23 +97,67 @@
         <div class="col-md-8 col-xs-12">
 <div class="row">
   <div class="col-md-12 col-xs-12">
-    <ol class="breadcrumb">
-      <li><a href="http://xcodest.me">Home</a></li>
-      <li><a href="#">Category</a></li>
-      <li class="active">Others</li>
-    </ol>
-    <div class="list-group">
-        <a class="list-group-item" href="http://xcodest.me/centos-root-partition-auto-grow.html" rel="bookmark" title="Permalink to CentOS 根分区自动扩展">CentOS 根分区自动扩展
-          <span class="badge">2016-11-14</span>
-        </a>
-        <a class="list-group-item" href="http://xcodest.me/docker-init-process.html" rel="bookmark" title="Permalink to Docker init 进程">Docker init 进程
-          <span class="badge">2016-11-07</span>
-        </a>
-        <a class="list-group-item" href="http://xcodest.me/reset-password-in-systemd.html" rel="bookmark" title="Permalink to Reset Password in Systemd">Reset Password in Systemd
-          <span class="badge">2016-08-28</span>
-        </a>
-    </ul><!-- /#posts-list -->
+  <section id="content" class="body">
+  <header>
+    <h2 class="entry-title">CentOS 根分区自动扩展</h2>
+    <span class="post-date"> 2016-11-14 </span>
+  </header>
+  <div class="entry-content">
+    <p>CentOS 5 太老了，完全不支持。</p>
+<p>CentOS 6 要实现分区自动扩展，要安装以下三个包 </p>
+<pre class="literal-block">
+yum install cloud-init cloud-utils-growpart dracut-modules-growroot
+# 生新生成 initramfs
+dracut -f
+</pre>
+<p><tt class="docutils literal">dracut</tt> 把 <tt class="docutils literal">growroot</tt> 的脚本封装到 <tt class="docutils literal">initramfs</tt> 里面。 把系统启动时，
+<tt class="docutils literal">initramfs</tt> 利用 <tt class="docutils literal">growpart</tt> 命令把根分区进行扩展。然后启动真正的
+<tt class="docutils literal">kernel</tt>, 之后 <tt class="docutils literal"><span class="pre">cloud-init</span></tt> 服务会自动把文件系统进行扩展。</p>
+<p> 之所以使用 <tt class="docutils literal">initramfs</tt> 这种方式，原因 [0]：</p>
+<blockquote>
+Growpart called by cloud-init only works for kernels &gt;3.8. Only newer
+kernels support changing the partition size of a mounted partition. When
+using an older kernel the resizing of the root partition happens in the
+initrd stage before the root partition is mounted and the subsequent
+cloud-init growpart run is a no-op.</blockquote>
+<p>CentOS 7 使用的是 3.10 ( &gt; 3.8 ) 的内核，所以并不需要 dracut-modules-growroot
+包 ( 源里面也并没有这个包 )。 只安装以下两个包就可以了。</p>
+<pre class="literal-block">
+yum install cloud-init cloud-utils-growpart
+</pre>
+<ul class="simple">
+<li>[0] <a class="reference external" href="http://openstack.openstack.narkive.com/opyLuPqC/centos-6-5-cloud-init-growpart-resizefs-does-not-work-on-first-boot">http://openstack.openstack.narkive.com/opyLuPqC/centos-6-5-cloud-init-growpart-resizefs-does-not-work-on-first-boot</a></li>
+</ul>
+
+  </div><!-- /.entry-content -->
+  <div>
+    <nav>
+      <ul class="pager">
+        <li class="previous"><a href="docker-init-process.html">&larr; Older</a></li>
+        <li class="next disabled"><a href="#">Newer &rarr;</a></li>
+      </ul>
+    </nav>
   </div>
+  <div class="entry-info">
+    <p>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'centos-root-partition-auto-grow.html';
+        var disqus_url = 'http://xcodest.me/centos-root-partition-auto-grow.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+</div>
 </div>
         </div>
       </div>

@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><atom:link href="http://xcodest.me/feeds/jeffrey4l.rss.xml" rel="self"></atom:link><lastBuildDate>Mon, 07 Nov 2016 00:00:00 +0800</lastBuildDate><item><title>Docker init 进程</title><link>http://xcodest.me/docker-init-process.html</link><description>&lt;p&gt; 应用容器化后，重启容器的时候，经常会很慢，而且 docker daemon 日志中经常会抛出以
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><atom:link href="http://xcodest.me/feeds/jeffrey4l.rss.xml" rel="self"></atom:link><lastBuildDate>Mon, 14 Nov 2016 00:00:00 +0800</lastBuildDate><item><title>CentOS 根分区自动扩展</title><link>http://xcodest.me/centos-root-partition-auto-grow.html</link><description>&lt;p&gt;CentOS 5 太老了，完全不支持。&lt;/p&gt;
+&lt;p&gt;CentOS 6 要实现分区自动扩展，要安装以下三个包 &lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+yum install cloud-init cloud-utils-growpart dracut-modules-growroot
+# 生新生成 initramfs
+dracut -f
+&lt;/pre&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;dracut&lt;/tt&gt; 把 &lt;tt class="docutils literal"&gt;growroot&lt;/tt&gt; 的脚本封装到 &lt;tt class="docutils literal"&gt;initramfs&lt;/tt&gt; 里面。 把系统启动时，
+&lt;tt class="docutils literal"&gt;initramfs&lt;/tt&gt; 利用 &lt;tt class="docutils literal"&gt;growpart&lt;/tt&gt; 命令把根分区进行扩展。然后启动真正的
+&lt;tt class="docutils literal"&gt;kernel&lt;/tt&gt;, 之后 &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;cloud-init&lt;/span&gt;&lt;/tt&gt; 服务会自动把文件系统进行扩展。&lt;/p&gt;
+&lt;p&gt; 之所以使用 &lt;tt class="docutils literal"&gt;initramfs&lt;/tt&gt; 这种方式，原因 [0]：&lt;/p&gt;
+&lt;blockquote&gt;
+Growpart called by cloud-init only works for kernels &amp;gt;3.8. Only newer
+kernels support changing the partition size of a mounted partition. When
+using an older kernel the resizing of the root partition happens in the
+initrd stage before the root partition is mounted and the subsequent
+cloud-init growpart run is a no-op.&lt;/blockquote&gt;
+&lt;p&gt;CentOS 7 使用的是 3.10 ( &amp;gt; 3.8 ) 的内核，所以并不需要 dracut-modules-growroot
+包 ( 源里面也并没有这个包 )。 只安装以下两个包就可以了。&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+yum install cloud-init cloud-utils-growpart
+&lt;/pre&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;[0] &lt;a class="reference external" href="http://openstack.openstack.narkive.com/opyLuPqC/centos-6-5-cloud-init-growpart-resizefs-does-not-work-on-first-boot"&gt;http://openstack.openstack.narkive.com/opyLuPqC/centos-6-5-cloud-init-growpart-resizefs-does-not-work-on-first-boot&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 14 Nov 2016 00:00:00 +0800</pubDate><guid>tag:xcodest.me,2016-11-14:centos-root-partition-auto-grow.html</guid></item><item><title>Docker init 进程</title><link>http://xcodest.me/docker-init-process.html</link><description>&lt;p&gt; 应用容器化后，重启容器的时候，经常会很慢，而且 docker daemon 日志中经常会抛出以
 下错误 &lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 dockerd[559]: msg=&amp;quot;Container 5054f failed to exit within 10 seconds of

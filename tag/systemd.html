@@ -1,15 +1,8 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-          <title> Dhcp lease errors in vlan mode -   - Xcodest</title>
+        <title>Tag/systemd - Xcodest</title>
         <meta charset="utf-8" />
-
-
-
-    <meta name="tags" contents="DHCP" />
-    <meta name="tags" contents="Network" />
-    <meta name="tags" contents="VLAN" />
-
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
@@ -100,82 +93,18 @@
         <div class="col-md-8 col-xs-12">
 <div class="row">
   <div class="col-md-12 col-xs-12">
-  <section id="content" class="body">
-  <header>
-    <h2 class="entry-title">Dhcp lease errors in vlan mode</h2>
-    <span class="post-date"> 2013-08-27 </span>
-  </header>
-  <div class="entry-content">
-    <p> 在使用 <code>keepalived</code> 的过程中 ， 出现了 dhcp 失败 ， 而导致 keepalived 工作不正常的问题 。 而且之前也出现过 dhcp 偶尔失败 ， 导致虚拟机不能得到 IP,  从而不能访问的情况 。 虽然在 <code>/etc/sysconfig/network-scripts/ifcfg-eth0</code> 中加上了如下语句 ：</p>
-<div class="codehilite"><pre><span></span>PERSISTENT_DHCLIENT=1
-</pre></div>
-
-
-<p> 使得 dhcp 单次失败后 ， 继续重试 。 但是仔细查看 dhclient 的日志后 ， 发现它有大量的 dhcp request 失败 / 超时 。 在一个 <a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results"> 邮件列表 </a> 中找到原因 ， 如下 ：</p>
-<p>To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1</p>
-<p>THE LONG VERSION</p>
-<p>There is an issue with the way nova uses dnsmasq in VLAN mode. It starts up a
-single copy of dnsmasq for each vlan on the network host (or on every host in
-multi_host mode). The problem is in the way that dnsmasq binds to an ip address
-and port. Both copies can respond to broadcast packet, but unicast packets
-can only be answered by one of the copies.</p>
-<p>In nova this means that guests from only one project will get responses to their
-unicast dhcp renew requests.  Unicast projects from guests in other projects get
-ignored. What happens next is different depending on the guest os.  Linux
-generally will send a broadcast packet out after the unicast fails, and so the
-only effect is a small (tens of ms) hiccup while interface is reconfigured.  It
-can be much worse than that, however. I have seen cases where Windows just gives
-up and ends up with a non-configured interface.</p>
-<p>This bug was first noticed by some users of openstack who rolled their own fix.
-Basically, on linux, if you set the SO_BINDTODEVICE socket option, it will allow
-different daemons to share the port and respond to unicast packets, as long as
-they listen on different interfaces. I managed to communicate with Simon Kelley,
-the maintainer of dnsmasq and he has integrated a fix for the issue in the
-current version of dnsmaq.</p>
-<p>I don't know how may users out there are using vlan mode, but you should be able
-to deal with this issue by upgrading dnsmasq. It would be great if the various
-distributionss could upgrade as well, or at least try to patch in the fix. If
-upgrading dnsmasq is out of the question, a possible workaround is to minimize
-lease renewals with something like the following combination of config options.</p>
-<div class="codehilite"><pre><span></span># release leases immediately on terminate
-force_dhcp_release=true
-# one week lease time
-dhcp_lease_time=604800
-# two week disassociate timeout
-fixed_ip_disassociate_timeout=1209600
-</pre></div>
-
-
-<p>This is also documented <a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues"> Known issue with failed DHCP leases in VLAN configuration</a></p>
-  </div><!-- /.entry-content -->
-  <div>
-    <nav>
-      <ul class="pager">
-        <li class="previous"><a href="openstack-brief.html">&larr; Older</a></li>
-        <li class="next"><a href="linux-bonding-mode-6-break-the-vms.html">Newer &rarr;</a></li>
-      </ul>
-    </nav>
+    <ol class="breadcrumb">
+      <li><a href="http://xcodest.me">Home</a></li>
+      <li><a href="http://xcodest.me/tags.html">Tag</a></li>
+      <li class="active">Systemd</li>
+    </ol>
+    <ul class="list-group">
+      <li class="list-group-item">
+        <span class="badge">2016-08-28</span>
+        <a href="http://xcodest.me/reset-password-in-systemd.html" rel="bookmark" title="Permalink to Reset Password in Systemd">Reset Password in Systemd</a>
+      </li>
+    </ul><!-- /#posts-list -->
   </div>
-  <div class="entry-info">
-    <p> Tags: <a href="http://xcodest.me/tag/dhcp.html">DHCP</a> <a href="http://xcodest.me/tag/network.html">Network</a> <a href="http://xcodest.me/tag/vlan.html">VLAN</a>  </p>
-  </div>
-    <div class="comments">
-      <h2>Comments</h2>
-      <div id="disqus_thread"></div>
-      <script type="text/javascript">
-        var disqus_shortname = 'xcodest';
-        var disqus_identifier = 'dhcp-lease-errors-in-vlan-mode.html';
-        var disqus_url = 'http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html';
-        (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//xcodest.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-      </script>
-      <noscript>Please enable JavaScript to view the comments.</noscript>
-    </div>
-</section>
-</div>
 </div>
         </div>
       </div>

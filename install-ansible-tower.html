@@ -117,13 +117,13 @@
     
 <h1 id="_1"> 手动安装 </h1>
 <h2 id="_2"> 下载安装包 </h2>
-<p> 从 http://www.ansible.com/tower-trial 下载，需要填个人信息，提交后会自动下载。</p>
-<p> 把安装包复制到要安装的机器中去，解压准备安装 </p>
-<div class="highlight"><pre><span></span>tar xvf ansible-tower-setup-latest.tar.gz
+<p> 从  http://www.ansible.com/tower-trial  下载 ， 需要填个人信息 ， 提交后会自动下载 。</p>
+<p> 把安装包复制到要安装的机器中去 ， 解压准备安装 </p>
+<div class="codehilite"><pre><span></span>tar xvf ansible-tower-setup-latest.tar.gz
 cd ansible-tower-setup-2.4.3
 </pre></div>
-<p> 这个安装包本质上是一个 playbook。其中 <code>configure</code> 是用来生成配置文件的脚本，运行它会有几个问题，让你回答，回答完后就开始自动安装了。也可把这些问答写到一个文件中，让其自动化。建立名为 <code>tower_setup_conf.yml</code> 的文件，其内容为 :</p>
-<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">admin_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
+<p> 这个安装包本质上是一个 playbook。 其中 <code>configure</code> 是用来生成配置文件的脚本 ， 运行它会有几个问题 ， 让你回答 ， 回答完后就开始自动安装了 。 也可把这些问答写到一个文件中 ， 让其自动化 。 建立名为 <code>tower_setup_conf.yml</code>  的文件 ， 其内容为 :</p>
+<div class="codehilite"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">admin_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
 <span class="l l-Scalar l-Scalar-Plain">database</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">internal</span>
 <span class="l l-Scalar l-Scalar-Plain">munin_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
 <span class="l l-Scalar l-Scalar-Plain">pg_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
@@ -131,10 +131,10 @@ cd ansible-tower-setup-2.4.3
 <span class="l l-Scalar l-Scalar-Plain">redis_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
 </pre></div>
 <p> 开始进行设置 </p>
-<div class="highlight"><pre><span></span>./configure --options-file tower_setup_conf.yml
+<div class="codehilite"><pre><span></span>./configure --options-file tower_setup_conf.yml
 </pre></div>
-<p> 如果没有问题，脚本会提示：</p>
-<div class="highlight"><pre><span></span>The configuration provided in tower_setup_conf.yml appears complete.
+<p> 如果没有问题 ， 脚本会提示 ：</p>
+<div class="codehilite"><pre><span></span>The configuration provided in tower_setup_conf.yml appears complete.
 
 FINISHED!
 You have completed the setup wizard. You may execute the installation of
@@ -143,18 +143,18 @@ Ansible Tower by issuing the following command:
 sudo ./setup.sh
 </pre></div>
 <p> 运行安装脚本 </p>
-<div class="highlight"><pre><span></span>sudo ./setup.sh
+<div class="codehilite"><pre><span></span>sudo ./setup.sh
 </pre></div>
 <p> 其主要工作为 </p>
 <ol>
-<li> 如果没有安装 ansible, 就安装上 ansible</li>
+<li> 如果没有安装 ansible,  就安装上 ansible</li>
 <li> 使用 ansible 进行 tower 的安装 </li>
 </ol>
-<p> 安装好后，终端会提示给你访问的地址，用浏览器打开就可以了。输入上面设置的 admin 账号密码登录。</p>
-<p> 之后会出现设置 Tower License 的界面。可以从 http://www.ansible.com/license 申请到一个 10 个节点的免费 license。最后把 License 复制进去提交就可以了。</p>
-<h1 id="vagrant"> 使用 Vagrant 进行安装 </h1>
-<p> 官方提供 Vagrant Images, 方便进行安装测试。使用方法 </p>
-<div class="highlight"><pre><span></span>vagrant init tower http://vms.ansible.com/ansible-tower-2.4.3-virtualbox.box
+<p> 安装好后 ， 终端会提示给你访问的地址 ， 用浏览器打开就可以了 。 输入上面设置的 admin 账号密码登录 。</p>
+<p> 之后会出现设置  Tower License  的界面 。 可以从  http://www.ansible.com/license  申请到一个 10 个节点的免费  license。 最后把  License  复制进去提交就可以了 。</p>
+<h1 id="vagrant"> 使用  Vagrant  进行安装 </h1>
+<p> 官方提供  Vagrant Images,  方便进行安装测试 。 使用方法 </p>
+<div class="codehilite"><pre><span></span>vagrant init tower http://vms.ansible.com/ansible-tower-2.4.3-virtualbox.box
 vagrant up
 vagrant ssh
 </pre></div>

@@ -104,16 +104,16 @@
     <span class="post-date"> 2016-01-06 </span>
   </header>
   <div class="entry-content">
-    <p>OpenStack 的源因为你我都知道的原因，一直不稳定，导致 devstack 时经常失败。特定写了个脚本，可以拿到所有的仓库地址，方便做本地的 mirror。</p>
-<p> 脚本在 gist<sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> 上。</p>
-<p> 使用方法：</p>
-<div class="highlight"><pre><span></span>pip install PyGithub
+    <p>OpenStack 的源因为你我都知道的原因 ， 一直不稳定 ， 导致  devstack  时经常失败 。 特定写了个脚本 ， 可以拿到所有的仓库地址 ， 方便做本地的 mirror。</p>
+<p> 脚本在  gist<sup id="fnref-1"><a class="footnote-ref" href="#fn-1">1</a></sup>  上 。</p>
+<p> 使用方法 ：</p>
+<div class="codehilite"><pre><span></span>pip install PyGithub
 python openstack_repo.py -u &lt;github_username&gt; -p &lt;github_password&gt; \
     -o repos.txt
 </pre></div>
 
 
-<p> 跑一次才发现，OpenStack 组下已经有了 600 多个项目。好多啊。</p>
+<p> 跑一次才发现 ，OpenStack  组下已经有了 600 多个项目 。 好多啊 。</p>
 <div class="gist">
     <script src='https://gist.github.com/b6c36b9f74b743eb4c82.js?file=openstack_repos.py'></script>
     <noscript>
@@ -194,10 +194,10 @@ if __name__ == "__main__":
     </noscript>
 </div>
 <div class="footnote">
-<hr />
+<hr>
 <ol>
-<li id="fn:1">
-<p>https://gist.github.com/jeffrey4l/b6c36b9f74b743eb4c82&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+<li id="fn-1">
+<p>https://gist.github.com/jeffrey4l/b6c36b9f74b743eb4c82&#160;<a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>

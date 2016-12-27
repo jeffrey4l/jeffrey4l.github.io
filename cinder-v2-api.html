@@ -108,7 +108,7 @@
     <p>cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).</p>
 <h1 id="enable-the-v2-in-cinder">Enable the v2 in cinder</h1>
 <p>Change the following config. The v1 and v2 is enabled in default.</p>
-<div class="highlight"><pre><span></span><span class="c1"># DEPRECATED: Deploy v1 of the Cinder API. (boolean value)</span>
+<div class="codehilite"><pre><span></span><span class="c1"># DEPRECATED: Deploy v1 of the Cinder API. (boolean value)</span>
 <span class="c1">#enable_v1_api=true</span>
 
 <span class="c1"># Deploy v2 of the Cinder API. (boolean value)</span>
@@ -118,7 +118,7 @@
 
 <h1 id="enable-the-cinder-v2-api-in-nova">Enable the cinder v2 api in nova</h1>
 <p>In current nova config ( juno ), the default config like below. Depend on <code>catalog_info</code> key, it use the v2 first. If v2 is not found, it will fall back to v1 version.</p>
-<div class="highlight"><pre><span></span><span class="k">[cinder]</span>
+<div class="codehilite"><pre><span></span><span class="k">[cinder]</span>
 
 <span class="c1">#</span>
 <span class="c1"># Options defined in nova.volume.cinder</span>
@@ -148,7 +148,7 @@
 
 
 <p>You can just add the endpoint to the keystone to enable the cinder v2 api.</p>
-<div class="highlight"><pre><span></span>keystone service-create --name<span class="o">=</span>cinderv2 --type<span class="o">=</span>volumev2 <span class="se">\</span>
+<div class="codehilite"><pre><span></span>keystone service-create --name<span class="o">=</span>cinderv2 --type<span class="o">=</span>volumev2 <span class="se">\</span>
   --description<span class="o">=</span><span class="s2">&quot;Cinder Volume Service V2&quot;</span>
 
 keystone endpoint-create <span class="se">\</span>

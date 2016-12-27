@@ -104,11 +104,11 @@
     <span class="post-date"> 2014-07-17 </span>
   </header>
   <div class="entry-content">
-    <p>Glance 增加了一层 cache 的 Middleware，用来缓存从 file store 后端取过来的镜像。一定
-程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。</p>
-<p> 因为是通过 middleware 来控制的，所以只要修改一下 paster 的配置就行。更简单的是指定
-glance-api 加载的 pipeline 的名字。</p>
-<div class="highlight"><pre><span></span><span class="k">[deploy]</span>
+    <p>Glance  增加了一层 cache 的 Middleware， 用来缓存从 file store 后端取过来的镜像 。 一定 
+ 程度上可以加快取镜像的速度 。 这个功能默认情况下是没开启的 。</p>
+<p> 因为是通过 middleware 来控制的 ， 所以只要修改一下 paster 的配置就行 。 更简单的是指定 
+glance-api 加载的 pipeline 的名字 。</p>
+<div class="codehilite"><pre><span></span><span class="k">[deploy]</span>
 <span class="c1"># possible value: none, cachine, keystone, keystone+caching, </span>
 <span class="c1"># keystone+cachemanagement</span>
 <span class="c1"># This value can get from glance-api-paste.conf file</span>
@@ -116,8 +116,8 @@ glance-api 加载的 pipeline 的名字。</p>
 </pre></div>
 
 
-<p> 具体看下 <code>glance-api-paster.conf</code> 文件就能明白。</p>
-<div class="highlight"><pre><span></span><span class="k">[pipeline:glance-api]</span>
+<p> 具体看下 <code>glance-api-paster.conf</code> 文件就能明白 。</p>
+<div class="codehilite"><pre><span></span><span class="k">[pipeline:glance-api]</span>
 <span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation unauthenticated-context rootapp</span>
 
 <span class="c1"># Use this pipeline for image caching and no auth</span>
@@ -142,7 +142,7 @@ glance-api 加载的 pipeline 的名字。</p>
 </pre></div>
 
 
-<p> 不同的 pipeline 用到了不同的 middleware, 启作用的是 cache 和 cachemanagement 这两个
+<p> 不同的 pipeline 用到了不同的 middleware,  启作用的是 cache  和  cachemanagement 这两个 
 。</p>
 <h2 id="ref">REF</h2>
 <ol>

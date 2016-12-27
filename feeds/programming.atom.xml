@@ -1,73 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/programming.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2016-04-11T00:00:00+08:00</updated><entry><title>Code Review 神器 -- Gertty</title><link href="http://xcodest.me/effective-code-review-tool-gertty.html" rel="alternate"></link><updated>2016-04-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-04-11:effective-code-review-tool-gertty.html</id><summary type="html">
-&lt;p&gt; 现在很多项目都使用 Gerrit 做为代码 Review 工具。OpenStack 所有的项目就是放在 Gerrit 上的。Gerrit 提供了一个 Web 页面来做 Code Review。今天我介绍一个更加高效的工具来处理 Gerrit Review。它的名字叫 gertty。&lt;/p&gt;
-&lt;p&gt;Gertty 的 OpenStack 下面的一个项目 &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;，官方的介绍是：Gertty is a console-based interface to the Gerrit Code Review system。就是一个基于终端的 Gerrit 代码 Review 工具。&lt;/p&gt;
-&lt;p&gt; 相比较 Web 版本，它的优势体现在 &lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest - Programming</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/programming.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2016-04-11T00:00:00+08:00</updated><entry><title>Code Review 神器 -- Gertty</title><link href="http://xcodest.me/effective-code-review-tool-gertty.html" rel="alternate"></link><published>2016-04-11T00:00:00+08:00</published><updated>2016-04-11T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-04-11:/effective-code-review-tool-gertty.html</id><summary type="html">
+&lt;p&gt; 现在很多项目都使用  Gerrit  做为代码  Review  工具 。OpenStack  所有的项目就是放在  Gerrit  上的 。Gerrit  提供了一个  Web  页面来做  Code Review。 今天我介绍一个更加高效的工具来处理  Gerrit Review。 它的名字叫  gertty。&lt;/p&gt;
+&lt;p&gt;Gertty  的  OpenStack  下面的一个项目 &lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;， 官方的介绍是 ：Gertty is a console-based interface to the Gerrit Code Review system。 就是一个基于终端的  Gerrit  代码  Review  工具 。&lt;/p&gt;
+&lt;p&gt; 相比较  Web  版本 ， 它的优势体现在 &lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt; 工作流程 - Gertty 的界面设计和邮件、网络消息的设计很类似，很容易上手。而且它特别适合多个项目时处理大量 Review 请求。&lt;/li&gt;
-&lt;li&gt; 离线使用 - Gertty 会把 Gerrit 上你订阅的项目的所有的数据同步到本地。包括 Git 仓库，所有的 Review 信息。你本地所有的 Review 操作也会同步到 Gertty。&lt;/li&gt;
-&lt;li&gt; 速度 - 因为 Gertty 会把数据都同步到本地，你的操作也会存放到本地，之后在统一同步到服务器，所以速度是很快的。&lt;/li&gt;
-&lt;li&gt; 方便 - Gertty 把所有的 Changes 都同步到了本地，你可以很方便的 checkout 到正在 Review 的代码 &lt;/li&gt;
+&lt;li&gt; 工作流程  - Gertty  的界面设计和邮件 、 网络消息的设计很类似 …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">
+&lt;p&gt; 现在很多项目都使用  Gerrit  做为代码  Review  工具 。OpenStack  所有的项目就是放在  Gerrit  上的 。Gerrit  提供了一个  Web  页面来做  Code Review。 今天我介绍一个更加高效的工具来处理  Gerrit Review。 它的名字叫  gertty。&lt;/p&gt;
+&lt;p&gt;Gertty  的  OpenStack  下面的一个项目 &lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;， 官方的介绍是 ：Gertty is a console-based interface to the Gerrit Code Review system。 就是一个基于终端的  Gerrit  代码  Review  工具 。&lt;/p&gt;
+&lt;p&gt; 相比较  Web  版本 ， 它的优势体现在 &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; 工作流程  - Gertty  的界面设计和邮件 、 网络消息的设计很类似 ， 很容易上手 。 而且它特别适合多个项目时处理大量  Review  请求 。&lt;/li&gt;
+&lt;li&gt; 离线使用  - Gertty  会把  Gerrit  上你订阅的项目的所有的数据同步到本地 。 包括  Git  仓库 ， 所有的  Review  信息 。 你本地所有的  Review  操作也会同步到  Gertty。&lt;/li&gt;
+&lt;li&gt; 速度  -  因为  Gertty  会把数据都同步到本地 ， 你的操作也会存放到本地 ， 之后在统一同步到服务器 ， 所以速度是很快的 。&lt;/li&gt;
+&lt;li&gt; 方便  - Gertty  把所有的  Changes  都同步到了本地 ， 你可以很方便的  checkout  到正在  Review  的代码 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h1 id="_1"&gt; 安装 &lt;/h1&gt;
-&lt;p&gt;gertty 就是一个 Python 写的应用，所以安装很方便。可以从 pypi 安装，也可以从直接从源码安装。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install gertty
+&lt;p&gt;gertty  就是一个  Python  写的应用 ， 所以安装很方便 。 可以从  pypi  安装 ， 也可以从直接从源码安装 。&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install gertty
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 从源码安装 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/openstack/gertty.git
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/openstack/gertty.git
 cd gertty
 pip install .
 &lt;/pre&gt;&lt;/div&gt;
 &lt;h1 id="_2"&gt; 配置 &lt;/h1&gt;
-&lt;p&gt;Gertty 使用一个 YAML 格式的配置文件。可以从源码里找到一些例子 &lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;。我们以 OpenStack 为例。&lt;/p&gt;
-&lt;p&gt; 首先要选配置在 Gerrit 上面配置自己的 HTTP Passowrd。打开 https://review.openstack.org/#/settings/http-password , 去修改里面的 Password&lt;/p&gt;
+&lt;p&gt;Gertty  使用一个  YAML  格式的配置文件 。 可以从源码里找到一些例子 &lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;。 我们以  OpenStack  为例 。&lt;/p&gt;
+&lt;p&gt; 首先要选配置在  Gerrit  上面配置自己的  HTTP Passowrd。 打开  https://review.openstack.org/#/settings/http-password ,  去修改里面的  Password&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Gerrit HTTP Password" class="img-responsive" src="images/openstack_gerrit_http_password.png"/&gt;&lt;/p&gt;
-&lt;p&gt; 如果使用源码安装，请把把源码里的 &lt;code&gt;examples/openstack-gertty.yaml&lt;/code&gt; 文件拷贝到 &lt;code&gt;~/.gertty.yml&lt;/code&gt;，修改该文件内容如下 ( 主要是 servers 下面的内容 )，其它部分不用修改：&lt;/p&gt;
-&lt;p&gt; 如果使用 pip 安装的，在 &lt;code&gt;/usr/local/share/gertty/examples/openstack-gertty.yaml&lt;/code&gt; 这个位置可以找到所需要的文件。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;servers&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+&lt;p&gt; 如果使用源码安装 ， 请把把源码里的  &lt;code&gt;examples/openstack-gertty.yaml&lt;/code&gt;  文件拷贝到  &lt;code&gt;~/.gertty.yml&lt;/code&gt;， 修改该文件内容如下 ( 主要是  servers  下面的内容 )， 其它部分不用修改 ：&lt;/p&gt;
+&lt;p&gt; 如果使用  pip  安装的 ， 在  &lt;code&gt;/usr/local/share/gertty/examples/openstack-gertty.yaml&lt;/code&gt;  这个位置可以找到所需要的文件 。&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;servers&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
   &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;openstack&lt;/span&gt;
     &lt;span class="l l-Scalar l-Scalar-Plain"&gt;url&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;https://review.openstack.org/&lt;/span&gt;
     &lt;span class="l l-Scalar l-Scalar-Plain"&gt;username&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Jeffrey4l&lt;/span&gt;
     &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;xxxx&lt;/span&gt;
     &lt;span class="l l-Scalar l-Scalar-Plain"&gt;git-root&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;~/&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt; 直接运行 &lt;code&gt;gertty&lt;/code&gt;, 看到如下欢迎界面。&lt;/p&gt;
+&lt;p&gt; 直接运行  &lt;code&gt;gertty&lt;/code&gt;,  看到如下欢迎界面 。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Gertty Welcome" class="img-responsive" src="images/gertty_welcome.png"/&gt;&lt;/p&gt;
-&lt;p&gt; 如里面的说明，按 &lt;code&gt;F1&lt;/code&gt; 或 &lt;code&gt;?&lt;/code&gt; 进帮助， 我们按 &lt;code&gt;L&lt;/code&gt; 进项目列表，找到自己感兴趣的项目按 &lt;code&gt;s&lt;/code&gt; 进行订阅。&lt;/p&gt;
+&lt;p&gt; 如里面的说明 ， 按 &lt;code&gt;F1&lt;/code&gt; 或 &lt;code&gt;?&lt;/code&gt;  进帮助 ，  我们按  &lt;code&gt;L&lt;/code&gt;  进项目列表 ， 找到自己感兴趣的项目按  &lt;code&gt;s&lt;/code&gt;  进行订阅 。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Gertty Welcome" class="img-responsive" src="images/gertty_subscribe_project.png"/&gt;&lt;/p&gt;
-&lt;p&gt; 按 &lt;code&gt;F2&lt;/code&gt; 可以看到自己的 changes&lt;/p&gt;
+&lt;p&gt; 按  &lt;code&gt;F2&lt;/code&gt;  可以看到自己的  changes&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Gertty Welcome" class="img-responsive" src="images/gertty_my_opened_changes.png"/&gt;&lt;/p&gt;
-&lt;p&gt; 按 &lt;code&gt;F3&lt;/code&gt; 可以看到需要自己 review 的代码 &lt;/p&gt;
+&lt;p&gt; 按  &lt;code&gt;F3&lt;/code&gt;  可以看到需要自己  review  的代码 &lt;/p&gt;
 &lt;p&gt;&lt;img alt="Gertty Welcome" class="img-responsive" src="images/gertty_incoming_changes.png"/&gt;&lt;/p&gt;
-&lt;p&gt; 基中，高亮的是需要自己 review 的代码，灰色的是已经 review 过的。&lt;/p&gt;
-&lt;p&gt; 选择一个进入后，能看到已经所有的 review 信息。包括 CI 的结果，评论，所有的 PatchSet。&lt;/p&gt;
+&lt;p&gt; 基中 ， 高亮的是需要自己  review  的代码 ， 灰色的是已经  review  过的 。&lt;/p&gt;
+&lt;p&gt; 选择一个进入后 ， 能看到已经所有的  review  信息 。 包括  CI  的结果 ， 评论 ， 所有的  PatchSet。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Gertty Review Code" class="img-responsive" src="images/gertty_review_changeset.png"/&gt;&lt;/p&gt;
-&lt;p&gt; 再按 &lt;code&gt;d&lt;/code&gt;， 可以查看修改的 diff&lt;/p&gt;
+&lt;p&gt; 再按  &lt;code&gt;d&lt;/code&gt;，  可以查看修改的  diff&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Gerrty Code Diff" class="img-responsive" src="images/gertty_code_diff.png"/&gt;&lt;/p&gt;
-&lt;p&gt; 在任何界面都可以按 &lt;code&gt;F1&lt;/code&gt; 或 &lt;code&gt;?&lt;/code&gt; 打开帮助，查看该界面下有哪些按键可以用。&lt;/p&gt;
+&lt;p&gt; 在任何界面都可以按  &lt;code&gt;F1&lt;/code&gt;  或  &lt;code&gt;?&lt;/code&gt;  打开帮助 ， 查看该界面下有哪些按键可以用 。&lt;/p&gt;
 &lt;h1 id="_3"&gt; 总结 &lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt; 由于 gertty 把所有数据都同步下来了，做 review 确实很快。&lt;/li&gt;
-&lt;li&gt;gertty.yaml 配置文件里支持修改按键功能，如果觉得默认键位不舒服，可以进行修改，可定制性很高。更多的配置项信息可以看 &lt;code&gt;examples/reference-gertty.yml&lt;/code&gt; 文件里的内容 &lt;/li&gt;
+&lt;li&gt; 由于  gertty  把所有数据都同步下来了 ， 做  review  确实很快 。&lt;/li&gt;
+&lt;li&gt;gertty.yaml  配置文件里支持修改按键功能 ， 如果觉得默认键位不舒服 ， 可以进行修改 ， 可定制性很高 。 更多的配置项信息可以看  &lt;code&gt;examples/reference-gertty.yml&lt;/code&gt;  文件里的内容 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;div class="footnote"&gt;
-&lt;hr/&gt;
+&lt;hr&gt;
 &lt;ol&gt;
-&lt;li id="fn:1"&gt;
-&lt;p&gt;&lt;a href="https://github.com/openstack/gertty"&gt;https://github.com/openstack/gertty&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;li id="fn-1"&gt;
+&lt;p&gt;&lt;a href="https://github.com/openstack/gertty"&gt;https://github.com/openstack/gertty&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
-&lt;li id="fn:2"&gt;
-&lt;p&gt;&lt;a href="https://github.com/openstack/gertty/tree/master/examples"&gt;https://github.com/openstack/gertty/tree/master/examples&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;li id="fn-2"&gt;
+&lt;p&gt;&lt;a href="https://github.com/openstack/gertty/tree/master/examples"&gt;https://github.com/openstack/gertty/tree/master/examples&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;</summary><category term="CodeReview"></category></entry><entry><title>Python Exception init args</title><link href="http://xcodest.me/python-exception-init-args.html" rel="alternate"></link><updated>2015-11-20T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-11-20:python-exception-init-args.html</id><summary type="html">&lt;p&gt;&lt;img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt; 一直没有搞明白 &lt;code&gt;Exception&lt;/code&gt; 的 args 和 message 参数 , 最近看了一下 CPython 源码，
-终于搞明白了。&lt;/p&gt;
-&lt;p&gt; 一开始 ( 从 2.5 开始 ) 的时候是有 &lt;code&gt;args&lt;/code&gt; 和 &lt;code&gt;message&lt;/code&gt; 两个参数的。2.6 版本之后，把
-&lt;code&gt;message&lt;/code&gt; 废弃掉了，只留下了一个任意长度的 &lt;code&gt;args&lt;/code&gt;。&lt;/p&gt;
-&lt;p&gt; 以下是 2.5 以后的代码，可以看到，如果 args 长度是 1，就会把 &lt;code&gt;self.message = args[0]&lt;/code&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+&lt;/hr&gt;&lt;/div&gt;</content><category term="CodeReview"></category></entry><entry><title>Python Exception init args</title><link href="http://xcodest.me/python-exception-init-args.html" rel="alternate"></link><published>2015-11-20T00:00:00+08:00</published><updated>2015-11-20T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-11-20:/python-exception-init-args.html</id><summary type="html">&lt;p&gt;&lt;img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg"&gt;&lt;/p&gt;
+&lt;p&gt; 一直没有搞明白  &lt;code&gt;Exception&lt;/code&gt;  的  args  和  message  参数 ,  最近看了一下  CPython  源码 ，
+ 终于搞明白了 。&lt;/p&gt;
+&lt;p&gt; 一开始 ( 从 2.5 开始 ) 的时候是有  &lt;code&gt;args&lt;/code&gt;  和  &lt;code&gt;message&lt;/code&gt;  两个参数的 。2.6 版本之后 ， 把 
+&lt;code&gt;message&lt;/code&gt;  废弃掉了 ， 只留下了一个任意长度的  &lt;code&gt;args&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt; 以下是 2.5 以后的代码 ， 可以看到 ， 如果 args  长度是 1， 就会把  &lt;code&gt;self.message = args[0]&lt;/code&gt;&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+&lt;span class="nf"&gt;BaseException_new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyTypeObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg"&gt;&lt;/p&gt;
+&lt;p&gt; 一直没有搞明白  &lt;code&gt;Exception&lt;/code&gt;  的  args  和  message  参数 ,  最近看了一下  CPython  源码 ，
+ 终于搞明白了 。&lt;/p&gt;
+&lt;p&gt; 一开始 ( 从 2.5 开始 ) 的时候是有  &lt;code&gt;args&lt;/code&gt;  和  &lt;code&gt;message&lt;/code&gt;  两个参数的 。2.6 版本之后 ， 把 
+&lt;code&gt;message&lt;/code&gt;  废弃掉了 ， 只留下了一个任意长度的  &lt;code&gt;args&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt; 以下是 2.5 以后的代码 ， 可以看到 ， 如果 args  长度是 1， 就会把  &lt;code&gt;self.message = args[0]&lt;/code&gt;&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
 &lt;span class="nf"&gt;BaseException_new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyTypeObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;kwds&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="n"&gt;PyBaseExceptionObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;self&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
@@ -113,11 +125,11 @@ pip install .
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt; 本来 message 就是 Exception 的一个属性，在 2.6 以后，把它变成了一个 descriptor, 当
-调用时，如果它在 &lt;code&gt;self.__dict__&lt;/code&gt; 里，就直接打印，否则就返回 &lt;code&gt;self.message&lt;/code&gt; 的信息
-并打印出一个 &lt;code&gt;Warning&lt;/code&gt;。如果已经赋过一个值的话 &lt;code&gt;self.message = xxxx&lt;/code&gt;, 它就会存在
-&lt;code&gt;self.__dict__&lt;/code&gt; 里。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+&lt;p&gt; 本来  message  就是  Exception 的一个属性 ， 在 2.6 以后 ， 把它变成了一个  descriptor,  当 
+ 调用时 ， 如果它在  &lt;code&gt;self.__dict__&lt;/code&gt;  里 ， 就直接打印 ， 否则就返回  &lt;code&gt;self.message&lt;/code&gt;  的信息 
+ 并打印出一个  &lt;code&gt;Warning&lt;/code&gt;。 如果已经赋过一个值的话 &lt;code&gt;self.message = xxxx&lt;/code&gt;,  它就会存在 
+&lt;code&gt;self.__dict__&lt;/code&gt; 里 。&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
 &lt;span class="nf"&gt;BaseException_get_message&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyBaseExceptionObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;self&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
@@ -170,16 +182,31 @@ pip install .
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt; 在 python3 中，message 相关的信息已经完全删除掉了。&lt;/p&gt;
-&lt;p&gt; 所以，一般使用 &lt;code&gt;message&lt;/code&gt; 属性的话，推荐这样使用 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;MyException&lt;/span&gt;(&lt;span class="nb"&gt;Exception&lt;/span&gt;):
+&lt;p&gt; 在  python3  中 ，message  相关的信息已经完全删除掉了 。&lt;/p&gt;
+&lt;p&gt; 所以 ， 一般使用  &lt;code&gt;message&lt;/code&gt;  属性的话 ， 推荐这样使用 &lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;MyException&lt;/span&gt;(&lt;span class="nb"&gt;Exception&lt;/span&gt;):
     &lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;__init__&lt;/span&gt;(&lt;span class="k"&gt;self&lt;/span&gt;, &lt;span class="n"&gt;message&lt;/span&gt;):
         &lt;span class="k"&gt;self&lt;/span&gt;.&lt;span class="n"&gt;message&lt;/span&gt; = &lt;span class="n"&gt;message&lt;/span&gt;
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;My2Exception&lt;/span&gt;(&lt;span class="nb"&gt;Exception&lt;/span&gt;):
     &lt;span class="n"&gt;message&lt;/span&gt; = &lt;span class="s"&gt;&amp;#39;this is a message&amp;#39;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Python"></category></entry><entry><title>Interrupt the Python multiprocessing.Pool in graceful way</title><link href="http://xcodest.me/interrupt-the-python-multiprocessing-pool-in-graceful-way.html" rel="alternate"></link><updated>2015-11-17T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-11-17:interrupt-the-python-multiprocessing-pool-in-graceful-way.html</id><summary type="html">&lt;p&gt;When using &lt;code&gt;KeyboardInterrupt&lt;/code&gt;(&lt;code&gt;Ctrl+c&lt;/code&gt;) interrupt the excution of the &lt;code&gt;multiprocess.Pool&lt;/code&gt;, it will not work as expected. Following is a demo&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Python"></category></entry><entry><title>Interrupt the Python multiprocessing.Pool in graceful way</title><link href="http://xcodest.me/interrupt-the-python-multiprocessing-pool-in-graceful-way.html" rel="alternate"></link><published>2015-11-17T00:00:00+08:00</published><updated>2015-11-17T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-11-17:/interrupt-the-python-multiprocessing-pool-in-graceful-way.html</id><summary type="html">&lt;p&gt;When using &lt;code&gt;KeyboardInterrupt&lt;/code&gt;(&lt;code&gt;Ctrl+c&lt;/code&gt;) interrupt the excution of the &lt;code&gt;multiprocess.Pool&lt;/code&gt;, it will not work as expected. Following is a demo&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;worker&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;pool&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;pool&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;worker&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When run the code and try to &lt;code&gt;Ctrl+C …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;When using &lt;code&gt;KeyboardInterrupt&lt;/code&gt;(&lt;code&gt;Ctrl+c&lt;/code&gt;) interrupt the excution of the &lt;code&gt;multiprocess.Pool&lt;/code&gt;, it will not work as expected. Following is a demo&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;
 
 
@@ -194,7 +221,7 @@ pip install .
 
 
 &lt;p&gt;When run the code and try to &lt;code&gt;Ctrl+C&lt;/code&gt; to stop it, it will never be stopped.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python2 b.py                                                                      
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python2 b.py                                                                      
 ^CProcess PoolWorker-1:
 Traceback &lt;span class="o"&gt;(&lt;/span&gt;most recent call last&lt;span class="o"&gt;)&lt;/span&gt;:
   File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/process.py&amp;quot;&lt;/span&gt;, line 258, in _bootstrap
@@ -240,7 +267,7 @@ or similar.
 
 &lt;p&gt;By using this, we can interrupt the Pool by using &lt;code&gt;Ctrl+c&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Here is a better version.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;signal&lt;/span&gt;
@@ -274,16 +301,16 @@ or similar.
 &lt;li&gt;&lt;a href="http://bugs.python.org/issue8296"&gt;Python Bug&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://unix.stackexchange.com/a/149756"&gt;How Ctrl+c works&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://stackoverflow.com/a/1408476/893981"&gt;Keyboard Interrupts with python's multiprocessing Pool&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="Python"></category></entry><entry><title>论Python的异常的合理抛出姿势</title><link href="http://xcodest.me/How_to_raise_python_exception.html" rel="alternate"></link><updated>2015-05-06T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-06:How_to_raise_python_exception.html</id><summary type="html">&lt;p&gt; 当需要重新抛出 Python 的异常时，很多人都处理不好。本文总结了一些处理方法。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;/ul&gt;</content><category term="Python"></category></entry><entry><title>论Python的异常的合理抛出姿势</title><link href="http://xcodest.me/How_to_raise_python_exception.html" rel="alternate"></link><published>2015-05-06T00:00:00+08:00</published><updated>2015-05-06T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-06:/How_to_raise_python_exception.html</id><summary type="html">&lt;p&gt; 当需要重新抛出  Python  的异常时 ， 很多人都处理不好 。 本文总结了一些处理方法 。&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_cleanup&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt; 这种处理会直接把内部异常吃掉，当有问题 /Bug 时，会很难处理，所以不推荐。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;p&gt; 这种处理会直接把内部异常吃掉 ， 当有问题 /Bug 时 ， 会很难处理 ， 所以不推荐 。&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;Exception&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_cleanup&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
@@ -294,8 +321,8 @@ or similar.
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt; 这种直接打印的，一是不能很好的输出到日志里。二是不能把错误交到上层调用者，不能让其知道这是有问题。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;p&gt; 这种直接打印的 ， 一是不能很好的输出到日志里 。 二是不能把错误交到上层调用者 ， 不能让其知道这是有问题 。&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_somethink&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
 &lt;span class="n"&gt;except&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_cleanup&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
@@ -303,9 +330,40 @@ or similar.
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt; 用这种，主要是为了做 cleanup。直接 &lt;code&gt;raise&lt;/code&gt; 后，异常会抛向上层。没有 catch 的效果一样。&lt;/p&gt;
+&lt;p&gt; 用这种 ， 主要是为了做 cleanup。 直接 &lt;code&gt;raise&lt;/code&gt; 后 ， 异常会抛向上层 。 没有 catch 的效果一样 。&lt;/p&gt;
 &lt;p&gt; 这里还有一种和上面这个类似的效果的 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt; 当需要重新抛出  Python  的异常时 ， 很多人都处理不好 。 本文总结了一些处理方法 。&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_cleanup&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt; 这种处理会直接把内部异常吃掉 ， 当有问题 /Bug 时 ， 会很难处理 ， 所以不推荐 。&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;Exception&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_cleanup&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;
+    &lt;span class="c1"&gt;# or&lt;/span&gt;
+    &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;traceback&lt;/span&gt;
+    &lt;span class="n"&gt;traceback&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;print_exc&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt; 这种直接打印的 ， 一是不能很好的输出到日志里 。 二是不能把错误交到上层调用者 ， 不能让其知道这是有问题 。&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_somethink&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;except&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;do_cleanup&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;raise&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt; 用这种 ， 主要是为了做 cleanup。 直接 &lt;code&gt;raise&lt;/code&gt; 后 ， 异常会抛向上层 。 没有 catch 的效果一样 。&lt;/p&gt;
+&lt;p&gt; 这里还有一种和上面这个类似的效果的 &lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;
@@ -314,8 +372,8 @@ or similar.
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt; 最后，当要抛出自己重新包装后的异常时，最好把原始的异常也带上。这样有利于问题的 debug。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;p&gt; 最后 ， 当要抛出自己重新包装后的异常时 ， 最好把原始的异常也带上 。 这样有利于问题的 debug。&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;
@@ -327,19 +385,33 @@ or similar.
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html"&gt;Re-raising Exceptions&lt;/a&gt; - by Ian Bicking&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="Python"></category><category term="Exception"></category></entry><entry><title>PIP install from local</title><link href="http://xcodest.me/pip-install-from-local.html" rel="alternate"></link><updated>2015-01-08T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-01-08:pip-install-from-local.html</id><summary type="html">&lt;p&gt; 在一些特殊环境中，服务器是不能联网的。此时要通过 pip 安装包会有一些麻烦。这时可以使用 pip 的 download 到本地的功能，来加速安装。&lt;/p&gt;
-&lt;p&gt; 先在有网络的环境中下载下来所有需要的包：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
+&lt;/ul&gt;</content><category term="Python"></category><category term="Exception"></category></entry><entry><title>PIP install from local</title><link href="http://xcodest.me/pip-install-from-local.html" rel="alternate"></link><published>2015-01-08T00:00:00+08:00</published><updated>2015-01-08T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-01-08:/pip-install-from-local.html</id><summary type="html">&lt;p&gt; 在一些特殊环境中 ， 服务器是不能联网的 。 此时要通过 pip 安装包会有一些麻烦 。 这时可以使用 pip 的 download 到本地的功能 ， 来加速安装 。&lt;/p&gt;
+&lt;p&gt; 先在有网络的环境中下载下来所有需要的包 ：&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt; 在把这些包拷贝到目标环境中去，使用下面的命令来安装：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install --no-index --find-links &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
+&lt;p&gt; 在把这些包拷贝到目标环境中去 ， 使用下面的命令来安装 ：&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install --no-index --find-links &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt; 所有需要的包就安装上了。&lt;/p&gt;
-&lt;p&gt; 为了方便使用，还可以把这两个命令弄成 alias 来使用 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;alias pipcache=&amp;#39;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages&amp;#39;
+&lt;p&gt; 所有需要的包就安装上了 。&lt;/p&gt;
+&lt;p&gt; 为了方便使用 ， 还可以把这两个命令弄成 alias 来使用 &lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;alias pipcache=&amp;#39;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages&amp;#39;
+alias pipinstall=&amp;#39;pip install --no-index --find-links=file …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt; 在一些特殊环境中 ， 服务器是不能联网的 。 此时要通过 pip 安装包会有一些麻烦 。 这时可以使用 pip 的 download 到本地的功能 ， 来加速安装 。&lt;/p&gt;
+&lt;p&gt; 先在有网络的环境中下载下来所有需要的包 ：&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt; 在把这些包拷贝到目标环境中去 ， 使用下面的命令来安装 ：&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install --no-index --find-links &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt; 所有需要的包就安装上了 。&lt;/p&gt;
+&lt;p&gt; 为了方便使用 ， 还可以把这两个命令弄成 alias 来使用 &lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;alias pipcache=&amp;#39;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages&amp;#39;
 alias pipinstall=&amp;#39;pip install --no-index --find-links=file://&lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages/&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Python"></category></entry></feed>
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Python"></category></entry></feed>

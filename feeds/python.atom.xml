@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/python.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-05-18T00:00:00+08:00</updated><entry><title>Python MetaClass Magic</title><link href="http://xcodest.me/python-metaclass-magic.html" rel="alternate"></link><updated>2015-05-18T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-18:python-metaclass-magic.html</id><summary type="html">&lt;p&gt; 在 Nova 代码中 [&lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075"&gt;0&lt;/a&gt;] 发现一个神奇的应用，利用 decrator 来区分同名的函数，根据 decrator 上面定义的版本，来调用不同的方法。仔细学习了一下。它是用到了 MetaClass。主要思路是：&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest - Python</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/python.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2015-05-18T00:00:00+08:00</updated><entry><title>Python MetaClass Magic</title><link href="http://xcodest.me/python-metaclass-magic.html" rel="alternate"></link><published>2015-05-18T00:00:00+08:00</published><updated>2015-05-18T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-05-18:/python-metaclass-magic.html</id><summary type="html">&lt;p&gt; 在  Nova  代码中 [&lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075"&gt;0&lt;/a&gt;] 发现一个神奇的应用 ， 利用  decrator  来区分同名的函数 ， 根据  decrator  上面定义的版本 ， 来调用不同的方法 。 仔细学习了一下 。 它是用到了  MetaClass。 主要思路是 ：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt; 在 decrator 里面，把被装饰的方法存在类的一个属性里面 (version_methods)&lt;/li&gt;
-&lt;li&gt; 使用自定义的 metaclass, 删除掉父类上的 version_methods，并把这个属性放到子类中。这样做是为了防止子类共享父类的 version_methods 属性。&lt;/li&gt;
-&lt;li&gt; 在子类里面，重写 &lt;code&gt;__getattribute__&lt;/code&gt; 方法，当所需要的属性存在于 &lt;code&gt;version_methods&lt;/code&gt; 时，根据特定的条件，返回期望的方法。如果没有，就调用父类的方法。&lt;/li&gt;
+&lt;li&gt; 在  decrator  里面 ， 把被装饰的方法存在类的一个属性里面 (version_methods)&lt;/li&gt;
+&lt;li&gt; 使用自定义的 metaclass,  删除掉父类上的 version_methods， 并把这个属性放到子类中 。 这样做是为了防止子类共享父类的 version_methods 属性 。&lt;/li&gt;
+&lt;li&gt; 在子类里面 ， 重写 &lt;code&gt;__getattribute__&lt;/code&gt; 方法 ， 当所需要的属性存在于 &lt;code&gt;version_methods&lt;/code&gt; 时 ， 根据特定的条件 ， 返回期望的方法 。 如果没有 ， 就调用父类的方法 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; 以下是示例代码 &lt;/p&gt;
+&lt;div class="gist"&gt;
+    &lt;script src='https://gist.github.com/0b974aaea1be25cde67d.js?file=version_method.py'&gt;&lt;/script&gt;
+    &lt;noscript&gt;
+        &lt;pre&gt;&lt;code&gt;VERION_METHODS='version_methods'
+
+class VersionMethod(object):
+    def __init__(self, version …&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt; 在  Nova  代码中 [&lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075"&gt;0&lt;/a&gt;] 发现一个神奇的应用 ， 利用  decrator  来区分同名的函数 ， 根据  decrator  上面定义的版本 ， 来调用不同的方法 。 仔细学习了一下 。 它是用到了  MetaClass。 主要思路是 ：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; 在  decrator  里面 ， 把被装饰的方法存在类的一个属性里面 (version_methods)&lt;/li&gt;
+&lt;li&gt; 使用自定义的 metaclass,  删除掉父类上的 version_methods， 并把这个属性放到子类中 。 这样做是为了防止子类共享父类的 version_methods 属性 。&lt;/li&gt;
+&lt;li&gt; 在子类里面 ， 重写 &lt;code&gt;__getattribute__&lt;/code&gt; 方法 ， 当所需要的属性存在于 &lt;code&gt;version_methods&lt;/code&gt; 时 ， 根据特定的条件 ， 返回期望的方法 。 如果没有 ， 就调用父类的方法 。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt; 以下是示例代码 &lt;/p&gt;
 &lt;div class="gist"&gt;
@@ -110,8 +123,15 @@ SubClass2().foo({"version": "2.0"})
 &lt;/div&gt;
 &lt;ul&gt;
 &lt;li&gt;[0] &lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075"&gt;https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="Python"></category></entry><entry><title>Python cString raise exception when feed Unicode</title><link href="http://xcodest.me/python-cstring-unicode.html" rel="alternate"></link><updated>2014-09-09T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-09-09:python-cstring-unicode.html</id><summary type="html">&lt;p&gt;I gett following different result when using these two Class.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;StringIO&lt;/span&gt;
+&lt;/ul&gt;</content><category term="Python"></category></entry><entry><title>Python cString raise exception when feed Unicode</title><link href="http://xcodest.me/python-cstring-unicode.html" rel="alternate"></link><published>2014-09-09T00:00:00+08:00</published><updated>2014-09-09T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-09-09:/python-cstring-unicode.html</id><summary type="html">&lt;p&gt;I gett following different result when using these two Class.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;StringIO&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;cStringIO&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;u&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cStringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;u&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;module&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="ne"&gt;UnicodeEncodeError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ascii&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;codec&lt;/span&gt; &lt;span class="n"&gt;can&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;t encode character u&amp;#39;&lt;/span&gt;\&lt;span class="n"&gt;u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; in position 0: ordinal not in …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;I gett following different result when using these two Class.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;StringIO&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;cStringIO&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;u&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cStringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;u&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -124,4 +144,4 @@ SubClass2().foo({"version": "2.0"})
 &lt;p&gt;The root cause is explained on &lt;a href="https://docs.python.org/2/library/stringio.html#cStringIO.StringIO"&gt;document for cStringIO&lt;/a&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Unlike the StringIO module, this module is not able to accept Unicode strings that cannot be encoded as plain ASCII strings.&lt;/p&gt;
-&lt;/blockquote&gt;</summary><category term="Python"></category></entry></feed>
+&lt;/blockquote&gt;</content><category term="Python"></category></entry></feed>

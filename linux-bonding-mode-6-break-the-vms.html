@@ -104,10 +104,10 @@
     <span class="post-date"> 2014-04-14 </span>
   </header>
   <div class="entry-content">
-    <p> 操作系统： ubuntu 12.04.1
-内核 linux 3.2</p>
-<p> 今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。</p>
-<div class="highlight"><pre><span></span>    +---- host1 -------+         +---- host2 ----+
+    <p> 操作系统 ： ubuntu 12.04.1
+ 内核  linux 3.2</p>
+<p> 今天发现一个网络上的问题 ， 如果  Openstack Fixed IP  走  mode 6  绑定的网卡 ， 不同物理机上的虚拟机是相互访问不了的 。</p>
+<div class="codehilite"><pre><span></span>    +---- host1 -------+         +---- host2 ----+
                      eth0 ---- eth0 
                    /                \
     br1 ---- bond0                   bond0 ---- br1 
@@ -116,13 +116,13 @@
 </pre></div>
 
 
-<p> 机器的连接方式如上图，经检查发现，问题简化成两边的 br1 是不通的，现像是 ping 时，接收方收不到包，包只走到 bond0 就给丢弃了。原因在于内核上有问题。在网络上查到以下两个连接 </p>
+<p> 机器的连接方式如上图 ， 经检查发现 ， 问题简化成两边的  br1  是不通的 ， 现像是 ping 时 ， 接收方收不到包 ， 包只走到 bond0 就给丢弃了 。 原因在于内核上有问题 。 在网络上查到以下两个连接  </p>
 <ol>
 <li>https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302 </li>
 <li>https://bugzilla.redhat.com/show_bug.cgi?id=487763</li>
 </ol>
-<p> 把内核升级到 3.8 之后就可以了。</p>
-<div class="highlight"><pre><span></span>apt-get install linux-image-generic-lts-raring
+<p> 把内核升级到 3.8 之后就可以了 。</p>
+<div class="codehilite"><pre><span></span>apt-get install linux-image-generic-lts-raring
 </pre></div>
   </div><!-- /.entry-content -->
   <div>

@@ -104,13 +104,13 @@
     <span class="post-date"> 2015-11-20 </span>
   </header>
   <div class="entry-content">
-    <p><img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg" /></p>
-<p> 一直没有搞明白 <code>Exception</code> 的 args 和 message 参数 , 最近看了一下 CPython 源码，
-终于搞明白了。</p>
-<p> 一开始 ( 从 2.5 开始 ) 的时候是有 <code>args</code> 和 <code>message</code> 两个参数的。2.6 版本之后，把
-<code>message</code> 废弃掉了，只留下了一个任意长度的 <code>args</code>。</p>
-<p> 以下是 2.5 以后的代码，可以看到，如果 args 长度是 1，就会把 <code>self.message = args[0]</code></p>
-<div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
+    <p><img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg"></p>
+<p> 一直没有搞明白  <code>Exception</code>  的  args  和  message  参数 ,  最近看了一下  CPython  源码 ，
+ 终于搞明白了 。</p>
+<p> 一开始 ( 从 2.5 开始 ) 的时候是有  <code>args</code>  和  <code>message</code>  两个参数的 。2.6 版本之后 ， 把 
+<code>message</code>  废弃掉了 ， 只留下了一个任意长度的  <code>args</code>。</p>
+<p> 以下是 2.5 以后的代码 ， 可以看到 ， 如果 args  长度是 1， 就会把  <code>self.message = args[0]</code></p>
+<div class="codehilite"><pre><span></span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
 <span class="nf">BaseException_new</span><span class="p">(</span><span class="n">PyTypeObject</span> <span class="o">*</span><span class="n">type</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">kwds</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="n">PyBaseExceptionObject</span> <span class="o">*</span><span class="n">self</span><span class="p">;</span>
@@ -156,11 +156,11 @@
 </pre></div>
 
 
-<p> 本来 message 就是 Exception 的一个属性，在 2.6 以后，把它变成了一个 descriptor, 当
-调用时，如果它在 <code>self.__dict__</code> 里，就直接打印，否则就返回 <code>self.message</code> 的信息
-并打印出一个 <code>Warning</code>。如果已经赋过一个值的话 <code>self.message = xxxx</code>, 它就会存在
-<code>self.__dict__</code> 里。</p>
-<div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
+<p> 本来  message  就是  Exception 的一个属性 ， 在 2.6 以后 ， 把它变成了一个  descriptor,  当 
+ 调用时 ， 如果它在  <code>self.__dict__</code>  里 ， 就直接打印 ， 否则就返回  <code>self.message</code>  的信息 
+ 并打印出一个  <code>Warning</code>。 如果已经赋过一个值的话 <code>self.message = xxxx</code>,  它就会存在 
+<code>self.__dict__</code> 里 。</p>
+<div class="codehilite"><pre><span></span><span class="k">static</span> <span class="n">PyObject</span> <span class="o">*</span>
 <span class="nf">BaseException_get_message</span><span class="p">(</span><span class="n">PyBaseExceptionObject</span> <span class="o">*</span><span class="n">self</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="n">PyObject</span> <span class="o">*</span><span class="n">msg</span><span class="p">;</span>
@@ -213,9 +213,9 @@
 </pre></div>
 
 
-<p> 在 python3 中，message 相关的信息已经完全删除掉了。</p>
-<p> 所以，一般使用 <code>message</code> 属性的话，推荐这样使用 </p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">MyException</span>(<span class="nb">Exception</span>):
+<p> 在  python3  中 ，message  相关的信息已经完全删除掉了 。</p>
+<p> 所以 ， 一般使用  <code>message</code>  属性的话 ， 推荐这样使用 </p>
+<div class="codehilite"><pre><span></span><span class="k">class</span> <span class="n">MyException</span>(<span class="nb">Exception</span>):
     <span class="n">def</span> <span class="n">__init__</span>(<span class="k">self</span>, <span class="n">message</span>):
         <span class="k">self</span>.<span class="n">message</span> = <span class="n">message</span>
 

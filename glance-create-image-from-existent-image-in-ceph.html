@@ -103,20 +103,20 @@
     <span class="post-date"> 2015-06-04 </span>
   </header>
   <div class="entry-content">
-    <p> 当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。</p>
-<p> 可以先用 rbd 上传镜像，转换格式 ( 也会比较慢，还不如直接上传 RAW 格式的镜像 )。然后再做好对应的 snap , 并加以保护。是后一步的 location 必须按格式写 ( 见 [0])，这样才会使用 rbd 的 COW clone 功能。</p>
-<div class="highlight"><pre><span></span><span class="c1"># image format 2 support layering</span>
-rbd --image-format <span class="m">2</span> import /tmp/ubuntu14.04.2.dsk $uuid
+    <p> 当使用  Ceph + Glance  时 ， 镜像需要使用  RAW  格式 ， 这会导致创建镜像时非常的慢 。 有的时候 ， 也需要把  Ceph  中现有的镜像导入到  Glance  中 。 这时可以使用  --location  参数来指定镜像所在的远程位置 。 也就可以使用现有的  Ceph  镜像来快速创建 。</p>
+<p> 可以先用  rbd  上传镜像 ， 转换格式 ( 也会比较慢 ， 还不如直接上传  RAW  格式的镜像 )。 然后再做好对应的  snap ,  并加以保护 。 是后一步的 location 必须按格式写 ( 见 [0])， 这样才会使用 rbd 的  COW clone  功能 。</p>
+<div class="codehilite"><pre><span></span><span class="c1"># image format 2 support layering</span>
+rbd --image-format <span class="m">2</span> import /tmp/ubuntu14.04.2.dsk <span class="nv">$uuid</span>
 
 <span class="c1"># Convert to raw image type</span>
-qemu-img convert -O raw rbd:$pool/$uuid rbd:$pool/$uuid
+qemu-img convert -O raw rbd:<span class="nv">$pool</span>/<span class="nv">$uuid</span> rbd:<span class="nv">$pool</span>/<span class="nv">$uuid</span>
 
 <span class="c1"># Make Snapshot and protect it which is require by image clone in nova libvirt.</span>
-rbd --pool images snap create --snap snap $uuid
-rbd --pool images snap protect --image $uuid --snap snap
+rbd --pool images snap create --snap snap <span class="nv">$uuid</span>
+rbd --pool images snap protect --image <span class="nv">$uuid</span> --snap snap
 
 <span class="c1"># Create Image in Glance</span>
-glance image-create --id $uuid --name ubuntu14.04.2 --disk-format raw --container-format bare --is-public True --location rbd://<span class="nv">$f</span>sid/images/$uuid/snap
+glance image-create --id <span class="nv">$uuid</span> --name ubuntu14.04.2 --disk-format raw --container-format bare --is-public True --location rbd://<span class="nv">$fsid</span>/images/<span class="nv">$uuid</span>/snap
 </pre></div>
 
 

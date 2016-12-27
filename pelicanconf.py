@@ -49,7 +49,7 @@ PLUGINS = ['assets', 'gravatar', 'pelican_gist',
 
 SITEMAP= {'format': 'xml'}
 
-STATIC_PATHS = ['images', 'extra/CNAME']
+STATIC_PATHS = ['images', 'extra']
 
 EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'}}
 
@@ -74,5 +74,11 @@ DEFAULT_PAGINATION = 50
 
 DISPLAY_PAGES_ON_MENU = True
 
-MD_EXTENSIONS = ['codehilite(css_class=highlight)',
-                 'extra', 'toc']
+MARKDOWN = {
+        'extension_configs': {
+            'markdown.extensions.codehilite': {},
+            'markdown.extensions.extra': {},
+            'markdown.extensions.toc': {}
+            },
+        'output_format': 'html5'
+        }

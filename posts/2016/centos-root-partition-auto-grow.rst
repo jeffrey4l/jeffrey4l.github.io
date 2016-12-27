@@ -2,7 +2,7 @@ CentOS 根分区自动扩展
 =====================
 
 :date: 2016-11-14
-:tag: Linux, OpenStack
+:tags: Linux, OpenStack
 :slug: centos-root-partition-auto-grow
 
 CentOS 5 太老了，完全不支持。

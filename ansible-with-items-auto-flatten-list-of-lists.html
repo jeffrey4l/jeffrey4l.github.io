@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-          <title> 论Python的异常的合理抛出姿势 -   - Xcodest</title>
+          <title> Ansible with-items auto flatten list of lists -   - Xcodest</title>
         <meta charset="utf-8" />
 
 
 
-    <meta name="tags" contents="Python" />
-    <meta name="tags" contents="Exception" />
+    <meta name="tags" contents="Ansible" />
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
@@ -101,83 +100,74 @@
   <div class="col-md-12 col-xs-12">
   <section id="content" class="body">
   <header>
-    <h2 class="entry-title">论Python的异常的合理抛出姿势</h2>
-    <span class="post-date"> 2015-05-06 </span>
+    <h2 class="entry-title">Ansible with-items auto flatten list of lists</h2>
+    <span class="post-date"> 2016-12-27 </span>
   </header>
   <div class="entry-content">
-    <p> 当需要重新抛出  Python  的异常时 ， 很多人都处理不好 。 本文总结了一些处理方法 。</p>
-<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">do_something</span><span class="p">()</span>
-<span class="k">except</span><span class="p">:</span>
-    <span class="n">do_cleanup</span><span class="p">()</span>
-</pre></div>
-
-
-<p> 这种处理会直接把内部异常吃掉 ， 当有问题 /Bug 时 ， 会很难处理 ， 所以不推荐 。</p>
-<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">do_something</span><span class="p">()</span>
-<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="n">do_cleanup</span><span class="p">()</span>
-    <span class="k">print</span> <span class="n">e</span>
-    <span class="c1"># or</span>
-    <span class="kn">import</span> <span class="nn">traceback</span>
-    <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
-</pre></div>
-
-
-<p> 这种直接打印的 ， 一是不能很好的输出到日志里 。 二是不能把错误交到上层调用者 ， 不能让其知道这是有问题 。</p>
-<div class="highlight"><pre><span></span><span class="k">try</span><span class="o">:</span>
-    <span class="n">do_somethink</span><span class="o">()</span>
-<span class="n">except</span><span class="o">:</span>
-    <span class="n">do_cleanup</span><span class="o">()</span>
-    <span class="n">raise</span>
-</pre></div>
-
-
-<p> 用这种 ， 主要是为了做 cleanup。 直接 <code>raise</code> 后 ， 异常会抛向上层 。 没有 catch 的效果一样 。</p>
-<p> 这里还有一种和上面这个类似的效果的 </p>
-<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">do_something</span><span class="p">()</span>
-<span class="k">except</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="n">exc_info</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
-    <span class="k">raise</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-</pre></div>
-
-
-<p> 最后 ， 当要抛出自己重新包装后的异常时 ， 最好把原始的异常也带上 。 这样有利于问题的 debug。</p>
-<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">do_something</span><span class="p">()</span>
-<span class="k">except</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="n">exc_info</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
-    <span class="k">raise</span> <span class="n">MyException</span><span class="p">(),</span> <span class="bp">None</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-</pre></div>
-
-
-<h1 id="ref">REF</h1>
-<ul>
-<li><a href="http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html">Re-raising Exceptions</a> - by Ian Bicking</li>
+    <p>Ansible has <tt class="docutils literal">with_items</tt> directive, which make task iterating the lists in
+<tt class="docutils literal">with_items</tt>. A normal usage is like</p>
+<pre class="literal-block">
+- name: copy file
+  copy: src={{ item }} dest=/root/.ssh/{{ item }}
+  with_items:
+    - id_rsa
+    - id_rsa.pub
+</pre>
+<p>But if you use list of lists, it will not work as your expect.</p>
+<pre class="literal-block">
+- name: copy file
+  copy: src={{ item.0 }} dest=/root/.ssh/{{ item.1 }}
+  with_items:
+    - [ id_rsa, id_rsa_foo ]
+    - [ id_rsa.pub, rd_rsa_foo.pub ]
+</pre>
+<p>Ansible will flatten the lists just like what <tt class="docutils literal">with_flatten</tt> does. As a
+result, it will work like</p>
+<pre class="literal-block">
+- name: copy file
+  copy: src={{ item.0 }} dest=/root/.ssh/{{ item.1 }}
+  with_items:
+    - id_rsa
+    - id_rsa_foo
+    - id_rsa.pub
+    - id_rsa_foo.pub
+</pre>
+<p>This is not what we want, of curse. The workaround is wrapping the list of
+lists. like:</p>
+<pre class="literal-block">
+- name: copy file
+  copy: src={{ item.0 }} dest=/root/.ssh/{{ item.1 }}
+  with_items:
+    -
+      - [ id_rsa, id_rsa_foo ]
+      - [ id_rsa.pub, rd_rsa_foo.pub ]
+</pre>
+<p>This is a historical issue rather than a bug. Here is the related ansible
+bug[0] and doc fix[1].</p>
+<ul class="simple">
+<li>[0] <a class="reference external" href="https://github.com/ansible/ansible/issues/5913">https://github.com/ansible/ansible/issues/5913</a></li>
+<li>[1] <a class="reference external" href="https://github.com/ko-zu/ansible/commit/0a1a5cde86df0424441b78dd9e67b96159cfd70f">https://github.com/ko-zu/ansible/commit/0a1a5cde86df0424441b78dd9e67b96159cfd70f</a></li>
 </ul>
+
   </div><!-- /.entry-content -->
   <div>
     <nav>
       <ul class="pager">
-        <li class="previous"><a href="logstash_debug.html">&larr; Older</a></li>
-        <li class="next"><a href="oz-templates.html">Newer &rarr;</a></li>
+        <li class="previous"><a href="centos-root-partition-auto-grow.html">&larr; Older</a></li>
+        <li class="next disabled"><a href="#">Newer &rarr;</a></li>
       </ul>
     </nav>
   </div>
   <div class="entry-info">
-    <p> Tags: <a href="http://xcodest.me/tag/python.html">Python</a> <a href="http://xcodest.me/tag/exception.html">Exception</a>  </p>
+    <p> Tags: <a href="http://xcodest.me/tag/ansible.html">Ansible</a>  </p>
   </div>
     <div class="comments">
       <h2>Comments</h2>
       <div id="disqus_thread"></div>
       <script type="text/javascript">
         var disqus_shortname = 'xcodest';
-        var disqus_identifier = 'How_to_raise_python_exception.html';
-        var disqus_url = 'http://xcodest.me/How_to_raise_python_exception.html';
+        var disqus_identifier = 'ansible-with-items-auto-flatten-list-of-lists.html';
+        var disqus_url = 'http://xcodest.me/ansible-with-items-auto-flatten-list-of-lists.html';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//xcodest.disqus.com/embed.js';

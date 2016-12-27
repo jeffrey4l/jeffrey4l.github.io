@@ -15,7 +15,7 @@
 &lt;h1 id="_4"&gt; 调试 &lt;/h1&gt;
 &lt;p&gt; 测试虚拟机用的  CentOS 7  系统 ，&lt;/p&gt;
 &lt;p&gt; 首先看虚拟机的  console log,  发现如下信息 &lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Starting kdump:[  OK  ]
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Starting kdump:[  OK  ]
 Starting cloud-init: Cloud-init v. 0.7.5 running 'init' at Wed, 30 Mar 2016 14:58:36 +0000. Up 40.68 seconds.
 ...
 Starting cloud-init: Cloud-init v. 0.7.5 running 'modules:config' at Wed, 30 Mar 2016 14:59:59 +0000. Up 124.27 seconds.
@@ -27,14 +27,14 @@ Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource Data
 &lt;p&gt; 一开始我怀疑是硬盘分区自动扩展慢导致的 ， 但把自动扩展关掉了也还是一样 ， 时间基本没有变化 。 肯定是其它问题 。&lt;/p&gt;
 &lt;p&gt; 万事找日志 ， 要找真正的原因 ， 还是从日志找起 。&lt;/p&gt;
 &lt;p&gt; 在  &lt;code&gt;/var/log/&lt;/code&gt;  下找日志 ， 只发现了少量日志 。 大概看了一个  cloud-init  的源代码 ， 日志应该会有很多的才对 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;-rw-r--r--. &lt;span class="m"&gt;1&lt;/span&gt; root root    &lt;span class="m"&gt;0&lt;/span&gt; Mar &lt;span class="m"&gt;30&lt;/span&gt; 14:58 cloud-init.log
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;-rw-r--r--. &lt;span class="m"&gt;1&lt;/span&gt; root root    &lt;span class="m"&gt;0&lt;/span&gt; Mar &lt;span class="m"&gt;30&lt;/span&gt; 14:58 cloud-init.log
 -rw-r--r--. &lt;span class="m"&gt;1&lt;/span&gt; root root 1.7K Mar &lt;span class="m"&gt;30&lt;/span&gt; 15:00 cloud-init-output.log
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 又尝试修改了  &lt;code&gt;cloud.cfg&lt;/code&gt;  的配置 ， 把日志都都打印到特定文件 ， 如下 。 但是结果还是一样 ， 没有啥新日志信息 。( 其时后来才发现 ， 这个配置默认就存在 ， 在  &lt;code&gt;/etc/cloud/cloud.cfg.d/&lt;/code&gt;  下面 )&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;output&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;{&lt;/span&gt;&lt;span class="nv"&gt;all&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;'|&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;tee&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;-a&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;/var/log/cloud-init-output.log'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;}&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;output&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;{&lt;/span&gt;&lt;span class="nv"&gt;all&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;'|&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;tee&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;-a&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;/var/log/cloud-init-output.log'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 联想到  CentOS 7  用的  systemd  管理器 ， 试图从  systemd  里找日志 。 先找到了所有的  cloud-init  相关的服务 &lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ systemctl list-units &lt;span class="p"&gt;|&lt;/span&gt; grep cloud
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ systemctl list-units &lt;span class="p"&gt;|&lt;/span&gt; grep cloud
 cloud-config.service       Apply the settings specified in cloud-config
 cloud-final.service        Execute cloud user/final scripts
 cloud-init-local.service   Initial cloud-init job &lt;span class="o"&gt;(&lt;/span&gt;pre-networking&lt;span class="o"&gt;)&lt;/span&gt;
@@ -42,7 +42,7 @@ cloud-init.service         Initial cloud-init job &lt;span class="o"&gt;(&lt;/sp
 cloud-config.target        Cloud-config availability
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 可以看到 ，cloud-init  安装的服务还是有多个的 。 不同的服务的启动时间点和所做的事情是不一样的 。 使用  &lt;code&gt;journalctl&lt;/code&gt;  挨个排查后 ， 找到以下日志 ：&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ journalctl -u cloud-init
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ journalctl -u cloud-init
 ...
 Apr &lt;span class="m"&gt;03&lt;/span&gt; 13:19:33 cloud-init&lt;span class="o"&gt;[&lt;/span&gt;780&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="o"&gt;[&lt;/span&gt;CLOUDINIT&lt;span class="o"&gt;]&lt;/span&gt; __init__.py&lt;span class="o"&gt;[&lt;/span&gt;DEBUG&lt;span class="o"&gt;]&lt;/span&gt;: Merging using located merger
 Apr &lt;span class="m"&gt;03&lt;/span&gt; 13:21:13 cloud-init&lt;span class="o"&gt;[&lt;/span&gt;780&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="o"&gt;[&lt;/span&gt;CLOUDINIT&lt;span class="o"&gt;]&lt;/span&gt; DataSourceGCE.py&lt;span class="o"&gt;[&lt;/span&gt;DEBUG&lt;span class="o"&gt;]&lt;/span&gt;: http://metadata.google.internal./computeMetadata/v1/ is not resolvable
@@ -53,7 +53,7 @@ Apr &lt;span class="m"&gt;03&lt;/span&gt; 13:21:13 cloud-init&lt;span class="o"&
 &lt;p&gt;cloud-init  是一个通用程序 ， 能兼容多个云环境 。 他会从多个数据源里去读  Metadata  数据 。 其默认的顺序中 ，GoogleGCE  在  OpenStack  之前 ， 而  GoogleGCE  的源里面 ， 会访问一个  http://metadata.google.internal.  的网址 ， 加上虚拟机不能访问外网 ， 程序会卡在这里 ， 直到超时 。 才会继续测试  OpenStack  的源是否可用 。&lt;/p&gt;
 &lt;h1 id="_6"&gt; 解决方法 &lt;/h1&gt;
 &lt;p&gt; 尽量不要直接使用官方的源 ， 而是自己制作 ， 尤其是  cloud-init  的配置项 。 要手动修改掉其默认的数据源 ， 以避免以上情况的发生 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# /etc/cloud/cloud.cfg&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# /etc/cloud/cloud.cfg&lt;/span&gt;
 &lt;span class="l l-Scalar l-Scalar-Plain"&gt;datasource_list&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'ConfigDrive'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'OpenStack'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'Ec2'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;h1 id="_7"&gt; 总结 &lt;/h1&gt;
@@ -94,7 +94,7 @@ Apr &lt;span class="m"&gt;03&lt;/span&gt; 13:21:13 cloud-init&lt;span class="o"&
 &lt;p&gt; 安装好操作系统后 ， 依次进行如下配置 &lt;/p&gt;
 &lt;h2 id="_2"&gt; 源 &lt;/h2&gt;
 &lt;p&gt; 加入  Docker  的源 &lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;sudo tee /etc/yum.repos.d/docker.repo &amp;lt;&amp;lt; 'EOF'&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;sudo tee /etc/yum.repos.d/docker.repo &amp;lt;&amp;lt; 'EOF'&lt;/span&gt;
 &lt;span class="x"&gt;[dockerrepo]&lt;/span&gt;
 &lt;span class="x"&gt;name=Docker Repository&lt;/span&gt;
 &lt;span class="x"&gt;baseurl=https://yum.dockerproject.org/repo/main/centos/&lt;/span&gt;&lt;span class="p"&gt;$&lt;/span&gt;&lt;span class="nv"&gt;releasever&lt;/span&gt;&lt;span class="x"&gt;/&lt;/span&gt;
@@ -104,46 +104,46 @@ Apr &lt;span class="m"&gt;03&lt;/span&gt; 13:21:13 cloud-init&lt;span class="o"&
 &lt;span class="x"&gt;EOF&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 加入  EPEL  源 &lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;yum install -y epel-release
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;yum install -y epel-release
 &lt;/pre&gt;&lt;/div&gt;
 &lt;h2 id="kolla"&gt; 安装  Kolla  所需依赖 &lt;/h2&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;yum install -y ansible docker-engine git gcc python-setuptools
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;yum install -y ansible docker-engine git gcc python-setuptools
 easy_install -U pip
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Docker  现在使用了  shared mount  功能 ， 默认没有打开 ， 需要手动修改  Docker  启动文件  &lt;code&gt;/usr/lib/systemd/system/docker.service&lt;/code&gt;  的  MountFlags&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sed -i 's/MountFlags.*/MountFlags=shared/' /usr/lib/systemd/system/docker.service
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sed -i 's/MountFlags.*/MountFlags=shared/' /usr/lib/systemd/system/docker.service
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 启动  Docker  服务 &lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;systemctl daemon-reload
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;systemctl daemon-reload
 systemctl enable docker
 systemctl start docker
 &lt;/pre&gt;&lt;/div&gt;
 &lt;h2 id="kolla_1"&gt; 下载  Kolla  代码并安装依赖 &lt;/h2&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/openstack/kolla.git
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/openstack/kolla.git
 cd kolla
 pip install -r requirements.txt -r test-requirements.txt tox
 &lt;/pre&gt;&lt;/div&gt;
 &lt;h1 id="build-docker-image"&gt;Build Docker Image&lt;/h1&gt;
 &lt;p&gt; 以下如果没有特别说明 ， 所有的操作都是在  Kolla  项目的目录里进行 &lt;/p&gt;
 &lt;p&gt; 首先要先生成并修改配置文件 &lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tox -e genconfig
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tox -e genconfig
 cp -rv etc/kolla /etc/
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 然后修改  &lt;code&gt;/etc/kolla/kolla-build.conf&lt;/code&gt;  文件 ， 它是用来控制  kolla build  过程的 。 修改后 ， 其主要内容如下 :&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[DEFAULT]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[DEFAULT]&lt;/span&gt;
 &lt;span class="na"&gt;base&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;centos&lt;/span&gt;
 &lt;span class="na"&gt;install_type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;soruce&lt;/span&gt;
 &lt;span class="na"&gt;namespace&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;lokolla&lt;/span&gt;
 &lt;span class="na"&gt;push&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;false&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 接下来就是进行漫长的  build,  这个过程主要依赖机器性能和网速 。 如果快的话 ，20 多分钟就完成 。 如果有问题的话 ， 会很久 。 不过依赖于  Docker Build  的  Cache  功能 ， 就算重跑的话 ， 之前已经  Build  好的也会很快完成 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./tool/build.py -p default
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./tool/build.py -p default
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 参数中的  &lt;code&gt;-p default&lt;/code&gt;  是指定了只  build  主要的  image,  包括 : mariadb, rabbitmq, cinder, ceilometer, glance, heat, horizon, keystone, neutron, nova, swift 等  .  这些可以只生成的  &lt;code&gt;kolla-build.conf&lt;/code&gt;  里找到 。&lt;/p&gt;
 &lt;p&gt; 如果  Build  完成之后 ， 使用  &lt;code&gt;docker images&lt;/code&gt;  能看到所有已经  build  好的镜像 。&lt;/p&gt;
 &lt;h1 id="deploy"&gt;Deploy&lt;/h1&gt;
 &lt;p&gt; 依然是先修改配置文件 ， 与  Deploy  相关的主要是两个配置文件  &lt;code&gt;/etc/kolla/passwords.yml&lt;/code&gt;  和  &lt;code&gt;/etc/kolla/globals.yml&lt;/code&gt;。 他们为  ansible  提供一些变量的设定 。 主要需要修改的是  &lt;code&gt;globals.yml&lt;/code&gt;  文件 。 修改后 ， 其主要内容为 :&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;config_strategy&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"COPY_ALWAYS"&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;config_strategy&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"COPY_ALWAYS"&lt;/span&gt;
 
 &lt;span class="l l-Scalar l-Scalar-Plain"&gt;kolla_base_distro&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"centos"&lt;/span&gt;
 &lt;span class="l l-Scalar l-Scalar-Plain"&gt;kolla_install_type&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"source"&lt;/span&gt;
@@ -157,7 +157,7 @@ cp -rv etc/kolla /etc/
 &lt;span class="l l-Scalar l-Scalar-Plain"&gt;enable_heat&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"no"&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;kolla  使用一个名为  &lt;code&gt;kolla-ansible&lt;/code&gt;  的封装脚本 ，  并提供以下几个命令 &lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./tools/kolla-ansible -h
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./tools/kolla-ansible -h
 Usage: ./tools/kolla-ansible COMMAND [options]
 
 Options:
@@ -177,7 +177,7 @@ Commands:
 &lt;p&gt; 使用  &lt;code&gt;./tools/kolla-ansible deploy&lt;/code&gt;  来开始正式安装 。 安装会很快 ， 我机器上 ， 几分钟就安装完成了 。&lt;/p&gt;
 &lt;p&gt; 最后 ， 使用 &lt;code&gt;./tools/kolla-ansible post-deploy&lt;/code&gt;  来生成  &lt;code&gt;/etc/kolla/admin-openrc.sh&lt;/code&gt;  文件用来加载认证变量 。&lt;/p&gt;
 &lt;h1 id="_3"&gt; 查看安装后的状态 &lt;/h1&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;IMAGE                                                  COMMAND                 NAMES
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;IMAGE                                                  COMMAND                 NAMES
 lokolla/centos-source-keystone:2.0.0                   "kolla_start"           keystone
 lokolla/centos-source-horizon:2.0.0                    "kolla_start"           horizon
 lokolla/centos-source-neutron-metadata-agent:2.0.0     "kolla_start"           neutron_metadata_agent
@@ -494,7 +494,7 @@ multihost  的环境 &lt;/p&gt;
 &lt;/hr&gt;&lt;/div&gt;</content><category term="Kolla"></category><category term="OpenStack"></category></entry><entry><title>Get all the repo from OpenStack</title><link href="http://xcodest.me/get-all-repos-from-openstack.html" rel="alternate"></link><published>2016-01-06T00:00:00+08:00</published><updated>2016-01-06T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-01-06:/get-all-repos-from-openstack.html</id><summary type="html">&lt;p&gt;OpenStack 的源因为你我都知道的原因 ， 一直不稳定 ， 导致  devstack  时经常失败 。 特定写了个脚本 ， 可以拿到所有的仓库地址 ， 方便做本地的 mirror。&lt;/p&gt;
 &lt;p&gt; 脚本在  gist&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;  上 。&lt;/p&gt;
 &lt;p&gt; 使用方法 ：&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install PyGithub
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install PyGithub
 python openstack_repo.py -u &amp;lt;github_username&amp;gt; -p &amp;lt;github_password&amp;gt; \
     -o repos.txt
 &lt;/pre&gt;&lt;/div&gt;
@@ -515,7 +515,7 @@ import logging
 DESCRIPTION=u''' …&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;OpenStack 的源因为你我都知道的原因 ， 一直不稳定 ， 导致  devstack  时经常失败 。 特定写了个脚本 ， 可以拿到所有的仓库地址 ， 方便做本地的 mirror。&lt;/p&gt;
 &lt;p&gt; 脚本在  gist&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;  上 。&lt;/p&gt;
 &lt;p&gt; 使用方法 ：&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install PyGithub
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install PyGithub
 python openstack_repo.py -u &amp;lt;github_username&amp;gt; -p &amp;lt;github_password&amp;gt; \
     -o repos.txt
 &lt;/pre&gt;&lt;/div&gt;
@@ -610,10 +610,10 @@ if __name__ == "__main__":
 &lt;/ol&gt;
 &lt;/div&gt;</content><category term="OpenStach Python"></category></entry><entry><title>Glance Create Image from Existent Image in Ceph</title><link href="http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html" rel="alternate"></link><published>2015-06-04T00:00:00+08:00</published><updated>2015-06-04T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-06-04:/glance-create-image-from-existent-image-in-ceph.html</id><summary type="html">&lt;p&gt; 当使用  Ceph + Glance  时 ， 镜像需要使用  RAW  格式 ， 这会导致创建镜像时非常的慢 。 有的时候 ， 也需要把  Ceph  中现有的镜像导入到  Glance  中 。 这时可以使用  --location  参数来指定镜像所在的远程位置 。 也就可以使用现有的  Ceph  镜像来快速创建 。&lt;/p&gt;
 &lt;p&gt; 可以先用  rbd  上传镜像 ， 转换格式 ( 也会比较慢 ， 还不如直接上传  RAW  格式的镜像 )。 然后再做好对应的  snap ,  并加以保护 。 是后一步的 location 必须按格式写 ( 见 [0])， 这样才会使用 rbd 的  COW clone  功能 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# image format 2 support layering&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# image format 2 support layering&lt;/span&gt;
 rbd --image-format &lt;span class="m"&gt;2 …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt; 当使用  Ceph + Glance  时 ， 镜像需要使用  RAW  格式 ， 这会导致创建镜像时非常的慢 。 有的时候 ， 也需要把  Ceph  中现有的镜像导入到  Glance  中 。 这时可以使用  --location  参数来指定镜像所在的远程位置 。 也就可以使用现有的  Ceph  镜像来快速创建 。&lt;/p&gt;
 &lt;p&gt; 可以先用  rbd  上传镜像 ， 转换格式 ( 也会比较慢 ， 还不如直接上传  RAW  格式的镜像 )。 然后再做好对应的  snap ,  并加以保护 。 是后一步的 location 必须按格式写 ( 见 [0])， 这样才会使用 rbd 的  COW clone  功能 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# image format 2 support layering&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# image format 2 support layering&lt;/span&gt;
 rbd --image-format &lt;span class="m"&gt;2&lt;/span&gt; import /tmp/ubuntu14.04.2.dsk &lt;span class="nv"&gt;$uuid&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Convert to raw image type&lt;/span&gt;
@@ -644,7 +644,7 @@ Including&lt;/p&gt;
 &lt;li&gt;RHEL-6.3-x86_64-DVD.iso&lt;/li&gt;
 &lt;li&gt;ubuntu-14.04.1-server-amd64.iso&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/clalancette/oz.git
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/clalancette/oz.git
 cd oz
 git clone …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt; 最近利用 &lt;a href="https://github.com/clalancette/oz"&gt;OZ&lt;/a&gt; 做了几个常用镜像的自动化制作 。 回头有用到的会再加进去 。 说明如下 &lt;/p&gt;
 &lt;p&gt; 项目地址 : &lt;a href="https://github.com/jeffrey4l/oz-templates"&gt;https://github.com/jeffrey4l/oz-templates&lt;/a&gt;&lt;/p&gt;
@@ -657,7 +657,7 @@ Including&lt;/p&gt;
 &lt;li&gt;RHEL-6.3-x86_64-DVD.iso&lt;/li&gt;
 &lt;li&gt;ubuntu-14.04.1-server-amd64.iso&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/clalancette/oz.git
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/clalancette/oz.git
 cd oz
 git clone https://github.com/jeffrey4l/oz-templates.git
 cd oz-templates
@@ -706,7 +706,7 @@ make all
 &lt;/ul&gt;
 &lt;h1 id="_2"&gt; 使用组合 ：&lt;/h1&gt;
 &lt;p&gt;nova-network + libvirt&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nova_api_class=nova.network.api.API
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nova_api_class=nova.network.api.API
 security_group_ap=nova
 linuxnet_interface_driver=nova.network.linux_net.LinuxBridgeInterfaceDriver
 firewall_driver=nova.virt.firewall.IptablesFirewallDrive
@@ -714,7 +714,7 @@ firewall_driver=nova.virt.firewall.IptablesFirewallDrive
 
 
 &lt;p&gt;neutron + ml2 + linuxbridge plugin + libvirt&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nova_api_class=nova.network.neutronv2.API
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nova_api_class=nova.network.neutronv2.API
 security_group_ap=neutron
 linuxnet_interface_driver=nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
 firewall_driver=nova.virt.firewall.NoopFirewallDriver
@@ -722,7 +722,7 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 
 
 &lt;p&gt;neutron + ml2 + ovs plugin + libvirt&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nova_api_class=nova.network.neutronv2.API
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nova_api_class=nova.network.neutronv2.API
 security_group_ap=neutron
 linuxnet_interface_driver=nova.network.linux_net.linuxOVSInterfaceDriver
 firewall_driver=nova.virt.firewall.NoopFirewallDriver
@@ -739,10 +739,10 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 &lt;/ol&gt;</content><category term="Network"></category></entry><entry><title>Cinder V2 API</title><link href="http://xcodest.me/cinder-v2-api.html" rel="alternate"></link><published>2015-03-10T00:00:00+08:00</published><updated>2015-03-10T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-03-10:/cinder-v2-api.html</id><summary type="html">&lt;p&gt;cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).&lt;/p&gt;
 &lt;h1 id="enable-the-v2-in-cinder"&gt;Enable the v2 in cinder&lt;/h1&gt;
 &lt;p&gt;Change the following config. The v1 and v2 is enabled in default.&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# DEPRECATED: Deploy v1 of the Cinder …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# DEPRECATED: Deploy v1 of the Cinder …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).&lt;/p&gt;
 &lt;h1 id="enable-the-v2-in-cinder"&gt;Enable the v2 in cinder&lt;/h1&gt;
 &lt;p&gt;Change the following config. The v1 and v2 is enabled in default.&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# DEPRECATED: Deploy v1 of the Cinder API. (boolean value)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# DEPRECATED: Deploy v1 of the Cinder API. (boolean value)&lt;/span&gt;
 &lt;span class="c1"&gt;#enable_v1_api=true&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Deploy v2 of the Cinder API. (boolean value)&lt;/span&gt;
@@ -752,7 +752,7 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 
 &lt;h1 id="enable-the-cinder-v2-api-in-nova"&gt;Enable the cinder v2 api in nova&lt;/h1&gt;
 &lt;p&gt;In current nova config ( juno ), the default config like below. Depend on &lt;code&gt;catalog_info&lt;/code&gt; key, it use the v2 first. If v2 is not found, it will fall back to v1 version.&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[cinder]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[cinder]&lt;/span&gt;
 
 &lt;span class="c1"&gt;#&lt;/span&gt;
 &lt;span class="c1"&gt;# Options defined in nova.volume.cinder&lt;/span&gt;
@@ -782,7 +782,7 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 
 
 &lt;p&gt;You can just add the endpoint to the keystone to enable the cinder v2 api.&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;keystone service-create --name&lt;span class="o"&gt;=&lt;/span&gt;cinderv2 --type&lt;span class="o"&gt;=&lt;/span&gt;volumev2 &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;keystone service-create --name&lt;span class="o"&gt;=&lt;/span&gt;cinderv2 --type&lt;span class="o"&gt;=&lt;/span&gt;volumev2 &lt;span class="se"&gt;\&lt;/span&gt;
   --description&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Cinder Volume Service V2&amp;quot;&lt;/span&gt;
 
 keystone endpoint-create &lt;span class="se"&gt;\&lt;/span&gt;
@@ -847,7 +847,7 @@ nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $D
  程度上可以加快取镜像的速度 。 这个功能默认情况下是没开启的 。&lt;/p&gt;
 &lt;p&gt; 因为是通过 middleware 来控制的 ， 所以只要修改一下 paster 的配置就行 。 更简单的是指定 
 glance-api 加载的 pipeline 的名字 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[deploy]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[deploy]&lt;/span&gt;
 &lt;span class="c1"&gt;# possible value: none, cachine, keystone, keystone+caching, &lt;/span&gt;
 &lt;span class="c1"&gt;# keystone+cachemanagement&lt;/span&gt;
 &lt;span class="c1"&gt;# This value can get from glance-api-paste.conf file&lt;/span&gt;
@@ -856,11 +856,11 @@ glance-api 加载的 pipeline 的名字 。&lt;/p&gt;
 
 
 &lt;p&gt; 具体看下 &lt;code&gt;glance-api-paster.conf&lt;/code&gt; 文件就能明白 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[pipeline:glance-api …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Glance  增加了一层 cache 的 Middleware， 用来缓存从 file store 后端取过来的镜像 。 一定 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[pipeline:glance-api …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Glance  增加了一层 cache 的 Middleware， 用来缓存从 file store 后端取过来的镜像 。 一定 
  程度上可以加快取镜像的速度 。 这个功能默认情况下是没开启的 。&lt;/p&gt;
 &lt;p&gt; 因为是通过 middleware 来控制的 ， 所以只要修改一下 paster 的配置就行 。 更简单的是指定 
 glance-api 加载的 pipeline 的名字 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[deploy]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[deploy]&lt;/span&gt;
 &lt;span class="c1"&gt;# possible value: none, cachine, keystone, keystone+caching, &lt;/span&gt;
 &lt;span class="c1"&gt;# keystone+cachemanagement&lt;/span&gt;
 &lt;span class="c1"&gt;# This value can get from glance-api-paste.conf file&lt;/span&gt;
@@ -869,7 +869,7 @@ glance-api 加载的 pipeline 的名字 。&lt;/p&gt;
 
 
 &lt;p&gt; 具体看下 &lt;code&gt;glance-api-paster.conf&lt;/code&gt; 文件就能明白 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[pipeline:glance-api]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[pipeline:glance-api]&lt;/span&gt;
 &lt;span class="na"&gt;pipeline&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;versionnegotiation unauthenticated-context rootapp&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Use this pipeline for image caching and no auth&lt;/span&gt;
@@ -900,13 +900,13 @@ glance-api 加载的 pipeline 的名字 。&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://docs.openstack.org/developer/glance/cache.html"&gt;The Glance Image Cache&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;</content><category term="Glance"></category></entry><entry><title>Dhcp lease errors in vlan mode</title><link href="http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html" rel="alternate"></link><published>2013-08-27T08:50:00+08:00</published><updated>2013-08-27T08:50:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2013-08-27:/dhcp-lease-errors-in-vlan-mode.html</id><summary type="html">&lt;p&gt; 在使用 &lt;code&gt;keepalived&lt;/code&gt; 的过程中 ， 出现了 dhcp 失败 ， 而导致 keepalived 工作不正常的问题 。 而且之前也出现过 dhcp 偶尔失败 ， 导致虚拟机不能得到 IP,  从而不能访问的情况 。 虽然在 &lt;code&gt;/etc/sysconfig/network-scripts/ifcfg-eth0&lt;/code&gt; 中加上了如下语句 ：&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;PERSISTENT_DHCLIENT=1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;PERSISTENT_DHCLIENT=1
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt; 使得 dhcp 单次失败后 ， 继续重试 。 但是仔细查看 dhclient 的日志后 ， 发现它有大量的 dhcp request 失败 / 超时 。 在一个 &lt;a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results"&gt; 邮件列表 &lt;/a&gt; 中找到原因 ， 如下 ：&lt;/p&gt;
 &lt;p&gt;To fix issues with failed dhcp leases in vlan mode, upgrade …&lt;/p&gt;</summary><content type="html">&lt;p&gt; 在使用 &lt;code&gt;keepalived&lt;/code&gt; 的过程中 ， 出现了 dhcp 失败 ， 而导致 keepalived 工作不正常的问题 。 而且之前也出现过 dhcp 偶尔失败 ， 导致虚拟机不能得到 IP,  从而不能访问的情况 。 虽然在 &lt;code&gt;/etc/sysconfig/network-scripts/ifcfg-eth0&lt;/code&gt; 中加上了如下语句 ：&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;PERSISTENT_DHCLIENT=1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;PERSISTENT_DHCLIENT=1
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -936,7 +936,7 @@ to deal with this issue by upgrading dnsmasq. It would be great if the various
 distributionss could upgrade as well, or at least try to patch in the fix. If
 upgrading dnsmasq is out of the question, a possible workaround is to minimize
 lease renewals with something like the following combination of config options.&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# release leases immediately on terminate
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# release leases immediately on terminate
 force_dhcp_release=true
 # one week lease time
 dhcp_lease_time=604800

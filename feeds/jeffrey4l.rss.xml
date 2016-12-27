@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Xcodest - Jeffrey4l</title><link>http://xcodest.me/</link><description>code for fun</description><lastBuildDate>Mon, 14 Nov 2016 00:00:00 +0800</lastBuildDate><item><title>CentOS 根分区自动扩展</title><link>http://xcodest.me/centos-root-partition-auto-grow.html</link><description>&lt;p&gt;CentOS 5  太老了 ， 完全不支持 。&lt;/p&gt;
+<rss version="2.0"><channel><title>Xcodest - Jeffrey4l</title><link>http://xcodest.me/</link><description>code for fun</description><lastBuildDate>Tue, 27 Dec 2016 00:00:00 +0800</lastBuildDate><item><title>Ansible with-items auto flatten list of lists</title><link>http://xcodest.me/ansible-with-items-auto-flatten-list-of-lists.html</link><description>&lt;p&gt;Ansible has &lt;tt class="docutils literal"&gt;with_items&lt;/tt&gt; directive, which make task iterating the lists in
+&lt;tt class="docutils literal"&gt;with_items&lt;/tt&gt;. A normal usage is like&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+- name: copy file
+  copy: src={{ item }} dest=/root/.ssh/{{ item }}
+  with_items:
+    - id_rsa
+    - id_rsa.pub
+&lt;/pre&gt;
+&lt;p&gt;But if you use list of lists, it will not work as your expect.&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+- name: copy file
+  copy: src …&lt;/pre&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 27 Dec 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-12-27:/ansible-with-items-auto-flatten-list-of-lists.html</guid><category>Ansible</category></item><item><title>CentOS 根分区自动扩展</title><link>http://xcodest.me/centos-root-partition-auto-grow.html</link><description>&lt;p&gt;CentOS 5  太老了 ， 完全不支持 。&lt;/p&gt;
 &lt;p&gt;CentOS 6  要实现分区自动扩展 ， 要安装以下三个包 &lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 yum install cloud-init cloud-utils-growpart dracut-modules-growroot
@@ -80,7 +92,7 @@ Environment=HOME …&lt;/pre&gt;</description><dc:creator xmlns:dc="http://purl.
 &lt;p&gt; 最近在整  Kolla  的多机部署 ， 没有物理环境还是在虚拟机上搞 。 不过今天被一个  keepalived  的问题卡了将近一天的时间 。 倒也不是啥大问题 ， 还是栽到了自己挖的坑里 。&lt;/p&gt;
 &lt;h1 id="_1"&gt; 问题 &lt;/h1&gt;
 &lt;p&gt; 先说一下自己的环境 ， 我使用了三台  kvm  虚拟机 ， 每台两张网卡 ， 一个用于上外网 (eth0 &lt;code&gt;10.2.0.0/24&lt;/code&gt;)， 一个用于  neutron  的  tenant  网络使用 (eth1)。 问题就出在  eth0  上面 。eth0  是桥在了我手动创建的一个桥上  (br0),  为了上外网 ， 我打开了  &lt;code&gt;ip_forward&lt;/code&gt;，  并加了一条  iptables  转发规则 ：&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;iptables -t nat -A POSTROUTING -s 10.2.0.0 …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 02 Feb 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-02-02:/iptables-forward-the-vrrp-packets-issue.html</guid><category>iptables</category><category>vrrp</category></item><item><title>OpenStack Kolla 项目介绍</title><link>http://xcodest.me/kolla-introduce.html</link><description>
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;iptables -t nat -A POSTROUTING -s 10.2.0.0 …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 02 Feb 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-02-02:/iptables-forward-the-vrrp-packets-issue.html</guid><category>iptables</category><category>vrrp</category></item><item><title>OpenStack Kolla 项目介绍</title><link>http://xcodest.me/kolla-introduce.html</link><description>
 &lt;h1 id="_1"&gt; 项目目标 &lt;/h1&gt;
 &lt;p&gt;Kolla  提供了生产级别的  OpenStack Service Containers。 基于社区的最佳实践 ， 提供了 
  更好 ， 更快 ， 更可靠的 ,  操作  OpenStack  的部署工具 。&lt;/p&gt;
@@ -96,7 +108,7 @@ Environment=HOME …&lt;/pre&gt;</description><dc:creator xmlns:dc="http://purl.
 &lt;p&gt;kolla  代码在 &lt;a href="https://github.com/openstack/kolla"&gt;https://github.com/openstack/kolla&lt;/a&gt;。 现在  Kolla …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 11 Jan 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-01-11:/kolla-introduce.html</guid><category>Kolla</category><category>OpenStack</category></item><item><title>Get all the repo from OpenStack</title><link>http://xcodest.me/get-all-repos-from-openstack.html</link><description>&lt;p&gt;OpenStack 的源因为你我都知道的原因 ， 一直不稳定 ， 导致  devstack  时经常失败 。 特定写了个脚本 ， 可以拿到所有的仓库地址 ， 方便做本地的 mirror。&lt;/p&gt;
 &lt;p&gt; 脚本在  gist&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;  上 。&lt;/p&gt;
 &lt;p&gt; 使用方法 ：&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install PyGithub
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install PyGithub
 python openstack_repo.py -u &amp;lt;github_username&amp;gt; -p &amp;lt;github_password&amp;gt; \
     -o repos.txt
 &lt;/pre&gt;&lt;/div&gt;
@@ -125,7 +137,7 @@ DESCRIPTION=u''' …&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;</desc
 &lt;h1 id="projects"&gt;Projects&lt;/h1&gt;
 &lt;p&gt;Projects  里的主要内容是一个  Playbook  的代码地址 ， 可选项为 Manual( 手动指定位置 )，Git, Mercutail, Subversion。&lt;/p&gt;
 &lt;p&gt; 我在 Github 上建立了一个简单的  PlayBook。 我们来创建一个新的  Project。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;project_demo&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;project_demo&lt;/span&gt;
 &lt;span class="n"&gt;Organization&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Default&lt;/span&gt;
 &lt;span class="n"&gt;SCM&lt;/span&gt; &lt;span class="n"&gt;Type&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Git&lt;/span&gt;
 &lt;span class="n"&gt;SCM&lt;/span&gt; &lt;span class="n"&gt;URL&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="o"&gt;://&lt;/span&gt;&lt;span class="n"&gt;github&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;com&lt;/span&gt;&lt;span class="sr"&gt;/jeffrey4l/&lt;/span&gt;&lt;span class="n"&gt;tower_test …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 02 Jan 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-01-02:/ansible-tower-usage.html</guid><category>Ansible Tower</category></item><item><title>Install Ansible Tower</title><link>http://xcodest.me/install-ansible-tower.html</link><description>
@@ -133,11 +145,11 @@ DESCRIPTION=u''' …&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;</desc
 &lt;h2 id="_2"&gt; 下载安装包 &lt;/h2&gt;
 &lt;p&gt; 从  http://www.ansible.com/tower-trial  下载 ， 需要填个人信息 ， 提交后会自动下载 。&lt;/p&gt;
 &lt;p&gt; 把安装包复制到要安装的机器中去 ， 解压准备安装 &lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tar xvf ansible-tower-setup-latest.tar.gz
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tar xvf ansible-tower-setup-latest.tar.gz
 cd ansible-tower-setup-2.4.3
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 这个安装包本质上是一个 playbook。 其中 &lt;code&gt;configure&lt;/code&gt; 是用来生成配置文件的脚本 ， 运行它会有几个问题 ， 让你回答 ， 回答完后就开始自动安装了 。 也可把这些问答写到一个文件中 ， 让其自动化 。 建立名为 &lt;code&gt;tower_setup_conf.yml&lt;/code&gt;  的文件 ， 其内容为 :&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;admin_password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;admin_password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
 &lt;span class="l l-Scalar l-Scalar-Plain"&gt;database&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;internal&lt;/span&gt;
 &lt;span class="l l-Scalar l-Scalar-Plain"&gt;munin_password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
 &lt;span class="l l-Scalar l-Scalar-Plain"&gt;pg_password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
@@ -148,17 +160,17 @@ cd ansible-tower-setup-2.4.3
 &lt;p&gt; 由于是用  Python  编写的 ， 安装起来和普通  Python  应用没有太大区别 。 可以通过源码 ，pypi,  操作系统的包管理进行安装 。&lt;/p&gt;
 &lt;h1 id="_1"&gt; 系统包管理 &lt;/h1&gt;
 &lt;h2 id="rpm"&gt;RPM  系 &lt;/h2&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# install epel source
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# install epel source
 yum install -y epel-release
 yum install ansible
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2 id="apt"&gt;Apt  系 &lt;/h2&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install -y software-properties-common
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install -y software-properties-common
 apt-add-repository -y ppa:ansible/ansible
 apt-get update …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 30 Dec 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-12-30:/ansible-install.html</guid><category>Ansible</category></item><item><title>Deploy Docker Registry Service</title><link>http://xcodest.me/deploy-docker-registry-service.html</link><description>&lt;p&gt; 使用  Docker  时 ， 很多情况下需要搭建自己的  registry  服务 。 把一些私有的  Image  放到上面用 。 官方有一个  registry  的 &lt;a href="https://hub.docker.com/_/registry/"&gt; 镜像 &lt;/a&gt; 可以拉下来 ， 直接用 。 如下 ：&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker run -p 5000:5000 -v &amp;lt;HOST_DIR&amp;gt;:/tmp/registry-dev registry
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker run -p 5000:5000 -v &amp;lt;HOST_DIR&amp;gt;:/tmp/registry-dev registry
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -170,9 +182,9 @@ apt-get update …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="ht
 &lt;p&gt; 一开始 ( 从 2.5 开始 ) 的时候是有  &lt;code&gt;args&lt;/code&gt;  和  &lt;code&gt;message&lt;/code&gt;  两个参数的 。2.6 版本之后 ， 把 
 &lt;code&gt;message&lt;/code&gt;  废弃掉了 ， 只留下了一个任意长度的  &lt;code&gt;args&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt; 以下是 2.5 以后的代码 ， 可以看到 ， 如果 args  长度是 1， 就会把  &lt;code&gt;self.message = args[0]&lt;/code&gt;&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
 &lt;span class="nf"&gt;BaseException_new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyTypeObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Fri, 20 Nov 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-11-20:/python-exception-init-args.html</guid><category>Python</category></item><item><title>Interrupt the Python multiprocessing.Pool in graceful way</title><link>http://xcodest.me/interrupt-the-python-multiprocessing-pool-in-graceful-way.html</link><description>&lt;p&gt;When using &lt;code&gt;KeyboardInterrupt&lt;/code&gt;(&lt;code&gt;Ctrl+c&lt;/code&gt;) interrupt the excution of the &lt;code&gt;multiprocess.Pool&lt;/code&gt;, it will not work as expected. Following is a demo&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;
 
 
@@ -188,7 +200,7 @@ apt-get update …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="ht
 
 &lt;p&gt;When run the code and try to &lt;code&gt;Ctrl+C …&lt;/code&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 17 Nov 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-11-17:/interrupt-the-python-multiprocessing-pool-in-graceful-way.html</guid><category>Python</category></item><item><title>Glance Create Image from Existent Image in Ceph</title><link>http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html</link><description>&lt;p&gt; 当使用  Ceph + Glance  时 ， 镜像需要使用  RAW  格式 ， 这会导致创建镜像时非常的慢 。 有的时候 ， 也需要把  Ceph  中现有的镜像导入到  Glance  中 。 这时可以使用  --location  参数来指定镜像所在的远程位置 。 也就可以使用现有的  Ceph  镜像来快速创建 。&lt;/p&gt;
 &lt;p&gt; 可以先用  rbd  上传镜像 ， 转换格式 ( 也会比较慢 ， 还不如直接上传  RAW  格式的镜像 )。 然后再做好对应的  snap ,  并加以保护 。 是后一步的 location 必须按格式写 ( 见 [0])， 这样才会使用 rbd 的  COW clone  功能 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# image format 2 support layering&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# image format 2 support layering&lt;/span&gt;
 rbd --image-format &lt;span class="m"&gt;2 …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 04 Jun 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-06-04:/glance-create-image-from-existent-image-in-ceph.html</guid></item><item><title>Python MetaClass Magic</title><link>http://xcodest.me/python-metaclass-magic.html</link><description>&lt;p&gt; 在  Nova  代码中 [&lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075"&gt;0&lt;/a&gt;] 发现一个神奇的应用 ， 利用  decrator  来区分同名的函数 ， 根据  decrator  上面定义的版本 ， 来调用不同的方法 。 仔细学习了一下 。 它是用到了  MetaClass。 主要思路是 ：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt; 在  decrator  里面 ， 把被装饰的方法存在类的一个属性里面 (version_methods)&lt;/li&gt;
@@ -213,10 +225,10 @@ Including&lt;/p&gt;
 &lt;li&gt;RHEL-6.3-x86_64-DVD.iso&lt;/li&gt;
 &lt;li&gt;ubuntu-14.04.1-server-amd64.iso&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/clalancette/oz.git
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/clalancette/oz.git
 cd oz
 git clone …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 11 May 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-05-11:/oz-templates.html</guid><category>OpenStack</category></item><item><title>论Python的异常的合理抛出姿势</title><link>http://xcodest.me/How_to_raise_python_exception.html</link><description>&lt;p&gt; 当需要重新抛出  Python  的异常时 ， 很多人都处理不好 。 本文总结了一些处理方法 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_cleanup&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
@@ -224,7 +236,7 @@ git clone …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://
 
 
 &lt;p&gt; 这种处理会直接把内部异常吃掉 ， 当有问题 /Bug 时 ， 会很难处理 ， 所以不推荐 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;Exception&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_cleanup&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
@@ -236,7 +248,7 @@ git clone …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://
 
 
 &lt;p&gt; 这种直接打印的 ， 一是不能很好的输出到日志里 。 二是不能把错误交到上层调用者 ， 不能让其知道这是有问题 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_somethink&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
 &lt;span class="n"&gt;except&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;do_cleanup&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
@@ -246,8 +258,8 @@ git clone …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://
 
 &lt;p&gt; 用这种 ， 主要是为了做 cleanup。 直接 &lt;code&gt;raise&lt;/code&gt; 后 ， 异常会抛向上层 。 没有 catch 的效果一样 。&lt;/p&gt;
 &lt;p&gt; 这里还有一种和上面这个类似的效果的 &lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 06 May 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-05-06:/How_to_raise_python_exception.html</guid><category>Python</category><category>Exception</category></item><item><title>Logstash Debug</title><link>http://xcodest.me/logstash_debug.html</link><description>&lt;p&gt;Logstash  能使用  rubydebug  这个  codec  进行  debug。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;input {
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;try …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 06 May 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-05-06:/How_to_raise_python_exception.html</guid><category>Python</category><category>Exception</category></item><item><title>Logstash Debug</title><link>http://xcodest.me/logstash_debug.html</link><description>&lt;p&gt;Logstash  能使用  rubydebug  这个  codec  进行  debug。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;input {
     stdin {}
 }
 
@@ -260,12 +272,12 @@ output {
 
 
 &lt;p&gt; 用  logstash  手动启动 &lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;logstash -f debug.conf --verbose --debug
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;logstash -f debug.conf --verbose --debug
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt; 直接输入数据 ， 能得到详细的输出报告 &lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./logstash -f debug --verbose --debug                            
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./logstash -f debug --verbose --debug                            
 a
 Pipeline started {:level=&amp;gt;:info}
 {
@@ -310,25 +322,25 @@ Pipeline started {:level=&amp;gt;:info}
 &lt;li&gt; 因为水会比粥更快的排出胃里 …&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 12 Mar 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-03-12:/ten-things-you-need-know-abount-loss-weight.html</guid></item><item><title>Cinder V2 API</title><link>http://xcodest.me/cinder-v2-api.html</link><description>&lt;p&gt;cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).&lt;/p&gt;
 &lt;h1 id="enable-the-v2-in-cinder"&gt;Enable the v2 in cinder&lt;/h1&gt;
 &lt;p&gt;Change the following config. The v1 and v2 is enabled in default.&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# DEPRECATED: Deploy v1 of the Cinder …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 10 Mar 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-03-10:/cinder-v2-api.html</guid><category>Cinder</category><category>OpenStack</category></item><item><title>Print the First N Characters of each Line</title><link>http://xcodest.me/print-the-first-n-characters-of-each-line.html</link><description>&lt;p&gt; 在使用  Shell  的过程中 ， 经常会遇到一行过长 ， 导致输出折行 ， 相当难看的情况出现 。 而且多数据情况下 ， 我们只用每行的前  N  个字符就可以了 。 这时可以用以下方法来截断每行的长度 。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# DEPRECATED: Deploy v1 of the Cinder …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 10 Mar 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-03-10:/cinder-v2-api.html</guid><category>Cinder</category><category>OpenStack</category></item><item><title>Print the First N Characters of each Line</title><link>http://xcodest.me/print-the-first-n-characters-of-each-line.html</link><description>&lt;p&gt; 在使用  Shell  的过程中 ， 经常会遇到一行过长 ， 导致输出折行 ， 相当难看的情况出现 。 而且多数据情况下 ， 我们只用每行的前  N  个字符就可以了 。 这时可以用以下方法来截断每行的长度 。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt; 方法 1&lt;/strong&gt;：  使用  &lt;code&gt;awk&lt;/code&gt;&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat filename | awk &amp;#39;{print substr($0, 0, 20)}&amp;#39;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat filename | awk &amp;#39;{print substr($0, 0, 20)}&amp;#39;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;&lt;strong&gt; 方法 2&lt;/strong&gt;:  使用  &lt;code&gt;sed&lt;/code&gt;&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat filename | sed &amp;#39;s/\(.\{20\}\).*/\1/&amp;#39;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat filename | sed &amp;#39;s/\(.\{20\}\).*/\1/&amp;#39;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;&lt;strong&gt;  方法 3&lt;/strong&gt;:  使用  &lt;code&gt;sed -r&lt;/code&gt;&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat filename | sed -r &amp;#39;s/(.{20}).*/\1/&amp;#39;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat filename | sed -r &amp;#39;s/(.{20}).*/\1/&amp;#39;
 &lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sun, 15 Feb 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-02-15:/print-the-first-n-characters-of-each-line.html</guid><category>Shell</category></item><item><title>修改 Libvirt 的 UUID</title><link>http://xcodest.me/libvirt-uuid.html</link><description>&lt;p&gt; 由于物理机器有限 ， 想做 OpenStack 的多机环境一直是个问题 。 之前是在 OpenStack 上部署 OpenStack。 由于只有一台物理机 ， 资源相当紧张 。 不能建太多机器 。 最近突然想 ， 既然  LXC  现在已经很完善了 。 能不能就利用它来做  OpenStack  服务间的隔离呢 。 所以最近一直在搞这东西 。 搞了几天还是有效果的 。 基本搭建了  OpenStack + Ceph + Swift  的环境出来 。 其中网络用的  Neutron + ML2 + OVS + VLAN。 由于用  LXC  的隔离的 ， 相对于之前来说相当节省资源 。 很好的解决了资源的问题 。 可以做一些大量机器的实验了 。 之后也会也这其中遇到的一些问题写下来 ， 备忘 。&lt;/p&gt;
 &lt;p&gt; 今天主要写下配置  Live Migration  过程中遇到的一个问题 。&lt;/p&gt;
 &lt;p&gt; 每个  Libvirtd  实例都会有一个  UUID  存在 。 不同的  libvirt  实例的 …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 10 Feb 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-02-10:/libvirt-uuid.html</guid><category>Libvirt</category></item><item><title>tun &amp; veth设备</title><link>http://xcodest.me/tun-vethshe-bei.html</link><description>&lt;p&gt;OpenStack  的  Neutron  中会建立好多网卡设备 。 大体上这些网卡可以分为两类  tun  和  veth。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="OpenStack Neutron Network" class="img-responsive" src="/images/neutron-ovs-compute.png"&gt;&lt;/p&gt;
 &lt;p&gt; 用 &lt;code&gt;ethtool&lt;/code&gt; 可以得到网卡所用的驱动 ， 从而得到网上设备是哪一类 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ethtool -i veth4NCTQ1 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ethtool -i veth4NCTQ1 
 driver: veth
 version: 1.0
 firmware-version: 
@@ -359,24 +371,24 @@ supports-priv-flags: no
 &lt;li&gt; 万宁  - 9 积分 =30 元消费金 &lt;ul&gt;
 &lt;li&gt; 阜外大街 2 号北京万通新世界商品批发市场第一层 1A086-1A090、1A100-1A109 号商铺 &lt;/li&gt;
 &lt;li&gt; 西单北大街 131 号大悦城 B2-29 …&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 05 Feb 2015 20:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-02-05:/ecitic9.html</guid></item><item><title>MySQL Errno 150</title><link>http://xcodest.me/mysql-errno-150.html</link><description>&lt;p&gt; 做 OpenStack icehouse  升级到  Juno 过程中 ， 升级 Neutron 数据库时遇到这个错误 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="n"&gt;neutron&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;migration&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;migrate_to_ml2&lt;/span&gt; &lt;span class="n"&gt;openvswitch&lt;/span&gt; &lt;span class="nl"&gt;mysql&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//USER:PASSWORD@10.251.1.8/neutron&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="n"&gt;neutron&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;migration&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;migrate_to_ml2&lt;/span&gt; &lt;span class="n"&gt;openvswitch&lt;/span&gt; &lt;span class="nl"&gt;mysql&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//USER:PASSWORD@10.251.1.8/neutron&lt;/span&gt;
 &lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
   &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/runpy.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;162&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_run_module_as_main&lt;/span&gt;
     &lt;span class="s"&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fname&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pkg_name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
   &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/runpy …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 14 Jan 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-01-14:/mysql-errno-150.html</guid><category>MySQL</category></item><item><title>PIP install from local</title><link>http://xcodest.me/pip-install-from-local.html</link><description>&lt;p&gt; 在一些特殊环境中 ， 服务器是不能联网的 。 此时要通过 pip 安装包会有一些麻烦 。 这时可以使用 pip 的 download 到本地的功能 ， 来加速安装 。&lt;/p&gt;
 &lt;p&gt; 先在有网络的环境中下载下来所有需要的包 ：&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt; 在把这些包拷贝到目标环境中去 ， 使用下面的命令来安装 ：&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install --no-index --find-links &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install --no-index --find-links &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt; 所有需要的包就安装上了 。&lt;/p&gt;
 &lt;p&gt; 为了方便使用 ， 还可以把这两个命令弄成 alias 来使用 &lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;alias pipcache=&amp;#39;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages&amp;#39;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;alias pipcache=&amp;#39;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages&amp;#39;
 alias pipinstall=&amp;#39;pip install --no-index --find-links=file …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 08 Jan 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-01-08:/pip-install-from-local.html</guid><category>Python</category></item><item><title>Nova flavor init</title><link>http://xcodest.me/nova-flavor-init.html</link><description>&lt;p&gt;ustack 的 flavor 做的还是挺全的 ， 所以用了一个脚本来创建和其一样的 flavor 类型 。&lt;/p&gt;
 &lt;div class="gist"&gt;
     &lt;script src='https://gist.github.com/ecee9fcb00412cd67fe7.js?file=nova-flavor-init.sh'&gt;&lt;/script&gt;
@@ -391,7 +403,7 @@ nova-manage flavor create --name micro-1 --cpu 1 --memory 512 --root_gb $DEFAULT
 nova-manage flavor create --name micro-2 --cpu 1 --memory 1024 --root_gb $DEFAULT_ROOT_GB --is_public True
 
 nova-manage flavor create --name standard-1 --cpu …&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 11 Sep 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-09-11:/nova-flavor-init.html</guid><category>OpenStack</category><category>Nova</category></item><item><title>Python cString raise exception when feed Unicode</title><link>http://xcodest.me/python-cstring-unicode.html</link><description>&lt;p&gt;I gett following different result when using these two Class.&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;StringIO&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;StringIO&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;cStringIO&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;u&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cStringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;u&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -401,19 +413,19 @@ nova-manage flavor create --name standard-1 --cpu …&lt;/code&gt;&lt;/pre&gt;&l
 &lt;li&gt; 在 GitLab 上创建相对应的项目 / 项目组 &lt;/li&gt;
 &lt;li&gt; 准备 ''users.txt'' 文件 ， 来修正提交用户名 。 并手动修改 users.txt 的正确性  &lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;svn log &amp;lt;svn-url&amp;gt; --xml | grep -P &amp;quot;^&amp;lt;author&amp;quot; | sort -u | perl -pe &amp;#39;s/&amp;lt;author&amp;gt;(.*?)&amp;lt;\/author&amp;gt;/$1 = /&amp;#39; &amp;gt; users.txt
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;svn log &amp;lt;svn-url&amp;gt; --xml | grep -P &amp;quot;^&amp;lt;author&amp;quot; | sort -u | perl -pe &amp;#39;s/&amp;lt;author&amp;gt;(.*?)&amp;lt;\/author&amp;gt;/$1 = /&amp;#39; &amp;gt; users.txt
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;users.txt 的文件格式如下 &lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Lei Zhang = Lei Zhang &amp;lt;zhang.lei.fly#gmail.com&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Lei Zhang = Lei Zhang &amp;lt;zhang.lei.fly#gmail.com&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;ul&gt;
 &lt;li&gt; 把 SVN 项目使用 git-svn 进行克隆  &lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git svn clone …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 12 Aug 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-08-12:/migrate-svn-to-gitlab.html</guid><category>Git</category></item><item><title>硬派健身-减肥篇 阅读笔记</title><link>http://xcodest.me/hard-gym-reading-note.html</link><description>&lt;h2 id="_1"&gt; 战肥肉有氧不敌 ， 强塑身无氧超神 &lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git svn clone …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 12 Aug 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-08-12:/migrate-svn-to-gitlab.html</guid><category>Git</category></item><item><title>硬派健身-减肥篇 阅读笔记</title><link>http://xcodest.me/hard-gym-reading-note.html</link><description>&lt;h2 id="_1"&gt; 战肥肉有氧不敌 ， 强塑身无氧超神 &lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt; 长时间有氧运动 —— 似是而非的减肥妙计 &lt;ol&gt;
 &lt;li&gt; 当我们的身体状态稳定 ， 身体素质 、 生活习惯变化不大时 ， 我们的体重和体脂含量都是只能加 ， 不能减 ， 只能胖 ， 不能瘦 。 这就是我们序章介绍过的体重设定点理论 。&lt;/li&gt;
@@ -430,7 +442,7 @@ nova-manage flavor create --name standard-1 --cpu …&lt;/code&gt;&lt;/pre&gt;&l
  程度上可以加快取镜像的速度 。 这个功能默认情况下是没开启的 。&lt;/p&gt;
 &lt;p&gt; 因为是通过 middleware 来控制的 ， 所以只要修改一下 paster 的配置就行 。 更简单的是指定 
 glance-api 加载的 pipeline 的名字 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[deploy]&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[deploy]&lt;/span&gt;
 &lt;span class="c1"&gt;# possible value: none, cachine, keystone, keystone+caching, &lt;/span&gt;
 &lt;span class="c1"&gt;# keystone+cachemanagement&lt;/span&gt;
 &lt;span class="c1"&gt;# This value can get from glance-api-paste.conf file&lt;/span&gt;
@@ -439,7 +451,7 @@ glance-api 加载的 pipeline 的名字 。&lt;/p&gt;
 
 
 &lt;p&gt; 具体看下 &lt;code&gt;glance-api-paster.conf&lt;/code&gt; 文件就能明白 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[pipeline:glance-api …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 17 Jul 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-07-17:/glance-image-cache.html</guid><category>Glance</category></item><item><title>Salt Mine</title><link>http://xcodest.me/salt-mine.html</link><description>&lt;p&gt;Salt mine  可以在一定的控制内让 minion 拿到其它 minion 的信息 。 实现原理是 ： 通过配置 ， 让 minion 定期 ( 最短为 1 分钟 ) 的向 master 发送数据 ， 而其它 minion 可以从 master 拿到这些数据 。 一定程度上实现的 minion 之间的通迅 。 在搭建 cluster 时 ， 十分有用 。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[pipeline:glance-api …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 17 Jul 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-07-17:/glance-image-cache.html</guid><category>Glance</category></item><item><title>Salt Mine</title><link>http://xcodest.me/salt-mine.html</link><description>&lt;p&gt;Salt mine  可以在一定的控制内让 minion 拿到其它 minion 的信息 。 实现原理是 ： 通过配置 ， 让 minion 定期 ( 最短为 1 分钟 ) 的向 master 发送数据 ， 而其它 minion 可以从 master 拿到这些数据 。 一定程度上实现的 minion 之间的通迅 。 在搭建 cluster 时 ， 十分有用 。&lt;/p&gt;
 &lt;p&gt; 可以通过两种方法来配置 :&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;minion 的配置文件 &lt;/li&gt;
@@ -448,7 +460,7 @@ glance-api 加载的 pipeline 的名字 。&lt;/p&gt;
 &lt;p&gt; 使用 minion 配置时 ， 要直接修改 minion 的配置文件 ， 在 &lt;code&gt;/etc/salt/minion.d/mine.conf&lt;/code&gt;  加入如下内容 …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 16 Jul 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-07-16:/salt-mine.html</guid><category>SaltStack</category></item><item><title>linux bonding mode 6 break the vms</title><link>http://xcodest.me/linux-bonding-mode-6-break-the-vms.html</link><description>&lt;p&gt; 操作系统 ： ubuntu 12.04.1
  内核  linux 3.2&lt;/p&gt;
 &lt;p&gt; 今天发现一个网络上的问题 ， 如果  Openstack Fixed IP  走  mode 6  绑定的网卡 ， 不同物理机上的虚拟机是相互访问不了的 。&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    +---- host1 -------+         +---- host2 ----+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    +---- host1 -------+         +---- host2 ----+
                      eth0 ---- eth0 
                    /                \
     br1 ---- bond0                   bond0 ---- br1 
@@ -460,7 +472,7 @@ glance-api 加载的 pipeline 的名字 。&lt;/p&gt;
 &lt;p&gt; 机器的连接方式如上图 ， 经检查发现 ， 问题简化成两边的  br1  是不通的 ， 现像是 ping 时 ， 接收方收不到包 ， 包只走到 bond0 就给丢弃了 。 原因在于内核上有问题 。 在网络上查到以下两个连接  &lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;https://bugs.launchpad.net/ubuntu/+source/linux …&lt;/li&gt;&lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 14 Apr 2014 19:39:51 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-04-14:/linux-bonding-mode-6-break-the-vms.html</guid><category>Network</category></item><item><title>Dhcp lease errors in vlan mode</title><link>http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html</link><description>&lt;p&gt; 在使用 &lt;code&gt;keepalived&lt;/code&gt; 的过程中 ， 出现了 dhcp 失败 ， 而导致 keepalived 工作不正常的问题 。 而且之前也出现过 dhcp 偶尔失败 ， 导致虚拟机不能得到 IP,  从而不能访问的情况 。 虽然在 &lt;code&gt;/etc/sysconfig/network-scripts/ifcfg-eth0&lt;/code&gt; 中加上了如下语句 ：&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;PERSISTENT_DHCLIENT=1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;PERSISTENT_DHCLIENT=1
 &lt;/pre&gt;&lt;/div&gt;
 
 

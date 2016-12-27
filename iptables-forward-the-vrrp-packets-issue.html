@@ -118,13 +118,13 @@
 <p> 最近在整  Kolla  的多机部署 ， 没有物理环境还是在虚拟机上搞 。 不过今天被一个  keepalived  的问题卡了将近一天的时间 。 倒也不是啥大问题 ， 还是栽到了自己挖的坑里 。</p>
 <h1 id="_1"> 问题 </h1>
 <p> 先说一下自己的环境 ， 我使用了三台  kvm  虚拟机 ， 每台两张网卡 ， 一个用于上外网 (eth0 <code>10.2.0.0/24</code>)， 一个用于  neutron  的  tenant  网络使用 (eth1)。 问题就出在  eth0  上面 。eth0  是桥在了我手动创建的一个桥上  (br0),  为了上外网 ， 我打开了  <code>ip_forward</code>，  并加了一条  iptables  转发规则 ：</p>
-<div class="codehilite"><pre><span></span>iptables -t nat -A POSTROUTING -s 10.2.0.0/24 ! -d 10.2.0.0/24 -j MASQUERAE
+<div class="highlight"><pre><span></span>iptables -t nat -A POSTROUTING -s 10.2.0.0/24 ! -d 10.2.0.0/24 -j MASQUERAE
 </pre></div>
 <p> 一般情况下是没有问题的 ， 但是加了  <code>keepalived</code>  就完了 。vip  跑到了所有的机器上 ， 感觉就是没有通讯上 ， 或是选举有问题 。 重新核对了半天配置没有发现问题 。 由于  Kolla  里是用  docker  跑的  keepalived ， 为了排除是  Docker  本身有问题 ， 我还在虚拟机的系统上部署了  keepalived  的 ， 还是同样的问题 。</p>
 <h1 id="_2"> 原因 </h1>
 <p> 最后在一次偶然的抓包中发现 ， 所有机器上抓到的  vrrp  的包源地址居然都是网关 (<code>10.2.0.1</code>) 发出来的 ， 这还能不出问题 ? </p>
 <p> 查了查  vrrp  包 ， 原来是在四层协议上 ， 和  tcp/udp  是并列的 。 再看一眼自己的  iptables ，  就知道是怎么回事了 。 后来把  iptables  改的明确了一些 ,  只  SNAT tcp,udp 及 icmp 的协议 ， 问题终于解决了 。</p>
-<div class="codehilite"><pre><span></span>-A POSTROUTING -s 10.2.0.0/24 ! -d 10.2.0.0/24 -p tcp -j MASQUERADE
+<div class="highlight"><pre><span></span>-A POSTROUTING -s 10.2.0.0/24 ! -d 10.2.0.0/24 -p tcp -j MASQUERADE
 -A POSTROUTING -s 10.2.0.0/24 ! -d 10.2.0.0/24 -p udp -j MASQUERADE
 -A POSTROUTING -s 10.2.0.0/24 ! -d 10.2.0.0/24 -p icmp -j MASQUERADE
 </pre></div>

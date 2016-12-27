@@ -126,7 +126,7 @@
 <h1 id="_4"> 调试 </h1>
 <p> 测试虚拟机用的  CentOS 7  系统 ，</p>
 <p> 首先看虚拟机的  console log,  发现如下信息 </p>
-<div class="codehilite"><pre><span></span>Starting kdump:[  OK  ]
+<div class="highlight"><pre><span></span>Starting kdump:[  OK  ]
 Starting cloud-init: Cloud-init v. 0.7.5 running 'init' at Wed, 30 Mar 2016 14:58:36 +0000. Up 40.68 seconds.
 ...
 Starting cloud-init: Cloud-init v. 0.7.5 running 'modules:config' at Wed, 30 Mar 2016 14:59:59 +0000. Up 124.27 seconds.
@@ -138,14 +138,14 @@ Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource Data
 <p> 一开始我怀疑是硬盘分区自动扩展慢导致的 ， 但把自动扩展关掉了也还是一样 ， 时间基本没有变化 。 肯定是其它问题 。</p>
 <p> 万事找日志 ， 要找真正的原因 ， 还是从日志找起 。</p>
 <p> 在  <code>/var/log/</code>  下找日志 ， 只发现了少量日志 。 大概看了一个  cloud-init  的源代码 ， 日志应该会有很多的才对 。</p>
-<div class="codehilite"><pre><span></span>-rw-r--r--. <span class="m">1</span> root root    <span class="m">0</span> Mar <span class="m">30</span> 14:58 cloud-init.log
+<div class="highlight"><pre><span></span>-rw-r--r--. <span class="m">1</span> root root    <span class="m">0</span> Mar <span class="m">30</span> 14:58 cloud-init.log
 -rw-r--r--. <span class="m">1</span> root root 1.7K Mar <span class="m">30</span> 15:00 cloud-init-output.log
 </pre></div>
 <p> 又尝试修改了  <code>cloud.cfg</code>  的配置 ， 把日志都都打印到特定文件 ， 如下 。 但是结果还是一样 ， 没有啥新日志信息 。( 其时后来才发现 ， 这个配置默认就存在 ， 在  <code>/etc/cloud/cloud.cfg.d/</code>  下面 )</p>
-<div class="codehilite"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">output</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span><span class="nv">all</span><span class="p p-Indicator">:</span> <span class="s">'|</span><span class="nv"> </span><span class="s">tee</span><span class="nv"> </span><span class="s">-a</span><span class="nv"> </span><span class="s">/var/log/cloud-init-output.log'</span><span class="p p-Indicator">}</span>
+<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">output</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span><span class="nv">all</span><span class="p p-Indicator">:</span> <span class="s">'|</span><span class="nv"> </span><span class="s">tee</span><span class="nv"> </span><span class="s">-a</span><span class="nv"> </span><span class="s">/var/log/cloud-init-output.log'</span><span class="p p-Indicator">}</span>
 </pre></div>
 <p> 联想到  CentOS 7  用的  systemd  管理器 ， 试图从  systemd  里找日志 。 先找到了所有的  cloud-init  相关的服务 </p>
-<div class="codehilite"><pre><span></span>$ systemctl list-units <span class="p">|</span> grep cloud
+<div class="highlight"><pre><span></span>$ systemctl list-units <span class="p">|</span> grep cloud
 cloud-config.service       Apply the settings specified in cloud-config
 cloud-final.service        Execute cloud user/final scripts
 cloud-init-local.service   Initial cloud-init job <span class="o">(</span>pre-networking<span class="o">)</span>
@@ -153,7 +153,7 @@ cloud-init.service         Initial cloud-init job <span class="o">(</span>metada
 cloud-config.target        Cloud-config availability
 </pre></div>
 <p> 可以看到 ，cloud-init  安装的服务还是有多个的 。 不同的服务的启动时间点和所做的事情是不一样的 。 使用  <code>journalctl</code>  挨个排查后 ， 找到以下日志 ：</p>
-<div class="codehilite"><pre><span></span>$ journalctl -u cloud-init
+<div class="highlight"><pre><span></span>$ journalctl -u cloud-init
 ...
 Apr <span class="m">03</span> 13:19:33 cloud-init<span class="o">[</span>780<span class="o">]</span>: <span class="o">[</span>CLOUDINIT<span class="o">]</span> __init__.py<span class="o">[</span>DEBUG<span class="o">]</span>: Merging using located merger
 Apr <span class="m">03</span> 13:21:13 cloud-init<span class="o">[</span>780<span class="o">]</span>: <span class="o">[</span>CLOUDINIT<span class="o">]</span> DataSourceGCE.py<span class="o">[</span>DEBUG<span class="o">]</span>: http://metadata.google.internal./computeMetadata/v1/ is not resolvable
@@ -164,7 +164,7 @@ Apr <span class="m">03</span> 13:21:13 cloud-init<span class="o">[</span>780<spa
 <p>cloud-init  是一个通用程序 ， 能兼容多个云环境 。 他会从多个数据源里去读  Metadata  数据 。 其默认的顺序中 ，GoogleGCE  在  OpenStack  之前 ， 而  GoogleGCE  的源里面 ， 会访问一个  http://metadata.google.internal.  的网址 ， 加上虚拟机不能访问外网 ， 程序会卡在这里 ， 直到超时 。 才会继续测试  OpenStack  的源是否可用 。</p>
 <h1 id="_6"> 解决方法 </h1>
 <p> 尽量不要直接使用官方的源 ， 而是自己制作 ， 尤其是  cloud-init  的配置项 。 要手动修改掉其默认的数据源 ， 以避免以上情况的发生 。</p>
-<div class="codehilite"><pre><span></span><span class="c1"># /etc/cloud/cloud.cfg</span>
+<div class="highlight"><pre><span></span><span class="c1"># /etc/cloud/cloud.cfg</span>
 <span class="l l-Scalar l-Scalar-Plain">datasource_list</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">'ConfigDrive'</span><span class="p p-Indicator">,</span> <span class="s">'OpenStack'</span><span class="p p-Indicator">,</span> <span class="s">'Ec2'</span><span class="p p-Indicator">]</span>
 </pre></div>
 <h1 id="_7"> 总结 </h1>

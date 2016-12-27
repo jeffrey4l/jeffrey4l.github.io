@@ -108,7 +108,7 @@
  程度上可以加快取镜像的速度 。 这个功能默认情况下是没开启的 。</p>
 <p> 因为是通过 middleware 来控制的 ， 所以只要修改一下 paster 的配置就行 。 更简单的是指定 
 glance-api 加载的 pipeline 的名字 。</p>
-<div class="codehilite"><pre><span></span><span class="k">[deploy]</span>
+<div class="highlight"><pre><span></span><span class="k">[deploy]</span>
 <span class="c1"># possible value: none, cachine, keystone, keystone+caching, </span>
 <span class="c1"># keystone+cachemanagement</span>
 <span class="c1"># This value can get from glance-api-paste.conf file</span>
@@ -117,7 +117,7 @@ glance-api 加载的 pipeline 的名字 。</p>
 
 
 <p> 具体看下 <code>glance-api-paster.conf</code> 文件就能明白 。</p>
-<div class="codehilite"><pre><span></span><span class="k">[pipeline:glance-api]</span>
+<div class="highlight"><pre><span></span><span class="k">[pipeline:glance-api]</span>
 <span class="na">pipeline</span> <span class="o">=</span> <span class="s">versionnegotiation unauthenticated-context rootapp</span>
 
 <span class="c1"># Use this pipeline for image caching and no auth</span>

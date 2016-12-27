@@ -1,5 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest - Others</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/others.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2016-11-14T00:00:00+08:00</updated><entry><title>CentOS 根分区自动扩展</title><link href="http://xcodest.me/centos-root-partition-auto-grow.html" rel="alternate"></link><published>2016-11-14T00:00:00+08:00</published><updated>2016-11-14T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-11-14:/centos-root-partition-auto-grow.html</id><summary type="html">&lt;p&gt;CentOS 5  太老了 ， 完全不支持 。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest - Others</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/others.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2016-12-27T00:00:00+08:00</updated><entry><title>Ansible with-items auto flatten list of lists</title><link href="http://xcodest.me/ansible-with-items-auto-flatten-list-of-lists.html" rel="alternate"></link><published>2016-12-27T00:00:00+08:00</published><updated>2016-12-27T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-12-27:/ansible-with-items-auto-flatten-list-of-lists.html</id><summary type="html">&lt;p&gt;Ansible has &lt;tt class="docutils literal"&gt;with_items&lt;/tt&gt; directive, which make task iterating the lists in
+&lt;tt class="docutils literal"&gt;with_items&lt;/tt&gt;. A normal usage is like&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+- name: copy file
+  copy: src={{ item }} dest=/root/.ssh/{{ item }}
+  with_items:
+    - id_rsa
+    - id_rsa.pub
+&lt;/pre&gt;
+&lt;p&gt;But if you use list of lists, it will not work as your expect.&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+- name: copy file
+  copy: src …&lt;/pre&gt;</summary><content type="html">&lt;p&gt;Ansible has &lt;tt class="docutils literal"&gt;with_items&lt;/tt&gt; directive, which make task iterating the lists in
+&lt;tt class="docutils literal"&gt;with_items&lt;/tt&gt;. A normal usage is like&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+- name: copy file
+  copy: src={{ item }} dest=/root/.ssh/{{ item }}
+  with_items:
+    - id_rsa
+    - id_rsa.pub
+&lt;/pre&gt;
+&lt;p&gt;But if you use list of lists, it will not work as your expect.&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+- name: copy file
+  copy: src={{ item.0 }} dest=/root/.ssh/{{ item.1 }}
+  with_items:
+    - [ id_rsa, id_rsa_foo ]
+    - [ id_rsa.pub, rd_rsa_foo.pub ]
+&lt;/pre&gt;
+&lt;p&gt;Ansible will flatten the lists just like what &lt;tt class="docutils literal"&gt;with_flatten&lt;/tt&gt; does. As a
+result, it will work like&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+- name: copy file
+  copy: src={{ item.0 }} dest=/root/.ssh/{{ item.1 }}
+  with_items:
+    - id_rsa
+    - id_rsa_foo
+    - id_rsa.pub
+    - id_rsa_foo.pub
+&lt;/pre&gt;
+&lt;p&gt;This is not what we want, of curse. The workaround is wrapping the list of
+lists. like:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+- name: copy file
+  copy: src={{ item.0 }} dest=/root/.ssh/{{ item.1 }}
+  with_items:
+    -
+      - [ id_rsa, id_rsa_foo ]
+      - [ id_rsa.pub, rd_rsa_foo.pub ]
+&lt;/pre&gt;
+&lt;p&gt;This is a historical issue rather than a bug. Here is the related ansible
+bug[0] and doc fix[1].&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;[0] &lt;a class="reference external" href="https://github.com/ansible/ansible/issues/5913"&gt;https://github.com/ansible/ansible/issues/5913&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[1] &lt;a class="reference external" href="https://github.com/ko-zu/ansible/commit/0a1a5cde86df0424441b78dd9e67b96159cfd70f"&gt;https://github.com/ko-zu/ansible/commit/0a1a5cde86df0424441b78dd9e67b96159cfd70f&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content><category term="Ansible"></category></entry><entry><title>CentOS 根分区自动扩展</title><link href="http://xcodest.me/centos-root-partition-auto-grow.html" rel="alternate"></link><published>2016-11-14T00:00:00+08:00</published><updated>2016-11-14T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-11-14:/centos-root-partition-auto-grow.html</id><summary type="html">&lt;p&gt;CentOS 5  太老了 ， 完全不支持 。&lt;/p&gt;
 &lt;p&gt;CentOS 6  要实现分区自动扩展 ， 要安装以下三个包 &lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 yum install cloud-init cloud-utils-growpart dracut-modules-growroot

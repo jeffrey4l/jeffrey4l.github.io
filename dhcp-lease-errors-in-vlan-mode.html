@@ -107,7 +107,7 @@
   </header>
   <div class="entry-content">
     <p> 在使用 <code>keepalived</code> 的过程中 ， 出现了 dhcp 失败 ， 而导致 keepalived 工作不正常的问题 。 而且之前也出现过 dhcp 偶尔失败 ， 导致虚拟机不能得到 IP,  从而不能访问的情况 。 虽然在 <code>/etc/sysconfig/network-scripts/ifcfg-eth0</code> 中加上了如下语句 ：</p>
-<div class="codehilite"><pre><span></span>PERSISTENT_DHCLIENT=1
+<div class="highlight"><pre><span></span>PERSISTENT_DHCLIENT=1
 </pre></div>
 
 
@@ -137,7 +137,7 @@ to deal with this issue by upgrading dnsmasq. It would be great if the various
 distributionss could upgrade as well, or at least try to patch in the fix. If
 upgrading dnsmasq is out of the question, a possible workaround is to minimize
 lease renewals with something like the following combination of config options.</p>
-<div class="codehilite"><pre><span></span># release leases immediately on terminate
+<div class="highlight"><pre><span></span># release leases immediately on terminate
 force_dhcp_release=true
 # one week lease time
 dhcp_lease_time=604800

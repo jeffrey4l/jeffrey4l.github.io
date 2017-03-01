@@ -123,14 +123,14 @@
 <div class="highlight"><pre><span></span>$ python2 b.py                                                                      
 ^CProcess PoolWorker-1:
 Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
-  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/process.py&quot;</span>, line 258, in _bootstrap
+  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/process.py&quot;</span>, line <span class="m">258</span>, in _bootstrap
     self.run<span class="o">()</span>
-  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/process.py&quot;</span>, line 114, in run
+  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/process.py&quot;</span>, line <span class="m">114</span>, in run
     self._target<span class="o">(</span>*self._args, **self._kwargs<span class="o">)</span>
-  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/pool.py&quot;</span>, line 113, in worker
+  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/pool.py&quot;</span>, line <span class="m">113</span>, in worker
     <span class="nv">result</span> <span class="o">=</span> <span class="o">(</span>True, func<span class="o">(</span>*args, **kwds<span class="o">))</span>
-  File <span class="s2">&quot;b.py&quot;</span>, line 7, in worker
-    time.sleep<span class="o">(</span>1<span class="o">)</span>
+  File <span class="s2">&quot;b.py&quot;</span>, line <span class="m">7</span>, in worker
+    time.sleep<span class="o">(</span><span class="m">1</span><span class="o">)</span>
 KeyboardInterrupt
 </pre></div>
 

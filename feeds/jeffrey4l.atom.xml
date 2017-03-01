@@ -1,5 +1,247 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest - Jeffrey4l</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/jeffrey4l.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2016-12-27T00:00:00+08:00</updated><entry><title>Ansible with-items auto flatten list of lists</title><link href="http://xcodest.me/ansible-with-items-auto-flatten-list-of-lists.html" rel="alternate"></link><published>2016-12-27T00:00:00+08:00</published><updated>2016-12-27T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-12-27:/ansible-with-items-auto-flatten-list-of-lists.html</id><summary type="html">&lt;p&gt;Ansible has &lt;tt class="docutils literal"&gt;with_items&lt;/tt&gt; directive, which make task iterating the lists in
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Xcodest - Jeffrey4l</title><link href="http://xcodest.me/" rel="alternate"></link><link href="http://xcodest.me/feeds/jeffrey4l.atom.xml" rel="self"></link><id>http://xcodest.me/</id><updated>2017-02-23T00:00:00+08:00</updated><entry><title>Nova Cell V2 详解</title><link href="http://xcodest.me/nova-cell-v2.html" rel="alternate"></link><published>2017-02-23T00:00:00+08:00</published><updated>2017-02-23T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2017-02-23:/nova-cell-v2.html</id><summary type="html">&lt;p&gt; 现在 ，OpenStack  在控制平面上的性能瓶颈主要在  Message Queue  和  Database 。 尤其是  Message Queue ,  随着计算节点的增加 ， 性能变的越来越差 。 为了应对这种情况 ， Nova  很早之前提出来  nova-cell ( 以下以  cellv1  代替 )   的解决方案 。 目的是在把大的  OpenStack  集群分成小的单元 ， 每个单元有自己的  Message Queue  和  Database。 以此来解决规模增加时引起的性能问题 。 而且不会向  Region  那样 ， 把各个集群独立运行 。 在  cell  里面 ，Keystone、Neutron、Cinder、Glance  等资源还是共享的 。&lt;/p&gt;
+&lt;div class="section" id="cell-v1"&gt;
+&lt;h2&gt;cell v1&lt;/h2&gt;
+&lt;p&gt;cellv1  最初的想法很好 ， 但是局限于早期  nova  的架构 ， 硬生生的加个  nova-cell …&lt;/p&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt; 现在 ，OpenStack  在控制平面上的性能瓶颈主要在  Message Queue  和  Database 。 尤其是  Message Queue ,  随着计算节点的增加 ， 性能变的越来越差 。 为了应对这种情况 ， Nova  很早之前提出来  nova-cell ( 以下以  cellv1  代替 )   的解决方案 。 目的是在把大的  OpenStack  集群分成小的单元 ， 每个单元有自己的  Message Queue  和  Database。 以此来解决规模增加时引起的性能问题 。 而且不会向  Region  那样 ， 把各个集群独立运行 。 在  cell  里面 ，Keystone、Neutron、Cinder、Glance  等资源还是共享的 。&lt;/p&gt;
+&lt;div class="section" id="cell-v1"&gt;
+&lt;h2&gt;cell v1&lt;/h2&gt;
+&lt;p&gt;cellv1  最初的想法很好 ， 但是局限于早期  nova  的架构 ， 硬生生的加个  nova-cell  服务来在各个  cell  间传递消息 ， 使得架构更加复杂 。 以下是  cellv1  的架构 &lt;/p&gt;
+&lt;img alt="nova cell v1 architecture" class="align-center" src="images/nova-cell/nova-cell-v1-arch.jpg" style="width: 371px; height: 374px;" /&gt;
+&lt;p&gt;cell v1  的问题在于 ：&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt; 一直以来 ，cell v1  被标记为实验性质 &lt;/li&gt;
+&lt;li&gt; 相关的测试很少 ， 而且也没有  v1 + neutron  的测试 &lt;/li&gt;
+&lt;li&gt; 现在来说功能已经冻结 ， 不会加入新的功能 &lt;/li&gt;
+&lt;li&gt; 不严重的  Bug  根本不会去修复 &lt;/li&gt;
+&lt;li&gt; 使用案例很少 。 现在经常提到的使用案例也只有 CERN（ 欧洲原子能研究中心 ）。 一般规模下 ， 完全没有必要搭建  cell v1&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; 所以 ， 现在进行部署的话 ， 如果用  cell,  就尽量使用  cell v2  吧 。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="cell-v2"&gt;
+&lt;h2&gt;cell v2&lt;/h2&gt;
+&lt;p&gt;cell v2  自  Newton  版本引入 ，Ocata  版本变为必要组件 。 以后默认部署都会初始化一个单  cell  的架构 。&lt;/p&gt;
+&lt;p&gt;cell v2  的架构图如下 ， 看着比  cell v1  清爽不少 。&lt;/p&gt;
+&lt;img alt="nova cell v2 architecture" class="align-center" src="images/nova-cell/nova-cell-v2-arch.jpg" style="width: 554px; height: 319px;" /&gt;
+&lt;p&gt; 从架构图上 ， 可以看到 ：&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;api  和  cell  有了明显的边界 。 api  层面只需要数据库 ， 不需要  Message Queue。&lt;ul&gt;
+&lt;li&gt;nova-api  现在依赖  nova_api  和  nova_cell0  两个数据库 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;nova-scheduler  服务只需要在  api  层面上安装 ，cell  不需要参数调度 。 这样实现了一次调度就可以确定到具体在哪个  cell  的哪台机器上启动 &lt;ul&gt;
+&lt;li&gt; 这里其实依赖  placement  服务 ,  以后的文章会提到 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;cell  里面只需要安装  nova-compute  和  nova-conductor  服务 ， 和其依赖的  DB  和  MQ&lt;/li&gt;
+&lt;li&gt; 所有的  cell  变成一个扁平架构 。 比之前的多层父子架构要简化很多 。&lt;/li&gt;
+&lt;li&gt;api 上面服务会直接连接  cell  的  MQ  和  DB,  所以不需要类似  nova-cell  这样子的额外服务存在 。 性能上也会有及大的提升 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="section" id="nova-api-nova-cell0"&gt;
+&lt;h3&gt;nova_api &amp;amp; nova_cell0&lt;/h3&gt;
+&lt;p&gt; 自  Newton  版本 ，nova  就一直拆分  nova  数据库 ，  为  cell v2  做准备 。  把一些全局数据表从  nova  库搬到了  nova_api,  下面是现在  nova_api  里面的所有表 。&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
++------------------------------+     +------------------------------+
+| Tables_in_nova_api           |     | Tables_in_nova_api           |
++------------------------------+     +------------------------------+
+| aggregate_hosts              |     | inventories                  |
+| aggregate_metadata           |     | key_pairs                    |
+| aggregates                   |     | migrate_version              |
+| allocations                  |     | placement_aggregates         |
+| build_requests               |     | project_user_quotas          |
+| cell_mappings                |     | quota_classes                |
+| flavor_extra_specs           |     | quota_usages                 |
+| flavor_projects              |     | quotas                       |
+| flavors                      |     | request_specs                |
+| host_mappings                |     | reservations                 |
+| instance_group_member        |     | resource_classes             |
+| instance_group_policy        |     | resource_provider_aggregates |
+| instance_groups              |     | resource_providers           |
+| instance_mappings            |     |                              |
++------------------------------+     +------------------------------+
+&lt;/pre&gt;
+&lt;p&gt; 可以看到像  flavor, instance groups, quota  这些表已经迁移了过来 。&lt;/p&gt;
+&lt;p&gt;nova_cell0  数据库的  schema  和  nova  是一样的 ， 他存在的只要用途是 ： 当  instance  调度失败时 ， instance  的信息不属于任何一个  cell,  所以放到  cell0  上面 。 因此里面的数据并不是太重要 。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="cell-related-tables"&gt;
+&lt;h3&gt;Cell Related Tables&lt;/h3&gt;
+&lt;p&gt;Cell  相关的数据库表都在  nova_api  里面 ， 包括  cell_mappings, host_mappings, instance_mappings。 其表结构如下 ：&lt;/p&gt;
+&lt;img alt="" class="align-center" src="images/nova-cell/nova-cell-v2-uml.jpg" style="width: 391px; height: 204px;" /&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;cell_mappings  表  cell  的  Database  和  Mesage Queue  的连接 。 用于和子  cell  通讯 &lt;/li&gt;
+&lt;li&gt;host_mappings  是用于  nova-scheduler,  可以确认分配到的机器 。 这里其实也有一个坑 ， 之前  nova-compute  启动起来 ， 就可以直接使用了 ，cell v2  之后 ， 就需要手动运行  &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;nova-manage&lt;/span&gt; cell_v2 discover_host&lt;/tt&gt; ,  把  host mapping  到  cell_mappings  表里面 ， 那台计算节点才会加入到调度中 。&lt;/li&gt;
+&lt;li&gt;instance_mappings  表里有所有  instance id,  这样在查询  instance  时 ， 就可以从这个表里查到他所在的  cell,  然后直连  cell  拿到  instance  具体信息 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="cell"&gt;
+&lt;h3&gt;cell  流程 &lt;/h3&gt;
+&lt;pre class="literal-block"&gt;
+                        api/cell boundary
+                                +
+ nova show &amp;lt;uuid&amp;gt;               |
+             |                  |
+             v      3           |
+        nova-api+--------------------&amp;gt;cell-db
+         +     +                |
+         |     +----+           |
+        1|          | 2         |      1. Determine which cell the instance is in
+         v          v           |      2. Get db connection for cell
+instance_mapping  cell_mapping  |      3. Query cell db for data
+                                +
+&lt;/pre&gt;
+&lt;p&gt; 当想要获取一个机器的详细信息时 :&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;nova-api  先从  instance_mappings  表拿到  instance  的  cell_id&lt;/li&gt;
+&lt;li&gt; 再从  cell_mappings  表拿到所在  cell  的  DB connection&lt;/li&gt;
+&lt;li&gt; 直接连接  cell   的  DB  拿到机器的详细信息 &lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class="literal-block"&gt;
+                        api/cell boundary
+                                +
+ nova reboot &amp;lt;uuid&amp;gt;             |
+              +                 |
+              |                 |
+              v    3            |
+        nova-api+--------------------&amp;gt;cell-mq+-----&amp;gt;compute
+         +     +                |
+         |     +---+            |
+        1|         | 2          |      1. Determine which cell the instance is in
+         v         v            |      2. Get mq connection for cell
+instance_mapping cell_mapping   |      3. Send RPC message to compute
+                                +
+&lt;/pre&gt;
+&lt;p&gt; 当要重启一台机器时 ：&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;nova-api  先从  instance_mappings  表里拿到  instance  所在的  cell_id&lt;/li&gt;
+&lt;li&gt; 从  cell_mappings  里拿到所在  cell  的  message queue  连接 &lt;/li&gt;
+&lt;li&gt;nova-api  直接给  mq  的相关队列发重启机器的消息 &lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class="literal-block"&gt;
+                        api/cell boundary
+                                +
+ nova boot  ...                 |
+         +        3             |
+         |    +----------------------&amp;gt;cell-db
+         v    +   4             |
+        nova-api+--------------------&amp;gt;cell-mq+-&amp;gt;conductor+-&amp;gt;compute
+         +    +                 |
+         |    +-------------+   |
+        2|     1            |   |
+         v                  |   |       1. Schedule the instance
+instance_mapping            |   |       2. Record which cell the instance was scheduled to
+                            |   +       3. Create instance record
+                            v           4. Send RPC message to conductor to build
+                       scheduling
+&lt;/pre&gt;
+&lt;p&gt; 当新建机器时 :&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;nova-api  接到用户的请求信息 ， 先转发到  nova-scheduler  进行调度 ，
+nova-scheduler  通过  placement service,  直接确定分配到哪台机器上 &lt;/li&gt;
+&lt;li&gt;nova-api  把  instance  的信息存入 instance_mappings  表 &lt;/li&gt;
+&lt;li&gt;nova-api  把机器信息存到目标  cell  的  database&lt;/li&gt;
+&lt;li&gt;nova-api  给  cell  的  message queue  的相关队列发消息 ， 启动机器 &lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div class="section" id="id1"&gt;
+&lt;h3&gt;Cell v2  的优点 &lt;/h3&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt; 数据库和消息队列作为  nova  的一等公民 。&lt;/li&gt;
+&lt;li&gt; 在  cell  的数据库里没有冗余数据 ， 所有共享数据都在  nova-api  中 &lt;/li&gt;
+&lt;li&gt; 全局数据和  cell  数据有一条清晰的界线 &lt;/li&gt;
+&lt;li&gt; 非  cell  用户很容易的就可以迁移到  cell v2  上面 。 不需要更改现在的部署架构 &lt;/li&gt;
+&lt;li&gt;cell v1  的用户也可以迁移到  cell v2  上 。 只要手动建立起所有的 mapping,  关掉现在存在的  nova-cell  服务 ， 清掉最上层  cell  的数据库 。 但是最上层  cell  本质上和其它  cell  是不同的 。  所以需要调整架构 &lt;/li&gt;
+&lt;li&gt; 增减  cell  变的十分简单 ， 而且在把某个 cell  加入之前 ， 可以在其它环境进行测试 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="id2"&gt;
+&lt;h3&gt;Cell v2  相关命令 &lt;/h3&gt;
+&lt;p&gt; 因为  cell v2  完全靠  database  的操作为建立 ， 所以也没有相关的  api  接口 。  主要靠  nova-manage cell_v2  命令 。 详细说明参见  &lt;a class="footnote-reference" href="#id7" id="id3"&gt;[1]&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+nova-manage cell_v2
+
+    create_cell
+    delete_cell
+    list_cells
+
+    map_cell0
+    discover_hosts
+    simple_cell_setup
+
+    map_cell_and_hosts
+    map_instances
+    verify_instance
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class="section" id="id4"&gt;
+&lt;h3&gt; 其它 &lt;/h3&gt;
+&lt;div class="section" id="id5"&gt;
+&lt;h4&gt; 计算节点自动发现 &lt;/h4&gt;
+&lt;p&gt; 上面提到了现在  nova-compute  服务上线后 ， 不会自动加到  nova-api  的  host_mappings  里面 ， 也就不会加到  nova-scheduler  的调度中 。  需要手动运行  &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;nova-manage&lt;/span&gt; cell_v2 discover_hosts&lt;/tt&gt;  命令 。 这显示略显繁琐 。&lt;/p&gt;
+&lt;p&gt; 在小型一些的环境上 ， 推荐打开自动发现功能 ， 就不用手动跑命令了 。&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+[scheduler]
+discover_hosts_in_cells_interval=-1
+
+#This value controls how often (in seconds) the scheduler should attempt
+#to discover new hosts that have been added to cells. If negative (the
+#default), no automatic discovery will occur.
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class="section" id="id6"&gt;
+&lt;h4&gt; 性能分析 &lt;/h4&gt;
+&lt;p&gt; 为了拿到  instance  的详细信息 ， 需要查询  nova_api  数据库 ， 相比之前要多查询一次数据库 (  虽然是有三个表 ， 但是可以用多表连接查询 ， 一次就可以拿到所有的结果  )。 但是一来数据相当少 ， 而且很容易加上一层  cache,  并不会对性造成什么影响 。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="kolla"&gt;
+&lt;h3&gt;Kolla  实现 &lt;/h3&gt;
+&lt;p&gt; 现在  Kolla  已经支持自动部署一个基本的  cell  环境 ， 而且支持从没有  cell  的  Newton  升级到有  cell  的  Ocata  版本 。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="ref"&gt;
+&lt;h2&gt;REF&lt;/h2&gt;
+&lt;table class="docutils footnote" frame="void" id="id7" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id3"&gt;[1]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="https://docs.openstack.org/developer/nova/man/nova-manage.html#nova-cells-v2"&gt;https://docs.openstack.org/developer/nova/man/nova-manage.html#nova-cells-v2&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils footnote" frame="void" id="id8" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;[2]&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="https://www.openstack.org/videos/video/nova-cells-v2-whats-going-on"&gt;Presentation that Andrew Laski gave at the Austin (Newton) summit&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils footnote" frame="void" id="id9" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;[3]&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="https://docs.openstack.org/developer/nova/cells.html"&gt;https://docs.openstack.org/developer/nova/cells.html&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils footnote" frame="void" id="id10" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;[4]&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="http://paste.openstack.org/show/144068/"&gt;Flow chart&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils footnote" frame="void" id="id11" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;[5]&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="https://wiki.openstack.org/wiki/Nova-Cells-v2"&gt;https://wiki.openstack.org/wiki/Nova-Cells-v2&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils footnote" frame="void" id="id12" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;[6]&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="https://www.ustack.com/news/what-is-nova-cells-v2/"&gt;https://www.ustack.com/news/what-is-nova-cells-v2/&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils footnote" frame="void" id="id13" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;[7]&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="http://www.cnblogs.com/wanglm/articles/5749813.html"&gt;http://www.cnblogs.com/wanglm/articles/5749813.html&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+</content><category term="OpenStack"></category><category term="Kolla"></category></entry><entry><title>Ansible with-items auto flatten list of lists</title><link href="http://xcodest.me/ansible-with-items-auto-flatten-list-of-lists.html" rel="alternate"></link><published>2016-12-27T00:00:00+08:00</published><updated>2016-12-27T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2016-12-27:/ansible-with-items-auto-flatten-list-of-lists.html</id><summary type="html">&lt;p&gt;Ansible has &lt;tt class="docutils literal"&gt;with_items&lt;/tt&gt; directive, which make task iterating the lists in
 &lt;tt class="docutils literal"&gt;with_items&lt;/tt&gt;. A normal usage is like&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 - name: copy file
@@ -355,8 +597,8 @@ Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource Data
 &lt;p&gt; 一开始我怀疑是硬盘分区自动扩展慢导致的 ， 但把自动扩展关掉了也还是一样 ， 时间基本没有变化 。 肯定是其它问题 。&lt;/p&gt;
 &lt;p&gt; 万事找日志 ， 要找真正的原因 ， 还是从日志找起 。&lt;/p&gt;
 &lt;p&gt; 在  &lt;code&gt;/var/log/&lt;/code&gt;  下找日志 ， 只发现了少量日志 。 大概看了一个  cloud-init  的源代码 ， 日志应该会有很多的才对 。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;-rw-r--r--. &lt;span class="m"&gt;1&lt;/span&gt; root root    &lt;span class="m"&gt;0&lt;/span&gt; Mar &lt;span class="m"&gt;30&lt;/span&gt; 14:58 cloud-init.log
--rw-r--r--. &lt;span class="m"&gt;1&lt;/span&gt; root root 1.7K Mar &lt;span class="m"&gt;30&lt;/span&gt; 15:00 cloud-init-output.log
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;-rw-r--r--. &lt;span class="m"&gt;1&lt;/span&gt; root root    &lt;span class="m"&gt;0&lt;/span&gt; Mar &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;14&lt;/span&gt;:58 cloud-init.log
+-rw-r--r--. &lt;span class="m"&gt;1&lt;/span&gt; root root &lt;span class="m"&gt;1&lt;/span&gt;.7K Mar &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:00 cloud-init-output.log
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 又尝试修改了  &lt;code&gt;cloud.cfg&lt;/code&gt;  的配置 ， 把日志都都打印到特定文件 ， 如下 。 但是结果还是一样 ， 没有啥新日志信息 。( 其时后来才发现 ， 这个配置默认就存在 ， 在  &lt;code&gt;/etc/cloud/cloud.cfg.d/&lt;/code&gt;  下面 )&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;output&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;{&lt;/span&gt;&lt;span class="nv"&gt;all&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;'|&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;tee&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;-a&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;/var/log/cloud-init-output.log'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;}&lt;/span&gt;
@@ -372,8 +614,8 @@ cloud-config.target        Cloud-config availability
 &lt;p&gt; 可以看到 ，cloud-init  安装的服务还是有多个的 。 不同的服务的启动时间点和所做的事情是不一样的 。 使用  &lt;code&gt;journalctl&lt;/code&gt;  挨个排查后 ， 找到以下日志 ：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ journalctl -u cloud-init
 ...
-Apr &lt;span class="m"&gt;03&lt;/span&gt; 13:19:33 cloud-init&lt;span class="o"&gt;[&lt;/span&gt;780&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="o"&gt;[&lt;/span&gt;CLOUDINIT&lt;span class="o"&gt;]&lt;/span&gt; __init__.py&lt;span class="o"&gt;[&lt;/span&gt;DEBUG&lt;span class="o"&gt;]&lt;/span&gt;: Merging using located merger
-Apr &lt;span class="m"&gt;03&lt;/span&gt; 13:21:13 cloud-init&lt;span class="o"&gt;[&lt;/span&gt;780&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="o"&gt;[&lt;/span&gt;CLOUDINIT&lt;span class="o"&gt;]&lt;/span&gt; DataSourceGCE.py&lt;span class="o"&gt;[&lt;/span&gt;DEBUG&lt;span class="o"&gt;]&lt;/span&gt;: http://metadata.google.internal./computeMetadata/v1/ is not resolvable
+Apr &lt;span class="m"&gt;03&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt;:19:33 cloud-init&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;780&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="o"&gt;[&lt;/span&gt;CLOUDINIT&lt;span class="o"&gt;]&lt;/span&gt; __init__.py&lt;span class="o"&gt;[&lt;/span&gt;DEBUG&lt;span class="o"&gt;]&lt;/span&gt;: Merging using located merger
+Apr &lt;span class="m"&gt;03&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt;:21:13 cloud-init&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;780&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="o"&gt;[&lt;/span&gt;CLOUDINIT&lt;span class="o"&gt;]&lt;/span&gt; DataSourceGCE.py&lt;span class="o"&gt;[&lt;/span&gt;DEBUG&lt;span class="o"&gt;]&lt;/span&gt;: http://metadata.google.internal./computeMetadata/v1/ is not resolvable
 ...
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 注意前面的时间点 ， 这两行日志间差了 60 多秒 ， 而且后面是一个错误 ， 明显是在等一个超时 ， 时间是花在这的 。 至此原因找到了 。&lt;/p&gt;
@@ -422,14 +664,14 @@ Apr &lt;span class="m"&gt;03&lt;/span&gt; 13:21:13 cloud-init&lt;span class="o"&
 &lt;p&gt; 安装好操作系统后 ， 依次进行如下配置 &lt;/p&gt;
 &lt;h2 id="_2"&gt; 源 &lt;/h2&gt;
 &lt;p&gt; 加入  Docker  的源 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;sudo tee /etc/yum.repos.d/docker.repo &amp;lt;&amp;lt; 'EOF'&lt;/span&gt;
-&lt;span class="x"&gt;[dockerrepo]&lt;/span&gt;
-&lt;span class="x"&gt;name=Docker Repository&lt;/span&gt;
-&lt;span class="x"&gt;baseurl=https://yum.dockerproject.org/repo/main/centos/&lt;/span&gt;&lt;span class="p"&gt;$&lt;/span&gt;&lt;span class="nv"&gt;releasever&lt;/span&gt;&lt;span class="x"&gt;/&lt;/span&gt;
-&lt;span class="x"&gt;enabled=1&lt;/span&gt;
-&lt;span class="x"&gt;gpgcheck=1&lt;/span&gt;
-&lt;span class="x"&gt;gpgkey=https://yum.dockerproject.org/gpg&lt;/span&gt;
-&lt;span class="x"&gt;EOF&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo tee /etc/yum.repos.d/docker.repo &amp;lt;&amp;lt; 'EOF'
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/$releasever/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 加入  EPEL  源 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;yum install -y epel-release
@@ -580,7 +822,7 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;h1 id="diagnosticslogging"&gt;Diagnostics/Logging&lt;/h1&gt;
 &lt;h1 id="security"&gt;Security&lt;/h1&gt;
 &lt;p&gt; 安全也是很重要的事情 ，Team  两次讨论了这个问题 &lt;sup id="fnref-5"&gt;&lt;a class="footnote-ref" href="#fn-5"&gt;5&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref-8"&gt;&lt;a class="footnote-ref" href="#fn-8"&gt;8&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-&lt;p&gt; 在各个模块之前开启  SSL  功能 &lt;sup id="fnref-5"&gt;&lt;a class="footnote-ref" href="#fn-5"&gt;5&lt;/a&gt;&lt;/sup&gt;。 当然默认是通过配置开启的 。 这样使  OpenStack  运行在一个更加安全的环境中 。 这个功能期望是在  Mitaka-3  中完成 。&lt;/p&gt;
+&lt;p&gt; 在各个模块之前开启  SSL  功能 &lt;sup id="fnref2-5"&gt;&lt;a class="footnote-ref" href="#fn-5"&gt;5&lt;/a&gt;&lt;/sup&gt;。 当然默认是通过配置开启的 。 这样使  OpenStack  运行在一个更加安全的环境中 。 这个功能期望是在  Mitaka-3  中完成 。&lt;/p&gt;
 &lt;p&gt; 容器中的安全 &lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt; 使用非  root  用户运行服务 &lt;/li&gt;
@@ -690,7 +932,7 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-infrastructure-upgrades"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-infrastructure-upgrades&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-5"&gt;
-&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;a class="footnote-backref" href="#fnref2-5" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-6"&gt;
 &lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-backport"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-backport&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-6" title="Jump back to footnote 6 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
@@ -1280,12 +1522,12 @@ pip install .
 
 &lt;p&gt; 在  python3  中 ，message  相关的信息已经完全删除掉了 。&lt;/p&gt;
 &lt;p&gt; 所以 ， 一般使用  &lt;code&gt;message&lt;/code&gt;  属性的话 ， 推荐这样使用 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;MyException&lt;/span&gt;(&lt;span class="nb"&gt;Exception&lt;/span&gt;):
-    &lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;__init__&lt;/span&gt;(&lt;span class="k"&gt;self&lt;/span&gt;, &lt;span class="n"&gt;message&lt;/span&gt;):
-        &lt;span class="k"&gt;self&lt;/span&gt;.&lt;span class="n"&gt;message&lt;/span&gt; = &lt;span class="n"&gt;message&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;class&lt;/span&gt; &lt;span class="nx"&gt;MyException&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;Exception&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="nx"&gt;def&lt;/span&gt; &lt;span class="nx"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+        &lt;span class="nx"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;message&lt;/span&gt;
 
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;My2Exception&lt;/span&gt;(&lt;span class="nb"&gt;Exception&lt;/span&gt;):
-    &lt;span class="n"&gt;message&lt;/span&gt; = &lt;span class="s"&gt;&amp;#39;this is a message&amp;#39;&lt;/span&gt;
+&lt;span class="kr"&gt;class&lt;/span&gt; &lt;span class="nx"&gt;My2Exception&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;Exception&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="nx"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;this is a message&amp;#39;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;</content><category term="Python"></category></entry><entry><title>Interrupt the Python multiprocessing.Pool in graceful way</title><link href="http://xcodest.me/interrupt-the-python-multiprocessing-pool-in-graceful-way.html" rel="alternate"></link><published>2015-11-17T00:00:00+08:00</published><updated>2015-11-17T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-11-17:/interrupt-the-python-multiprocessing-pool-in-graceful-way.html</id><summary type="html">&lt;p&gt;When using &lt;code&gt;KeyboardInterrupt&lt;/code&gt;(&lt;code&gt;Ctrl+c&lt;/code&gt;) interrupt the excution of the &lt;code&gt;multiprocess.Pool&lt;/code&gt;, it will not work as expected. Following is a demo&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;
@@ -1320,14 +1562,14 @@ pip install .
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python2 b.py                                                                      
 ^CProcess PoolWorker-1:
 Traceback &lt;span class="o"&gt;(&lt;/span&gt;most recent call last&lt;span class="o"&gt;)&lt;/span&gt;:
-  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/process.py&amp;quot;&lt;/span&gt;, line 258, in _bootstrap
+  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/process.py&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;258&lt;/span&gt;, in _bootstrap
     self.run&lt;span class="o"&gt;()&lt;/span&gt;
-  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/process.py&amp;quot;&lt;/span&gt;, line 114, in run
+  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/process.py&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;114&lt;/span&gt;, in run
     self._target&lt;span class="o"&gt;(&lt;/span&gt;*self._args, **self._kwargs&lt;span class="o"&gt;)&lt;/span&gt;
-  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/pool.py&amp;quot;&lt;/span&gt;, line 113, in worker
+  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/pool.py&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;113&lt;/span&gt;, in worker
     &lt;span class="nv"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;True, func&lt;span class="o"&gt;(&lt;/span&gt;*args, **kwds&lt;span class="o"&gt;))&lt;/span&gt;
-  File &lt;span class="s2"&gt;&amp;quot;b.py&amp;quot;&lt;/span&gt;, line 7, in worker
-    time.sleep&lt;span class="o"&gt;(&lt;/span&gt;1&lt;span class="o"&gt;)&lt;/span&gt;
+  File &lt;span class="s2"&gt;&amp;quot;b.py&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;7&lt;/span&gt;, in worker
+    time.sleep&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 KeyboardInterrupt
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -1971,7 +2213,7 @@ $ virsh capabilities | grep uuid
 &lt;p&gt; 用 &lt;code&gt;ethtool&lt;/code&gt; 可以得到网卡所用的驱动 ， 从而得到网上设备是哪一类 。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ethtool -i veth4NCTQ1 
 driver: veth
-version: 1.0
+version: &lt;span class="m"&gt;1&lt;/span&gt;.0
 firmware-version: 
 bus-info: 
 supports-statistics: yes
@@ -1990,7 +2232,7 @@ supports-priv-flags: no
 &lt;p&gt; 用 &lt;code&gt;ethtool&lt;/code&gt; 可以得到网卡所用的驱动 ， 从而得到网上设备是哪一类 。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ethtool -i veth4NCTQ1 
 driver: veth
-version: 1.0
+version: &lt;span class="m"&gt;1&lt;/span&gt;.0
 firmware-version: 
 bus-info: 
 supports-statistics: yes
@@ -2219,15 +2461,15 @@ nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $D
 &lt;/div&gt;</content><category term="OpenStack"></category><category term="Nova"></category></entry><entry><title>Python cString raise exception when feed Unicode</title><link href="http://xcodest.me/python-cstring-unicode.html" rel="alternate"></link><published>2014-09-09T00:00:00+08:00</published><updated>2014-09-09T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2014-09-09:/python-cstring-unicode.html</id><summary type="html">&lt;p&gt;I gett following different result when using these two Class.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;StringIO&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;cStringIO&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;u&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cStringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;u&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cStringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
   &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;module&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
 &lt;span class="ne"&gt;UnicodeEncodeError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ascii&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;codec&lt;/span&gt; &lt;span class="n"&gt;can&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;t encode character u&amp;#39;&lt;/span&gt;\&lt;span class="n"&gt;u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; in position 0: ordinal not in …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;I gett following different result when using these two Class.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;StringIO&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;cStringIO&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;u&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cStringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;u&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;cStringIO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
   &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;module&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
 &lt;span class="ne"&gt;UnicodeEncodeError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ascii&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;codec&lt;/span&gt; &lt;span class="n"&gt;can&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;t encode character u&amp;#39;&lt;/span&gt;\&lt;span class="n"&gt;u2222&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; in position 0: ordinal not in range(128)&lt;/span&gt;
@@ -2464,9 +2706,9 @@ glance-api 加载的 pipeline 的名字 。&lt;/p&gt;
 jeffrey-thinkpad:
     ----------
     icehouse-compute:
-        - 10.0.0.11
+        - &lt;span class="m"&gt;10&lt;/span&gt;.0.0.11
     icehouse-controller:
-        - 10.0.0.10
+        - &lt;span class="m"&gt;10&lt;/span&gt;.0.0.10
 &lt;/pre&gt;&lt;/div&gt;
 
 

@@ -27,8 +27,8 @@ Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource Data
 &lt;p&gt; 一开始我怀疑是硬盘分区自动扩展慢导致的 ， 但把自动扩展关掉了也还是一样 ， 时间基本没有变化 。 肯定是其它问题 。&lt;/p&gt;
 &lt;p&gt; 万事找日志 ， 要找真正的原因 ， 还是从日志找起 。&lt;/p&gt;
 &lt;p&gt; 在  &lt;code&gt;/var/log/&lt;/code&gt;  下找日志 ， 只发现了少量日志 。 大概看了一个  cloud-init  的源代码 ， 日志应该会有很多的才对 。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;-rw-r--r--. &lt;span class="m"&gt;1&lt;/span&gt; root root    &lt;span class="m"&gt;0&lt;/span&gt; Mar &lt;span class="m"&gt;30&lt;/span&gt; 14:58 cloud-init.log
--rw-r--r--. &lt;span class="m"&gt;1&lt;/span&gt; root root 1.7K Mar &lt;span class="m"&gt;30&lt;/span&gt; 15:00 cloud-init-output.log
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;-rw-r--r--. &lt;span class="m"&gt;1&lt;/span&gt; root root    &lt;span class="m"&gt;0&lt;/span&gt; Mar &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;14&lt;/span&gt;:58 cloud-init.log
+-rw-r--r--. &lt;span class="m"&gt;1&lt;/span&gt; root root &lt;span class="m"&gt;1&lt;/span&gt;.7K Mar &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:00 cloud-init-output.log
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 又尝试修改了  &lt;code&gt;cloud.cfg&lt;/code&gt;  的配置 ， 把日志都都打印到特定文件 ， 如下 。 但是结果还是一样 ， 没有啥新日志信息 。( 其时后来才发现 ， 这个配置默认就存在 ， 在  &lt;code&gt;/etc/cloud/cloud.cfg.d/&lt;/code&gt;  下面 )&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;output&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;{&lt;/span&gt;&lt;span class="nv"&gt;all&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;'|&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;tee&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;-a&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;/var/log/cloud-init-output.log'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;}&lt;/span&gt;
@@ -44,8 +44,8 @@ cloud-config.target        Cloud-config availability
 &lt;p&gt; 可以看到 ，cloud-init  安装的服务还是有多个的 。 不同的服务的启动时间点和所做的事情是不一样的 。 使用  &lt;code&gt;journalctl&lt;/code&gt;  挨个排查后 ， 找到以下日志 ：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ journalctl -u cloud-init
 ...
-Apr &lt;span class="m"&gt;03&lt;/span&gt; 13:19:33 cloud-init&lt;span class="o"&gt;[&lt;/span&gt;780&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="o"&gt;[&lt;/span&gt;CLOUDINIT&lt;span class="o"&gt;]&lt;/span&gt; __init__.py&lt;span class="o"&gt;[&lt;/span&gt;DEBUG&lt;span class="o"&gt;]&lt;/span&gt;: Merging using located merger
-Apr &lt;span class="m"&gt;03&lt;/span&gt; 13:21:13 cloud-init&lt;span class="o"&gt;[&lt;/span&gt;780&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="o"&gt;[&lt;/span&gt;CLOUDINIT&lt;span class="o"&gt;]&lt;/span&gt; DataSourceGCE.py&lt;span class="o"&gt;[&lt;/span&gt;DEBUG&lt;span class="o"&gt;]&lt;/span&gt;: http://metadata.google.internal./computeMetadata/v1/ is not resolvable
+Apr &lt;span class="m"&gt;03&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt;:19:33 cloud-init&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;780&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="o"&gt;[&lt;/span&gt;CLOUDINIT&lt;span class="o"&gt;]&lt;/span&gt; __init__.py&lt;span class="o"&gt;[&lt;/span&gt;DEBUG&lt;span class="o"&gt;]&lt;/span&gt;: Merging using located merger
+Apr &lt;span class="m"&gt;03&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt;:21:13 cloud-init&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;780&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="o"&gt;[&lt;/span&gt;CLOUDINIT&lt;span class="o"&gt;]&lt;/span&gt; DataSourceGCE.py&lt;span class="o"&gt;[&lt;/span&gt;DEBUG&lt;span class="o"&gt;]&lt;/span&gt;: http://metadata.google.internal./computeMetadata/v1/ is not resolvable
 ...
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 注意前面的时间点 ， 这两行日志间差了 60 多秒 ， 而且后面是一个错误 ， 明显是在等一个超时 ， 时间是花在这的 。 至此原因找到了 。&lt;/p&gt;
@@ -94,14 +94,14 @@ Apr &lt;span class="m"&gt;03&lt;/span&gt; 13:21:13 cloud-init&lt;span class="o"&
 &lt;p&gt; 安装好操作系统后 ， 依次进行如下配置 &lt;/p&gt;
 &lt;h2 id="_2"&gt; 源 &lt;/h2&gt;
 &lt;p&gt; 加入  Docker  的源 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;sudo tee /etc/yum.repos.d/docker.repo &amp;lt;&amp;lt; 'EOF'&lt;/span&gt;
-&lt;span class="x"&gt;[dockerrepo]&lt;/span&gt;
-&lt;span class="x"&gt;name=Docker Repository&lt;/span&gt;
-&lt;span class="x"&gt;baseurl=https://yum.dockerproject.org/repo/main/centos/&lt;/span&gt;&lt;span class="p"&gt;$&lt;/span&gt;&lt;span class="nv"&gt;releasever&lt;/span&gt;&lt;span class="x"&gt;/&lt;/span&gt;
-&lt;span class="x"&gt;enabled=1&lt;/span&gt;
-&lt;span class="x"&gt;gpgcheck=1&lt;/span&gt;
-&lt;span class="x"&gt;gpgkey=https://yum.dockerproject.org/gpg&lt;/span&gt;
-&lt;span class="x"&gt;EOF&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo tee /etc/yum.repos.d/docker.repo &amp;lt;&amp;lt; 'EOF'
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/$releasever/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt; 加入  EPEL  源 &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;yum install -y epel-release
@@ -252,7 +252,7 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;h1 id="diagnosticslogging"&gt;Diagnostics/Logging&lt;/h1&gt;
 &lt;h1 id="security"&gt;Security&lt;/h1&gt;
 &lt;p&gt; 安全也是很重要的事情 ，Team  两次讨论了这个问题 &lt;sup id="fnref-5"&gt;&lt;a class="footnote-ref" href="#fn-5"&gt;5&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref-8"&gt;&lt;a class="footnote-ref" href="#fn-8"&gt;8&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-&lt;p&gt; 在各个模块之前开启  SSL  功能 &lt;sup id="fnref-5"&gt;&lt;a class="footnote-ref" href="#fn-5"&gt;5&lt;/a&gt;&lt;/sup&gt;。 当然默认是通过配置开启的 。 这样使  OpenStack  运行在一个更加安全的环境中 。 这个功能期望是在  Mitaka-3  中完成 。&lt;/p&gt;
+&lt;p&gt; 在各个模块之前开启  SSL  功能 &lt;sup id="fnref2-5"&gt;&lt;a class="footnote-ref" href="#fn-5"&gt;5&lt;/a&gt;&lt;/sup&gt;。 当然默认是通过配置开启的 。 这样使  OpenStack  运行在一个更加安全的环境中 。 这个功能期望是在  Mitaka-3  中完成 。&lt;/p&gt;
 &lt;p&gt; 容器中的安全 &lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt; 使用非  root  用户运行服务 &lt;/li&gt;
@@ -362,7 +362,7 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-infrastructure-upgrades"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-infrastructure-upgrades&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-5"&gt;
-&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;a class="footnote-backref" href="#fnref2-5" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-6"&gt;
 &lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-backport"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-backport&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-6" title="Jump back to footnote 6 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;

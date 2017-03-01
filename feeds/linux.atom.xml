@@ -349,7 +349,7 @@ $ virsh capabilities | grep uuid
 &lt;p&gt; 用 &lt;code&gt;ethtool&lt;/code&gt; 可以得到网卡所用的驱动 ， 从而得到网上设备是哪一类 。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ethtool -i veth4NCTQ1 
 driver: veth
-version: 1.0
+version: &lt;span class="m"&gt;1&lt;/span&gt;.0
 firmware-version: 
 bus-info: 
 supports-statistics: yes
@@ -368,7 +368,7 @@ supports-priv-flags: no
 &lt;p&gt; 用 &lt;code&gt;ethtool&lt;/code&gt; 可以得到网卡所用的驱动 ， 从而得到网上设备是哪一类 。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ethtool -i veth4NCTQ1 
 driver: veth
-version: 1.0
+version: &lt;span class="m"&gt;1&lt;/span&gt;.0
 firmware-version: 
 bus-info: 
 supports-statistics: yes
@@ -577,9 +577,9 @@ git push origin --tags
 jeffrey-thinkpad:
     ----------
     icehouse-compute:
-        - 10.0.0.11
+        - &lt;span class="m"&gt;10&lt;/span&gt;.0.0.11
     icehouse-controller:
-        - 10.0.0.10
+        - &lt;span class="m"&gt;10&lt;/span&gt;.0.0.10
 &lt;/pre&gt;&lt;/div&gt;
 
 

@@ -138,8 +138,8 @@ Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource Data
 <p> 一开始我怀疑是硬盘分区自动扩展慢导致的 ， 但把自动扩展关掉了也还是一样 ， 时间基本没有变化 。 肯定是其它问题 。</p>
 <p> 万事找日志 ， 要找真正的原因 ， 还是从日志找起 。</p>
 <p> 在  <code>/var/log/</code>  下找日志 ， 只发现了少量日志 。 大概看了一个  cloud-init  的源代码 ， 日志应该会有很多的才对 。</p>
-<div class="highlight"><pre><span></span>-rw-r--r--. <span class="m">1</span> root root    <span class="m">0</span> Mar <span class="m">30</span> 14:58 cloud-init.log
--rw-r--r--. <span class="m">1</span> root root 1.7K Mar <span class="m">30</span> 15:00 cloud-init-output.log
+<div class="highlight"><pre><span></span>-rw-r--r--. <span class="m">1</span> root root    <span class="m">0</span> Mar <span class="m">30</span> <span class="m">14</span>:58 cloud-init.log
+-rw-r--r--. <span class="m">1</span> root root <span class="m">1</span>.7K Mar <span class="m">30</span> <span class="m">15</span>:00 cloud-init-output.log
 </pre></div>
 <p> 又尝试修改了  <code>cloud.cfg</code>  的配置 ， 把日志都都打印到特定文件 ， 如下 。 但是结果还是一样 ， 没有啥新日志信息 。( 其时后来才发现 ， 这个配置默认就存在 ， 在  <code>/etc/cloud/cloud.cfg.d/</code>  下面 )</p>
 <div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">output</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span><span class="nv">all</span><span class="p p-Indicator">:</span> <span class="s">'|</span><span class="nv"> </span><span class="s">tee</span><span class="nv"> </span><span class="s">-a</span><span class="nv"> </span><span class="s">/var/log/cloud-init-output.log'</span><span class="p p-Indicator">}</span>
@@ -155,8 +155,8 @@ cloud-config.target        Cloud-config availability
 <p> 可以看到 ，cloud-init  安装的服务还是有多个的 。 不同的服务的启动时间点和所做的事情是不一样的 。 使用  <code>journalctl</code>  挨个排查后 ， 找到以下日志 ：</p>
 <div class="highlight"><pre><span></span>$ journalctl -u cloud-init
 ...
-Apr <span class="m">03</span> 13:19:33 cloud-init<span class="o">[</span>780<span class="o">]</span>: <span class="o">[</span>CLOUDINIT<span class="o">]</span> __init__.py<span class="o">[</span>DEBUG<span class="o">]</span>: Merging using located merger
-Apr <span class="m">03</span> 13:21:13 cloud-init<span class="o">[</span>780<span class="o">]</span>: <span class="o">[</span>CLOUDINIT<span class="o">]</span> DataSourceGCE.py<span class="o">[</span>DEBUG<span class="o">]</span>: http://metadata.google.internal./computeMetadata/v1/ is not resolvable
+Apr <span class="m">03</span> <span class="m">13</span>:19:33 cloud-init<span class="o">[</span><span class="m">780</span><span class="o">]</span>: <span class="o">[</span>CLOUDINIT<span class="o">]</span> __init__.py<span class="o">[</span>DEBUG<span class="o">]</span>: Merging using located merger
+Apr <span class="m">03</span> <span class="m">13</span>:21:13 cloud-init<span class="o">[</span><span class="m">780</span><span class="o">]</span>: <span class="o">[</span>CLOUDINIT<span class="o">]</span> DataSourceGCE.py<span class="o">[</span>DEBUG<span class="o">]</span>: http://metadata.google.internal./computeMetadata/v1/ is not resolvable
 ...
 </pre></div>
 <p> 注意前面的时间点 ， 这两行日志间差了 60 多秒 ， 而且后面是一个错误 ， 明显是在等一个超时 ， 时间是花在这的 。 至此原因找到了 。</p>

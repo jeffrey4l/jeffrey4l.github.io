@@ -137,14 +137,14 @@
 <p> 安装好操作系统后 ， 依次进行如下配置 </p>
 <h2 id="_2"> 源 </h2>
 <p> 加入  Docker  的源 </p>
-<div class="highlight"><pre><span></span><span class="x">sudo tee /etc/yum.repos.d/docker.repo &lt;&lt; 'EOF'</span>
-<span class="x">[dockerrepo]</span>
-<span class="x">name=Docker Repository</span>
-<span class="x">baseurl=https://yum.dockerproject.org/repo/main/centos/</span><span class="p">$</span><span class="nv">releasever</span><span class="x">/</span>
-<span class="x">enabled=1</span>
-<span class="x">gpgcheck=1</span>
-<span class="x">gpgkey=https://yum.dockerproject.org/gpg</span>
-<span class="x">EOF</span>
+<div class="highlight"><pre><span></span>sudo tee /etc/yum.repos.d/docker.repo &lt;&lt; 'EOF'
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/$releasever/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
 </pre></div>
 <p> 加入  EPEL  源 </p>
 <div class="highlight"><pre><span></span>yum install -y epel-release

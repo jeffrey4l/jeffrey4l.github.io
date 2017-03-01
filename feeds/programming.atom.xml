@@ -184,12 +184,12 @@ pip install .
 
 &lt;p&gt; 在  python3  中 ，message  相关的信息已经完全删除掉了 。&lt;/p&gt;
 &lt;p&gt; 所以 ， 一般使用  &lt;code&gt;message&lt;/code&gt;  属性的话 ， 推荐这样使用 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;MyException&lt;/span&gt;(&lt;span class="nb"&gt;Exception&lt;/span&gt;):
-    &lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;__init__&lt;/span&gt;(&lt;span class="k"&gt;self&lt;/span&gt;, &lt;span class="n"&gt;message&lt;/span&gt;):
-        &lt;span class="k"&gt;self&lt;/span&gt;.&lt;span class="n"&gt;message&lt;/span&gt; = &lt;span class="n"&gt;message&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;class&lt;/span&gt; &lt;span class="nx"&gt;MyException&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;Exception&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="nx"&gt;def&lt;/span&gt; &lt;span class="nx"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+        &lt;span class="nx"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;message&lt;/span&gt;
 
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;My2Exception&lt;/span&gt;(&lt;span class="nb"&gt;Exception&lt;/span&gt;):
-    &lt;span class="n"&gt;message&lt;/span&gt; = &lt;span class="s"&gt;&amp;#39;this is a message&amp;#39;&lt;/span&gt;
+&lt;span class="kr"&gt;class&lt;/span&gt; &lt;span class="nx"&gt;My2Exception&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;Exception&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="nx"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;this is a message&amp;#39;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;</content><category term="Python"></category></entry><entry><title>Interrupt the Python multiprocessing.Pool in graceful way</title><link href="http://xcodest.me/interrupt-the-python-multiprocessing-pool-in-graceful-way.html" rel="alternate"></link><published>2015-11-17T00:00:00+08:00</published><updated>2015-11-17T00:00:00+08:00</updated><author><name>Jeffrey4l</name></author><id>tag:xcodest.me,2015-11-17:/interrupt-the-python-multiprocessing-pool-in-graceful-way.html</id><summary type="html">&lt;p&gt;When using &lt;code&gt;KeyboardInterrupt&lt;/code&gt;(&lt;code&gt;Ctrl+c&lt;/code&gt;) interrupt the excution of the &lt;code&gt;multiprocess.Pool&lt;/code&gt;, it will not work as expected. Following is a demo&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Pool&lt;/span&gt;
@@ -224,14 +224,14 @@ pip install .
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python2 b.py                                                                      
 ^CProcess PoolWorker-1:
 Traceback &lt;span class="o"&gt;(&lt;/span&gt;most recent call last&lt;span class="o"&gt;)&lt;/span&gt;:
-  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/process.py&amp;quot;&lt;/span&gt;, line 258, in _bootstrap
+  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/process.py&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;258&lt;/span&gt;, in _bootstrap
     self.run&lt;span class="o"&gt;()&lt;/span&gt;
-  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/process.py&amp;quot;&lt;/span&gt;, line 114, in run
+  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/process.py&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;114&lt;/span&gt;, in run
     self._target&lt;span class="o"&gt;(&lt;/span&gt;*self._args, **self._kwargs&lt;span class="o"&gt;)&lt;/span&gt;
-  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/pool.py&amp;quot;&lt;/span&gt;, line 113, in worker
+  File &lt;span class="s2"&gt;&amp;quot;/usr/lib/python2.7/multiprocessing/pool.py&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;113&lt;/span&gt;, in worker
     &lt;span class="nv"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;True, func&lt;span class="o"&gt;(&lt;/span&gt;*args, **kwds&lt;span class="o"&gt;))&lt;/span&gt;
-  File &lt;span class="s2"&gt;&amp;quot;b.py&amp;quot;&lt;/span&gt;, line 7, in worker
-    time.sleep&lt;span class="o"&gt;(&lt;/span&gt;1&lt;span class="o"&gt;)&lt;/span&gt;
+  File &lt;span class="s2"&gt;&amp;quot;b.py&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;7&lt;/span&gt;, in worker
+    time.sleep&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 KeyboardInterrupt
 &lt;/pre&gt;&lt;/div&gt;
 

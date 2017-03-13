@@ -19,8 +19,18 @@ TIMEZONE = 'Asia/Shanghai'
 DEFAULT_LANG = u'cn'
 
 # Feed generation is usually not desired when developing
+FEED_ATOM = None
 FEED_ALL_ATOM = None
+AUTHOR_FEED_ATOM = None
+TAG_FEED_ATOM = None
 CATEGORY_FEED_ATOM = None
+
+FEED_RSS = 'feeds/rss.xml'
+FEED_ALL_RSS = 'feeds/all.rss.xml'
+AUTHOR_FEED_RSS = None
+TAG_FEED_RSS = None
+CATEGORY_FEED_RSS = None
+RSS_FEED_SUMMARY_ONLY = False
 TRANSLATION_FEED_ATOM = None
 
 # Blogroll

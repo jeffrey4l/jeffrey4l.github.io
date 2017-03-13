@@ -57,9 +57,9 @@ PLUGIN_PATHS = [os.path.join(ROOT, 'plugins')]
 PLUGINS = ['assets', 'gravatar', 'pelican_gist',
            'neighbors', 'extract_toc', 'cjk-auto-spacing']
 
-SITEMAP= {'format': 'xml'}
+SITEMAP = {'format': 'xml'}
 
-STATIC_PATHS = ['images', 'extra']
+STATIC_PATHS = ['images', 'extra', 'static']
 
 EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'}}
 
@@ -74,7 +74,7 @@ DEFAULT_CATEGORY = 'Others'
 
 AUTHORS_SAVE_AS = ''
 
-ARTICLE_EXCLUDES =  ['themes', 'plugins', 'output']
+ARTICLE_EXCLUDES = ['themes', 'plugins', 'output', 'static']
 
 THEME = 'themes/x'
 

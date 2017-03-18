@@ -92,6 +92,7 @@ Cell Related Tables
 Cell 相关的数据库表都在 nova_api 里面，包括 cell_mappings, host_mappings, instance_mappings。其表结构如下：
 
 .. image:: images/nova-cell/nova-cell-v2-uml.jpg
+    :alt: nova cell v2 uml
     :width: 391px
     :height: 204px
     :align: center

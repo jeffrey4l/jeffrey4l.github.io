@@ -169,7 +169,7 @@
 <div class="section" id="cell-related-tables">
 <h3>Cell Related Tables</h3>
 <p>Cell  相关的数据库表都在  nova_api  里面 ， 包括  cell_mappings, host_mappings, instance_mappings。 其表结构如下 ：</p>
-<img alt="" class="align-center" src="images/nova-cell/nova-cell-v2-uml.jpg" style="width: 391px; height: 204px;" />
+<img alt="nova cell v2 uml" class="align-center" src="images/nova-cell/nova-cell-v2-uml.jpg" style="width: 391px; height: 204px;" />
 <ul class="simple">
 <li>cell_mappings  表  cell  的  Database  和  Mesage Queue  的连接 。 用于和子  cell  通讯 </li>
 <li>host_mappings  是用于  nova-scheduler,  可以确认分配到的机器 。 这里其实也有一个坑 ， 之前  nova-compute  启动起来 ， 就可以直接使用了 ，cell v2  之后 ， 就需要手动运行  <tt class="docutils literal"><span class="pre">nova-manage</span> cell_v2 discover_host</tt> ,  把  host mapping  到  cell_mappings  表里面 ， 那台计算节点才会加入到调度中 。</li>
@@ -351,7 +351,7 @@ discover_hosts_in_cells_interval=-1
     <nav>
       <ul class="pager">
         <li class="previous"><a href="ansible-with-items-auto-flatten-list-of-lists.html">&larr; Older</a></li>
-        <li class="next disabled"><a href="#">Newer &rarr;</a></li>
+        <li class="next"><a href="openstack-ocata-releasenotes.html">Newer &rarr;</a></li>
       </ul>
     </nav>
   </div>

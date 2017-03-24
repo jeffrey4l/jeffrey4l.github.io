@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-    <title> - Xcodest</title>
+      <title> OpenStack Ocata Releasenotes -   - Xcodest</title>
     <meta charset="utf-8" />
+
+
+
+    <meta name="tags" contents="OpenStack" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
     <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
@@ -92,14 +97,151 @@
           </div>
         </div>
         <div class="col-md-8 col-xs-12">
-<h1>Archives for 2017</h1>
+<div class="row">
+  <div class="col-md-12 col-xs-12">
+  <section id="content" class="body">
+  <header>
+    <h2 class="entry-title">OpenStack Ocata Releasenotes</h2>
+    <span class="post-date"> 2017-03-12 </span>
+  </header>
+  <div class="entry-content">
+    <div class="section" id="nova">
+<h2>Nova</h2>
+<ul class="simple">
+<li>Ocata  版本加入了许多  Cell V2  的功能 。 但是不是所有的都可以用于生产 。 现在部署  Nova  需要最少创建一个  Cell。</li>
+<li>FilterScheduler  只能基于  Placement  服务做调度 。 现在只支持 CPU, RAM  和  Disk  资源 。 将来会支持更多资源类型 。</li>
+<li>Nova api  的  microversion  版本支持到  v2.42.</li>
+<li> 增加了一个  nova-status  命令 ， 方便运维人员做升级检查 </li>
+<li> 增加对  OSProfiler  工具的支持 。 方便分析  OpenStack  控制平面的性能 。</li>
+<li>serial console  支持  ironic。</li>
+<li>Vlan tags  信息可以通过  metadata  服务获取 。</li>
+<li> 增强  Hyer-V  的支持 。</li>
+<li> 增强对  Virtuozzo  的支持 。</li>
+</ul>
+</div>
+<div class="section" id="keystone">
+<h2>Keystone</h2>
+<ul class="simple">
+<li>Fernet  成为默认的  Token Provider</li>
+<li>PKI  和  PKIz token provider  被移除 。</li>
+<li> 增加  OSProfile  支持 。</li>
+</ul>
+</div>
+<div class="section" id="glance">
+<h2>Glance</h2>
+<ul class="simple">
+<li> 支持无宕机的数据库升级 </li>
+<li>Minor Version API  升级到  2.5</li>
+<li> 镜像可见性增加  community  选项 。</li>
+<li> 支持  ploop  格式的镜像 </li>
+</ul>
+</div>
+<div class="section" id="cinder">
+<h2>Cinder</h2>
+<ul class="simple">
+<li> 增加  Active-Active  的高可用支持 ( 实验 )。</li>
+<li> 大量的  Driver  增强 ， 包括 : Dell SC，Ceph, Datera, Hitachi  等 。</li>
+</ul>
+</div>
+<div class="section" id="neutron">
+<h2>Neutron</h2>
+<ul class="simple">
+<li>Linux Bridge agent  支持  QoS DSCP。</li>
+<li>Resource tag  机制支持  subnet, port, subnetpool  和  router.</li>
+<li> 增加对  Placement API  的支持 。</li>
+<li> 增加  neutron-netns-cleanup  工具进行  namespace  清理 。</li>
+<li> 支持  oslo.privsep</li>
+</ul>
+</div>
+<div class="section" id="ceilometer">
+<h2>Ceilometer</h2>
+<ul class="simple">
+<li> 增加对  Cinder volume, snapshot  和  backup  大小的计量 。</li>
+<li> 通过  libvirt api  来获取  metadata  信息 ， 不用再请求  Nova API。</li>
+<li> 废弃  ceilometer-api  和  ceilometer-collector。</li>
+</ul>
+</div>
+<div class="section" id="heat">
+<h2>Heat</h2>
+<ul class="simple">
+<li> 增加  OS::Aodh::CompositeAlarm</li>
+<li> 增加  OS::Cinder::QoSAssociation</li>
+<li> 增加  OS::Designate::Zone  和  OS::Designate::RecordSet</li>
+<li> 增加  OS::Keystone::Domain</li>
+<li> 增加  OS::Neutron::Quota</li>
+<li> 增加  OS::Nova::Quota</li>
+<li> 增加  OS::Sahara::Job</li>
+<li> 增加  OS::Zaqar::Notification  和  OS::Zaqar::MistralTrigger</li>
+</ul>
+</div>
+<div class="section" id="horizon">
+<h2>Horizon</h2>
+<ul class="simple">
+<li> 支持  Keystone to keystone feration。</li>
+<li>Access &amp; Security  移到了单独的  panel  里面 </li>
+<li> 增加对  osprofiler  的支持 </li>
+</ul>
+</div>
+<div class="section" id="ironic">
+<h2>Ironic</h2>
+<ul class="simple">
+<li>Port Group  允许用户做  Bond</li>
+<li>API  支持  power off, soft reboot  和  sending non-maskable interrupts</li>
+<li> 删除  AMT, iBoot, msftocs, seamicro, VirtualBox, and Wake-On-Lan  驱动 。</li>
+<li>Ironic API  支持审计 </li>
+<li> 增加对  Dynamic Driver  的支持 。</li>
+<li> 支持从一个  conductor  节点部署不同 CPU  类型的机器 .</li>
+<li> 支持  OneView Driver.</li>
+</ul>
+</div>
+<div class="section" id="sahara">
+<h2>Sahara</h2>
+<ul class="simple">
+<li> 支持  Kafka MapR  插件 </li>
+<li> 支持  CDH 5.9.0</li>
+</ul>
+</div>
+<div class="section" id="kolla">
+<h2>Kolla</h2>
+<ul class="simple">
+<li> 增加  Freezer, Karbor, Monasca, Panko, Zun, Redis  等镜像构建 </li>
+<li> 支持用户指定  policy.json  文件 。</li>
+<li> 增加  kolla-host  命令 ， 用来初始化系统及安装  docker。</li>
+<li> 增加静态  uid, gid  支持 。</li>
+<li> 实现部署  Designate, Cloudkitty, Panko, Ocatavia, Collectd  等服务 </li>
+</ul>
+</div>
 
-<dl>
-    <dt>2017-03-12</dt>
-    <dd><a href="http://xcodest.me/openstack-ocata-releasenotes.html">OpenStack Ocata Releasenotes</a></dd>
-    <dt>2017-02-23</dt>
-    <dd><a href="http://xcodest.me/nova-cell-v2.html">Nova Cell V2 详解</a></dd>
-</dl>
+  </div><!-- /.entry-content -->
+  <div>
+    <nav>
+      <ul class="pager">
+        <li class="previous"><a href="nova-cell-v2.html">&larr; Older</a></li>
+        <li class="next disabled"><a href="#">Newer &rarr;</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="entry-info">
+    <p> Tags: <a href="http://xcodest.me/tag/openstack.html">OpenStack</a>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'openstack-ocata-releasenotes.html';
+        var disqus_url = 'http://xcodest.me/openstack-ocata-releasenotes.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+</div>
+</div>
         </div>
       </div>
       <div class="row">

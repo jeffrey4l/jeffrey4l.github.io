@@ -99,6 +99,7 @@ Kolla 的一个实现原则就是单容器单进程。然而在Docker 1.10 版�
 
 .. image:: images/kolla/user-survey-2017-deployment-tool.png
     :alt: user survey 2017 deployment tool
+    :width: 690px
     :align: center
 
 
@@ -115,6 +116,7 @@ Kolla的成功
 
 .. image:: images/kolla/kolla-commits.png
     :alt: kolla commits
+    :width: 690px
     :align: center
 
 Kolla项目成功的另一个关键是技术的革新和正确的选择，包括：

@@ -1,5 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><lastBuildDate>Thu, 10 Aug 2017 00:00:00 +0800</lastBuildDate><item><title>容器与OpenStack从相杀到相爱</title><link>http://xcodest.me/containerize-openstack.html</link><description>&lt;p&gt;OpenStack  项目开始于 2010 年 ， 由  Rackspace  和  NASA 合作发起的 ， 旨在为公共及私有云的建设与管理提供软件的开源项目 。2012 年的发布的  OpenStack Essex  和  Folsom  算是真正意义上被广泛使用的版本 。 很多公司最早使用或改造的版本都是从这个时候开始的 。&lt;/p&gt;
+<rss version="2.0"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><lastBuildDate>Sat, 12 Aug 2017 00:00:00 +0800</lastBuildDate><item><title>A brief history of MySQL</title><link>http://xcodest.me/a-brief-history-of-mysql.html</link><description>&lt;p&gt; 在开源软件中 ， 一提到关系型数据库 ， 大家最先想到的是一定是  MySQL, MySQL 在过去由于性能高 、 成本低 、 可靠性好 ， 在很早的时候 ， 就占据了数据库的霸主的地位 ， 成为最流行的开源数据库 。 非常流行的开源软件组合 LAMP 中的 “M” 指的就是 MySQL。 但是有开源的地方 ， 就有江湖 ,  一言不合就  fork 。 现在以  MySQL  为基础的变种数据库也有好几个 ， 下面我们来依次认识下 。&lt;/p&gt;
+&lt;div class="section" id="mysql"&gt;
+&lt;h2&gt;MySQL&lt;/h2&gt;
+&lt;p&gt;MySQL  最早始于  1995  年 ， 到现在已经有  22  年的历史了 。 原开发者为瑞典的 MySQL AB 公司 ， 该公司于 2008 年被昇阳微系统 （Sun Microsystems） 收购 。2009 年 ， 甲骨文公司 （Oracle） 收购昇阳微系统公司 ，MySQL 成为 Oracle 旗下产品 。&lt;/p&gt;
+&lt;p&gt; 但被甲骨文公司收购后 ，Oracle 大幅调涨 MySQL 商业版的售价 ， 自由软件社区们对于 Oracle 是否还会持续支持 MySQL 社区版 （MySQL 之中唯一的免费版本 ） 有所隐忧 ，MySQL 的创始人麦克尔 · 维德纽斯以 MySQL 为基础 ， 成立分支计划 MariaDB。 而原先一些使用 MySQL 的开源软件逐渐转向 MariaDB 或其它的数据库 。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="mariadb"&gt;
+&lt;h2&gt;MariaDB&lt;/h2&gt;
+&lt;p&gt;MariaDB 的目的是完全兼容 MySQL， 包括 API 和命令行 ， 使之能轻松成为 MySQL 的代替品 。 在存储引擎方面 ，10.0.9 版起使用 XtraDB 来代替 MySQL 的 InnoDB。
+XtraDB  是  InnoDB  存储引擎的增强版 ， 被设计用来更好的使用更新计算机硬件系统的性能 ， 同时还包含有一些在高性能环境下的新特性 。XtraDB  存储引擎是完全的向下兼容 ， 在  MariaDB  中 ，XtraDB  存储引擎被标识为 &amp;quot;ENGINE=InnoDB&amp;quot;， 这个与  InnoDB  是一样的 ， 所以你可以直接用 XtraDB  替换掉  InnoDB  而不会产生任何问题 。XtraDB  现在由主要由  Percona  公司维护 ， 也是  Percona Server  的核心组件 。
+MariaDB 直到 5.5 版本 ， 均依照 MySQL 的版本 。 因此 ， 使用 MariaDB5.5 的人会从 MySQL 5.5 中了解到 MariaDB 的所有功能 。 从 2012 年 11 月 12 日起发布的 10.0.0 版开始 ， 不再依照 MySQL 的版号 。10.0.x 版以 5.5 版为基础 ， 加上移植自 MySQL 5.6 版的功能和自行开发的新功能 。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="percona-server-for-mysql"&gt;
+&lt;h2&gt;Percona Server for MySQL&lt;/h2&gt;
+&lt;p&gt;Percona Server  也是一个  MySQL  的  fork  版本 ， 由  Percona  公司维护 。 Percona Server  相比  MySQL  包含许多性能上的提升 [1]_， 如上面提到的  XtraDB  就是  Percona  公司的 。  而且还有丰富的  MySQL  周边工具 &lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Percona XtraDB Cluster,  基于  Galera  的  Percona  集群解决方案 &lt;/li&gt;
+&lt;li&gt;Percona XtraBackup，  支持  MySQL  在线全量或增量备份工具 ，  相比  mysqldump  性能再好 &lt;/li&gt;
+&lt;li&gt;Percona Toolkit， 大量   MySQL  的管理工具 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="galera"&gt;
+&lt;h2&gt;Galera&lt;/h2&gt;
+&lt;p&gt;Galera  并不是  MySQL  的变种 ， 而是由  Codeship  公司于  2007  发布的支持多主同步备份的  MySQL  组件 。  由于简单实用 ， 性能高效 ， 现在被广泛使用 ， 并已经集成到  MariaDB  和  Percona XtraDB cluster  中 。  他的特点如下 
+ 同步复制 &lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt; 多主服务器的拓扑结构 &lt;/li&gt;
+&lt;li&gt; 可以在任意节点上进行读写 &lt;/li&gt;
+&lt;li&gt; 自动剔除故障节点 &lt;/li&gt;
+&lt;li&gt; 自动加入新节点 &lt;/li&gt;
+&lt;li&gt; 真正行级别的并发复制 &lt;/li&gt;
+&lt;li&gt; 客户端连接跟操作单台 MySQL 数据库的体验一致 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;OpenStack  社区推荐的  MySQL  高可用方案就是利用  Galera&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="ref"&gt;
+&lt;h2&gt;REF&lt;/h2&gt;
+&lt;table class="docutils footnote" frame="void" id="id1" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;[1]&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="https://www.percona.com/software/mysql-database/percona-server/benchmarks"&gt;https://www.percona.com/software/mysql-database/percona-server/benchmarks&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 12 Aug 2017 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2017-08-12:/a-brief-history-of-mysql.html</guid><category>Database</category><category>MySQL</category></item><item><title>容器与OpenStack从相杀到相爱</title><link>http://xcodest.me/containerize-openstack.html</link><description>&lt;p&gt;OpenStack  项目开始于 2010 年 ， 由  Rackspace  和  NASA 合作发起的 ， 旨在为公共及私有云的建设与管理提供软件的开源项目 。2012 年的发布的  OpenStack Essex  和  Folsom  算是真正意义上被广泛使用的版本 。 很多公司最早使用或改造的版本都是从这个时候开始的 。&lt;/p&gt;
 &lt;p&gt; 现在我们提到容器 ， 一般就是指  Docker  公司的  Docker  产品 。 Docker  项目始于  2013 年 。 由于其简单易用 ， 性能无损耗及沙箱机制 ， 很快就流行了起来 。 当时就有一种声音 ， 容器会取代虚拟机 ， 因此  OpenStack  面对着巨大的压力 。 为了应对这种快速的技术革新 ，OpenStack  基金会后来将项目管理变成了 “Big Tent”  模式 。 从此  OpenStack  的子项目数量发了质的飞跃 ， 也促进了大量优秀  OpenStack  子项目的诞生 。&lt;/p&gt;
 &lt;p&gt; 现在看来 ， 虚拟机技术和容器技术各有自己的使用场景 。 两者不是相杀 ， 而是相爱关系 。 近几年 OpenStack  社区涌现了大量与容器相关的项目 ：&lt;/p&gt;
 &lt;ul class="simple"&gt;

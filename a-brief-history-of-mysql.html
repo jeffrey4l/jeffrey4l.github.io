@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-    <title>Category/others - Xcodest</title>
+      <title> A brief history of MySQL -   - Xcodest</title>
     <meta charset="utf-8" />
+
+
+
+    <meta name="tags" contents="Database" />
+    <meta name="tags" contents="MySQL" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
     <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
@@ -63,7 +69,7 @@
               <a class="list-group-item" href="http://xcodest.me/category/life.html">Life</a>
               <a class="list-group-item" href="http://xcodest.me/category/linux.html">Linux</a>
               <a class="list-group-item" href="http://xcodest.me/category/openstack.html">OpenStack</a>
-              <a class="list-group-item active" href="http://xcodest.me/category/others.html">Others</a>
+              <a class="list-group-item" href="http://xcodest.me/category/others.html">Others</a>
               <a class="list-group-item" href="http://xcodest.me/category/programming.html">Programming</a>
               <a class="list-group-item" href="http://xcodest.me/category/python.html">Python</a>
             </div>
@@ -94,38 +100,86 @@
         <div class="col-md-8 col-xs-12">
 <div class="row">
   <div class="col-md-12 col-xs-12">
-    <ol class="breadcrumb">
-      <li><a href="http://xcodest.me">Home</a></li>
-      <li><a href="#">Category</a></li>
-      <li class="active">Others</li>
-    </ol>
-    <div class="list-group">
-        <a class="list-group-item" href="http://xcodest.me/a-brief-history-of-mysql.html" rel="bookmark" title="Permalink to A brief history of MySQL">A brief history of MySQL
-          <span class="badge">2017-08-12</span>
-        </a>
-        <a class="list-group-item" href="http://xcodest.me/containerize-openstack.html" rel="bookmark" title="Permalink to 容器与OpenStack从相杀到相爱">容器与OpenStack从相杀到相爱
-          <span class="badge">2017-08-10</span>
-        </a>
-        <a class="list-group-item" href="http://xcodest.me/openstack-ocata-releasenotes.html" rel="bookmark" title="Permalink to OpenStack Ocata Releasenotes">OpenStack Ocata Releasenotes
-          <span class="badge">2017-03-12</span>
-        </a>
-        <a class="list-group-item" href="http://xcodest.me/nova-cell-v2.html" rel="bookmark" title="Permalink to Nova Cell V2 详解">Nova Cell V2 详解
-          <span class="badge">2017-02-23</span>
-        </a>
-        <a class="list-group-item" href="http://xcodest.me/ansible-with-items-auto-flatten-list-of-lists.html" rel="bookmark" title="Permalink to Ansible with-items auto flatten list of lists">Ansible with-items auto flatten list of lists
-          <span class="badge">2016-12-27</span>
-        </a>
-        <a class="list-group-item" href="http://xcodest.me/centos-root-partition-auto-grow.html" rel="bookmark" title="Permalink to CentOS 根分区自动扩展">CentOS 根分区自动扩展
-          <span class="badge">2016-11-14</span>
-        </a>
-        <a class="list-group-item" href="http://xcodest.me/docker-init-process.html" rel="bookmark" title="Permalink to Docker init 进程">Docker init 进程
-          <span class="badge">2016-11-07</span>
-        </a>
-        <a class="list-group-item" href="http://xcodest.me/reset-password-in-systemd.html" rel="bookmark" title="Permalink to Reset Password in Systemd">Reset Password in Systemd
-          <span class="badge">2016-08-28</span>
-        </a>
-    </ul><!-- /#posts-list -->
+  <section id="content" class="body">
+  <header>
+    <h2 class="entry-title">A brief history of MySQL</h2>
+    <span class="post-date"> 2017-08-12 </span>
+  </header>
+  <div class="entry-content">
+    <p> 在开源软件中 ， 一提到关系型数据库 ， 大家最先想到的是一定是  MySQL, MySQL 在过去由于性能高 、 成本低 、 可靠性好 ， 在很早的时候 ， 就占据了数据库的霸主的地位 ， 成为最流行的开源数据库 。 非常流行的开源软件组合 LAMP 中的 “M” 指的就是 MySQL。 但是有开源的地方 ， 就有江湖 ,  一言不合就  fork 。 现在以  MySQL  为基础的变种数据库也有好几个 ， 下面我们来依次认识下 。</p>
+<div class="section" id="mysql">
+<h2>MySQL</h2>
+<p>MySQL  最早始于  1995  年 ， 到现在已经有  22  年的历史了 。 原开发者为瑞典的 MySQL AB 公司 ， 该公司于 2008 年被昇阳微系统 （Sun Microsystems） 收购 。2009 年 ， 甲骨文公司 （Oracle） 收购昇阳微系统公司 ，MySQL 成为 Oracle 旗下产品 。</p>
+<p> 但被甲骨文公司收购后 ，Oracle 大幅调涨 MySQL 商业版的售价 ， 自由软件社区们对于 Oracle 是否还会持续支持 MySQL 社区版 （MySQL 之中唯一的免费版本 ） 有所隐忧 ，MySQL 的创始人麦克尔 · 维德纽斯以 MySQL 为基础 ， 成立分支计划 MariaDB。 而原先一些使用 MySQL 的开源软件逐渐转向 MariaDB 或其它的数据库 。</p>
+</div>
+<div class="section" id="mariadb">
+<h2>MariaDB</h2>
+<p>MariaDB 的目的是完全兼容 MySQL， 包括 API 和命令行 ， 使之能轻松成为 MySQL 的代替品 。 在存储引擎方面 ，10.0.9 版起使用 XtraDB 来代替 MySQL 的 InnoDB。
+XtraDB  是  InnoDB  存储引擎的增强版 ， 被设计用来更好的使用更新计算机硬件系统的性能 ， 同时还包含有一些在高性能环境下的新特性 。XtraDB  存储引擎是完全的向下兼容 ， 在  MariaDB  中 ，XtraDB  存储引擎被标识为 &quot;ENGINE=InnoDB&quot;， 这个与  InnoDB  是一样的 ， 所以你可以直接用 XtraDB  替换掉  InnoDB  而不会产生任何问题 。XtraDB  现在由主要由  Percona  公司维护 ， 也是  Percona Server  的核心组件 。
+MariaDB 直到 5.5 版本 ， 均依照 MySQL 的版本 。 因此 ， 使用 MariaDB5.5 的人会从 MySQL 5.5 中了解到 MariaDB 的所有功能 。 从 2012 年 11 月 12 日起发布的 10.0.0 版开始 ， 不再依照 MySQL 的版号 。10.0.x 版以 5.5 版为基础 ， 加上移植自 MySQL 5.6 版的功能和自行开发的新功能 。</p>
+</div>
+<div class="section" id="percona-server-for-mysql">
+<h2>Percona Server for MySQL</h2>
+<p>Percona Server  也是一个  MySQL  的  fork  版本 ， 由  Percona  公司维护 。 Percona Server  相比  MySQL  包含许多性能上的提升 [1]_， 如上面提到的  XtraDB  就是  Percona  公司的 。  而且还有丰富的  MySQL  周边工具 </p>
+<ul class="simple">
+<li>Percona XtraDB Cluster,  基于  Galera  的  Percona  集群解决方案 </li>
+<li>Percona XtraBackup，  支持  MySQL  在线全量或增量备份工具 ，  相比  mysqldump  性能再好 </li>
+<li>Percona Toolkit， 大量   MySQL  的管理工具 </li>
+</ul>
+</div>
+<div class="section" id="galera">
+<h2>Galera</h2>
+<p>Galera  并不是  MySQL  的变种 ， 而是由  Codeship  公司于  2007  发布的支持多主同步备份的  MySQL  组件 。  由于简单实用 ， 性能高效 ， 现在被广泛使用 ， 并已经集成到  MariaDB  和  Percona XtraDB cluster  中 。  他的特点如下 
+ 同步复制 </p>
+<ul class="simple">
+<li> 多主服务器的拓扑结构 </li>
+<li> 可以在任意节点上进行读写 </li>
+<li> 自动剔除故障节点 </li>
+<li> 自动加入新节点 </li>
+<li> 真正行级别的并发复制 </li>
+<li> 客户端连接跟操作单台 MySQL 数据库的体验一致 </li>
+</ul>
+<p>OpenStack  社区推荐的  MySQL  高可用方案就是利用  Galera</p>
+</div>
+<div class="section" id="ref">
+<h2>REF</h2>
+<table class="docutils footnote" frame="void" id="id1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><a class="reference external" href="https://www.percona.com/software/mysql-database/percona-server/benchmarks">https://www.percona.com/software/mysql-database/percona-server/benchmarks</a></td></tr>
+</tbody>
+</table>
+</div>
+
+  </div><!-- /.entry-content -->
+  <div>
+    <nav>
+      <ul class="pager">
+        <li class="previous"><a href="containerize-openstack.html">&larr; Older</a></li>
+        <li class="next disabled"><a href="#">Newer &rarr;</a></li>
+      </ul>
+    </nav>
   </div>
+  <div class="entry-info">
+    <p> Tags: <a href="http://xcodest.me/tag/database.html">Database</a> <a href="http://xcodest.me/tag/mysql.html">MySQL</a>  </p>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'a-brief-history-of-mysql.html';
+        var disqus_url = 'http://xcodest.me/a-brief-history-of-mysql.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+</div>
 </div>
         </div>
       </div>

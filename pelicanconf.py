@@ -26,7 +26,7 @@ TAG_FEED_ATOM = None
 CATEGORY_FEED_ATOM = None
 
 FEED_RSS = 'feeds/rss.xml'
-FEED_ALL_RSS = 'feeds/all.rss.xml'
+#FEED_ALL_RSS = 'feeds/all.rss.xml'
 AUTHOR_FEED_RSS = None
 TAG_FEED_RSS = None
 CATEGORY_FEED_RSS = None
@@ -76,7 +76,7 @@ AUTHORS_SAVE_AS = ''
 
 ARTICLE_EXCLUDES = ['themes', 'plugins', 'output', 'static']
 
-THEME = 'themes/x'
+THEME = 'themes/niu-x2-sidebar'
 
 DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 
@@ -92,3 +92,5 @@ MARKDOWN = {
             },
         'output_format': 'html5'
         }
+
+JINJA_EXTENSIONS = ['jinja2.ext.ExprStmtExtension']

@@ -11,7 +11,7 @@ Core Dump
 0x01 - core dump
 ================
 
-Core dump 功能能够把进程出问题的时候的信息保存下来，方便我们来调试。触发发法，可以通过给某个进程发送
+Core dump 功能能够把进程出问题的时候的信息保存下来，方便我们来调试。触发方法，可以通过给某个进程发送:code:`SIGSEGV` 信号
 
 ::
 
@@ -32,7 +32,7 @@ Core dump 功能能够把进程出问题的时候的信息保存下来，方便�
 * :code:`frame frame-number` to go to desired frame number.
 * :code:`up n` and :code:`down n` commands to select frame n frames up and select frame n frames down respectively.
 
-默认情况下，生成的转存文件保存在当前目录下面，并且每个文件很大。从而占用大量空间。 通过 ulimit 可以控制，但是需要注意的是这种方法只能控制 单个core 文件的大小，并不能控制总 core dump 文件的大小或个数，而且也有可能成生不完整的 core dump 文件。
+默认情况下，生成的转存文件保存在当前目录下面，并且每个文件很大。从而占用大量空间。 通过 ulimit 可以控制，但是需要注意的是这种方法只能控制 单个core 文件的大小，并不能控制总 core dump 文件的大小或个数，而且也有可能生成不完整的 core dump 文件。
 方法如下：
 
 ::

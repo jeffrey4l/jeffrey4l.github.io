@@ -1,8 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><lastBuildDate>Mon, 04 Dec 2017 00:00:00 +0800</lastBuildDate><item><title>Core Dump</title><link>http://xcodest.me/core-dump.html</link><description>&lt;p&gt; 最近遇到的问题是 ， 容器化后 ， 容器里面进程如果出现  core dump  的情况 ， 很容易把容器空间就占满了 ( 使用  direct-lvm  驱动 ， 每个容器最大只有 10G 空间 )。&lt;/p&gt;
+<rss version="2.0"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><lastBuildDate>Mon, 11 Dec 2017 00:00:00 +0800</lastBuildDate><item><title>使用 minikube 搭建 kubernetes 单机环境</title><link>http://xcodest.me/minikube.html</link><description>&lt;p&gt;minikube  可以快速搭建  kubernetes  单机环境 ， 方便开发及测试使用 。 其支持大部分 kubernetes 的功能 ， 列表如下 &lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;DNS&lt;/li&gt;
+&lt;li&gt;NodePorts&lt;/li&gt;
+&lt;li&gt;ConfigMaps and Secrets&lt;/li&gt;
+&lt;li&gt;Dashboards&lt;/li&gt;
+&lt;li&gt;Container Runtime: Docker, and rkt&lt;/li&gt;
+&lt;li&gt;Enabling CNI (Container Network Interface)&lt;/li&gt;
+&lt;li&gt;Ingress&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="section" id="x01"&gt;
+&lt;h2&gt;0x01  原理 &lt;/h2&gt;
+&lt;p&gt;minikube  会下载一个  iso， 并启动一台  virtualbox  虚拟机 。 把  kubernetes  在虚拟机里面跑起来 。 所以  minikube  可以在  windows  上运行 。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="x02"&gt;
+&lt;h2&gt;0x02  安装 &lt;/h2&gt;
+&lt;p&gt; 由于某些原因 ，kubernetes  上面的资源可能下载不下来 ， 最好你有一个好用的  VPN  或者  http  代理 。&lt;/p&gt;
+&lt;p&gt; 下载  minikube  工具 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; curl -L https://github.com/kubernetes/minikube/releases/download/v0.24.1/minikube-linux-amd64 &lt;span class="se"&gt;\&lt;/span&gt;
+    -o /usr/local/bin/minikube
+&lt;span class="gp"&gt;$&lt;/span&gt; chmod +x /usr/local/bin/minikube
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;minikube  默认是使用  virtualbox  来启动虚拟机 。 我在  Linux  上面习惯使用  KVM,  所以还需要单独下载  kvm  的驱动 。 值的一提的是现在有  kvm  及  kvm2  两个驱动 ， 其中  kvm  已经废弃掉 ， 推荐使用  kvm2。&lt;/p&gt;
+&lt;p&gt; 下载  kvm2  驱动 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; curl -L https://storage.googleapis.com/minikube/releases/latest/docker-machine-driver-kvm2 &lt;span class="se"&gt;\&lt;/span&gt;
+    -o /usr/local/bin/docker-machine-driver-kvm2
+&lt;span class="gp"&gt;$&lt;/span&gt; chmod +x /usr/local/bin/docker-machine-driver-kvm2
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 安装  kubectl  命令 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;version&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="gp"&gt;$&lt;/span&gt; curl -L https://storage.googleapis.com/kubernetes-release/release/&lt;span class="k"&gt;$(&lt;/span&gt;version&lt;span class="k"&gt;)&lt;/span&gt;/bin/linux/amd64/kubectl &lt;span class="se"&gt;\&lt;/span&gt;
+     -o /usr/local/bin/kubectl
+&lt;span class="gp"&gt;$&lt;/span&gt; chomd +x /usr/local/bin/kubectl
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="x03-kubernetes"&gt;
+&lt;h2&gt;0x03  启动  kubernetes&lt;/h2&gt;
+&lt;p&gt; 使用  minikube  启动  kubernetes  很简单 ， 就一条命令 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; minikube start --vm-driver kvm2
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 如果你的网络访问有问题 ， 运行这个命令时 ， 最好接着  VPN  或使用  http  代理 ， 因为虚拟机里面会下载一些镜像 。 使用  http  代理可以使用如下命令行 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;http_proxy&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;http://10.10.0.22:8185
+&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;https_proxy&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;http://10.10.0.22:8185
+&lt;span class="gp"&gt;$&lt;/span&gt; minikube start --vm-driver kvm2 &lt;span class="se"&gt;\&lt;/span&gt;
+    --docker-env &lt;span class="nv"&gt;http_proxy&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$http_proxy&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    --docker-env &lt;span class="nv"&gt;https_proxy&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$https_proxy&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 如果没有问题 ， 你会看到如下信息 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; minikube start --vm-driver kvm2
+&lt;span class="go"&gt;Starting local Kubernetes v1.8.0 cluster...&lt;/span&gt;
+&lt;span class="go"&gt;Starting VM...&lt;/span&gt;
+&lt;span class="go"&gt;Getting VM IP address...&lt;/span&gt;
+&lt;span class="go"&gt;Moving files into cluster...&lt;/span&gt;
+&lt;span class="go"&gt;Setting up certs...&lt;/span&gt;
+&lt;span class="go"&gt;Connecting to cluster...&lt;/span&gt;
+&lt;span class="go"&gt;Setting up kubeconfig...&lt;/span&gt;
+&lt;span class="go"&gt;Starting cluster components...&lt;/span&gt;
+&lt;span class="go"&gt;Kubectl is now configured to use the cluster.&lt;/span&gt;
+&lt;span class="go"&gt;Loading cached images from config file.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="x04"&gt;
+&lt;h2&gt;0x04  测试 &lt;/h2&gt;
+&lt;p&gt; 通过  minikube  打开 dashboard&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; minikube dashboard
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 通过  kubectl  查看现有服务 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; kubectl --namespace kube-system get svc
+&lt;span class="go"&gt;NAME                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)         AGE&lt;/span&gt;
+&lt;span class="go"&gt;kube-dns               ClusterIP   10.96.0.10      &amp;lt;none&amp;gt;        53/UDP,53/TCP   27m&lt;/span&gt;
+&lt;span class="go"&gt;kubernetes-dashboard   NodePort    10.97.208.124   &amp;lt;none&amp;gt;        80:30000/TCP    27m&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 创建一个新服务 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; kubectl run hello-minikube --image&lt;span class="o"&gt;=&lt;/span&gt;gcr.io/google_containers/echoserver:1.4 --port&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;8080&lt;/span&gt;
+&lt;span class="go"&gt;deployment &amp;quot;hello-minikube&amp;quot; created&lt;/span&gt;
+
+&lt;span class="gp"&gt;$&lt;/span&gt; kubectl expose deployment hello-minikube --type&lt;span class="o"&gt;=&lt;/span&gt;NodePort
+&lt;span class="go"&gt;service &amp;quot;hello-minikube&amp;quot; exposed&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 访问新创建的服务 。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; kubectl get pod
+&lt;span class="go"&gt;NAME                              READY     STATUS    RESTARTS   AGE&lt;/span&gt;
+&lt;span class="go"&gt;hello-minikube-57889c865c-8fpq9   1/1       Running   0          13m&lt;/span&gt;
+
+&lt;span class="gp"&gt;$&lt;/span&gt; curl &lt;span class="k"&gt;$(&lt;/span&gt;minikube service hello-minikube --url&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="go"&gt;CLIENT VALUES:&lt;/span&gt;
+&lt;span class="go"&gt;client_address=172.17.0.1&lt;/span&gt;
+&lt;span class="go"&gt;command=GET&lt;/span&gt;
+&lt;span class="go"&gt;real path=/&lt;/span&gt;
+&lt;span class="go"&gt;query=nil&lt;/span&gt;
+&lt;span class="go"&gt;request_version=1.1&lt;/span&gt;
+&lt;span class="go"&gt;request_uri=http://192.168.39.136:8080/&lt;/span&gt;
+
+&lt;span class="go"&gt;SERVER VALUES:&lt;/span&gt;
+&lt;span class="go"&gt;server_version=nginx: 1.10.0 - lua: 10001&lt;/span&gt;
+
+&lt;span class="go"&gt;HEADERS RECEIVED:&lt;/span&gt;
+&lt;span class="go"&gt;accept=*/*&lt;/span&gt;
+&lt;span class="go"&gt;host=192.168.39.136:32619&lt;/span&gt;
+&lt;span class="go"&gt;user-agent=curl/7.57.0&lt;/span&gt;
+&lt;span class="go"&gt;BODY:&lt;/span&gt;
+&lt;span class="go"&gt;-no body in request-%&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt; 删除服务 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; kubectl delete deployment hello-minikube
+&lt;span class="go"&gt;deployment &amp;quot;hello-minikube&amp;quot; deleted&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="x05-kubernets"&gt;
+&lt;h2&gt;0x05  删除  kubernets  集群 &lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; minikube stop
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="x06-ref"&gt;
+&lt;h2&gt;0x06 REF&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/kubernetes/minikube/releases"&gt;https://github.com/kubernetes/minikube/releases&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://kubernetes.io/docs/getting-started-guides/minikube/"&gt;https://kubernetes.io/docs/getting-started-guides/minikube/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 11 Dec 2017 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2017-12-11:/minikube.html</guid><category>Docker</category><category>Kubernetes</category></item><item><title>Core Dump</title><link>http://xcodest.me/core-dump.html</link><description>&lt;p&gt; 最近遇到的问题是 ， 容器化后 ， 容器里面进程如果出现  core dump  的情况 ， 很容易把容器空间就占满了 ( 使用  direct-lvm  驱动 ， 每个容器最大只有 10G 空间 )。&lt;/p&gt;
 &lt;div class="section" id="x01-core-dump"&gt;
 &lt;h2&gt;0x01 - core dump&lt;/h2&gt;
-&lt;p&gt;Core dump  功能能够把进程出问题的时候的信息保存下来 ， 方便我们来调试 。 触发发法 ， 可以通过给某个进程发送 &lt;/p&gt;
+&lt;p&gt;Core dump  功能能够把进程出问题的时候的信息保存下来 ， 方便我们来调试 。 触发方法 ， 可以通过给某个进程发送 :code:&lt;cite&gt;SIGSEGV&lt;/cite&gt;  信号 &lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 kill -SIGSEGV &amp;lt;pid&amp;gt;
 ls core.&amp;lt;pid&amp;gt;
@@ -19,7 +139,7 @@ gdb /path/to/binary /path/to/core.dump.file
 &lt;li&gt;&lt;code&gt;frame frame-number&lt;/code&gt; to go to desired frame number.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;up n&lt;/code&gt; and &lt;code&gt;down n&lt;/code&gt; commands to select frame n frames up and select frame n frames down respectively.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt; 默认情况下 ， 生成的转存文件保存在当前目录下面 ， 并且每个文件很大 。 从而占用大量空间 。  通过  ulimit  可以控制 ， 但是需要注意的是这种方法只能控制   单个 core  文件的大小 ， 并不能控制总  core dump  文件的大小或个数 ， 而且也有可能成生不完整的  core dump  文件 。
+&lt;p&gt; 默认情况下 ， 生成的转存文件保存在当前目录下面 ， 并且每个文件很大 。 从而占用大量空间 。  通过  ulimit  可以控制 ， 但是需要注意的是这种方法只能控制   单个 core  文件的大小 ， 并不能控制总  core dump  文件的大小或个数 ， 而且也有可能生成不完整的  core dump  文件 。
  方法如下 ：&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 //  单位是  KB, 0  意味着关闭 

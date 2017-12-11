@@ -109,7 +109,7 @@
     <p> 最近遇到的问题是 ， 容器化后 ， 容器里面进程如果出现  core dump  的情况 ， 很容易把容器空间就占满了 ( 使用  direct-lvm  驱动 ， 每个容器最大只有 10G 空间 )。</p>
 <div class="section" id="x01-core-dump">
 <h2>0x01 - core dump</h2>
-<p>Core dump  功能能够把进程出问题的时候的信息保存下来 ， 方便我们来调试 。 触发发法 ， 可以通过给某个进程发送 </p>
+<p>Core dump  功能能够把进程出问题的时候的信息保存下来 ， 方便我们来调试 。 触发方法 ， 可以通过给某个进程发送 :code:<cite>SIGSEGV</cite>  信号 </p>
 <pre class="literal-block">
 kill -SIGSEGV &lt;pid&gt;
 ls core.&lt;pid&gt;
@@ -126,7 +126,7 @@ gdb /path/to/binary /path/to/core.dump.file
 <li><code>frame frame-number</code> to go to desired frame number.</li>
 <li><code>up n</code> and <code>down n</code> commands to select frame n frames up and select frame n frames down respectively.</li>
 </ul>
-<p> 默认情况下 ， 生成的转存文件保存在当前目录下面 ， 并且每个文件很大 。 从而占用大量空间 。  通过  ulimit  可以控制 ， 但是需要注意的是这种方法只能控制   单个 core  文件的大小 ， 并不能控制总  core dump  文件的大小或个数 ， 而且也有可能成生不完整的  core dump  文件 。
+<p> 默认情况下 ， 生成的转存文件保存在当前目录下面 ， 并且每个文件很大 。 从而占用大量空间 。  通过  ulimit  可以控制 ， 但是需要注意的是这种方法只能控制   单个 core  文件的大小 ， 并不能控制总  core dump  文件的大小或个数 ， 而且也有可能生成不完整的  core dump  文件 。
  方法如下 ：</p>
 <pre class="literal-block">
 //  单位是  KB, 0  意味着关闭 
@@ -192,7 +192,7 @@ coredumpctl gdb &lt;match&gt;
     <nav>
       <ul class="pager">
         <li class="previous"><a href="a-brief-history-of-mysql.html">&larr; Older</a></li>
-        <li class="next disabled"><a href="#">Newer &rarr;</a></li>
+        <li class="next"><a href="minikube.html">Newer &rarr;</a></li>
       </ul>
     </nav>
   </div>

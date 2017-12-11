@@ -63,3 +63,8 @@ img.align-center {
     display: block;
     margin: 0 auto;
 }
+
+pre {
+    overflow-x: hidden;
+    overflow-y: hidden;
+}

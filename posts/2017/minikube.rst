@@ -150,7 +150,7 @@ minikube 默认是使用 virtualbox 来启动虚拟机。我在 Linux 上面习�
     deployment "hello-minikube" deleted
 
 0x05 删除 kubernetes 集群
-========================
+=========================
 
 .. code-block:: console
 

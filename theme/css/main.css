@@ -65,6 +65,9 @@ img.align-center {
 }
 
 pre {
-    overflow-x: hidden;
     overflow-y: hidden;
+    white-space: pre;
+    word-break: normal !important;
+    word-wrap: normal !important;
+    white-space: pre !important;
 }

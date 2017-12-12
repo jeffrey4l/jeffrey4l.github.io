@@ -107,8 +107,8 @@
 &lt;span class="go"&gt;deployment &amp;quot;hello-minikube&amp;quot; deleted&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
-&lt;div class="section" id="x05-kubernets"&gt;
-&lt;h2&gt;0x05  删除  kubernets  集群 &lt;/h2&gt;
+&lt;div class="section" id="x05-kubernetes"&gt;
+&lt;h2&gt;0x05  删除  kubernetes  集群 &lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; minikube stop
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;

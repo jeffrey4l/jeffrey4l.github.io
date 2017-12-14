@@ -127,7 +127,7 @@
 kill -SIGSEGV &amp;lt;pid&amp;gt;
 ls core.&amp;lt;pid&amp;gt;
 &lt;/pre&gt;
-&lt;p&gt; 基本什么方法如下 ：&lt;/p&gt;
+&lt;p&gt;dump  出来的文件可以通过  &lt;code&gt;gdb&lt;/code&gt;  来查看内容 ， 基本使用方法如下 ：&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 gdb /path/to/binary /path/to/core.dump.file
 &lt;/pre&gt;

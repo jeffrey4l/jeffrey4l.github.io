@@ -6,7 +6,12 @@ Core Dump
 :slug: core-dump
 
 
-最近遇到的问题是，容器化后，容器里面进程如果出现 core dump 的情况，很容易把容器空间就占满了(使用 direct-lvm 驱动，每个容器最大只有10G空间)。
+容器化后，容器里面的进程如果出现 core dump ，默认情况下，dump 出来的文件是存放在容器内部的根目录的。这样会导致以下几个问题
+
+1. 如果 Docker 使用的 LVM 的驱动，每个容器默认大小只有 10G, 很容易占用了全部的容器空间，而导致容器不能启动。
+2. Core Dump 文件存到容器中，也很容易被删除掉，从而不容易排查问题。
+
+想要解决这个问题，就要先了解什么是 Core Dump。
 
 0x01 - core dump
 ================
@@ -97,6 +102,8 @@ systemd 的 docker.service 可以控制 dockerd 进程的上限
     coredumpctl dump <match>
     coredumpctl info <match>
     coredumpctl gdb <match>
+
+使用这种方法，可以避免 Core Dump 占用容器空间有问题，同时还可以保存转存的文件，方便之后的调试查看。
 
 0x05 - REF
 ==========

@@ -18,7 +18,7 @@ Core dump 功能能够把进程出问题的时候的信息保存下来，方便�
     kill -SIGSEGV <pid>
     ls core.<pid>
 
-基本什么方法如下：
+dump 出来的文件可以通过 :code:`gdb` 来查看内容，基本使用方法如下：
 
 
 :: 

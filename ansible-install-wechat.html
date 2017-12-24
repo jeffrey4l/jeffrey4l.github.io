@@ -1,0 +1,38 @@
+
+<html>
+<head>
+    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+</head>
+<body>
+  <p>由于 Ansible 是通过 SSH 进行通讯的，所以只用安装 master 端就可以了。并不像 puppet/SaltStack 那样在 slave/minion 端进行安装。</p>
+<p>由于是用 Python 编写的，安装起来和普通 Python 应用没有太大区别。可以通过源码，pypi, 操作系统的包管理进行安装。</p>
+<h1 id="_1">系统包管理</h1>
+<h2 id="rpm">RPM 系</h2>
+<pre class="codehilite"><code># install epel source
+yum install -y epel-release
+yum install ansible</code></pre>
+
+
+<h2 id="apt">Apt 系</h2>
+<pre class="codehilite"><code class="language-bash">apt-get install -y software-properties-common
+apt-add-repository -y ppa:ansible/ansible
+apt-get update
+apt-get install -y ansible</code></pre>
+
+
+<h1 id="pypi">pypi安装</h1>
+<p>通过pypi相当简单，直接用pip就可安装</p>
+<pre class="codehilite"><code>pip install ansible</code></pre>
+
+
+<h1 id="_2">源码安装</h1>
+<pre class="codehilite"><code class="language-bash"># download the source from github
+# ansible has two git submodules, so the --recursive is required.
+git clone git://github.com/ansible/ansible.git --recursive
+cd ./ansible
+
+# install
+pip install .</code></pre>
+</body>
+</html>

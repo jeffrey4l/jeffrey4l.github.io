@@ -1,0 +1,23 @@
+
+<html>
+<head>
+    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+</head>
+<body>
+  <p>I gett following different result when using these two Class.</p>
+<pre class="codehilite"><code class="language-ipython">&gt;&gt;&gt; import StringIO
+&gt;&gt;&gt; import cStringIO
+&gt;&gt;&gt; StringIO.StringIO().write(u'\u2222')
+&gt;&gt;&gt; cStringIO.StringIO().write(u'\u2222')
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+UnicodeEncodeError: 'ascii' codec can't encode character u'\u2222' in position 0: ordinal not in range(128)</code></pre>
+
+
+<p>The root cause is explained on <a href="https://docs.python.org/2/library/stringio.html#cStringIO.StringIO">document for cStringIO</a></p>
+<blockquote>
+<p>Unlike the StringIO module, this module is not able to accept Unicode strings that cannot be encoded as plain ASCII strings.</p>
+</blockquote>
+</body>
+</html>

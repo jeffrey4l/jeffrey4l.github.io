@@ -1,0 +1,124 @@
+
+<html>
+<head>
+    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+</head>
+<body>
+  <p><img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg" /></p>
+<p>一直没有搞明白 <code>Exception</code> 的 args 和 message 参数, 最近看了一下 CPython 源码，
+终于搞明白了。</p>
+<p>一开始(从2.5开始)的时候是有 <code>args</code> 和 <code>message</code> 两个参数的。2.6版本之后，把
+<code>message</code> 废弃掉了，只留下了一个任意长度的 <code>args</code>。</p>
+<p>以下是2.5以后的代码，可以看到，如果args 长度是1，就会把 <code>self.message = args[0]</code></p>
+<pre class="codehilite"><code class="language-c">static PyObject *
+BaseException_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+{
+    PyBaseExceptionObject *self;
+
+    self = (PyBaseExceptionObject *)type-&gt;tp_alloc(type, 0);
+    if (!self)
+        return NULL;
+    /* the dict is created on the fly in PyObject_GenericSetAttr */
+    self-&gt;message = self-&gt;dict = NULL;
+
+    self-&gt;args = PyTuple_New(0);
+    if (!self-&gt;args) {
+        Py_DECREF(self);
+        return NULL;
+    }
+
+    self-&gt;message = PyString_FromString(&quot;&quot;);
+    if (!self-&gt;message) {
+        Py_DECREF(self);
+        return NULL;
+    }
+
+    return (PyObject *)self;
+}
+
+static int
+BaseException_init(PyBaseExceptionObject *self, PyObject *args, PyObject *kwds)
+{
+    if (!_PyArg_NoKeywords(Py_TYPE(self)-&gt;tp_name, kwds))
+        return -1;
+
+    Py_DECREF(self-&gt;args);
+    self-&gt;args = args;
+    Py_INCREF(self-&gt;args);
+
+    if (PyTuple_GET_SIZE(self-&gt;args) == 1) {
+        Py_CLEAR(self-&gt;message);
+        self-&gt;message = PyTuple_GET_ITEM(self-&gt;args, 0);
+        Py_INCREF(self-&gt;message);
+    }
+    return 0;
+}</code></pre>
+
+
+<p>本来 message 就是 Exception的一个属性，在2.6以后，把它变成了一个 descriptor, 当
+调用时，如果它在 <code>self.__dict__</code> 里，就直接打印，否则就返回 <code>self.message</code> 的信息
+并打印出一个 <code>Warning</code>。如果已经赋过一个值的话<code>self.message = xxxx</code>, 它就会存在
+<code>self.__dict__</code>里。</p>
+<pre class="codehilite"><code class="language-c">static PyObject *
+BaseException_get_message(PyBaseExceptionObject *self)
+{
+    PyObject *msg;
+
+    /* if &quot;message&quot; is in self-&gt;dict, accessing a user-set message attribute */
+    if (self-&gt;dict &amp;&amp;
+        (msg = PyDict_GetItemString(self-&gt;dict, &quot;message&quot;))) {
+        Py_INCREF(msg);
+        return msg;
+    }
+
+    if (self-&gt;message == NULL) {
+        PyErr_SetString(PyExc_AttributeError, &quot;message attribute was deleted&quot;);
+        return NULL;
+    }
+
+    /* accessing the deprecated &quot;builtin&quot; message attribute of Exception */
+    if (PyErr_WarnEx(PyExc_DeprecationWarning,
+                     &quot;BaseException.message has been deprecated as &quot;
+                     &quot;of Python 2.6&quot;, 1) &lt; 0)
+        return NULL;
+
+    Py_INCREF(self-&gt;message);
+    return self-&gt;message;
+}
+
+
+static int
+BaseException_set_message(PyBaseExceptionObject *self, PyObject *val)
+{
+    /* if val is NULL, delete the message attribute */
+    if (val == NULL) {
+        if (self-&gt;dict &amp;&amp; PyDict_GetItemString(self-&gt;dict, &quot;message&quot;)) {
+            if (PyDict_DelItemString(self-&gt;dict, &quot;message&quot;) &lt; 0)
+                return -1;
+        }
+        Py_XDECREF(self-&gt;message);
+        self-&gt;message = NULL;
+        return 0;
+    }
+
+    /* else set it in __dict__, but may need to create the dict first */
+    if (self-&gt;dict == NULL) {
+        self-&gt;dict = PyDict_New();
+        if (!self-&gt;dict)
+            return -1;
+    }
+    return PyDict_SetItemString(self-&gt;dict, &quot;message&quot;, val);
+}</code></pre>
+
+
+<p>在 python3 中，message 相关的信息已经完全删除掉了。</p>
+<p>所以，一般使用 <code>message</code> 属性的话，推荐这样使用</p>
+<pre class="codehilite"><code>class MyException(Exception):
+    def __init__(self, message):
+        self.message = message
+
+class My2Exception(Exception):
+    message = 'this is a message'</code></pre>
+</body>
+</html>

@@ -1,0 +1,53 @@
+
+<html>
+<head>
+    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+</head>
+<body>
+  <p>Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。</p>
+<p>可以通过两种方法来配置:</p>
+<ol>
+<li>minion的配置文件</li>
+<li>master的pillar</li>
+</ol>
+<p>使用minion配置时，要直接修改minion的配置文件，在<code>/etc/salt/minion.d/mine.conf</code> 加入如下内容</p>
+<pre class="codehilite"><code class="language-yaml">mine_functions:
+  test.ping: []
+  network.ip_addrs:
+    interface: eth0</code></pre>
+
+
+<p>使用pillar时配置时，只需要修改master的pillar配置即可。如在<code>/srv/pillar/mine.conf</code> 中加入如下内容</p>
+<pre class="codehilite"><code class="language-yaml">mine_functions:
+  test.ping: []
+  network.ip_addrs:
+    interface: eth0</code></pre>
+
+
+<p>然后把<code>mine.conf</code>加入到<code>/srv/pillar/top.sls</code>, 这时可以指定哪些minion来配置mine_functions。相比较而言，这种方式更加灵活一些。</p>
+<pre class="codehilite"><code class="language-yaml">base:
+  'controller*':
+    - mine</code></pre>
+
+
+<p>之后就可以使用如下语句拿到mine上报上来的结果的(其实这个结果是保存在master的<code>/var/cache/salt/master/minions/*/mine.p</code>的文件下就可找到上报上来的内容。</p>
+<pre class="codehilite"><code class="language-sh">$ salt 'jeffrey-thinkpad' mine.get '*' network.ip_addrs
+jeffrey-thinkpad:
+    ----------
+    icehouse-compute:
+        - 10.0.0.11
+    icehouse-controller:
+        - 10.0.0.10</code></pre>
+
+
+<p>另外，可以在minion上来修改上报的时间间隔。方法是增加/修改<code>/etc/salt/minion.d/mine.conf</code>。</p>
+<pre class="codehilite"><code>mine_interval: 1</code></pre>
+
+
+<h2 id="ref">REF</h2>
+<ol>
+<li><a href="http://docs.saltstack.com/en/latest/topics/mine/">Salt Mine</a></li>
+</ol>
+</body>
+</html>

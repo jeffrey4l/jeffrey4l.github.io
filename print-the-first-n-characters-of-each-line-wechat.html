@@ -1,0 +1,20 @@
+
+<html>
+<head>
+    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+</head>
+<body>
+  <p>在使用 Shell 的过程中，经常会遇到一行过长，导致输出折行，相当难看的情况出现。而且多数据情况下，我们只用每行的前 N 个字符就可以了。这时可以用以下方法来截断每行的长度。</p>
+<p><strong>方法1</strong>： 使用 <code>awk</code></p>
+<pre class="codehilite"><code>cat filename | awk '{print substr($0, 0, 20)}'</code></pre>
+
+
+<p><strong>方法2</strong>: 使用 <code>sed</code></p>
+<pre class="codehilite"><code>cat filename | sed 's/\(.\{20\}\).*/\1/'</code></pre>
+
+
+<p><strong> 方法3</strong>: 使用 <code>sed -r</code></p>
+<pre class="codehilite"><code>cat filename | sed -r 's/(.{20}).*/\1/'</code></pre>
+</body>
+</html>

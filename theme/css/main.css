@@ -32,7 +32,7 @@
 }
 
 .entry-content {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.6;
 }
 
@@ -59,15 +59,34 @@ footer {
     margin: 5px;
 }
 
-img.align-center {
+.entry-content img {
+    max-width: 100%; 
+    height: auto;
     display: block;
-    margin: 0 auto;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 pre {
-    overflow-y: hidden;
+    overflow: visible;
     white-space: pre;
     word-break: normal !important;
     word-wrap: normal !important;
     white-space: pre !important;
+}
+
+h2 {
+    border-left: solid 8px #299480;
+    color: #3AAA7D;
+    font-size: 22px;
+    line-height: 1.6;
+    padding: 2px 0px 0px 10px;
+}
+
+h3 {
+    border-left: solid 8px #1A95A5;
+    color: #26c6da;
+    font-size: 18px;
+    line-height: 1.5;
+    padding: 2px 0px 0px 10px;
+    margin-left: 16px;
 }

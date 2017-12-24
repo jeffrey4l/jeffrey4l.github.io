@@ -1,0 +1,43 @@
+
+<html>
+<head>
+    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+</head>
+<body>
+  <p>Logstash 能使用 rubydebug 这个 codec 进行 debug。</p>
+<pre class="codehilite"><code>input {
+    stdin {}
+}
+
+output {
+    stdout {
+        codec =&gt; rubydebug
+    }
+}</code></pre>
+
+
+<p>用 logstash 手动启动</p>
+<pre class="codehilite"><code>logstash -f debug.conf --verbose --debug</code></pre>
+
+
+<p>直接输入数据，能得到详细的输出报告</p>
+<pre class="codehilite"><code>./logstash -f debug --verbose --debug                            
+a
+Pipeline started {:level=&gt;:info}
+{
+       &quot;message&quot; =&gt; &quot;a&quot;,
+      &quot;@version&quot; =&gt; &quot;1&quot;,
+    &quot;@timestamp&quot; =&gt; &quot;2015-03-23T09:55:15.226Z&quot;,
+          &quot;type&quot; =&gt; &quot;test&quot;,
+          &quot;host&quot; =&gt; &quot;jeffrey-thinkpad&quot;
+}</code></pre>
+
+
+<h1 id="ref">REF</h1>
+<ul>
+<li><a href="http://logstash.net/docs/1.4.2/codecs/rubydebug">http://logstash.net/docs/1.4.2/codecs/rubydebug</a></li>
+<li><a href="http://logstash.net/docs/1.4.2/flags">http://logstash.net/docs/1.4.2/flags</a></li>
+</ul>
+</body>
+</html>

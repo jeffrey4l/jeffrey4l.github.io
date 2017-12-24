@@ -1,0 +1,63 @@
+
+<html>
+<head>
+    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+</head>
+<body>
+  <h1 id="_1">相关配置</h1>
+<ul>
+<li>network_api_class - 设置 network 模块所用的api<ul>
+<li><code>nova.network.api.API</code> - 通过rpc与nova-network交互</li>
+<li><code>nova.network.neutronv2.API</code> - 通过http与neutron-server交互</li>
+</ul>
+</li>
+<li>security_group_api - 设置 security group 模块所用的api类<ul>
+<li><code>nova</code> (<code>nova.compute.api.SecurityGroupAPI</code>) - 通过rcp与nova-compute交互</li>
+<li><code>neutron</code> ( <code>nova.network.security_group.neutron_driver.SecurityGroupAPI</code> ) - 通过http与neutron-server交互</li>
+</ul>
+</li>
+<li>linuxnet_interface_driver - 在机器与 ethernet interface plug&amp;unplug时调用 。<ul>
+<li><code>nova.network.linux_net.LinuxBridgeInterfaceDriver</code> - used in nova-network</li>
+<li><code>nova.network.linux_net.linuxOVSInterfaceDriver</code> - use in neutron + ml2 + ovs</li>
+<li><code>nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver</code> - use in neutron + ml2 + linuxbridge</li>
+</ul>
+</li>
+<li>firewall_driver - 虚拟化层所用的 firewall。在nova-network时代，security group由iptables和ebtables实现。在neutron时代，这个已经不需要了。但是neutron里现在还有arp-spoofing的bug, 参见[2]<ul>
+<li><code>nova.virt.firewall.IptablesFirewallDrive</code> - </li>
+<li><code>nova.virt.firewall.NoopFirewallDriver</code></li>
+</ul>
+</li>
+</ul>
+<h1 id="_2">使用组合：</h1>
+<p>nova-network + libvirt</p>
+<pre class="codehilite"><code>nova_api_class=nova.network.api.API
+security_group_ap=nova
+linuxnet_interface_driver=nova.network.linux_net.LinuxBridgeInterfaceDriver
+firewall_driver=nova.virt.firewall.IptablesFirewallDrive</code></pre>
+
+
+<p>neutron + ml2 + linuxbridge plugin + libvirt</p>
+<pre class="codehilite"><code>nova_api_class=nova.network.neutronv2.API
+security_group_ap=neutron
+linuxnet_interface_driver=nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
+firewall_driver=nova.virt.firewall.NoopFirewallDriver</code></pre>
+
+
+<p>neutron + ml2 + ovs plugin + libvirt</p>
+<pre class="codehilite"><code>nova_api_class=nova.network.neutronv2.API
+security_group_ap=neutron
+linuxnet_interface_driver=nova.network.linux_net.linuxOVSInterfaceDriver
+firewall_driver=nova.virt.firewall.NoopFirewallDriver</code></pre>
+
+
+<h1 id="ref">REF</h1>
+<ol>
+<li><a href="http://kennethjiang.blogspot.jp/2012/02/ebtables-in-openstack-nova-and.html">ebtables in Openstack Nova</a> - nwfilter explaination</li>
+<li><a href="https://blueprints.launchpad.net/neutron/+spec/arp-spoof-patch-ebtables">Preventing ARP spoofing via ebtables</a> - Neutron BP for preventing arp snoofing. Expected in Kilo<ol>
+<li><a href="https://bugs.launchpad.net/neutron/+bug/1274034">Neutron firewall anti-spoofing does not prevent ARP poisoning</a> - Related bug</li>
+</ol>
+</li>
+</ol>
+</body>
+</html>

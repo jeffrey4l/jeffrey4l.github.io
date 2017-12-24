@@ -1,0 +1,27 @@
+
+<html>
+<head>
+    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+</head>
+<body>
+  <p>操作系统： ubuntu 12.04.1
+内核 linux 3.2</p>
+<p>今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。</p>
+<pre class="codehilite"><code class="language-text">    +---- host1 -------+         +---- host2 ----+
+                     eth0 ---- eth0 
+                   /                \
+    br1 ---- bond0                   bond0 ---- br1 
+                   \                /
+                     eth0 ---- eth0 </code></pre>
+
+
+<p>机器的连接方式如上图，经检查发现，问题简化成两边的 br1 是不通的，现像是ping时，接收方收不到包，包只走到bond0就给丢弃了。原因在于内核上有问题。在网络上查到以下两个连接 </p>
+<ol>
+<li>https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302 </li>
+<li>https://bugzilla.redhat.com/show_bug.cgi?id=487763</li>
+</ol>
+<p>把内核升级到3.8之后就可以了。</p>
+<pre class="codehilite"><code>apt-get install linux-image-generic-lts-raring</code></pre>
+</body>
+</html>

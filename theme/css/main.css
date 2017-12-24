@@ -77,7 +77,8 @@ footer {
 }
 
 pre {
-    overflow: visible;
+    overflow-y: hidden;
+    overflow-x: auto;
     white-space: pre;
     word-break: normal !important;
     word-wrap: normal !important;

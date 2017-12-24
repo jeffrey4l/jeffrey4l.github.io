@@ -1,0 +1,96 @@
+from pelican import signals
+
+import codecs
+import contextlib
+import os
+
+import markdown
+
+
+CUR_DIR = os.path.abspath(os.path.dirname(__file__))
+
+
+TEMPLATE = '''
+<html>
+<head>
+    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+</head>
+<body>
+  %s
+</body>
+</html>
+'''
+
+MARKDOWN_EXT = [
+    'markdown.extensions.codehilite',
+    'markdown.extensions.extra',
+    'markdown.extensions.meta',
+    'markdown.extensions.toc'
+]
+
+MARKDOWN_EXT_CONFIG = {
+    'markdown.extensions.codehilite': {
+        'linenums': False,
+        'guess_lang': False,
+        'use_pygments': False
+    }
+}
+
+
+@contextlib.contextmanager
+def safe_open(path, mode):
+    with codecs.open(path, mode, 'utf8') as f:
+        yield f
+
+
+def convert(text):
+    md = markdown.Markdown(extensions=MARKDOWN_EXT,
+                           extension_configs=MARKDOWN_EXT_CONFIG)
+    return md.convert(text)
+
+
+def is_markdown(src_path):
+    filename = os.path.basename(src_path)
+    name, ext = os.path.splitext(filename)
+    return ext in ['.md', '.markdown']
+
+
+def add_postfix(filename, postfix):
+    name, ext = os.path.splitext(filename)
+    return '%s%s%s' % (name, postfix, ext)
+
+
+def ensure_folder(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+
+def wechat_output(content_object):
+
+    src_path = content_object.source_path
+
+    if not is_markdown(src_path):
+        return
+
+    output = content_object.settings.get('OUTPUT_PATH')
+
+    wechat_output_name = add_postfix(content_object.save_as, '-wechat')
+
+    dest_fullpath = os.path.join(output, wechat_output_name)
+
+    ensure_folder(os.path.dirname(dest_fullpath))
+
+    with safe_open(src_path, 'r') as f:
+        md_content = f.read()
+
+    html = convert(md_content)
+
+    html = TEMPLATE % html
+
+    with safe_open(dest_fullpath, 'w') as f:
+        f.write(html)
+
+
+def register():
+    signals.content_object_init.connect(wechat_output)

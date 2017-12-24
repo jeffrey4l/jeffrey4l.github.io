@@ -82,6 +82,7 @@ pre {
     word-break: normal !important;
     word-wrap: normal !important;
     white-space: pre !important;
+    font-size: 14px;
 }
 
 h2 {

@@ -11,7 +11,7 @@
 <p><img alt="instance-without-image-info" src="images/glance-deactivate/instance-without-image-info.png" /></p>
 <h2 id="2">方法 2</h2>
 <p>这时还有更好的一个办法，Glance API 支持把镜像属性变为非可用状态。使用方法如下</p>
-<pre class="codehilite"><code>openstack image set --deactivate &lt;image&gt;</code></pre>
+<pre class="codehilite"><code class="language-console">$ openstack image set --deactivate &lt;image&gt;</code></pre>
 
 
 <p>把镜像变成了非可用状态，此时用户就不能从这个镜像启动新的虚拟机了。</p>
@@ -19,7 +19,7 @@
 <p>但是，用户还可以看到这个镜像的信息，已经启动的虚拟机不受影响。</p>
 <p><img alt="instance-without-image-info" src="images/glance-deactivate/instance-with-image-info.png" /></p>
 <p>如果想把镜像再变成可用状态，可以使用。</p>
-<pre class="codehilite"><code>openstack image set --activate &lt;image&gt;</code></pre>
+<pre class="codehilite"><code class="language-console">$ openstack image set --activate &lt;image&gt;</code></pre>
 
 
 <p>现在这个功能只能通过 API 来使用，界面上还不支持。</p>

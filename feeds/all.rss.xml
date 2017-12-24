@@ -6,7 +6,7 @@
 &lt;p&gt;&lt;img alt="instance-without-image-info" src="images/glance-deactivate/instance-without-image-info.png"&gt;&lt;/p&gt;
 &lt;h2 id="2"&gt; 方法  2&lt;/h2&gt;
 &lt;p&gt; 这时还有更好的一个办法 ，Glance API  支持把镜像属性变为非可用状态 。 使用方法如下 &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;openstack image set --deactivate &amp;lt;image&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; openstack image &lt;span class="nb"&gt;set&lt;/span&gt; --deactivate &amp;lt;image&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -15,7 +15,7 @@
 &lt;p&gt; 但是 ， 用户还可以看到这个镜像的信息 ， 已经启动的虚拟机不受影响 。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="instance-without-image-info" src="images/glance-deactivate/instance-with-image-info.png"&gt;&lt;/p&gt;
 &lt;p&gt; 如果想把镜像再变成可用状态 ， 可以使用 。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;openstack image set --activate &amp;lt;image&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; openstack image &lt;span class="nb"&gt;set&lt;/span&gt; --activate &amp;lt;image&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 

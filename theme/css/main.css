@@ -84,6 +84,8 @@ pre {
     word-wrap: normal !important;
     white-space: pre !important;
     font-size: 14px;
+    /* NOTE(jeffrey4l): this prevent the y-scroll in chrome, no idea why ;(. */
+    margin: 10px 1px;
 }
 
 h2 {

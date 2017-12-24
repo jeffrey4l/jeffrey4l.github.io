@@ -2,11 +2,7 @@
 <html lang="{{ DEFAULT_LANG }}">
 <head>
     {% block head %}
-    {% if page_name == "index" %}
-    <title>{{ SITENAME }}</title>
-    {% else %}
-    <title>{% block title %}{{ page_name|capitalize }}{% endblock %} - {{ SITENAME }}</title>
-    {% endif %}
+    <title>{% block title %}{{ SITENAME }}{% endblock %}</title>
     <meta charset="utf-8" />
     {% endblock head %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

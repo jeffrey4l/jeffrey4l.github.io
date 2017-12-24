@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><lastBuildDate>Mon, 11 Dec 2017 00:00:00 +0800</lastBuildDate><item><title>使用 minikube 搭建 kubernetes 单机环境</title><link>http://xcodest.me/minikube.html</link><description>&lt;p&gt;minikube  可以快速搭建  kubernetes  单机环境 ， 方便开发及测试使用 。 其支持大部分 kubernetes 的功能 ， 列表如下 &lt;/p&gt;
+<rss version="2.0"><channel><title>Xcodest</title><link>http://xcodest.me/</link><description>code for fun</description><lastBuildDate>Sun, 24 Dec 2017 00:00:00 +0800</lastBuildDate><item><title>如何在 OpenStack 中隐藏 Glance 镜像</title><link>http://xcodest.me/ru-he-zai-openstack-zhong-yin-cang-glance-jing-xiang.html</link><description>&lt;h2 id="_1"&gt; 问题 &lt;/h2&gt;
+&lt;p&gt; 如果你的  OpenStack  环境中使用了  Ceph， 而且开启了  Cow-on-Write Clone  功能 。 会发现如果  Glance  镜像启动了虚拟机 ， 这个镜像是删除不掉的 。 包括  Boot from Volume  的镜像也会有类似的问题 。 但是用户会有这样的需求 ， 既然删除不掉 ， 我如何才能防止用户继续使用这个镜像 。&lt;/p&gt;
+&lt;h2 id="1"&gt; 方法  1&lt;/h2&gt;
+&lt;p&gt; 这时 ， 有一种方式是把公共镜像变为私有镜像 。 这样用户再建机器时 ， 就看不到这个镜像了 。 但是这样会带来另外一个问题 ， 已经启动虚拟机也会看不到镜像的信息 。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="instance-without-image-info" src="images/glance-deactivate/instance-without-image-info.png"&gt;&lt;/p&gt;
+&lt;h2 id="2"&gt; 方法  2&lt;/h2&gt;
+&lt;p&gt; 这时还有更好的一个办法 ，Glance API  支持把镜像属性变为非可用状态 。 使用方法如下 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;openstack image set --deactivate &amp;lt;image&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt; 把镜像变成了非可用状态 ， 此时用户就不能从这个镜像启动新的虚拟机了 。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="image-can-not-boot" src="images/glance-deactivate/image-can-not-boot.png"&gt;&lt;/p&gt;
+&lt;p&gt; 但是 ， 用户还可以看到这个镜像的信息 ， 已经启动的虚拟机不受影响 。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="instance-without-image-info" src="images/glance-deactivate/instance-with-image-info.png"&gt;&lt;/p&gt;
+&lt;p&gt; 如果想把镜像再变成可用状态 ， 可以使用 。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;openstack image set --activate &amp;lt;image&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt; 现在这个功能只能通过  API  来使用 ， 界面上还不支持 。&lt;/p&gt;
+&lt;h2 id="_2"&gt; 参考信息 &lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;https://wiki.openstack.org/wiki/Glance-deactivate-image&lt;/li&gt;
+&lt;li&gt;https://blueprints.launchpad.net/glance/+spec/deactivate-image&lt;/li&gt;
+&lt;li&gt;https://review.openstack.org/#/c/132717/&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sun, 24 Dec 2017 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2017-12-24:/ru-he-zai-openstack-zhong-yin-cang-glance-jing-xiang.html</guid><category>Glance</category><category>OpenStack</category></item><item><title>使用 minikube 搭建 kubernetes 单机环境</title><link>http://xcodest.me/minikube.html</link><description>&lt;p&gt;minikube  可以快速搭建  kubernetes  单机环境 ， 方便开发及测试使用 。 其支持大部分 kubernetes 的功能 ， 列表如下 &lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;DNS&lt;/li&gt;
 &lt;li&gt;NodePorts&lt;/li&gt;

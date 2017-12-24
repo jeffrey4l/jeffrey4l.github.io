@@ -9,8 +9,8 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(ROOT, 'plugins'))
 
 AUTHOR = u'Jeffrey4l'
-SITENAME = u'Xcodest'
-SITESUBTITLE = u'code for fun'
+SITENAME = u'代码杂货铺'
+SITESUBTITLE = u'关注云计算，容器和Linux'
 SITEURL = 'http://xcodest.me'
 RELATIVE_URLS = True
 

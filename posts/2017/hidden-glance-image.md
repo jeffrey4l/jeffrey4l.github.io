@@ -17,7 +17,8 @@ Slug: hide-glance-image
 
 这时还有更好的一个办法，Glance API 支持把镜像属性变为非可用状态。使用方法如下
 
-    openstack image set --deactivate <image>
+    ::console
+    $ openstack image set --deactivate <image>
 
 把镜像变成了非可用状态，此时用户就不能从这个镜像启动新的虚拟机了。
 
@@ -29,8 +30,9 @@ Slug: hide-glance-image
 
 
 如果想把镜像再变成可用状态，可以使用。
-
-    openstack image set --activate <image>
+    
+    ::console
+    $ openstack image set --activate <image>
 
 现在这个功能只能通过 API 来使用，界面上还不支持。
 

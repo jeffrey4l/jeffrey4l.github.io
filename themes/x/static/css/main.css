@@ -110,3 +110,11 @@ h3 {
     width: 100%;
     height: auto;
 }
+
+a.footnote-ref:before {
+    content: "[";
+}
+
+a.footnote-ref:after {
+    content: "]";
+}

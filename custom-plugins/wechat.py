@@ -22,6 +22,9 @@ MARKDOWN_EXT_CONFIG = {
         'linenums': False,
         'guess_lang': False,
         'use_pygments': False
+    },
+    'markdown.extensions.extra': {
+        'BACKLINK_TEXT': ''
     }
 }
 

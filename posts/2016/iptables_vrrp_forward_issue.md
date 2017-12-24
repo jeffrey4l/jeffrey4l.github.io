@@ -37,4 +37,4 @@ iptables -t nat -A POSTROUTING -s 10.2.0.0/24 ! -d 10.2.0.0/24 -j MASQUERAE
 
 ## REF
 
-[^1]: https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers
+[^1]: <https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers>

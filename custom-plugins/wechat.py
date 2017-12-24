@@ -10,18 +10,6 @@ import markdown
 CUR_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
-TEMPLATE = '''
-<html>
-<head>
-    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
-    <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
-</head>
-<body>
-  %s
-</body>
-</html>
-'''
-
 MARKDOWN_EXT = [
     'markdown.extensions.codehilite',
     'markdown.extensions.extra',
@@ -56,6 +44,11 @@ def is_markdown(src_path):
     return ext in ['.md', '.markdown']
 
 
+def get_template():
+    with safe_open(os.path.join(CUR_DIR, 'template.html'), 'r') as f:
+        return f.read()
+
+
 def add_postfix(filename, postfix):
     name, ext = os.path.splitext(filename)
     return '%s%s%s' % (name, postfix, ext)
@@ -85,8 +78,9 @@ def wechat_output(content_object):
         md_content = f.read()
 
     html = convert(md_content)
+    tpl = get_template()
 
-    html = TEMPLATE % html
+    html = tpl % html
 
     with safe_open(dest_fullpath, 'w') as f:
         f.write(html)

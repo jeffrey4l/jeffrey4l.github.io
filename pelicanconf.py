@@ -76,7 +76,7 @@ DEFAULT_CATEGORY = 'Others'
 
 AUTHORS_SAVE_AS = ''
 
-ARTICLE_EXCLUDES = ['themes', 'plugins', 'output', 'static']
+ARTICLE_EXCLUDES = ['themes', 'plugins', 'output', 'static', 'custom-plugins']
 
 THEME = 'themes/x'
 

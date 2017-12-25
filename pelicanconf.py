@@ -56,7 +56,7 @@ PLUGIN_PATHS = [os.path.join(ROOT, 'plugins'),
                 os.path.join(ROOT, 'custom-plugins')]
 
 PLUGINS = ['assets', 'gravatar', 'pelican_gist',
-           'neighbors', 'extract_toc', 'cjk-auto-spacing',
+           'neighbors', 'extract_toc',
            'wechat']
 
 SITEMAP = {'format': 'xml'}

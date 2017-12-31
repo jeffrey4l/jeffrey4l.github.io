@@ -296,3 +296,19 @@ sup {
 .toc {
     display: none;
 }
+
+.footnote {
+    font-size: 12px;
+}
+
+.footnote p{
+    margin: 0px;
+}
+
+.footnote-backref {
+    display: none;
+}
+
+hr {
+    border-top: 1px solid #8c8b8b;
+}

@@ -13,3 +13,8 @@ Typogrify
 pelican-gist
 watchdog
 beautifulsoup4
+
+markdown-css
+docopt
+pyquery
+cssutils

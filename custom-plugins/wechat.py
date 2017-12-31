@@ -1,10 +1,10 @@
-from pelican import signals
-
 import codecs
 import contextlib
 import os
+import subprocess
 
 import markdown
+from pelican import signals
 
 
 CUR_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -69,6 +69,9 @@ def wechat_output(content_object):
     if not is_markdown(src_path):
         return
 
+    if "pages" in src_path:
+        return
+
     output = content_object.settings.get('OUTPUT_PATH')
 
     wechat_output_name = add_postfix(content_object.save_as, '-wechat')
@@ -87,6 +90,28 @@ def wechat_output(content_object):
 
     with safe_open(dest_fullpath, 'w') as f:
         f.write(html)
+
+
+def markdown_css():
+    # run markdown-css
+    # markdown-css nova-inject-file-wechat.html \
+    #       --style=theme/css/wechat.css --out=a
+    wechat_folder = os.path.join(output, 'wechat')
+    ensure_folder(wechat_folder)
+    cmds = (
+        'markdown-css',
+        wechat_output_name,
+        '--style',
+        'theme/css/wechat.css',
+        '--out',
+        'wechat'
+    )
+
+    subprocess.call(cmds, cwd=output)
+
+    # move the file to output folder
+    os.rename(os.path.join(wechat_folder, wechat_output_name), dest_fullpath)
+
 
 
 def register():

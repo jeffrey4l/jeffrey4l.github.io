@@ -1,6 +1,6 @@
-title: 使用nova支持向rbd盘中注入文件
+title: rbd 是否支持注入?
 date: 2017-12-25
-slug: nova-inject-file-in-ceph
+slug: inject-file-in-rbd
 
 ## 引子
 
@@ -42,7 +42,7 @@ libguestfs 对 rbd 的支持是从 1.21.21 这个版本开始的[^1]，并且测
 
 ## 结论
 
-通过 libvirt 注入的方式并不被社区推荐，应该采用 metadata-api 或 config drive 方式才是更加可取。
+通过 nova inject 注入的方式并不被社区推荐，应该采用 metadata-api 或 config drive 方式才是更加可取。
 
 [^1]: <https://github.com/libguestfs/libguestfs/commit/694a091d3faac78acbd0b5a368856b569c7ba5e2>
 [^2]: <https://github.com/libguestfs/libguestfs/commit/186bb67c6e8496d04a6f5646df9b2fb483cdc189>
@@ -51,3 +51,4 @@ libguestfs 对 rbd 的支持是从 1.21.21 这个版本开始的[^1]，并且测
 [^5]: <http://lists.openstack.org/pipermail/openstack-dev/2016-July/098703.html>
 [^6]: <http://lists.openstack.org/pipermail/openstack-dev/2017-March/113171.html>
 [^7]: <https://review.openstack.org/509013>
+[^8]: <https://blueprints.launchpad.net/nova/+spec/disable-file-injection-by-default>

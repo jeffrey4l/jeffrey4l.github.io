@@ -111,31 +111,31 @@
     <span class="post-date"> 2015-03-18 </span>
   </header>
   <div class="entry-content">
-    <h1 id="_1"> 相关配置 </h1>
+    <h1 id="_1">相关配置</h1>
 <ul>
-<li>network_api_class -  设置  network  模块所用的 api<ul>
-<li><code>nova.network.api.API</code> -  通过 rpc 与 nova-network 交互 </li>
-<li><code>nova.network.neutronv2.API</code> -  通过 http 与 neutron-server 交互 </li>
+<li>network_api_class - 设置 network 模块所用的api<ul>
+<li><code>nova.network.api.API</code> - 通过rpc与nova-network交互</li>
+<li><code>nova.network.neutronv2.API</code> - 通过http与neutron-server交互</li>
 </ul>
 </li>
-<li>security_group_api -  设置  security group  模块所用的 api 类 <ul>
-<li><code>nova</code> (<code>nova.compute.api.SecurityGroupAPI</code>) -  通过 rcp 与 nova-compute 交互 </li>
-<li><code>neutron</code> ( <code>nova.network.security_group.neutron_driver.SecurityGroupAPI</code> ) -  通过 http 与 neutron-server 交互 </li>
+<li>security_group_api - 设置 security group 模块所用的api类<ul>
+<li><code>nova</code> (<code>nova.compute.api.SecurityGroupAPI</code>) - 通过rcp与nova-compute交互</li>
+<li><code>neutron</code> ( <code>nova.network.security_group.neutron_driver.SecurityGroupAPI</code> ) - 通过http与neutron-server交互</li>
 </ul>
 </li>
-<li>linuxnet_interface_driver -  在机器与  ethernet interface plug&amp;unplug 时调用  。<ul>
+<li>linuxnet_interface_driver - 在机器与 ethernet interface plug&amp;unplug时调用 。<ul>
 <li><code>nova.network.linux_net.LinuxBridgeInterfaceDriver</code> - used in nova-network</li>
 <li><code>nova.network.linux_net.linuxOVSInterfaceDriver</code> - use in neutron + ml2 + ovs</li>
 <li><code>nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver</code> - use in neutron + ml2 + linuxbridge</li>
 </ul>
 </li>
-<li>firewall_driver -  虚拟化层所用的  firewall。 在 nova-network 时代 ，security group 由 iptables 和 ebtables 实现 。 在 neutron 时代 ， 这个已经不需要了 。 但是 neutron 里现在还有 arp-spoofing 的 bug,  参见 [2]<ul>
+<li>firewall_driver - 虚拟化层所用的 firewall。在nova-network时代，security group由iptables和ebtables实现。在neutron时代，这个已经不需要了。但是neutron里现在还有arp-spoofing的bug, 参见[2]<ul>
 <li><code>nova.virt.firewall.IptablesFirewallDrive</code> - </li>
 <li><code>nova.virt.firewall.NoopFirewallDriver</code></li>
 </ul>
 </li>
 </ul>
-<h1 id="_2"> 使用组合 ：</h1>
+<h1 id="_2">使用组合：</h1>
 <p>nova-network + libvirt</p>
 <div class="highlight"><pre><span></span>nova_api_class=nova.network.api.API
 security_group_ap=nova

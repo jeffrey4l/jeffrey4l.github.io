@@ -4,8 +4,10 @@
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
 </head>
 <body>
-  <p>My name is Jeffrey Zhang. I am a Linuxer, Pythoner and OpenStacker.</p>
-<p>You can find me through zhang.lei.fly/gmail/com</p>
+  <h2 id="_1">直接生自签证书</h2>
+<pre class="codehilite"><code class="language-bash">openssl req -x509 -newkey rsa:4096 -keyout key.pem \
+    -out cert.pem -days 365 -nodes \
+    -subj &quot;/C=CN/ST=Beijing/L=Beijing/O=Xcodest/OU=Xcodest/CN=hub.xcodest.me&quot;</code></pre>
   <!--
   <div class="copyleft">
     <p>文档信息</p>

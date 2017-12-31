@@ -126,24 +126,24 @@
 </ul>
 </div>
     
-<p>Kolla  依赖于以下几个主要组件 </p>
+<p>Kolla 依赖于以下几个主要组件</p>
 <ul>
 <li>Ansible &gt; 1.9.4, &lt; 2.0</li>
 <li>Docker &gt; 1.10.0</li>
 <li>docker-py &gt; 1.7.0</li>
 <li>python jinja2 &gt; 2.6.0</li>
 </ul>
-<p> 几点说明 ：</p>
+<p>几点说明：</p>
 <ul>
-<li> 机器使用的是  kvm  虚拟机进行的测试 。 配置上使用  4G RAM, 2 CPU, 2  网卡的配置 </li>
-<li> 由于使用了  Docker， 所以对于底层系统并还没什么要求 ， 本文使用  CentOS 7  系统 。</li>
-<li>Kolla master  分支上使用的是  RDO master  上的源 ， 打包极不稳定 ， 时常会有  Bug  出现 。 所以本文使用的是  CentOS +  源码的安装方式 </li>
-<li> 由于国内网络原因 ， 一些国外的源 ( 这些源还没有国内镜像 ) 会相当慢 ， 所以  build docker image  时会很慢 ， 推荐使用  VPN</li>
+<li>机器使用的是 kvm 虚拟机进行的测试。配置上使用 4G RAM, 2 CPU, 2 网卡的配置</li>
+<li>由于使用了 Docker，所以对于底层系统并还没什么要求，本文使用 CentOS 7 系统。</li>
+<li>Kolla master 分支上使用的是 RDO master 上的源，打包极不稳定，时常会有 Bug 出现。所以本文使用的是 CentOS + 源码的安装方式</li>
+<li>由于国内网络原因，一些国外的源(这些源还没有国内镜像)会相当慢，所以 build docker image 时会很慢，推荐使用 VPN</li>
 </ul>
-<h1 id="_1"> 安装 </h1>
-<p> 安装好操作系统后 ， 依次进行如下配置 </p>
-<h2 id="_2"> 源 </h2>
-<p> 加入  Docker  的源 </p>
+<h1 id="_1">安装</h1>
+<p>安装好操作系统后，依次进行如下配置</p>
+<h2 id="_2">源</h2>
+<p>加入 Docker 的源</p>
 <div class="highlight"><pre><span></span>sudo tee /etc/yum.repos.d/docker.repo &lt;&lt; 'EOF'
 [dockerrepo]
 name=Docker Repository
@@ -153,46 +153,46 @@ gpgcheck=1
 gpgkey=https://yum.dockerproject.org/gpg
 EOF
 </pre></div>
-<p> 加入  EPEL  源 </p>
+<p>加入 EPEL 源</p>
 <div class="highlight"><pre><span></span>yum install -y epel-release
 </pre></div>
-<h2 id="kolla"> 安装  Kolla  所需依赖 </h2>
+<h2 id="kolla">安装 Kolla 所需依赖</h2>
 <div class="highlight"><pre><span></span>yum install -y ansible docker-engine git gcc python-setuptools
 easy_install -U pip
 </pre></div>
-<p>Docker  现在使用了  shared mount  功能 ， 默认没有打开 ， 需要手动修改  Docker  启动文件  <code>/usr/lib/systemd/system/docker.service</code>  的  MountFlags</p>
+<p>Docker 现在使用了 shared mount 功能，默认没有打开，需要手动修改 Docker 启动文件 <code>/usr/lib/systemd/system/docker.service</code> 的 MountFlags</p>
 <div class="highlight"><pre><span></span>sed -i 's/MountFlags.*/MountFlags=shared/' /usr/lib/systemd/system/docker.service
 </pre></div>
-<p> 启动  Docker  服务 </p>
+<p>启动 Docker 服务</p>
 <div class="highlight"><pre><span></span>systemctl daemon-reload
 systemctl enable docker
 systemctl start docker
 </pre></div>
-<h2 id="kolla_1"> 下载  Kolla  代码并安装依赖 </h2>
+<h2 id="kolla_1">下载 Kolla 代码并安装依赖</h2>
 <div class="highlight"><pre><span></span>git clone https://github.com/openstack/kolla.git
 cd kolla
 pip install -r requirements.txt -r test-requirements.txt tox
 </pre></div>
 <h1 id="build-docker-image">Build Docker Image</h1>
-<p> 以下如果没有特别说明 ， 所有的操作都是在  Kolla  项目的目录里进行 </p>
-<p> 首先要先生成并修改配置文件 </p>
+<p>以下如果没有特别说明，所有的操作都是在 Kolla 项目的目录里进行</p>
+<p>首先要先生成并修改配置文件</p>
 <div class="highlight"><pre><span></span>tox -e genconfig
 cp -rv etc/kolla /etc/
 </pre></div>
-<p> 然后修改  <code>/etc/kolla/kolla-build.conf</code>  文件 ， 它是用来控制  kolla build  过程的 。 修改后 ， 其主要内容如下 :</p>
+<p>然后修改 <code>/etc/kolla/kolla-build.conf</code> 文件，它是用来控制 kolla build 过程的。修改后，其主要内容如下:</p>
 <div class="highlight"><pre><span></span><span class="k">[DEFAULT]</span>
 <span class="na">base</span> <span class="o">=</span> <span class="s">centos</span>
 <span class="na">install_type</span> <span class="o">=</span> <span class="s">soruce</span>
 <span class="na">namespace</span> <span class="o">=</span> <span class="s">lokolla</span>
 <span class="na">push</span> <span class="o">=</span> <span class="s">false</span>
 </pre></div>
-<p> 接下来就是进行漫长的  build,  这个过程主要依赖机器性能和网速 。 如果快的话 ，20 多分钟就完成 。 如果有问题的话 ， 会很久 。 不过依赖于  Docker Build  的  Cache  功能 ， 就算重跑的话 ， 之前已经  Build  好的也会很快完成 。</p>
+<p>接下来就是进行漫长的 build, 这个过程主要依赖机器性能和网速。如果快的话，20多分钟就完成。如果有问题的话，会很久。不过依赖于 Docker Build 的 Cache 功能，就算重跑的话，之前已经 Build 好的也会很快完成。</p>
 <div class="highlight"><pre><span></span>./tool/build.py -p default
 </pre></div>
-<p> 参数中的  <code>-p default</code>  是指定了只  build  主要的  image,  包括 : mariadb, rabbitmq, cinder, ceilometer, glance, heat, horizon, keystone, neutron, nova, swift 等  .  这些可以只生成的  <code>kolla-build.conf</code>  里找到 。</p>
-<p> 如果  Build  完成之后 ， 使用  <code>docker images</code>  能看到所有已经  build  好的镜像 。</p>
+<p>参数中的 <code>-p default</code> 是指定了只 build 主要的 image, 包括: mariadb, rabbitmq, cinder, ceilometer, glance, heat, horizon, keystone, neutron, nova, swift等 . 这些可以只生成的 <code>kolla-build.conf</code> 里找到。</p>
+<p>如果 Build 完成之后，使用 <code>docker images</code> 能看到所有已经 build 好的镜像。</p>
 <h1 id="deploy">Deploy</h1>
-<p> 依然是先修改配置文件 ， 与  Deploy  相关的主要是两个配置文件  <code>/etc/kolla/passwords.yml</code>  和  <code>/etc/kolla/globals.yml</code>。 他们为  ansible  提供一些变量的设定 。 主要需要修改的是  <code>globals.yml</code>  文件 。 修改后 ， 其主要内容为 :</p>
+<p>依然是先修改配置文件，与 Deploy 相关的主要是两个配置文件 <code>/etc/kolla/passwords.yml</code> 和 <code>/etc/kolla/globals.yml</code>。他们为 ansible 提供一些变量的设定。主要需要修改的是 <code>globals.yml</code> 文件。修改后，其主要内容为:</p>
 <div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">config_strategy</span><span class="p p-Indicator">:</span> <span class="s">"COPY_ALWAYS"</span>
 
 <span class="l l-Scalar l-Scalar-Plain">kolla_base_distro</span><span class="p p-Indicator">:</span> <span class="s">"centos"</span>
@@ -206,7 +206,7 @@ cp -rv etc/kolla /etc/
 <span class="l l-Scalar l-Scalar-Plain">enable_cinder</span><span class="p p-Indicator">:</span> <span class="s">"no"</span>
 <span class="l l-Scalar l-Scalar-Plain">enable_heat</span><span class="p p-Indicator">:</span> <span class="s">"no"</span>
 </pre></div>
-<p>kolla  使用一个名为  <code>kolla-ansible</code>  的封装脚本 ，  并提供以下几个命令 </p>
+<p>kolla 使用一个名为 <code>kolla-ansible</code> 的封装脚本， 并提供以下几个命令</p>
 <div class="highlight"><pre><span></span>./tools/kolla-ansible -h
 Usage: ./tools/kolla-ansible COMMAND [options]
 
@@ -223,10 +223,10 @@ Commands:
     post-deploy  Do post deploy on deploy node
     pull         Pull all images for containers (only pulls, no runnnig container changes)
 </pre></div>
-<p> 可以使用  <code>./tools/kolla-ansible prechecks</code>  来检查一个机器是否满足安装条件 。</p>
-<p> 使用  <code>./tools/kolla-ansible deploy</code>  来开始正式安装 。 安装会很快 ， 我机器上 ， 几分钟就安装完成了 。</p>
-<p> 最后 ， 使用 <code>./tools/kolla-ansible post-deploy</code>  来生成  <code>/etc/kolla/admin-openrc.sh</code>  文件用来加载认证变量 。</p>
-<h1 id="_3"> 查看安装后的状态 </h1>
+<p>可以使用 <code>./tools/kolla-ansible prechecks</code> 来检查一个机器是否满足安装条件。</p>
+<p>使用 <code>./tools/kolla-ansible deploy</code> 来开始正式安装。安装会很快，我机器上，几分钟就安装完成了。</p>
+<p>最后，使用<code>./tools/kolla-ansible post-deploy</code> 来生成 <code>/etc/kolla/admin-openrc.sh</code> 文件用来加载认证变量。</p>
+<h1 id="_3">查看安装后的状态</h1>
 <div class="highlight"><pre><span></span>IMAGE                                                  COMMAND                 NAMES
 lokolla/centos-source-keystone:2.0.0                   "kolla_start"           keystone
 lokolla/centos-source-horizon:2.0.0                    "kolla_start"           horizon
@@ -255,11 +255,11 @@ lokolla/centos-source-kolla-toolbox:2.0.0              "/bin/sleep infinity"   k
 lokolla/centos-source-heka:2.0.0                       "kolla_start"           heka
 lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           rsyslog
 </pre></div>
-<p> 为了显示好看 ， 我去掉了一些无关的列 。 通过上面 ， 可以看出 </p>
+<p>为了显示好看，我去掉了一些无关的列。通过上面，可以看出</p>
 <ul>
-<li> 多数  container  里是由  kolla_start  这个脚本启动起来的 </li>
-<li> 由于  kolla  使用的是  <code>--net=host</code>  网络 ， 所以没有必要做端口映射 </li>
-<li> 每个模块拆分成了多个 container,  如  nova  被拆分成了 nova_api, nova_libvirt, nova_conductor, nova_novncproxy, nova_compute 等多个  container。 很好的遵守了一个容器一个进程的原则 。</li>
+<li>多数 container 里是由 kolla_start 这个脚本启动起来的</li>
+<li>由于 kolla 使用的是 <code>--net=host</code> 网络，所以没有必要做端口映射</li>
+<li>每个模块拆分成了多个container, 如 nova 被拆分成了nova_api, nova_libvirt, nova_conductor, nova_novncproxy, nova_compute等多个 container。很好的遵守了一个容器一个进程的原则。</li>
 </ul>
   </div><!-- /.entry-content -->
   <div>

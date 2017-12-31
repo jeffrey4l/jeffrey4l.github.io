@@ -36,7 +36,7 @@ body {
 
 .entry-content {
     font-size: 15px;
-    line-height: 1.6;
+    line-height: 1.8;
 }
 
 blockquote {
@@ -111,10 +111,22 @@ h3 {
     height: auto;
 }
 
+a.footnote-ref{
+    margin: 0 2px;
+}
+
 a.footnote-ref:before {
     content: "[";
 }
 
 a.footnote-ref:after {
     content: "]";
+}
+
+.footnote {
+    word-break: break-word;
+}
+
+.footnote p {
+    margin: 0;
 }

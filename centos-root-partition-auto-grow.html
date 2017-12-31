@@ -112,25 +112,25 @@
     <span class="post-date"> 2016-11-14 </span>
   </header>
   <div class="entry-content">
-    <p>CentOS 5  太老了 ， 完全不支持 。</p>
-<p>CentOS 6  要实现分区自动扩展 ， 要安装以下三个包 </p>
+    <p>CentOS 5 太老了，完全不支持。</p>
+<p>CentOS 6 要实现分区自动扩展，要安装以下三个包</p>
 <pre class="literal-block">
 yum install cloud-init cloud-utils-growpart dracut-modules-growroot
-#  生新生成  initramfs
+# 生新生成 initramfs
 dracut -f
 </pre>
-<p><tt class="docutils literal">dracut</tt>  把  <tt class="docutils literal">growroot</tt>  的脚本封装到  <tt class="docutils literal">initramfs</tt>  里面 。  把系统启动时 ，
-<tt class="docutils literal">initramfs</tt>  利用  <tt class="docutils literal">growpart</tt>  命令把根分区进行扩展 。 然后启动真正的 
-<tt class="docutils literal">kernel</tt>,  之后  <tt class="docutils literal"><span class="pre">cloud-init</span></tt>  服务会自动把文件系统进行扩展 。</p>
-<p> 之所以使用  <tt class="docutils literal">initramfs</tt>  这种方式 ， 原因 [0]：</p>
+<p><tt class="docutils literal">dracut</tt> 把 <tt class="docutils literal">growroot</tt> 的脚本封装到 <tt class="docutils literal">initramfs</tt> 里面。 把系统启动时，
+<tt class="docutils literal">initramfs</tt> 利用 <tt class="docutils literal">growpart</tt> 命令把根分区进行扩展。然后启动真正的
+<tt class="docutils literal">kernel</tt>, 之后 <tt class="docutils literal"><span class="pre">cloud-init</span></tt> 服务会自动把文件系统进行扩展。</p>
+<p>之所以使用 <tt class="docutils literal">initramfs</tt> 这种方式，原因[0]：</p>
 <blockquote>
 Growpart called by cloud-init only works for kernels &gt;3.8. Only newer
 kernels support changing the partition size of a mounted partition. When
 using an older kernel the resizing of the root partition happens in the
 initrd stage before the root partition is mounted and the subsequent
 cloud-init growpart run is a no-op.</blockquote>
-<p>CentOS 7  使用的是  3.10 ( &gt; 3.8 )  的内核 ， 所以并不需要  dracut-modules-growroot
- 包 (  源里面也并没有这个包  )。  只安装以下两个包就可以了 。</p>
+<p>CentOS 7 使用的是 3.10 ( &gt; 3.8 ) 的内核，所以并不需要 dracut-modules-growroot
+包( 源里面也并没有这个包 )。 只安装以下两个包就可以了。</p>
 <pre class="literal-block">
 yum install cloud-init cloud-utils-growpart
 </pre>

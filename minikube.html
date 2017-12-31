@@ -112,7 +112,7 @@
     <span class="post-date"> 2017-12-11 </span>
   </header>
   <div class="entry-content">
-    <p>minikube  可以快速搭建  kubernetes  单机环境 ， 方便开发及测试使用 。 其支持大部分 kubernetes 的功能 ， 列表如下 </p>
+    <p>minikube 可以快速搭建 kubernetes 单机环境，方便开发及测试使用。其支持大部分kubernetes的功能，列表如下</p>
 <ul class="simple">
 <li>DNS</li>
 <li>NodePorts</li>
@@ -123,24 +123,24 @@
 <li>Ingress</li>
 </ul>
 <div class="section" id="x01">
-<h2>0x01  原理 </h2>
-<p>minikube  会下载一个  iso， 并启动一台  virtualbox  虚拟机 。 把  kubernetes  在虚拟机里面跑起来 。 所以  minikube  可以在  windows  上运行 。</p>
+<h2>0x01 原理</h2>
+<p>minikube 会下载一个 iso，并启动一台 virtualbox 虚拟机。把 kubernetes 在虚拟机里面跑起来。所以 minikube 可以在 windows 上运行。</p>
 </div>
 <div class="section" id="x02">
-<h2>0x02  安装 </h2>
-<p> 由于某些原因 ，kubernetes  上面的资源可能下载不下来 ， 最好你有一个好用的  VPN  或者  http  代理 。</p>
-<p> 下载  minikube  工具 </p>
+<h2>0x02 安装</h2>
+<p>由于某些原因，kubernetes 上面的资源可能下载不下来，最好你有一个好用的 VPN 或者 http 代理。</p>
+<p>下载 minikube 工具</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> curl -L https://github.com/kubernetes/minikube/releases/download/v0.24.1/minikube-linux-amd64 <span class="se">\</span>
     -o /usr/local/bin/minikube
 <span class="gp">$</span> chmod +x /usr/local/bin/minikube
 </pre></div>
-<p>minikube  默认是使用  virtualbox  来启动虚拟机 。 我在  Linux  上面习惯使用  KVM,  所以还需要单独下载  kvm  的驱动 。 值的一提的是现在有  kvm  及  kvm2  两个驱动 ， 其中  kvm  已经废弃掉 ， 推荐使用  kvm2。</p>
-<p> 下载  kvm2  驱动 </p>
+<p>minikube 默认是使用 virtualbox 来启动虚拟机。我在 Linux 上面习惯使用 KVM, 所以还需要单独下载 kvm 的驱动。值的一提的是现在有 kvm 及 kvm2 两个驱动，其中 kvm 已经废弃掉，推荐使用 kvm2。</p>
+<p>下载 kvm2 驱动</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> curl -L https://storage.googleapis.com/minikube/releases/latest/docker-machine-driver-kvm2 <span class="se">\</span>
     -o /usr/local/bin/docker-machine-driver-kvm2
 <span class="gp">$</span> chmod +x /usr/local/bin/docker-machine-driver-kvm2
 </pre></div>
-<p> 安装  kubectl  命令 </p>
+<p>安装 kubectl 命令</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">export</span> <span class="nv">version</span><span class="o">=</span><span class="k">$(</span>curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt<span class="k">)</span>
 <span class="gp">$</span> curl -L https://storage.googleapis.com/kubernetes-release/release/<span class="k">$(</span>version<span class="k">)</span>/bin/linux/amd64/kubectl <span class="se">\</span>
      -o /usr/local/bin/kubectl
@@ -148,18 +148,18 @@
 </pre></div>
 </div>
 <div class="section" id="x03-kubernetes">
-<h2>0x03  启动  kubernetes</h2>
-<p> 使用  minikube  启动  kubernetes  很简单 ， 就一条命令 </p>
+<h2>0x03 启动 kubernetes</h2>
+<p>使用 minikube 启动 kubernetes 很简单，就一条命令</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> minikube start --vm-driver kvm2
 </pre></div>
-<p> 如果你的网络访问有问题 ， 运行这个命令时 ， 最好接着  VPN  或使用  http  代理 ， 因为虚拟机里面会下载一些镜像 。 使用  http  代理可以使用如下命令行 </p>
+<p>如果你的网络访问有问题，运行这个命令时，最好接着 VPN 或使用 http 代理，因为虚拟机里面会下载一些镜像。使用 http 代理可以使用如下命令行</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">export</span> <span class="nv">http_proxy</span><span class="o">=</span>http://10.10.0.22:8185
 <span class="gp">$</span> <span class="nb">export</span> <span class="nv">https_proxy</span><span class="o">=</span>http://10.10.0.22:8185
 <span class="gp">$</span> minikube start --vm-driver kvm2 <span class="se">\</span>
     --docker-env <span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span> <span class="se">\</span>
     --docker-env <span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span>
 </pre></div>
-<p> 如果没有问题 ， 你会看到如下信息 </p>
+<p>如果没有问题，你会看到如下信息</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> minikube start --vm-driver kvm2
 <span class="go">Starting local Kubernetes v1.8.0 cluster...</span>
 <span class="go">Starting VM...</span>
@@ -174,24 +174,24 @@
 </pre></div>
 </div>
 <div class="section" id="x04">
-<h2>0x04  测试 </h2>
-<p> 通过  minikube  打开 dashboard</p>
+<h2>0x04 测试</h2>
+<p>通过 minikube 打开dashboard</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> minikube dashboard
 </pre></div>
-<p> 通过  kubectl  查看现有服务 </p>
+<p>通过 kubectl 查看现有服务</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> kubectl --namespace kube-system get svc
 <span class="go">NAME                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)         AGE</span>
 <span class="go">kube-dns               ClusterIP   10.96.0.10      &lt;none&gt;        53/UDP,53/TCP   27m</span>
 <span class="go">kubernetes-dashboard   NodePort    10.97.208.124   &lt;none&gt;        80:30000/TCP    27m</span>
 </pre></div>
-<p> 创建一个新服务 </p>
+<p>创建一个新服务</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> kubectl run hello-minikube --image<span class="o">=</span>gcr.io/google_containers/echoserver:1.4 --port<span class="o">=</span><span class="m">8080</span>
 <span class="go">deployment &quot;hello-minikube&quot; created</span>
 
 <span class="gp">$</span> kubectl expose deployment hello-minikube --type<span class="o">=</span>NodePort
 <span class="go">service &quot;hello-minikube&quot; exposed</span>
 </pre></div>
-<p> 访问新创建的服务 。</p>
+<p>访问新创建的服务。</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> kubectl get pod
 <span class="go">NAME                              READY     STATUS    RESTARTS   AGE</span>
 <span class="go">hello-minikube-57889c865c-8fpq9   1/1       Running   0          13m</span>
@@ -215,13 +215,13 @@
 <span class="go">BODY:</span>
 <span class="go">-no body in request-%</span>
 </pre></div>
-<p> 删除服务 </p>
+<p>删除服务</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> kubectl delete deployment hello-minikube
 <span class="go">deployment &quot;hello-minikube&quot; deleted</span>
 </pre></div>
 </div>
 <div class="section" id="x05-kubernetes">
-<h2>0x05  删除  kubernetes  集群 </h2>
+<h2>0x05 删除 kubernetes 集群</h2>
 <div class="highlight"><pre><span></span><span class="gp">$</span> minikube stop
 </pre></div>
 </div>

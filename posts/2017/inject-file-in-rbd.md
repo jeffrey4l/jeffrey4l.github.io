@@ -1,4 +1,4 @@
-title: rbd 是否支持注入?
+title: rbd 是否支持注入
 date: 2017-12-25
 slug: inject-file-in-rbd
 

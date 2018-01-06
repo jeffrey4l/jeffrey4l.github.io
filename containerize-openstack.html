@@ -64,7 +64,7 @@
       <div class="row">
         <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
           <div class="panel panel-default">
-            <div class="panel-heading">我的公众号</div>
+            <div class="panel-heading">欢迎订阅我的公众号</div>
             <div class="list-group">
                <img class="qrcode" src="http://xcodest.me/images/qrcode.jpg"/>
             </div>
@@ -109,7 +109,16 @@
   <section id="content" class="body">
   <header>
     <h1 class="entry-title">容器与OpenStack从相杀到相爱</h1>
-    <span class="post-date"> 2017-08-10 </span>
+    <div class="entry-info">
+      <span class="glyphicon glyphicon-list-alt"></span>
+      <span class="post-date"> 2017-08-10 </span>
+      <!--
+      <a class="post-category label label-default" href="http://xcodest.me/category/others.html">Others</a>
+      -->
+      <span class="glyphicon glyphicon-tags"></span>
+      <a class="post-tag label label-default" href="http://xcodest.me/tag/docker.html">Docker</a>
+      <a class="post-tag label label-default" href="http://xcodest.me/tag/openstack.html">OpenStack</a>
+    </div>
   </header>
   <div class="entry-content">
     <p>OpenStack 项目开始于2010年，由 Rackspace 和 NASA合作发起的，旨在为公共及私有云的建设与管理提供软件的开源项目。2012年的发布的 OpenStack Essex 和 Folsom 算是真正意义上被广泛使用的版本。很多公司最早使用或改造的版本都是从这个时候开始的。</p>
@@ -206,6 +215,14 @@ docker run --init -d centos &lt;command&gt;
 <p>容器化 OpenStack 大大的简化了整个部署流程，真正实现了一键部署，给用户带来了极大的方便。可以预见，随着 OpenStack 安装的简化，将会吸引更过的用户部署和使用OpenStack，而随着一键升级、一键维护等功能的逐步完善，相信用户对OpenStack的使用将会更加普遍，更加得心应手。</p>
 </div>
 
+    <div class="copyright">
+      <p><span>本文标题:</span>容器与OpenStack从相杀到相爱</p>
+      <p><span>文章作者:</span>Jeffrey4l</p> 
+      <p><span>发布时间:</span>2017-08-10 </p>
+      <p><span>最后更新:</span> 2017-08-10 </p>
+      <p><span>原始链接:</span><a href="http://xcodest.me/containerize-openstack.html" target="_blank">http://xcodest.me/containerize-openstack.html </a></p>
+      <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
+    </div>
   </div><!-- /.entry-content -->
   <div>
     <nav>
@@ -214,9 +231,6 @@ docker run --init -d centos &lt;command&gt;
         <li class="next"><a href="a-brief-history-of-mysql.html">Newer &rarr;</a></li>
       </ul>
     </nav>
-  </div>
-  <div class="entry-info">
-    <p> Tags: <a href="http://xcodest.me/tag/docker.html">Docker</a> <a href="http://xcodest.me/tag/openstack.html">OpenStack</a>  </p>
   </div>
     <div class="comments">
       <h2>Comments</h2>

@@ -63,7 +63,7 @@
       <div class="row">
         <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
           <div class="panel panel-default">
-            <div class="panel-heading">我的公众号</div>
+            <div class="panel-heading">欢迎订阅我的公众号</div>
             <div class="list-group">
                <img class="qrcode" src="http://xcodest.me/images/qrcode.jpg"/>
             </div>
@@ -108,7 +108,15 @@
   <section id="content" class="body">
   <header>
     <h1 class="entry-title">Print the First N Characters of each Line</h1>
-    <span class="post-date"> 2015-02-15 </span>
+    <div class="entry-info">
+      <span class="glyphicon glyphicon-list-alt"></span>
+      <span class="post-date"> 2015-02-15 </span>
+      <!--
+      <a class="post-category label label-default" href="http://xcodest.me/category/linux.html">Linux</a>
+      -->
+      <span class="glyphicon glyphicon-tags"></span>
+      <a class="post-tag label label-default" href="http://xcodest.me/tag/shell.html">Shell</a>
+    </div>
   </header>
   <div class="entry-content">
     <p>在使用 Shell 的过程中，经常会遇到一行过长，导致输出折行，相当难看的情况出现。而且多数据情况下，我们只用每行的前 N 个字符就可以了。这时可以用以下方法来截断每行的长度。</p>
@@ -125,6 +133,14 @@
 <p><strong> 方法3</strong>: 使用 <code>sed -r</code></p>
 <div class="highlight"><pre><span></span>cat filename | sed -r &#39;s/(.{20}).*/\1/&#39;
 </pre></div>
+    <div class="copyright">
+      <p><span>本文标题:</span>Print the First N Characters of each Line</p>
+      <p><span>文章作者:</span>Jeffrey4l</p> 
+      <p><span>发布时间:</span>2015-02-15 </p>
+      <p><span>最后更新:</span> 2015-02-15 </p>
+      <p><span>原始链接:</span><a href="http://xcodest.me/print-the-first-n-characters-of-each-line.html" target="_blank">http://xcodest.me/print-the-first-n-characters-of-each-line.html </a></p>
+      <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
+    </div>
   </div><!-- /.entry-content -->
   <div>
     <nav>
@@ -133,9 +149,6 @@
         <li class="next"><a href="cinder-v2-api.html">Newer &rarr;</a></li>
       </ul>
     </nav>
-  </div>
-  <div class="entry-info">
-    <p> Tags: <a href="http://xcodest.me/tag/shell.html">Shell</a>  </p>
   </div>
     <div class="comments">
       <h2>Comments</h2>

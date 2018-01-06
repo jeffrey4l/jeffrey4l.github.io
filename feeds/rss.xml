@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>代码杂货铺</title><link>http://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Thu, 04 Jan 2018 00:00:00 +0800</lastBuildDate><item><title>Intel CPU 漏洞是什么，又如何应对</title><link>http://xcodest.me/meltdown-and-spectre.html</link><description>&lt;p&gt;新年刚过，一个 Intel CPU 的漏洞消息如晴天霹雳，掀起了一波讨论浪潮。Intel 的股价也应声而且倒。&lt;/p&gt;
+<rss version="2.0"><channel><title>代码杂货铺</title><link>http://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Sat, 06 Jan 2018 00:00:00 +0800</lastBuildDate><item><title>Intel CPU 漏洞是什么，又如何应对</title><link>http://xcodest.me/meltdown-and-spectre.html</link><description>&lt;p&gt;新年刚过，一个 Intel CPU 的漏洞消息如晴天霹雳，掀起了一波讨论浪潮。Intel 的股价也应声而且倒。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="intel-stock" src="images/2018/intel-stock.png"&gt;&lt;/p&gt;
 &lt;p&gt;这个漏洞几乎影响了现在所有正在使用的 CPU 型号，囊括了包含Intel, AMD, ARM在内的所有主流 CPU 厂商。影响之大，前所未有。究竟这是怎么一个问题，又如何避免?&lt;/p&gt;
 &lt;h2 id="_1"&gt;时间线&lt;/h2&gt;
@@ -82,7 +82,7 @@
 &lt;p&gt;&lt;a href="https://lists.centos.org/pipermail/centos-announce/2018-January/022696.html"&gt;https://lists.centos.org/pipermail/centos-announce/2018-January/022696.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-9" title="Jump back to footnote 9 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 04 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-04:/meltdown-and-spectre.html</guid></item><item><title>rbd 是否支持注入</title><link>http://xcodest.me/inject-file-in-rbd.html</link><description>&lt;h2 id="_1"&gt;引子&lt;/h2&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 04 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-04:/meltdown-and-spectre.html</guid><category>Linux</category><category>OS</category></item><item><title>rbd 是否支持注入</title><link>http://xcodest.me/inject-file-in-rbd.html</link><description>&lt;h2 id="_1"&gt;引子&lt;/h2&gt;
 &lt;p&gt;很多 OpenStack 与 Ceph 部署集成的文档都会告诉你，libivrt 的文件和密码注入是在 Ceph 上面是不支持的。需要使用下面的配置文件关闭。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[libvirt]&lt;/span&gt;
 &lt;span class="na"&gt;inject_password&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;false&lt;/span&gt;

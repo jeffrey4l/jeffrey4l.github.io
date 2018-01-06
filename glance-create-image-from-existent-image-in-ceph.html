@@ -62,7 +62,7 @@
       <div class="row">
         <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
           <div class="panel panel-default">
-            <div class="panel-heading">我的公众号</div>
+            <div class="panel-heading">欢迎订阅我的公众号</div>
             <div class="list-group">
                <img class="qrcode" src="http://xcodest.me/images/qrcode.jpg"/>
             </div>
@@ -107,7 +107,14 @@
   <section id="content" class="body">
   <header>
     <h1 class="entry-title">Glance Create Image from Existent Image in Ceph</h1>
-    <span class="post-date"> 2015-06-04 </span>
+    <div class="entry-info">
+      <span class="glyphicon glyphicon-list-alt"></span>
+      <span class="post-date"> 2015-06-04 </span>
+      <!--
+      <a class="post-category label label-default" href="http://xcodest.me/category/openstack.html">OpenStack</a>
+      -->
+      <span class="glyphicon glyphicon-tags"></span>
+    </div>
   </header>
   <div class="entry-content">
     <p>当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。</p>
@@ -133,6 +140,14 @@ glance image-create --id <span class="nv">$uuid</span> --name ubuntu14.04.2 --di
 <li>[1] <a href="http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf">http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf</a></li>
 <li>[2] <a href="http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/">http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/</a></li>
 </ul>
+    <div class="copyright">
+      <p><span>本文标题:</span>Glance Create Image from Existent Image in Ceph</p>
+      <p><span>文章作者:</span>Jeffrey4l</p> 
+      <p><span>发布时间:</span>2015-06-04 </p>
+      <p><span>最后更新:</span> 2015-06-04 </p>
+      <p><span>原始链接:</span><a href="http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html" target="_blank">http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html </a></p>
+      <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
+    </div>
   </div><!-- /.entry-content -->
   <div>
     <nav>
@@ -141,9 +156,6 @@ glance image-create --id <span class="nv">$uuid</span> --name ubuntu14.04.2 --di
         <li class="next"><a href="interrupt-the-python-multiprocessing-pool-in-graceful-way.html">Newer &rarr;</a></li>
       </ul>
     </nav>
-  </div>
-  <div class="entry-info">
-    <p>  </p>
   </div>
     <div class="comments">
       <h2>Comments</h2>

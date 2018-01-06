@@ -65,7 +65,7 @@
       <div class="row">
         <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
           <div class="panel panel-default">
-            <div class="panel-heading">我的公众号</div>
+            <div class="panel-heading">欢迎订阅我的公众号</div>
             <div class="list-group">
                <img class="qrcode" src="http://xcodest.me/images/qrcode.jpg"/>
             </div>
@@ -110,7 +110,17 @@
   <section id="content" class="body">
   <header>
     <h1 class="entry-title">Dhcp lease errors in vlan mode</h1>
-    <span class="post-date"> 2013-08-27 </span>
+    <div class="entry-info">
+      <span class="glyphicon glyphicon-list-alt"></span>
+      <span class="post-date"> 2013-08-27 </span>
+      <!--
+      <a class="post-category label label-default" href="http://xcodest.me/category/openstack.html">Openstack</a>
+      -->
+      <span class="glyphicon glyphicon-tags"></span>
+      <a class="post-tag label label-default" href="http://xcodest.me/tag/dhcp.html">DHCP</a>
+      <a class="post-tag label label-default" href="http://xcodest.me/tag/network.html">Network</a>
+      <a class="post-tag label label-default" href="http://xcodest.me/tag/vlan.html">VLAN</a>
+    </div>
   </header>
   <div class="entry-content">
     <p>在使用<code>keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
@@ -154,6 +164,14 @@ fixed_ip_disassociate_timeout=1209600
 
 
 <p>This is also documented <a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues"> Known issue with failed DHCP leases in VLAN configuration</a></p>
+    <div class="copyright">
+      <p><span>本文标题:</span>Dhcp lease errors in vlan mode</p>
+      <p><span>文章作者:</span>Jeffrey4l</p> 
+      <p><span>发布时间:</span>2013-08-27 </p>
+      <p><span>最后更新:</span> 2013-08-27 </p>
+      <p><span>原始链接:</span><a href="http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html" target="_blank">http://xcodest.me/dhcp-lease-errors-in-vlan-mode.html </a></p>
+      <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
+    </div>
   </div><!-- /.entry-content -->
   <div>
     <nav>
@@ -162,9 +180,6 @@ fixed_ip_disassociate_timeout=1209600
         <li class="next"><a href="linux-bonding-mode-6-break-the-vms.html">Newer &rarr;</a></li>
       </ul>
     </nav>
-  </div>
-  <div class="entry-info">
-    <p> Tags: <a href="http://xcodest.me/tag/dhcp.html">DHCP</a> <a href="http://xcodest.me/tag/network.html">Network</a> <a href="http://xcodest.me/tag/vlan.html">VLAN</a>  </p>
   </div>
     <div class="comments">
       <h2>Comments</h2>

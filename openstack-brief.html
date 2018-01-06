@@ -62,7 +62,7 @@
       <div class="row">
         <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
           <div class="panel panel-default">
-            <div class="panel-heading">我的公众号</div>
+            <div class="panel-heading">欢迎订阅我的公众号</div>
             <div class="list-group">
                <img class="qrcode" src="http://xcodest.me/images/qrcode.jpg"/>
             </div>
@@ -107,7 +107,14 @@
   <section id="content" class="body">
   <header>
     <h1 class="entry-title">Openstack Brief</h1>
-    <span class="post-date"> 2013-06-17 </span>
+    <div class="entry-info">
+      <span class="glyphicon glyphicon-list-alt"></span>
+      <span class="post-date"> 2013-06-17 </span>
+      <!--
+      <a class="post-category label label-default" href="http://xcodest.me/category/openstack.html">OpenStack</a>
+      -->
+      <span class="glyphicon glyphicon-tags"></span>
+    </div>
   </header>
   <div class="entry-content">
     <p>自从Openstack诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于Grizzly的版本来写的。</p>
@@ -158,6 +165,14 @@
 <h1 id="baremetal">Baremetal</h1>
 <p>增加Openstack对裸机的管理功能。可以实现直接对裸机进行系统安装，配置。模糊了虚拟化和物理机之间的界线。现在所有模块包括nova, glance, cinder都在努力增强这方面的功能。
 这个模块，我更期望是可以建立Nested-Openstack。同一个Openstack环境，既管理物理机，又自动在物理机上安装Openstack的模块来成为Openstack的一部分。</p>
+    <div class="copyright">
+      <p><span>本文标题:</span>Openstack Brief</p>
+      <p><span>文章作者:</span>Jeffrey4l</p> 
+      <p><span>发布时间:</span>2013-06-17 </p>
+      <p><span>最后更新:</span> 2013-06-17 </p>
+      <p><span>原始链接:</span><a href="http://xcodest.me/openstack-brief.html" target="_blank">http://xcodest.me/openstack-brief.html </a></p>
+      <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
+    </div>
   </div><!-- /.entry-content -->
   <div>
     <nav>
@@ -166,9 +181,6 @@
         <li class="next"><a href="dhcp-lease-errors-in-vlan-mode.html">Newer &rarr;</a></li>
       </ul>
     </nav>
-  </div>
-  <div class="entry-info">
-    <p>  </p>
   </div>
     <div class="comments">
       <h2>Comments</h2>

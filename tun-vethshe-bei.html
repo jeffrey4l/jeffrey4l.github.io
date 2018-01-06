@@ -63,7 +63,7 @@
       <div class="row">
         <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
           <div class="panel panel-default">
-            <div class="panel-heading">我的公众号</div>
+            <div class="panel-heading">欢迎订阅我的公众号</div>
             <div class="list-group">
                <img class="qrcode" src="http://xcodest.me/images/qrcode.jpg"/>
             </div>
@@ -108,7 +108,15 @@
   <section id="content" class="body">
   <header>
     <h1 class="entry-title">tun & veth设备</h1>
-    <span class="post-date"> 2015-02-09 </span>
+    <div class="entry-info">
+      <span class="glyphicon glyphicon-list-alt"></span>
+      <span class="post-date"> 2015-02-09 </span>
+      <!--
+      <a class="post-category label label-default" href="http://xcodest.me/category/linux.html">Linux</a>
+      -->
+      <span class="glyphicon glyphicon-tags"></span>
+      <a class="post-tag label label-default" href="http://xcodest.me/tag/network.html">Network</a>
+    </div>
   </header>
   <div class="entry-content">
     <p>OpenStack 的 Neutron 中会建立好多网卡设备。大体上这些网卡可以分为两类 tun 和 veth。</p>
@@ -156,6 +164,14 @@ ip tuntap add mode tun
 <li><a href="http://wangcong.org/2011/07/03/-e4-bb-80-e4-b9-88-e6-98-af-veth/">什么是veth</a></li>
 <li><a href="http://www.51know.info/system_base/tun_tap.html">linux下TUN/TAP虚拟网卡的使用</a></li>
 </ul>
+    <div class="copyright">
+      <p><span>本文标题:</span>tun & veth设备</p>
+      <p><span>文章作者:</span>Jeffrey4l</p> 
+      <p><span>发布时间:</span>2015-02-09 </p>
+      <p><span>最后更新:</span> 2015-02-09 </p>
+      <p><span>原始链接:</span><a href="http://xcodest.me/tun-vethshe-bei.html" target="_blank">http://xcodest.me/tun-vethshe-bei.html </a></p>
+      <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
+    </div>
   </div><!-- /.entry-content -->
   <div>
     <nav>
@@ -164,9 +180,6 @@ ip tuntap add mode tun
         <li class="next"><a href="libvirt-uuid.html">Newer &rarr;</a></li>
       </ul>
     </nav>
-  </div>
-  <div class="entry-info">
-    <p> Tags: <a href="http://xcodest.me/tag/network.html">Network</a>  </p>
   </div>
     <div class="comments">
       <h2>Comments</h2>

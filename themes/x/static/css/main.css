@@ -1,5 +1,6 @@
 body {
     color: #666;
+    font-family: "微软雅黑", "Helvetica Neue", Tahoma, Helvetica, Arial, sans-serif;
 }
 #banner {
     color: #6a9fb5;
@@ -129,4 +130,25 @@ a.footnote-ref:after {
 
 .footnote p {
     margin: 0;
+}
+
+.copyright {
+  display: block;
+  border: 1px solid #ccc;
+  padding: 10px 10px 0 10px;
+  color: #8c8c8c;
+  margin: 0px 20px;
+  border-radius: .25em!important;
+}
+
+.copyright p {
+  line-height: .7em;
+}
+.copyright span {
+  font-weight: bold;
+  margin-right: 1em;
+}
+
+.copyright a {
+    color: #5c5c5c;
 }

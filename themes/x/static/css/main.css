@@ -2,6 +2,9 @@ body {
     color: #666;
     font-family: "微软雅黑", "Helvetica Neue", Tahoma, Helvetica, Arial, sans-serif;
 }
+h1 {
+    font-size: 28px;
+}
 #banner {
     color: #6a9fb5;
     padding: 5px 100px;

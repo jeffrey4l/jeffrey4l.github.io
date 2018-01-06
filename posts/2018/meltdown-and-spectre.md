@@ -6,7 +6,7 @@ slug: meltdown-and-spectre
 
 ![intel-stock](images/2018/intel-stock.png)
 
-这个漏洞几乎影响了现在所有正在使用的 CPU 型号，囊括了包含Intel, AMD, ARM在内的所有主留 CPU 厂商。影响之大，前所未有。究竟这是怎么一个问题，又如何避免?
+这个漏洞几乎影响了现在所有正在使用的 CPU 型号，囊括了包含Intel, AMD, ARM在内的所有主流 CPU 厂商。影响之大，前所未有。究竟这是怎么一个问题，又如何避免?
 
 ## 时间线
 
@@ -91,3 +91,5 @@ Meltdown 可以视为特别简单的一个 Spectre 特例情况。
 [^5]: <https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability)>
 [^6]: <https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)>
 [^7]: <http://xcodest.me/meltdown-and-spectre.html>
+[^8]: <https://access.redhat.com/security/vulnerabilities/speculativeexecution>
+[^9]: <https://lists.centos.org/pipermail/centos-announce/2018-January/022696.html>

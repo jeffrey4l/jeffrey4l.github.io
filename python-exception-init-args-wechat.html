@@ -1,10 +1,10 @@
 <html>
-<head>
+  <head>
     <meta http-equiv=Content-Type content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
-</head>
-<body>
-  <p><img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg" /></p>
+  </head>
+  <body>
+    <p><img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg" /></p>
 <p>一直没有搞明白 <code>Exception</code> 的 args 和 message 参数, 最近看了一下 CPython 源码，
 终于搞明白了。</p>
 <p>一开始(从2.5开始)的时候是有 <code>args</code> 和 <code>message</code> 两个参数的。2.6版本之后，把
@@ -119,17 +119,15 @@ BaseException_set_message(PyBaseExceptionObject *self, PyObject *val)
 
 class My2Exception(Exception):
     message = 'this is a message'</code></pre>
-  <!--
-  <div class="copyleft">
-    <p>文档信息</p>
-    <ul>
+    <p> 点击「阅读原文」，能看到更多链接。 </p>
+    <!--
+      <div class="copyleft">
+      <p>文档信息</p>
+      <ul>
       <li> 版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）</li>
       <li> 作者： Jeffrey4l </li>
       <li> 发表日期： 2017年12月19日 </li>
-  </div>
-  -->
-<div>
-
-</div>
-</body>
+      </div>
+    -->
+  </body>
 </html>

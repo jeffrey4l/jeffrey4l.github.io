@@ -148,10 +148,14 @@ dl dd > :last-child {
    margin-bottom: 0; }
 
 blockquote {
-   border-left: 4px solid #42C994;
+   border-left: 4px solid #ddd;
    margin-left: 17px;
    padding: 0 15px;
-   color: #777777; }
+   color: #bbb; }
+
+blockquote p {
+    margin: 0;
+}
 blockquote > :first-child {
    margin-top: 0; }
 blockquote > :last-child {

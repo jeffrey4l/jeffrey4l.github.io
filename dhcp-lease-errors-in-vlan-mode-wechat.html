@@ -1,10 +1,10 @@
 <html>
-<head>
+  <head>
     <meta http-equiv=Content-Type content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
-</head>
-<body>
-  <p>在使用<code>keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
+  </head>
+  <body>
+    <p>在使用<code>keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
 <pre class="codehilite"><code>PERSISTENT_DHCLIENT=1</code></pre>
 
 
@@ -43,17 +43,15 @@ fixed_ip_disassociate_timeout=1209600</code></pre>
 
 
 <p>This is also documented <a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues"> Known issue with failed DHCP leases in VLAN configuration</a></p>
-  <!--
-  <div class="copyleft">
-    <p>文档信息</p>
-    <ul>
+    <p> 点击「阅读原文」，能看到更多链接。 </p>
+    <!--
+      <div class="copyleft">
+      <p>文档信息</p>
+      <ul>
       <li> 版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）</li>
       <li> 作者： Jeffrey4l </li>
       <li> 发表日期： 2017年12月19日 </li>
-  </div>
-  -->
-<div>
-
-</div>
-</body>
+      </div>
+    -->
+  </body>
 </html>

@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>代码杂货铺</title><link>http://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Sat, 06 Jan 2018 00:00:00 +0800</lastBuildDate><item><title>Intel CPU 漏洞是什么，又如何应对</title><link>http://xcodest.me/meltdown-and-spectre.html</link><description>&lt;p&gt;新年刚过，一个 Intel CPU 的漏洞消息如晴天霹雳，掀起了一波讨论浪潮。Intel 的股价也应声而且倒。&lt;/p&gt;
+<rss version="2.0"><channel><title>代码杂货铺</title><link>http://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Wed, 10 Jan 2018 00:00:00 +0800</lastBuildDate><item><title>vSphere, ESXi 和 vCenter 的区别</title><link>http://xcodest.me/difference-between-vsphere-esxi-and-vcenter.html</link><description>&lt;blockquote&gt;
+&lt;p&gt;最近在看 VMware 一直没有搞清楚这几个产品之间的区别和联系。正好在网上搜索到一个好文，翻译下来。&lt;/p&gt;
+&lt;p&gt;本文翻译自：http://www.mustbegeek.com/difference-between-vsphere-esxi-and-vcenter/&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;最近对 VMware 虚拟化解决方案有很多的疑惑。毫无疑问，VMware是虚拟化解决方案的老大。但是第一次接触 Vmware 虚拟化平台的人面对 VMware vSphere 和他的组件经常感觉到疑惑。所以今天我将解释下 vSphere 和他的组件。能弄清楚 vSphere，EXSi 和 vCenter 的区别是很重要的。为了更深入了解和体验 vSphere, 你还可以&lt;a href="http://www.mustbegeek.com/installing-vsphere-in-vmware-workstation/"&gt;在 VMware Workstation 中安装 vSphere&lt;/a&gt;。&lt;/p&gt;
+&lt;h2 id="vsphereesxi-vcenter"&gt;vSphere，ESXi 和 vCenter 的区别&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;VMware Inc.&lt;/strong&gt; 是一家软件公司。它开发了许多&lt;a href="http://www.vmware.com/products/"&gt;产品&lt;/a&gt;，尤其是各种云解决方案 。他的云解决方案包括&lt;a href="https://www.vmware.com/products/vcloud-suite.html"&gt;云产品&lt;/a&gt;，&lt;a href="https://www.vmware.com/products/datacenter-virtualization.html"&gt;数据中心产品&lt;/a&gt;和&lt;a href="https://www.vmware.com/products/desktop-virtualization.html"&gt;桌面产品&lt;/a&gt;等。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;vSphere&lt;/strong&gt; 是在数据中心产品下的一套软件。vSphere 类似微软的 Office 办公套件，Office 办公套件包含了许多软件如Word, Excel, Access 等。和 Office 一样，vSphere 也是一个软件的集合。他包括了 vCenter, ESXi 和 vSphere 等。所以，这些软件联合起来就是 vSphere。vSphere 不是一个你可以安装使用的软件。它只是一个包含其它组件的集合。&lt;/p&gt;
+&lt;p&gt;ESXi, vSphere client 和 vCeneter 都是 vSphere 的组件。&lt;strong&gt;ESXi&lt;/strong&gt;是 vSphere 中最重要的一个组件。ESXi 是虚拟化服务。所有的虚拟机都是运行在 ESXi 服务上面。为了安装，管理和访问这些虚拟机，你需要另外的 vSphere 套件，也就是 vSphere client 或 vCenter。&lt;strong&gt;vSphere client&lt;/strong&gt;允许管理员访问 ESXi 服务并管理虚拟机。vSphere client 是安装在客户机(也就是管理员的笔记本)上面。vSphere client 被用来连接 ESXi 服务器和管理任务。那么什么是 vCenter?为什么虚拟它?尝试下在没有 vCenter server 的时候，只用 vSphere client 来&lt;a href="http://www.mustbegeek.com/create-copy-of-existing-virtual-machine-in-esxi-server/"&gt;克隆存在的虚拟机&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;vCenter server&lt;/strong&gt; 和 vSphere client 很像，但是它和功能更加强大。vCenter server 是安装在 Window 服务器或 Linux 服务器里面。VMware vCenter server 是一个中心化的管理应用。你可以通过它管理所有的虚拟机和 ESXi 物理机。vSphere client 可以通过访问 vCenter Server 来管理 EXSi 服务器。vCenter server 是一个企业级的产品，有许多企业级的功能，像 vMotion, VMware High Availability, VMware Update Manager 和 VMware Distributed Resource Scheduler(DRS)。你可以方便的&lt;a href="http://www.mustbegeek.com/clone-virtual-machine-in-vmware-vcenter/"&gt;通过 vCenter server 克隆存在的虚拟机&lt;/a&gt;。所以，vCenter 也是 vSphere 套件的一个重要组成部分。你需要单独购买 vCenter 的 license。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="vSphere-products.png" src="images/2018/vSphere-product.png"&gt;&lt;/p&gt;
+&lt;p&gt;这个图描述了 vSphere 套间之前的关系。vSphere 是一个产品套件，&lt;a href="http://www.mustbegeek.com/install-configure-vmware-esxi-6-0/"&gt;ESXi 是安装在物理机上面的服务&lt;/a&gt;。vSphere Client 安装在笔记本或 PC 机上面，用来访问 ESXi 服务并安装和管理上面的虚拟机。vCenter Server 安装在了 ESXi 服务器的虚拟机里面。vCenter 也可以安装在单独的物理服务器上面，但是虚拟化不应该更好么? vCenter 服务通常用在有很多 EXSi 服务和许多虚拟机的大规模环境中。vCenter 也可以使用 vSphere client 来管理。所以 vSphere client 可以在小环境中直接管理 ESXi 服务。也可以在大规模的环境中，通过 vCenter 服务间接管理 ESXi 服务。&lt;/p&gt;
+&lt;p&gt;你可以在你的电脑中&lt;a href="http://www.mustbegeek.com/virtualization/installing-vsphere-in-vmware-workstation/"&gt;安装 vSphere&lt;/a&gt;来体验这些技术。更多信息，请参看&lt;a href="http://www.vmware.com/"&gt;VMware 官网&lt;/a&gt;。&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 08 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-08:/difference-between-vsphere-esxi-and-vcenter.html</guid><category>vmware</category></item><item><title>Intel CPU 漏洞是什么，又如何应对</title><link>http://xcodest.me/meltdown-and-spectre.html</link><description>&lt;p&gt;新年刚过，一个 Intel CPU 的漏洞消息如晴天霹雳，掀起了一波讨论浪潮。Intel 的股价也应声而且倒。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="intel-stock" src="images/2018/intel-stock.png"&gt;&lt;/p&gt;
 &lt;p&gt;这个漏洞几乎影响了现在所有正在使用的 CPU 型号，囊括了包含Intel, AMD, ARM在内的所有主流 CPU 厂商。影响之大，前所未有。究竟这是怎么一个问题，又如何避免?&lt;/p&gt;
 &lt;h2 id="_1"&gt;时间线&lt;/h2&gt;
@@ -51,6 +63,14 @@
 &lt;li&gt;不要安装运行未知来源的软件。&lt;/li&gt;
 &lt;li&gt;不要用盗版软件。&lt;/li&gt;
 &lt;/ul&gt;
+&lt;h2 id="more-info"&gt;More Info&lt;/h2&gt;
+&lt;p&gt;Following is copied from ttx post&lt;sup id="fnref-11"&gt;&lt;a class="footnote-ref" href="#fn-11"&gt;11&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Where can I learn more ?&lt;/p&gt;
+&lt;p&gt;You can find lots of explanations over the Internet. To understand the basic flaw and the CPU technologies involved, I recommend reading &lt;a href="https://www.raspberrypi.org/blog/why-raspberry-pi-isnt-vulnerable-to-spectre-or-meltdown/"&gt;Eben Upton's great post&lt;/a&gt;. If that's too deep or you need a good analogy to tell your less-technical friends, I find &lt;a href="https://medium.com/@rgmerk/an-explanation-of-meltdown-and-spectre-for-non-programmers-7e98b0a28da4"&gt;this one by Robert Merkel&lt;/a&gt; not too bad.&lt;/p&gt;
+&lt;p&gt;For technical details on the vulnerability themselves, &lt;a href="https://googleprojectzero.blogspot.fr/2018/01/reading-privileged-memory-with-side.html"&gt;Jann Horn's post on Google Project Zero blog&lt;/a&gt; should be first on your list. You can also read the Spectre and Meltdown papers.&lt;/p&gt;
+&lt;p&gt;For more information on the various mitigation techniques, I recommend starting with this article from &lt;a href="https://security.googleblog.com/2018/01/more-details-about-mitigations-for-cpu_4.html"&gt;Google's Security blog&lt;/a&gt;. For information about Linux kernel patches in particular, I recommend &lt;a href="http://kroah.com/log/blog/2018/01/06/meltdown-status/"&gt;Greg Kroah-Hartman's post&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;div class="footnote"&gt;
 &lt;hr&gt;
 &lt;ol&gt;
@@ -80,6 +100,12 @@
 &lt;/li&gt;
 &lt;li id="fn-9"&gt;
 &lt;p&gt;&lt;a href="https://lists.centos.org/pipermail/centos-announce/2018-January/022696.html"&gt;https://lists.centos.org/pipermail/centos-announce/2018-January/022696.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-9" title="Jump back to footnote 9 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn-10"&gt;
+&lt;p&gt;&lt;a href="https://lists.centos.org/pipermail/centos-announce/2018-January/thread.html"&gt;https://lists.centos.org/pipermail/centos-announce/2018-January/thread.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-10" title="Jump back to footnote 10 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn-11"&gt;
+&lt;p&gt;&lt;a href="https://ttx.re/openstack-spectre-meltdown-faq.html"&gt;https://ttx.re/openstack-spectre-meltdown-faq.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-11" title="Jump back to footnote 11 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 04 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-04:/meltdown-and-spectre.html</guid><category>Linux</category><category>OS</category></item><item><title>rbd 是否支持注入</title><link>http://xcodest.me/inject-file-in-rbd.html</link><description>&lt;h2 id="_1"&gt;引子&lt;/h2&gt;

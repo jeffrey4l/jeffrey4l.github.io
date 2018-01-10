@@ -69,6 +69,7 @@
           <div class="panel panel-default">
             <div class="panel-heading">Categories</div>
             <div class="list-group">
+              <a class="list-group-item" href="http://xcodest.me/category/cloud.html">Cloud</a>
               <a class="list-group-item" href="http://xcodest.me/category/life.html">Life</a>
               <a class="list-group-item" href="http://xcodest.me/category/linux.html">Linux</a>
               <a class="list-group-item" href="http://xcodest.me/category/openstack.html">OpenStack</a>
@@ -170,6 +171,14 @@
 <li>不要安装运行未知来源的软件。</li>
 <li>不要用盗版软件。</li>
 </ul>
+<h2 id="more-info">More Info</h2>
+<p>Following is copied from ttx post<sup id="fnref-11"><a class="footnote-ref" href="#fn-11">11</a></sup></p>
+<blockquote>
+<p>Where can I learn more ?</p>
+<p>You can find lots of explanations over the Internet. To understand the basic flaw and the CPU technologies involved, I recommend reading <a href="https://www.raspberrypi.org/blog/why-raspberry-pi-isnt-vulnerable-to-spectre-or-meltdown/">Eben Upton's great post</a>. If that's too deep or you need a good analogy to tell your less-technical friends, I find <a href="https://medium.com/@rgmerk/an-explanation-of-meltdown-and-spectre-for-non-programmers-7e98b0a28da4">this one by Robert Merkel</a> not too bad.</p>
+<p>For technical details on the vulnerability themselves, <a href="https://googleprojectzero.blogspot.fr/2018/01/reading-privileged-memory-with-side.html">Jann Horn's post on Google Project Zero blog</a> should be first on your list. You can also read the Spectre and Meltdown papers.</p>
+<p>For more information on the various mitigation techniques, I recommend starting with this article from <a href="https://security.googleblog.com/2018/01/more-details-about-mitigations-for-cpu_4.html">Google's Security blog</a>. For information about Linux kernel patches in particular, I recommend <a href="http://kroah.com/log/blog/2018/01/06/meltdown-status/">Greg Kroah-Hartman's post</a>.</p>
+</blockquote>
 <div class="footnote">
 <hr>
 <ol>
@@ -200,13 +209,19 @@
 <li id="fn-9">
 <p><a href="https://lists.centos.org/pipermail/centos-announce/2018-January/022696.html">https://lists.centos.org/pipermail/centos-announce/2018-January/022696.html</a>&#160;<a class="footnote-backref" href="#fnref-9" title="Jump back to footnote 9 in the text">&#8617;</a></p>
 </li>
+<li id="fn-10">
+<p><a href="https://lists.centos.org/pipermail/centos-announce/2018-January/thread.html">https://lists.centos.org/pipermail/centos-announce/2018-January/thread.html</a>&#160;<a class="footnote-backref" href="#fnref-10" title="Jump back to footnote 10 in the text">&#8617;</a></p>
+</li>
+<li id="fn-11">
+<p><a href="https://ttx.re/openstack-spectre-meltdown-faq.html">https://ttx.re/openstack-spectre-meltdown-faq.html</a>&#160;<a class="footnote-backref" href="#fnref-11" title="Jump back to footnote 11 in the text">&#8617;</a></p>
+</li>
 </ol>
 </div>
     <div class="copyright">
       <p><span>本文标题:</span>Intel CPU 漏洞是什么，又如何应对</p>
       <p><span>文章作者:</span>Jeffrey4l</p> 
       <p><span>发布时间:</span>2018-01-04 </p>
-      <p><span>最后更新:</span>2018-01-06 </p>
+      <p><span>最后更新:</span>2018-01-10</p>
       <p><span>原始链接:</span><a href="http://xcodest.me/meltdown-and-spectre.html" target="_blank">http://xcodest.me/meltdown-and-spectre.html </a></p>
       <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
     </div>
@@ -215,7 +230,7 @@
     <nav>
       <ul class="pager">
         <li class="previous"><a href="inject-file-in-rbd.html">&larr; Older</a></li>
-        <li class="next disabled"><span href="">Newer &rarr;</span></li>
+        <li class="next"><a href="difference-between-vsphere-esxi-and-vcenter.html">Newer &rarr;</a></li>
       </ul>
     </nav>
   </div>

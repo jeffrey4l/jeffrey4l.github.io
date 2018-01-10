@@ -41,6 +41,7 @@ h1 {
 .entry-content {
     font-size: 15px;
     line-height: 1.8;
+    margin-top: 30px;
 }
 
 blockquote {
@@ -52,6 +53,10 @@ blockquote > :first-child {
 margin-top: 0; }
 blockquote > :last-child {
 margin-bottom: 0; }
+
+blockquote p {
+    margin: 0px;
+}
 
 footer {
     text-align: right;
@@ -137,15 +142,14 @@ a.footnote-ref:after {
 
 .copyright {
   display: block;
-  border: 1px solid #ccc;
-  padding: 10px 10px 0 10px;
+  border-left: 4px solid #ddd;
+  padding: 0 15px;
   color: #8c8c8c;
-  margin: 0px 20px;
-  border-radius: .25em!important;
+  margin: 0px 0px;
 }
 
 .copyright p {
-  line-height: .7em;
+    margin: 0px;
 }
 .copyright span {
   font-weight: bold;

@@ -1,10 +1,10 @@
 <html>
-<head>
+  <head>
     <meta http-equiv=Content-Type content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
-</head>
-<body>
-  <p>做OpenStack icehouse 升级到 Juno过程中，升级Neutron数据库时遇到这个错误。</p>
+  </head>
+  <body>
+    <p>做OpenStack icehouse 升级到 Juno过程中，升级Neutron数据库时遇到这个错误。</p>
 <pre class="codehilite"><code>$ python -m neutron.db.migration.migrate_to_ml2 openvswitch mysql://USER:PASSWORD@10.251.1.8/neutron
 Traceback (most recent call last):
   File &quot;/usr/lib/python2.7/runpy.py&quot;, line 162, in _run_module_as_main
@@ -73,17 +73,15 @@ sqlalchemy.exc.OperationalError: (OperationalError) (1005, &quot;Can't create ta
 <li><a href="https://bugs.launchpad.net/neutron/+bug/1332564">https://bugs.launchpad.net/neutron/+bug/1332564</a></li>
 <li><a href="http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html">http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html</a></li>
 </ol>
-  <!--
-  <div class="copyleft">
-    <p>文档信息</p>
-    <ul>
+    <p> 点击「阅读原文」，能看到更多链接。 </p>
+    <!--
+      <div class="copyleft">
+      <p>文档信息</p>
+      <ul>
       <li> 版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）</li>
       <li> 作者： Jeffrey4l </li>
       <li> 发表日期： 2017年12月19日 </li>
-  </div>
-  -->
-<div>
-
-</div>
-</body>
+      </div>
+    -->
+  </body>
 </html>

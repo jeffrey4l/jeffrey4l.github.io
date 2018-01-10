@@ -1,6 +1,6 @@
 title: Intel CPU 漏洞是什么，又如何应对
 date: 2018-01-04
-modified: 2018-01-06
+modified: 2018-01-10
 slug: meltdown-and-spectre
 tags: Linux, OS
 
@@ -86,6 +86,18 @@ Meltdown 可以视为特别简单的一个 Spectre 特例情况。
 * 不要安装运行未知来源的软件。
 * 不要用盗版软件。
 
+## More Info
+
+Following is copied from ttx post[^11]
+
+> Where can I learn more ?
+
+> You can find lots of explanations over the Internet. To understand the basic flaw and the CPU technologies involved, I recommend reading [Eben Upton's great post](https://www.raspberrypi.org/blog/why-raspberry-pi-isnt-vulnerable-to-spectre-or-meltdown/). If that's too deep or you need a good analogy to tell your less-technical friends, I find [this one by Robert Merkel](https://medium.com/@rgmerk/an-explanation-of-meltdown-and-spectre-for-non-programmers-7e98b0a28da4) not too bad.
+
+> For technical details on the vulnerability themselves, [Jann Horn's post on Google Project Zero blog](https://googleprojectzero.blogspot.fr/2018/01/reading-privileged-memory-with-side.html) should be first on your list. You can also read the Spectre and Meltdown papers.
+
+> For more information on the various mitigation techniques, I recommend starting with this article from [Google's Security blog](https://security.googleblog.com/2018/01/more-details-about-mitigations-for-cpu_4.html). For information about Linux kernel patches in particular, I recommend [Greg Kroah-Hartman's post](http://kroah.com/log/blog/2018/01/06/meltdown-status/).
+
 [^1]: <https://googleprojectzero.blogspot.com/2018/01/reading-privileged-memory-with-side.html>
 [^2]: <https://access.redhat.com/errata/RHSA-2018:0007>
 [^3]: <https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/SpectreAndMeltdown>
@@ -95,3 +107,5 @@ Meltdown 可以视为特别简单的一个 Spectre 特例情况。
 [^7]: <http://xcodest.me/meltdown-and-spectre.html>
 [^8]: <https://access.redhat.com/security/vulnerabilities/speculativeexecution>
 [^9]: <https://lists.centos.org/pipermail/centos-announce/2018-January/022696.html>
+[^10]: <https://lists.centos.org/pipermail/centos-announce/2018-January/thread.html>
+[^11]: <https://ttx.re/openstack-spectre-meltdown-faq.html>

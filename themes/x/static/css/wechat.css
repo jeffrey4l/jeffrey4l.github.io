@@ -308,6 +308,10 @@ sup {
     margin: 0px;
 }
 
+.footnote-ref {
+    display: none;
+}
+
 .footnote-backref {
     display: none;
 }

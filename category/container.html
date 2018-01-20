@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-      <title> PIP install from local - 代码杂货铺</title>
+    <title>代码杂货铺</title>
     <meta charset="utf-8" />
-
-    <meta name="tags" contents="Python" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
     <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
@@ -80,7 +78,7 @@
             <div class="panel-heading">Categories</div>
             <div class="list-group">
               <a class="list-group-item" href="http://xcodest.me/category/cloud.html">Cloud<span class="badge">1</span></a>
-              <a class="list-group-item" href="http://xcodest.me/category/container.html">Container<span class="badge">2</span></a>
+              <a class="list-group-item active" href="http://xcodest.me/category/container.html">Container<span class="badge">2</span></a>
               <a class="list-group-item" href="http://xcodest.me/category/database.html">Database<span class="badge">1</span></a>
               <a class="list-group-item" href="http://xcodest.me/category/life.html">Life<span class="badge">3</span></a>
               <a class="list-group-item" href="http://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
@@ -105,70 +103,20 @@
         <div class="col-md-8 col-xs-12">
 <div class="row">
   <div class="col-md-12 col-xs-12">
-  <section id="content" class="body">
-  <header>
-    <h1 class="entry-title">PIP install from local</h1>
-    <div class="entry-info">
-      <span class="glyphicon glyphicon-list-alt"></span>
-      <span class="post-date"> 2015-01-08 </span>
-      <!--
-      <a class="post-category label label-default" href="http://xcodest.me/category/programming.html">Programming</a>
-      -->
-      <span class="glyphicon glyphicon-tags"></span>
-      <a class="post-tag label label-default" href="http://xcodest.me/tag/python.html">Python</a>
-    </div>
-  </header>
-  <div class="entry-content">
-    <p>在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。</p>
-<p>先在有网络的环境中下载下来所有需要的包：</p>
-<div class="highlight"><pre><span></span>pip install --download <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages -r requirement.txt
-</pre></div>
-
-
-<p>在把这些包拷贝到目标环境中去，使用下面的命令来安装：</p>
-<div class="highlight"><pre><span></span>pip install --no-index --find-links <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages -r requirement.txt
-</pre></div>
-
-
-<p>所有需要的包就安装上了。</p>
-<p>为了方便使用，还可以把这两个命令弄成alias来使用</p>
-<div class="highlight"><pre><span></span>alias pipcache=&#39;pip install --download <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages&#39;
-alias pipinstall=&#39;pip install --no-index --find-links=file://<span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages/&#39;
-</pre></div>
-    <div class="copyright">
-      <p><span>本文标题:</span>PIP install from local</p>
-      <p><span>文章作者:</span>Jeffrey4l</p> 
-      <p><span>发布时间:</span>2015-01-08 </p>
-      <p><span>最后更新:</span>2015-01-08</p>
-      <p><span>原始链接:</span><a href="http://xcodest.me/pip-install-from-local.html" target="_blank">http://xcodest.me/pip-install-from-local.html </a></p>
-      <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
-    </div>
-  </div><!-- /.entry-content -->
-  <div>
-    <nav>
-      <ul class="pager">
-        <li class="previous"><a href="nova-flavor-init.html">&larr; Older</a></li>
-        <li class="next"><a href="mysql-errno-150.html">Newer &rarr;</a></li>
-      </ul>
-    </nav>
+    <ol class="breadcrumb">
+      <li><a href="http://xcodest.me">Home</a></li>
+      <li><a href="#">Category</a></li>
+      <li class="active">Container</li>
+    </ol>
+    <div class="list-group">
+        <a class="list-group-item" href="http://xcodest.me/s2i.html" rel="bookmark" title="Permalink to Source to Image 工具介绍">Source to Image 工具介绍
+          <span class="badge">2018-01-16</span>
+        </a>
+        <a class="list-group-item" href="http://xcodest.me/minikube.html" rel="bookmark" title="Permalink to 使用 minikube 搭建 kubernetes 单机环境">使用 minikube 搭建 kubernetes 单机环境
+          <span class="badge">2017-12-11</span>
+        </a>
+    </ul><!-- /#posts-list -->
   </div>
-    <div class="comments">
-      <h2>Comments</h2>
-      <div id="disqus_thread"></div>
-      <script type="text/javascript">
-        var disqus_shortname = 'xcodest';
-        var disqus_identifier = 'pip-install-from-local.html';
-        var disqus_url = 'http://xcodest.me/pip-install-from-local.html';
-        (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//xcodest.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-      </script>
-      <noscript>Please enable JavaScript to view the comments.</noscript>
-    </div>
-</section>
-</div>
 </div>
         </div>
       </div>

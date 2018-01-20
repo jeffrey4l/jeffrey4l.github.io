@@ -3,6 +3,7 @@ Reset Password in Systemd
 
 :date: 2016-08-28 10:00:00
 :tags: Linux, Systemd
+:category: Linux
 
 现在基本是用 ssh key 来登录系统了。之前可以直接在 GRUB 直接进单用户改密码。使用了 systemd 的系统，后已经不可以这么使用了。原因是 Systemd 的单用户模式使用了 ``/usr/sbin/sulogin`` 这个 shell, 也必须输入密码才可以。
 

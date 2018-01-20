@@ -4,6 +4,7 @@ A brief history of MySQL
 :date: 2017-08-12
 :tags: Database, MySQL
 :slug: a-brief-history-of-mysql
+:category: Database
 
 在开源软件中，一提到关系型数据库，大家最先想到的是一定是 MySQL, MySQL在过去由于性能高、成本低、可靠性好，在很早的时候，就占据了数据库的霸主的地位，成为最流行的开源数据库。非常流行的开源软件组合LAMP中的“M”指的就是MySQL。但是有开源的地方，就有江湖, 一言不合就 fork 。现在以 MySQL 为基础的变种数据库也有好几个，下面我们来依次认识下。
 

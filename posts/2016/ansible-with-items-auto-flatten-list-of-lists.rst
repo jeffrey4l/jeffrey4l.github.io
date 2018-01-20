@@ -4,6 +4,7 @@ Ansible with-items auto flatten list of lists
 :date: 2016-12-27
 :tags: Ansible
 :slug: ansible-with-items-auto-flatten-list-of-lists
+:category: Ops
 
 Ansible has ``with_items`` directive, which make task iterating the lists in
 ``with_items``. A normal usage is like

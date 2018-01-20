@@ -4,6 +4,7 @@ Core Dump
 :date: 2017-12-04
 :tags: Linux, Docker
 :slug: core-dump
+:category: Linux
 
 
 容器化后，容器里面的进程如果出现 core dump ，默认情况下，dump 出来的文件是存放在容器内部的根目录的。这样会导致以下几个问题

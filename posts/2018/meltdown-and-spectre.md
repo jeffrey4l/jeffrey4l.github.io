@@ -2,6 +2,7 @@ title: Intel CPU 漏洞是什么，又如何应对
 date: 2018-01-04
 modified: 2018-01-10
 slug: meltdown-and-spectre
+category: Linux
 tags: Linux, OS
 
 新年刚过，一个 Intel CPU 的漏洞消息如晴天霹雳，掀起了一波讨论浪潮。Intel 的股价也应声而且倒。

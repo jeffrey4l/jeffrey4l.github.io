@@ -4,6 +4,7 @@
 :date: 2017.12.11
 :tags: Docker, Kubernetes
 :slug: minikube
+:category: Container
 
 minikube 可以快速搭建 kubernetes 单机环境，方便开发及测试使用。其支持大部分kubernetes的功能，列表如下
 

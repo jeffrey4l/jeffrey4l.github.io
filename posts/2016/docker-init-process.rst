@@ -4,6 +4,7 @@ Docker init 进程
 :date: 2016-11-07
 :tags: Linux, Docker
 :slug: docker-init-process
+:category: Linux
 
 应用容器化后，重启容器的时候，经常会很慢，而且docker daemon 日志中经常会抛出以
 下错误

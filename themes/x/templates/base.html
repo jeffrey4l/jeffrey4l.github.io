@@ -76,18 +76,18 @@
             </div>
           </div>
           <div class="panel panel-default">
-            <div class="panel-heading">Categories</div>
-            <div class="list-group">
-              {% for cate, arti in categories %}
-              <a class="list-group-item{% if cate==category and not article %} active{% endif %}" href="{{ SITEURL }}/category/{{ cate|lower }}.html">{{ cate }}</a>
-              {% endfor %}
-            </div>
-          </div>
-          <div class="panel panel-default">
             <div class="panel-heading">Social</div>
             <div class="list-group">
               {% for name, link in SOCIALS %} 
               <a class="list-group-item" href="{{ link }}" target="_blank">{{ name }}</a>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Categories</div>
+            <div class="list-group">
+              {% for cate, arti in categories %}
+              <a class="list-group-item{% if cate==category and not article %} active{% endif %}" href="{{ SITEURL }}/category/{{ cate|lower }}.html">{{ cate }}<span class="badge">{{ arti | length }}</span></a>
               {% endfor %}
             </div>
           </div>

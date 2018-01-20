@@ -4,6 +4,7 @@ OpenStack Ocata Releasenotes
 :date: 2017-03-12
 :tags: OpenStack
 :slug: openstack-ocata-releasenotes
+:category: OpenStack
 
 Nova
 ====

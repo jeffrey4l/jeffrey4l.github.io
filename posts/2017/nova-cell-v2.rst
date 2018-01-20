@@ -4,6 +4,7 @@ Nova Cell V2 详解
 :date: 2017-02-23
 :tags: OpenStack, Kolla
 :slug: nova-cell-v2
+:category: OpenStack
 
 现在，OpenStack 在控制平面上的性能瓶颈主要在 Message Queue 和 Database 。尤其是 Message Queue , 随着计算节点的增加，性能变的越来越差。为了应对这种情况， Nova 很早之前提出来 nova-cell (以下以 cellv1 代替)  的解决方案。目的是在把大的 OpenStack 集群分成小的单元，每个单元有自己的 Message Queue 和 Database。以此来解决规模增加时引起的性能问题。而且不会向 Region 那样，把各个集群独立运行。在 cell 里面，Keystone、Neutron、Cinder、Glance 等资源还是共享的。
 

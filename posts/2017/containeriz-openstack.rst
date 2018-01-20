@@ -4,6 +4,7 @@
 :date: 2017-08-10
 :tags: Docker, OpenStack
 :slug: containerize-openstack
+:category: OpenStack
 :summary: 在容器化部署 OpenStack 项目开始之前，已经有大量 OpenStack 部署方案存在，包括当时整个社区主流的老牌部署工具 Puppet， 新兴的工具例如 SaltStack, Ansible, Chef 都有相关的部署模块。然而这些部署方案并没有简化 OpenStack 的部署，只是实现了过程的自动化。本质上是没有太大区别的。有些问题并没有很好的解决，例如包的依赖关系，升级困难等。
 
 OpenStack 项目开始于2010年，由 Rackspace 和 NASA合作发起的，旨在为公共及私有云的建设与管理提供软件的开源项目。2012年的发布的 OpenStack Essex 和 Folsom 算是真正意义上被广泛使用的版本。很多公司最早使用或改造的版本都是从这个时候开始的。

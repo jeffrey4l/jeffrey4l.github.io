@@ -1,7 +1,7 @@
 title: Source to Image 工具介绍
 date: 2018-01-16
 tags: Docker, Container
-catalog: Container
+category: Container
 slug: s2i
 
 ## 介绍

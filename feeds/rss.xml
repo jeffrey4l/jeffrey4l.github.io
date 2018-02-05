@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>代码杂货铺</title><link>http://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Sat, 20 Jan 2018 00:00:00 +0800</lastBuildDate><item><title>关于虚拟机密码你所有需要知道的一切</title><link>http://xcodest.me/everything-about-vm-password.html</link><description>&lt;p&gt;虽然各种云的虚拟机都推荐使用 SSH 密钥登录，但是还是有很多人喜欢使用密码登录，而且有的时候需要通过 console 来登录系统。那么如何更好的设置、修改虚拟机的密码呢?本文以 OpenStack 为例，介绍如何设置及修改虚拟机改密码。&lt;/p&gt;
+<rss version="2.0"><channel><title>代码杂货铺</title><link>http://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Sat, 20 Jan 2018 00:00:00 +0800</lastBuildDate><item><title>关于虚拟机密码你所有需要知道的一切</title><link>http://xcodest.me/everything-about-vm-password.html</link><description>&lt;p&gt;虽然各种云的虚拟机都推荐使用 SSH 密钥登录，但是还是有很多人喜欢使用密码登录，而且有的时候需要通过 console 来登录系统。那么如何更好的设置、修改虚拟机的密码呢?本文以 OpenStack 为例，介绍如何设置及修改虚拟机密码。&lt;/p&gt;
 &lt;h2 id="_1"&gt;内置密码&lt;/h2&gt;
 &lt;p&gt;这是最简单的，制作镜像的时候，直接给 root 账号配置一个密码。但是问题也不言而喻。所有的示例都有相同的默认密码，如果用户忘记改的话，其它人很容易的就能扫到你的机器，从而登录你的机器。&lt;/p&gt;
 &lt;h2 id="libvirt"&gt;启动的时候通过 libvirt 进行密码注入&lt;/h2&gt;
@@ -20,7 +20,7 @@
 &lt;/ul&gt;
 &lt;p&gt;所以这个方法也不是推荐使用，更详细的信息，可能参看我另一篇文章「&lt;a href="http://xcodest.me/inject-file-in-rbd.html"&gt;rbd 是否支持注入&lt;/a&gt;」。&lt;/p&gt;
 &lt;h2 id="metadata-api"&gt;通过 metadata api 注入&lt;/h2&gt;
-&lt;p&gt;cloud-init 这个服务是从 AWS 学来的。它安装在虚拟机中，在启动虚拟机时，做一些初始化工作。如：硬盘分区自动扩展，SSH Public Key 注入，用户创建等。用户甚至可以注入一些 shell 脚本到虚拟机中运行。在自动化方便启了很大的作用。Heat 的实现就依赖于 cloud-init 服务。&lt;/p&gt;
+&lt;p&gt;cloud-init 这个服务是从 AWS 学来的。它安装在虚拟机中，在启动虚拟机时，做一些初始化工作。如：硬盘分区自动扩展，SSH Public Key 注入，用户创建等。用户甚至可以注入一些 shell 脚本到虚拟机中运行。在自动化方面启了很大的作用。Heat 的实现就依赖于 cloud-init 服务。&lt;/p&gt;
 &lt;p&gt;在 OpenStack 上，cloud-init 应该从 http://169.254.169.254 去拿到所需要的信息。而这个服务是通过 iptables 转到了 neutron-metadata-agent 服务上&lt;/p&gt;
 &lt;p&gt;通过 cloud-init 注入也有几种方式，下面分别来说明。&lt;/p&gt;
 &lt;h3 id="_2"&gt;脚本&lt;/h3&gt;
@@ -91,7 +91,7 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;li&gt;用户通过&lt;code&gt;nova get-password&lt;/code&gt;命令来拿到密码后的密码&lt;/li&gt;
 &lt;li&gt;用户使用自己的 ssh private key 进行密码揭密。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;因为密钥对等加密原因，除了「1」「5」可以看到明文密码外，其它步骤里面都是加密的。所以这种方式可以说是最安全的方案。连云平台提供伤都不能看到真正的密码。&lt;/p&gt;
+&lt;p&gt;因为密钥对等加密原因，除了「1」「5」可以看到明文密码外，其它步骤里面都是加密的。所以这种方式可以说是最安全的方案。连云平台提供商都不能看到真正的密码。&lt;/p&gt;
 &lt;p&gt;不过这种方式只在 Windows 的 cloud init 版本 cloudbase-init 里面有实现[5]。Linux 版本的 cloud-init 并不支持。不过 Github 上面找到一个类似的实现[6]，虽然只支持 RHEL 7, 但是有需要的话，可以参考修改下。&lt;/p&gt;
 &lt;h2 id="_4"&gt;如果我忘记了虚拟机密码怎么办&lt;/h2&gt;
 &lt;ul&gt;

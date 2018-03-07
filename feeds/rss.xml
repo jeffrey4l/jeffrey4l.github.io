@@ -5,9 +5,9 @@
 &lt;h2 id="libvirt"&gt;启动的时候通过 libvirt 进行密码注入&lt;/h2&gt;
 &lt;p&gt;方法是在 &lt;code&gt;nova.conf&lt;/code&gt; 里面开始如下配置&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[libvirt]&lt;/span&gt;
-&lt;span class="na"&gt;inject_password&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;false&lt;/span&gt;
-&lt;span class="na"&gt;inject_key&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;false&lt;/span&gt;
-&lt;span class="na"&gt;inject_partition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;-2&lt;/span&gt;
+&lt;span class="na"&gt;inject_password&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;true&lt;/span&gt;
+&lt;span class="na"&gt;inject_key&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;true&lt;/span&gt;
+&lt;span class="na"&gt;inject_partition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;-1&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 

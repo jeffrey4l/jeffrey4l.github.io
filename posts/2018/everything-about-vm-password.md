@@ -16,9 +16,9 @@ date: 2018-01-20
 方法是在 `nova.conf` 里面开始如下配置
 
     [libvirt]
-    inject_password = false
-    inject_key = false
-    inject_partition = -2
+    inject_password = true
+    inject_key = true
+    inject_partition = -1
     
 在虚拟机启动的时候，通过 `--admin-pass` 传入一个指定的密码。但是这个方法也有一系列的问题：
 

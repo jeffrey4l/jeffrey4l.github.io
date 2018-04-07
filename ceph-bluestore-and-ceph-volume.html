@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+      <title> Ceph bluestore 和 ceph-volume - 代码杂货铺</title>
+    <meta charset="utf-8" />
+
+    <meta name="tags" contents="Ceph" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
+    <script src="http://xcodest.me/theme/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://xcodest.me/theme/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://xcodest.me/theme/js/xcodest.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
+    <link href="http://xcodest.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="代码杂货铺 RSS Feed" />
+</head>
+
+<body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+          <div class="navbar navbar-default">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target="#sidebar">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://xcodest.me">
+                  代码杂货铺
+                </a>
+              </div>
+              <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                  <li><a href="/archives.html">Archives</a></li>
+                  <li><a href="/tags.html">Tags</a></li>
+                  <li>
+                    <a href="http://xcodest.me/pages/about.html">About</a>
+                  </li>
+                </ul>
+                <form class="navbar-form navbar-right" action="https://google.com/search" target="_blank">
+                  <div class="input-group">
+                    <input name="q" type="text" class="form-control" required placeholder="Search Xcodest.com..."/>
+                    <input type="hidden" name="sitesearch" value="xcodest.me"/>
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                      </button>
+                    </span>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
+          <div class="panel panel-default">
+            <div class="panel-heading">欢迎订阅我的公众号</div>
+            <div class="list-group">
+               <img class="qrcode" src="http://xcodest.me/images/qrcode.jpg"/>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Social</div>
+            <div class="list-group">
+ 
+              <a class="list-group-item" href="http://github.com/jeffrey4l" target="_blank">Github</a>
+ 
+              <a class="list-group-item" href="https://twitter.com/Jeffrey4l" target="_blank">Twitter</a>
+ 
+              <a class="list-group-item" href="http://weibo.com/jeffrey4l" target="_blank">微博</a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Categories</div>
+            <div class="list-group">
+              <a class="list-group-item" href="http://xcodest.me/category/ceph.html">Ceph<span class="badge">1</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/cloud.html">Cloud<span class="badge">1</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/container.html">Container<span class="badge">2</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/database.html">Database<span class="badge">1</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/life.html">Life<span class="badge">3</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/openstack.html">OpenStack<span class="badge">19</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/others.html">Others<span class="badge">1</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Blogroll</div>
+            <div class="list-group">
+              <a class="list-group-item" href="http://99cloud.net" target="_blank">99cloud(九州云)</a>
+              <a class="list-group-item" href="http://chenshake.com/" target="_blank">陈沙克日志</a>
+              <a class="list-group-item" href="http://coolshell.cn" target="_blank">酷壳 - CoolShell.Cn</a>
+              <a class="list-group-item" href="https://sdake.io/" target="_blank">Steven Dake</a>
+              <a class="list-group-item" href="https://sebastien-han.fr/" target="_blank">SÉBASTIEN HAN</a>
+              <a class="list-group-item" href="http://blog.csdn.net/quqi99" target="_blank">技术并艺术着</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 col-xs-12">
+<div class="row">
+  <div class="col-md-12 col-xs-12">
+  <section id="content" class="body">
+  <header>
+    <h1 class="entry-title">Ceph bluestore 和 ceph-volume</h1>
+    <div class="entry-info">
+      <span class="glyphicon glyphicon-list-alt"></span>
+      <span class="post-date"> 2018-04-07 </span>
+      <!--
+      <a class="post-category label label-default" href="http://xcodest.me/category/ceph.html">Ceph</a>
+      -->
+      <span class="glyphicon glyphicon-tags"></span>
+      <a class="post-tag label label-default" href="http://xcodest.me/tag/ceph.html">Ceph</a>
+    </div>
+  </header>
+  <div class="entry-content">
+    <h2 id="_1">部署</h2>
+<p>使用环境</p>
+<ul>
+<li>单节点</li>
+<li>CentOS 7.4</li>
+<li>使用 ceph-deploy 进行部署</li>
+</ul>
+<p>准备 centos 7.4 系统的机器，并配置好 ssh 的无密码登录</p>
+<p>安装 ceph-deploy</p>
+<div class="highlight"><pre><span></span>yum install https://download.ceph.com/rpm-luminous/el7/noarch/ceph-deploy-2.0.0-0.noarch.rpm
+</pre></div>
+
+
+<p>数据 ceph 安装包</p>
+<div class="highlight"><pre><span></span>mkdir ceph-install
+cd ceph-install
+ceph-deploy new node1
+</pre></div>
+
+
+<p>把如下内容加入到 ceph.conf 里面，把默认的副本数据调成1。</p>
+<div class="highlight"><pre><span></span><span class="k">[global]</span>
+<span class="na">osd pool default size</span> <span class="o">=</span> <span class="s">1</span>
+<span class="na">osd pool default min size</span> <span class="o">=</span> <span class="s">1</span>
+</pre></div>
+
+
+<p>安装 ceph 包</p>
+<div class="highlight"><pre><span></span> ceph-deploy install --release luminous node2
+</pre></div>
+
+
+<p>初始化 mon</p>
+<div class="highlight"><pre><span></span>ceph-deploy mon create-initial
+ceph-deploy admin node1
+</pre></div>
+
+
+<p>这时 ceph 已经可以访问了</p>
+<div class="highlight"><pre><span></span>$ ceph -s
+  cluster:
+    id:     5b2f0020-fc24-44de-a6c9-a88efdc5074f
+  health: HEALTH_OK
+  services:
+    mon: <span class="m">1</span> daemons, quorum node1
+    mgr: no daemons active
+    osd: <span class="m">0</span> osds: <span class="m">0</span> up, <span class="m">0</span> in
+
+  data:
+    pools:   <span class="m">0</span> pools, <span class="m">0</span> pgs
+    objects: <span class="m">0</span> objects, <span class="m">0</span> bytes
+    usage:   <span class="m">0</span> kB used, <span class="m">0</span> kB / <span class="m">0</span> kB avail
+    pgs:
+</pre></div>
+
+
+<p>接下来要部署 ceph mgr, 这个组件在 Luminous 里面是必装组件</p>
+<div class="highlight"><pre><span></span>ceph-deploy  mgr create node1
+</pre></div>
+
+
+<p>接下来部署 ceph osd, 现在推荐使用 ceph-volume lvm 来管理磁盘。所有安装的时候 ，就需要准备一个 lv 出来。为了测试 bluestore 的 block.db 和 block.wal， 我们来做三个lv 分别用于单 osd 。</p>
+<div class="highlight"><pre><span></span>$ pv create /dev/sdb
+  Physical volume <span class="s2">&quot;/dev/sdb&quot;</span> successfully created.
+$ vgcreate  ceph-pool /dev/sdb
+  Volume group <span class="s2">&quot;ceph-pool&quot;</span> successfully created
+$ lvcreate -n osd0.wal -L 1G ceph-pool
+  Logical volume <span class="s2">&quot;osd0.wal&quot;</span> created.
+$ lvcreate -n osd0.db -L 1G ceph-pool
+  Logical volume <span class="s2">&quot;osd0.db&quot;</span> created.
+$ lvcreate -n osd0 -l <span class="m">100</span>%FREE ceph-pool
+  Logical volume <span class="s2">&quot;osd0&quot;</span> created.
+</pre></div>
+
+
+<p>接下来，就可以创建 OSD 了。</p>
+<div class="highlight"><pre><span></span>ceph-deploy  osd create \
+    --data ceph-pool/osd0 \
+    --block-db ceph-pool/osd0.db \
+    --block-wal ceph-pool/osd0.wal \
+    --bluestore node1
+</pre></div>
+
+
+<p>这样，一个最小的集群就建好了</p>
+<div class="highlight"><pre><span></span>$ ceph -s
+  cluster:
+    id:     5b2f0020-fc24-44de-a6c9-a88efdc5074f
+    health: HEALTH_OK
+
+  services:
+    mon: <span class="m">1</span> daemons, quorum node1
+    mgr: node2<span class="o">(</span>active<span class="o">)</span>
+    osd: <span class="m">1</span> osds: <span class="m">1</span> up, <span class="m">1</span> in
+
+  data:
+    pools:   <span class="m">0</span> pools, <span class="m">0</span> pgs
+    objects: <span class="m">0</span> objects, <span class="m">0</span> bytes
+    usage:   <span class="m">2048</span> MB used, <span class="m">37883</span> MB / <span class="m">39931</span> MB avail
+    pgs:
+
+$ ls -alh /var/lib/ceph/osd/ceph-0/
+total 52K
+drwxrwxrwt. <span class="m">2</span> ceph ceph <span class="m">340</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 .
+drwxr-x---. <span class="m">3</span> ceph ceph  <span class="m">20</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 ..
+-rw-r--r--. <span class="m">1</span> ceph ceph <span class="m">183</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 activate.monmap
+lrwxrwxrwx. <span class="m">1</span> ceph ceph  <span class="m">19</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 block -&gt; /dev/ceph-pool/osd0
+lrwxrwxrwx. <span class="m">1</span> root root  <span class="m">23</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 block.db -&gt; /dev/ceph-pool/osd0.wal
+lrwxrwxrwx. <span class="m">1</span> root root  <span class="m">23</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 block.wal -&gt; /dev/ceph-pool/osd0.wa
+-rw-r--r--. <span class="m">1</span> ceph ceph   <span class="m">2</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 bluefs
+-rw-r--r--. <span class="m">1</span> ceph ceph  <span class="m">37</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 ceph_fsid
+-rw-r--r--. <span class="m">1</span> ceph ceph  <span class="m">37</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 fsid
+-rw-------. <span class="m">1</span> ceph ceph  <span class="m">55</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 keyring
+-rw-r--r--. <span class="m">1</span> ceph ceph   <span class="m">8</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 kv_backend
+-rw-r--r--. <span class="m">1</span> ceph ceph  <span class="m">21</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 magic
+-rw-r--r--. <span class="m">1</span> ceph ceph   <span class="m">4</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 mkfs_done
+-rw-r--r--. <span class="m">1</span> ceph ceph  <span class="m">41</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 osd_key
+-rw-r--r--. <span class="m">1</span> ceph ceph  <span class="m">24</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 path_block.db
+-rw-r--r--. <span class="m">1</span> ceph ceph   <span class="m">6</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 ready
+-rw-r--r--. <span class="m">1</span> ceph ceph  <span class="m">10</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 <span class="nb">type</span>
+-rw-r--r--. <span class="m">1</span> ceph ceph   <span class="m">2</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 whoami
+</pre></div>
+
+
+<h2 id="bluestore-rocksdb-ceph-volume">bluestore &amp; rocksdb &amp; ceph-volume</h2>
+<p>ceph 的组件多采用插件的机制，包括后端存储，KV 数据库，磁盘管理等。各组件之间可以灵活的组合。</p>
+<p>基于后端存储包括 filestore, kvstore，memstore 和新的 bluestore。 Ceph Luminous 引用了 bluestore 的存储类型，不依赖文件系统，直接管理物理磁盘，相比filestore, 在 io 写入的时候路径更短，也避免了二次写入的问题，性能会更加好。</p>
+<p>KV 存储主要包括 LevelDB, MemDB 和新的 RocksDB。 RocksDB 是 Facebook 基于 LevelDB 开发的 key-value 数据，并对闪存(flash)有更友好的优化。</p>
+<p>磁盘管理之前只有个 ceph-disk, 现在新引入了 ceph-volume。基于 lvm 来管理磁盘，并会逐渐废弃掉 ceph-disk。</p>
+<p><img alt="ceph-bluestore.png" src="images/2018/ceph-bluestore.png"></p>
+<p>基中比较有意思的是 RocksDB 的实现，RocksDB 原本只基于文件系统的。但是得益于它本身的灵活性，bluestore 实现了一套 RocksDB 的 Env 接口，还在 BlueStore 上面实现了一套 BlueFS 的接口与 BluestoreEnv 对接。使得 RocksDB 可以存储在 BlueStore 上面。</p>
+<h2 id="wal-db">wal &amp; db 的大小问题</h2>
+<p>在 ceph bluestore 的情况下，wal 是 RocksDB 的 write-ahead log, 相当于之前的 journal 数据，db 是 RocksDB 的 metadata 信息。在磁盘选择原则是 block.wal &gt; block.db &gt; block。当然所有的数据也可以放到同一块盘上。</p>
+<p>默认情况下， wal 和 db 的大小分别是 512 MB 和 1GB, 包括 Sage Weil 的 PPT 里面也是这样标明的<sup id="fnref-0"><a class="footnote-ref" href="#fn-0">1</a></sup>。现在没有一个好的理论值，好像和 ceph 本身承载的数据类型有关系。更多讨论可以参看<sup id="fnref-1"><a class="footnote-ref" href="#fn-1">2</a></sup></p>
+<p>值得注意的是，如果所有的数据都在单块盘上，那是没有必要指定 wal &amp; db 的大小的。如果 wal &amp; db 是在不同的盘上，由于 wal/db 一般都会分的比较小，是有满的可能性的。如果满了，这些数据会迁移到下一个快的盘上(wal -&gt; db -&gt; main)。所以最少不会因为数据满了，而造成无法写入。[^2]</p>
+<h2 id="bluestore-osd">使用 bluestore 时的 osd 分区</h2>
+<p>如果是使用的 ceph-disk 管理磁盘，他会建立一个 100MB 的分区，来存放 keyring / whoami 这些信息，这和之前的逻辑是一样的。</p>
+<p>如果是使用 ceph-volume 管理磁盘，<code>/var/lib/ceph/osd/ceph-0</code> 分区会从 tmpfs 挂载过来(也就是内存)</p>
+<div class="highlight"><pre><span></span>$ mount <span class="p">|</span> grep osd
+tmpfs on /var/lib/ceph/osd/ceph-0 <span class="nb">type</span> tmpfs <span class="o">(</span>rw,relatime,seclabel<span class="o">)</span>
+$ ls -Alh /var/lib/ceph/osd/ceph-0
+lrwxrwxrwx. <span class="m">1</span> ceph ceph <span class="m">19</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 block -&gt; /dev/ceph-pool/osd0
+lrwxrwxrwx. <span class="m">1</span> root root <span class="m">22</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 block.db -&gt; /dev/ceph-pool/osd0.db
+lrwxrwxrwx. <span class="m">1</span> root root <span class="m">23</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 block.wal -&gt; /dev/ceph-pool/osd0.wal
+-rw-------. <span class="m">1</span> ceph ceph <span class="m">37</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 ceph_fsid
+-rw-------. <span class="m">1</span> ceph ceph <span class="m">37</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 fsid
+-rw-------. <span class="m">1</span> ceph ceph <span class="m">55</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 keyring
+-rw-------. <span class="m">1</span> ceph ceph  <span class="m">6</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 ready
+-rw-------. <span class="m">1</span> ceph ceph <span class="m">10</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 <span class="nb">type</span>
+-rw-------. <span class="m">1</span> ceph ceph  <span class="m">2</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 whoami
+</pre></div>
+
+
+<p>至于目录中的这些文件则是从 bluestore 盘一开始的 <code>BDEV_LABEL_BLOCK_SIZE=4096</code> 位置读取过来的。通过 以下命令，可以把所有的 label 打印出来</p>
+<div class="highlight"><pre><span></span>$ ceph-bluestore-tool  show-label --path /var/lib/ceph/osd/ceph-0
+<span class="o">{</span>
+    <span class="s2">&quot;/var/lib/ceph/osd/ceph-0/block&quot;</span>: <span class="o">{</span>
+        <span class="s2">&quot;osd_uuid&quot;</span>: <span class="s2">&quot;c349b2ba-690f-4a36-b6f6-2cc0d0839f29&quot;</span>,
+        <span class="s2">&quot;size&quot;</span>: <span class="m">2147483648</span>,
+        <span class="s2">&quot;btime&quot;</span>: <span class="s2">&quot;2018-04-04 10:22:25.216117&quot;</span>,
+        <span class="s2">&quot;description&quot;</span>: <span class="s2">&quot;main&quot;</span>,
+        <span class="s2">&quot;bluefs&quot;</span>: <span class="s2">&quot;1&quot;</span>,
+        <span class="s2">&quot;ceph_fsid&quot;</span>: <span class="s2">&quot;14941be9-c327-4a17-8b86-be50ee2f962e&quot;</span>,
+        <span class="s2">&quot;kv_backend&quot;</span>: <span class="s2">&quot;rocksdb&quot;</span>,
+        <span class="s2">&quot;magic&quot;</span>: <span class="s2">&quot;ceph osd volume v026&quot;</span>,
+        <span class="s2">&quot;mkfs_done&quot;</span>: <span class="s2">&quot;yes&quot;</span>,
+        <span class="s2">&quot;osd_key&quot;</span>: <span class="s2">&quot;AQDgNsRaVtsRIBAA6pmOf7y2GBufyE83nHwVvg==&quot;</span>,
+        <span class="s2">&quot;ready&quot;</span>: <span class="s2">&quot;ready&quot;</span>,
+        <span class="s2">&quot;whoami&quot;</span>: <span class="s2">&quot;0&quot;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>相关代码参看</p>
+<ul>
+<li><a href="https://github.com/ceph/ceph/blob/d65b8844d16d71df01b57f368badc100db505506/src/ceph-volume/ceph_volume/devices/lvm/activate.py#L144">ceph-volume activate</a></li>
+<li><a href="https://github.com/ceph/ceph/blob/d65b8844d16d71df01b57f368badc100db505506/src/os/bluestore/bluestore_tool.cc#L316-L396">ceph-bluestore-tool prime-osd-dir</a></li>
+</ul>
+<p>使用ceph-volume， 不管 store 使用的是 filestore 还是 bluestore, 都会把一些 tag 存在 lvm 上面， 可以使用以下命令查看(做了格式化处理)</p>
+<div class="highlight"><pre><span></span>$lvs -o lv_tags /dev/mapper/ceph--pool-osd
+LV Tags
+ceph.block_device=/dev/ceph-pool/osd
+ceph.block_uuid=dRW0FO-KiVS-vBjB-PE42-RnSd-mL04-FRQmAz
+ceph.cephx_lockbox_secret=
+ceph.cluster_fsid=14941be9-c327-4a17-8b86-be50ee2f962e
+ceph.cluster_name=ceph
+ceph.crush_device_class=None
+ceph.encrypted=0
+ceph.osd_fsid=c349b2ba-690f-4a36-b6f6-2cc0d0839f29
+ceph.osd_id=0
+ceph.type=block
+</pre></div>
+
+
+<h2 id="osd">osd 的盘是如何挂载的?</h2>
+<p>ceph 依赖 systemd 来管理挂载，不需要配置 <code>/etc/fstab</code> 文件。在初始化 osd 的时候, ceph 会 enable 一个 ceph-volume@x.service 服务，其中 x 的格式如 <code>{lvm|simple}-{osd id}-{osd uuid}</code>, 这个服务会在系统的<code>local-fs.target</code> 组里面，当系统挂载本地盘的时候，会自动挂载上。</p>
+<p>这个 ceph-volume@.service 定义如下</p>
+<div class="highlight"><pre><span></span>systemctl cat ceph-volume@lvm-0-b7b4fa98-d36e-430b-9789-a432a078292c
+# /usr/lib/systemd/system/ceph-volume@.service
+[Unit]
+Description=Ceph Volume activation: %i
+After=local-fs.target
+Wants=local-fs.target
+
+[Service]
+Type=oneshot
+KillMode=none
+Environment=CEPH_VOLUME_TIMEOUT=10000
+ExecStart=/bin/sh -c &#39;timeout $CEPH_VOLUME_TIMEOUT /usr/sbin/ceph-volume-systemd %i&#39;
+TimeoutSec=0
+[Install]
+WantedBy=multi-user.target
+</pre></div>
+
+
+<p>可以看到， 他是把参数传递给了 <code>ceph-volume-systemd</code> 命令， 而这个命令又把参数解析后，传给了 <code>ceph-volume</code> 命令，最后的执行的命令是</p>
+<div class="highlight"><pre><span></span>ceph-volume lvm trigger {osd id} {osd uuid]
+</pre></div>
+
+
+<blockquote>
+<p>需要<code>ceph-volume-systemd</code> 这个命令的主要原因应该是systemd只能传一个参数</p>
+</blockquote>
+<p>这个 <code>trigger</code> 会调用 <code>ceph-volume lvm activate</code> 命令，去准备相对应挂载及里面的数据初始化。</p>
+<p>最后， <code>ceph-volume lvm activate</code> 会调用 <code>ceph-bluestore-tool pirme-osd-dir</code> 命令来初始化里面的数据。</p>
+<h2 id="_2">其它</h2>
+<h3 id="ceph-osd-purge">ceph osd purge</h3>
+<p>ceph Limunous 新加了一个 <code>ceph osd purge</code> 命令，很好用，可以一个命令，把某个 osd 相关的信息都清除掉。包括</p>
+<ul>
+<li>osd</li>
+<li>crush rule</li>
+<li>auth key</li>
+</ul>
+<h3 id="ceph-disk-lvm">ceph-disk lvm</h3>
+<p>ceph-disk 应试不支持 lvm 的， 参见 http://tracker.ceph.com/issues/5461</p>
+<p>不过 kolla 是否支持，可以验证下， 因为 kolla 的脚本里面不依赖 ceph-disk</p>
+<h2 id="ref">REF</h2>
+<ul>
+<li>http://www.sysnote.org/2016/08/19/ceph-bluestore/</li>
+<li>https://ceph.com/community/new-luminous-bluestore/</li>
+<li>http://liyichao.github.io/posts/ceph-bluestore-%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86.html</li>
+</ul>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn-0">
+<p>https://www.slideshare.net/sageweil1/bluestore-a-new-storage-backend-for-ceph-one-year-in&#160;<a class="footnote-backref" href="#fnref-0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn-1">
+<p>http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/020822.html
+[^2]：http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/021037.html&#160;<a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+    <div class="copyright">
+      <p><span>本文标题:</span>Ceph bluestore 和 ceph-volume</p>
+      <p><span>文章作者:</span>Jeffrey4l</p> 
+      <p><span>发布时间:</span>2018-04-07 </p>
+      <p><span>最后更新:</span>2018-04-07</p>
+      <p><span>原始链接:</span><a href="http://xcodest.me/ceph-bluestore-and-ceph-volume.html" target="_blank">http://xcodest.me/ceph-bluestore-and-ceph-volume.html </a></p>
+      <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
+    </div>
+  </div><!-- /.entry-content -->
+  <div>
+    <nav>
+      <ul class="pager">
+        <li class="previous"><a href="kolla-queens-and-rocky.html">&larr; Older</a></li>
+        <li class="next disabled"><span href="">Newer &rarr;</span></li>
+      </ul>
+    </nav>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'ceph-bluestore-and-ceph-volume.html';
+        var disqus_url = 'http://xcodest.me/ceph-bluestore-and-ceph-volume.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+</div>
+</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12 text-center footer">
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1257099267'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1257099267' type='text/javascript'%3E%3C/script%3E"));</script>
+        </div>
+    </div>
+</body>
+</html>

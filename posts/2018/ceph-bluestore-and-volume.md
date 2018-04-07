@@ -201,8 +201,7 @@ KV 存储主要包括 LevelDB, MemDB 和新的 RocksDB。 RocksDB 是 Facebook �
     ceph.osd_id=0
     ceph.type=block
 
-
-## osd 的盘是如何挂载的?
+## osd 的盘是如何挂载的
 
 ceph 依赖 systemd 来管理挂载，不需要配置 `/etc/fstab` 文件。在初始化 osd 的时候, ceph 会 enable 一个 ceph-volume@x.service 服务，其中 x 的格式如 `{lvm|simple}-{osd id}-{osd uuid}`, 这个服务会在系统的`local-fs.target` 组里面，当系统挂载本地盘的时候，会自动挂载上。
 
@@ -228,7 +227,7 @@ ceph 依赖 systemd 来管理挂载，不需要配置 `/etc/fstab` 文件。在�
 
     ceph-volume lvm trigger {osd id} {osd uuid]
 
-> 需要`ceph-volume-systemd` 这个命令的主要原因应该是systemd只能传一个参数
+> 需要`ceph-volume-systemd` 这个命令的原因应该是systemd只能传一个参数
 
 这个 `trigger` 会调用 `ceph-volume lvm activate` 命令，去准备相对应挂载及里面的数据初始化。
 

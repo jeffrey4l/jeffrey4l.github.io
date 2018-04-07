@@ -138,9 +138,9 @@ KV 存储主要包括 LevelDB, MemDB 和新的 RocksDB。 RocksDB 是 Facebook �
 
 在 ceph bluestore 的情况下，wal 是 RocksDB 的 write-ahead log, 相当于之前的 journal 数据，db 是 RocksDB 的 metadata 信息。在磁盘选择原则是 block.wal > block.db > block。当然所有的数据也可以放到同一块盘上。
 
-默认情况下， wal 和 db 的大小分别是 512 MB 和 1GB, 包括 Sage Weil 的 PPT 里面也是这样标明的[^0]。现在没有一个好的理论值，好像和 ceph 本身承载的数据类型有关系。更多讨论可以参看[^1]
+默认情况下， wal 和 db 的大小分别是 512 MB 和 1GB, 包括 Sage Weil 的 PPT 里面也是这样标明的[^1]。现在没有一个好的理论值，好像和 ceph 本身承载的数据类型有关系。更多讨论可以参看[^2]。
 
-值得注意的是，如果所有的数据都在单块盘上，那是没有必要指定 wal & db 的大小的。如果 wal & db 是在不同的盘上，由于 wal/db 一般都会分的比较小，是有满的可能性的。如果满了，这些数据会迁移到下一个快的盘上(wal -> db -> main)。所以最少不会因为数据满了，而造成无法写入。[^2]
+值得注意的是，如果所有的数据都在单块盘上，那是没有必要指定 wal & db 的大小的。如果 wal & db 是在不同的盘上，由于 wal/db 一般都会分的比较小，是有满的可能性的。如果满了，这些数据会迁移到下一个快的盘上(wal - db - main)。所以最少不会因为数据满了，而造成无法写入[^3]。
 
 ## 使用 bluestore 时的 osd 分区
 
@@ -207,7 +207,7 @@ ceph 依赖 systemd 来管理挂载，不需要配置 `/etc/fstab` 文件。在�
 
 这个 ceph-volume@.service 定义如下
 
-    systemctl cat ceph-volume@lvm-0-b7b4fa98-d36e-430b-9789-a432a078292c
+    $systemctl cat ceph-volume@lvm-0-b7b4fa98-d36e-430b-9789-a432a078292c
     # /usr/lib/systemd/system/ceph-volume@.service
     [Unit]
     Description=Ceph Volume activation: %i
@@ -255,6 +255,6 @@ ceph-disk 应试不支持 lvm 的， 参见 http://tracker.ceph.com/issues/5461
 - https://ceph.com/community/new-luminous-bluestore/
 - http://liyichao.github.io/posts/ceph-bluestore-%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86.html
 
-[^0]: https://www.slideshare.net/sageweil1/bluestore-a-new-storage-backend-for-ceph-one-year-in
-[^1]: http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/020822.html
-[^2]：http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/021037.html
+[^1]: https://www.slideshare.net/sageweil1/bluestore-a-new-storage-backend-for-ceph-one-year-in
+[^2]: http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/020822.html
+[^3]: http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/021037.html

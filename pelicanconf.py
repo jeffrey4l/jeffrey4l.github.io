@@ -90,7 +90,8 @@ MARKDOWN = {
         'extension_configs': {
             'markdown.extensions.codehilite': {'css_class': 'highlight'},
             'markdown.extensions.extra': {},
-            'markdown.extensions.toc': {}
+            'markdown.extensions.toc': {},
+            'markdown_newtab': {},
             },
         'output_format': 'html5'
         }

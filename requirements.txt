@@ -18,3 +18,4 @@ docopt
 pyquery
 cssutils
 markdown-css
+markdown-newtab

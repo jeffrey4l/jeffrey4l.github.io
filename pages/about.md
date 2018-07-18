@@ -16,7 +16,7 @@ Date: 2015-12-31
 
 ### 2017
 
-- 2018-11 OpenStack Sydney Summit - Kolla Project Update
+- 2017-11 OpenStack Sydney Summit - Kolla Project Update
 - 2017-7 2017 OpenStack Days China - 基于 Ansible 自动化管理 OpenStack 及云上资源
 
 ### 2016

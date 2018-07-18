@@ -130,7 +130,7 @@
 </pre></div>
 
 
-<p>使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个<a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results">邮件列表</a>中找到原因，如下：</p>
+<p>使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个<a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results" target="_blank">邮件列表</a>中找到原因，如下：</p>
 <p>To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1</p>
 <p>THE LONG VERSION</p>
 <p>There is an issue with the way nova uses dnsmasq in VLAN mode. It starts up a
@@ -165,7 +165,7 @@ fixed_ip_disassociate_timeout=1209600
 </pre></div>
 
 
-<p>This is also documented <a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues"> Known issue with failed DHCP leases in VLAN configuration</a></p>
+<p>This is also documented <a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues" target="_blank"> Known issue with failed DHCP leases in VLAN configuration</a></p>
     <div class="copyright">
       <p><span>本文标题:</span>Dhcp lease errors in vlan mode</p>
       <p><span>文章作者:</span>Jeffrey4l</p> 

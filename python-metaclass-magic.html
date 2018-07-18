@@ -121,7 +121,7 @@
     </div>
   </header>
   <div class="entry-content">
-    <p>在 Nova 代码中[<a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075">0</a>]发现一个神奇的应用，利用 decrator 来区分同名的函数，根据 decrator 上面定义的版本，来调用不同的方法。仔细学习了一下。它是用到了 MetaClass。主要思路是：</p>
+    <p>在 Nova 代码中[<a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075" target="_blank">0</a>]发现一个神奇的应用，利用 decrator 来区分同名的函数，根据 decrator 上面定义的版本，来调用不同的方法。仔细学习了一下。它是用到了 MetaClass。主要思路是：</p>
 <ul>
 <li>在 decrator 里面，把被装饰的方法存在类的一个属性里面(version_methods)</li>
 <li>使用自定义的metaclass, 删除掉父类上的version_methods，并把这个属性放到子类中。这样做是为了防止子类共享父类的version_methods属性。</li>
@@ -231,7 +231,7 @@ SubClass2().foo({"version": "2.0"})
     </noscript>
 </div>
 <ul>
-<li>[0] <a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075">https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075</a></li>
+<li>[0] <a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075" target="_blank">https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075</a></li>
 </ul>
     <div class="copyright">
       <p><span>本文标题:</span>Python MetaClass Magic</p>

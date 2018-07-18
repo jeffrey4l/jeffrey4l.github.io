@@ -297,8 +297,8 @@ lrwxrwxrwx. <span class="m">1</span> root root <span class="m">23</span> Apr  <s
 
 <p>相关代码参看</p>
 <ul>
-<li><a href="https://github.com/ceph/ceph/blob/d65b8844d16d71df01b57f368badc100db505506/src/ceph-volume/ceph_volume/devices/lvm/activate.py#L144">ceph-volume activate</a></li>
-<li><a href="https://github.com/ceph/ceph/blob/d65b8844d16d71df01b57f368badc100db505506/src/os/bluestore/bluestore_tool.cc#L316-L396">ceph-bluestore-tool prime-osd-dir</a></li>
+<li><a href="https://github.com/ceph/ceph/blob/d65b8844d16d71df01b57f368badc100db505506/src/ceph-volume/ceph_volume/devices/lvm/activate.py#L144" target="_blank">ceph-volume activate</a></li>
+<li><a href="https://github.com/ceph/ceph/blob/d65b8844d16d71df01b57f368badc100db505506/src/os/bluestore/bluestore_tool.cc#L316-L396" target="_blank">ceph-bluestore-tool prime-osd-dir</a></li>
 </ul>
 <p>使用ceph-volume， 不管 store 使用的是 filestore 还是 bluestore, 都会把一些 tag 存在 lvm 上面， 可以使用以下命令查看(做了格式化处理)</p>
 <div class="highlight"><pre><span></span>$lvs -o lv_tags /dev/mapper/ceph--pool-osd

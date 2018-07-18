@@ -175,8 +175,8 @@ lrwxrwxrwx. &lt;span class="m"&gt;1&lt;/span&gt; root root &lt;span class="m"&gt
 
 &lt;p&gt;相关代码参看&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="https://github.com/ceph/ceph/blob/d65b8844d16d71df01b57f368badc100db505506/src/ceph-volume/ceph_volume/devices/lvm/activate.py#L144"&gt;ceph-volume activate&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://github.com/ceph/ceph/blob/d65b8844d16d71df01b57f368badc100db505506/src/os/bluestore/bluestore_tool.cc#L316-L396"&gt;ceph-bluestore-tool prime-osd-dir&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/ceph/ceph/blob/d65b8844d16d71df01b57f368badc100db505506/src/ceph-volume/ceph_volume/devices/lvm/activate.py#L144" target="_blank"&gt;ceph-volume activate&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/ceph/ceph/blob/d65b8844d16d71df01b57f368badc100db505506/src/os/bluestore/bluestore_tool.cc#L316-L396" target="_blank"&gt;ceph-bluestore-tool prime-osd-dir&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;使用ceph-volume， 不管 store 使用的是 filestore 还是 bluestore, 都会把一些 tag 存在 lvm 上面， 可以使用以下命令查看(做了格式化处理)&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$lvs -o lv_tags /dev/mapper/ceph--pool-osd
@@ -275,9 +275,9 @@ WantedBy=multi-user.target
 &lt;/ul&gt;
 &lt;h2 id="_1"&gt;更多信息可以参看&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="https://docs.openstack.org/releasenotes/kolla/queens.html"&gt;https://docs.openstack.org/releasenotes/kolla/queens.html&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://docs.openstack.org/releasenotes/kolla-ansible/queens.html"&gt;https://docs.openstack.org/releasenotes/kolla-ansible/queens.html&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://lists.openstack.org/pipermail/openstack-dev/2018-March/128044.html"&gt;http://lists.openstack.org/pipermail/openstack-dev/2018-March/128044.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://docs.openstack.org/releasenotes/kolla/queens.html" target="_blank"&gt;https://docs.openstack.org/releasenotes/kolla/queens.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://docs.openstack.org/releasenotes/kolla-ansible/queens.html" target="_blank"&gt;https://docs.openstack.org/releasenotes/kolla-ansible/queens.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://lists.openstack.org/pipermail/openstack-dev/2018-March/128044.html" target="_blank"&gt;http://lists.openstack.org/pipermail/openstack-dev/2018-March/128044.html&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 20 Mar 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-03-20:/kolla-queens-and-rocky.html</guid><category>OpenStack</category><category>Kolla</category></item><item><title>关于虚拟机密码你所有需要知道的一切</title><link>http://xcodest.me/everything-about-vm-password.html</link><description>&lt;p&gt;虽然各种云的虚拟机都推荐使用 SSH 密钥登录，但是还是有很多人喜欢使用密码登录，而且有的时候需要通过 console 来登录系统。那么如何更好的设置、修改虚拟机的密码呢?本文以 OpenStack 为例，介绍如何设置及修改虚拟机密码。&lt;/p&gt;
 &lt;h2 id="_1"&gt;内置密码&lt;/h2&gt;
 &lt;p&gt;这是最简单的，制作镜像的时候，直接给 root 账号配置一个密码。但是问题也不言而喻。所有的示例都有相同的默认密码，如果用户忘记改的话，其它人很容易的就能扫到你的机器，从而登录你的机器。&lt;/p&gt;
@@ -297,7 +297,7 @@ WantedBy=multi-user.target
 &lt;li&gt;libvirt 注入对物理机来说并不安全，有安全隐患。&lt;/li&gt;
 &lt;li&gt;密码并没有持久化(存入数据库)，也不应该做持久化，在 &lt;code&gt;evacuate&lt;/code&gt; 或 &lt;code&gt;unshelve&lt;/code&gt; 的时候，这些密码信息会被丢掉。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;所以这个方法也不是推荐使用，更详细的信息，可能参看我另一篇文章「&lt;a href="http://xcodest.me/inject-file-in-rbd.html"&gt;rbd 是否支持注入&lt;/a&gt;」。&lt;/p&gt;
+&lt;p&gt;所以这个方法也不是推荐使用，更详细的信息，可能参看我另一篇文章「&lt;a href="http://xcodest.me/inject-file-in-rbd.html" target="_blank"&gt;rbd 是否支持注入&lt;/a&gt;」。&lt;/p&gt;
 &lt;h2 id="metadata-api"&gt;通过 metadata api 注入&lt;/h2&gt;
 &lt;p&gt;cloud-init 这个服务是从 AWS 学来的。它安装在虚拟机中，在启动虚拟机时，做一些初始化工作。如：硬盘分区自动扩展，SSH Public Key 注入，用户创建等。用户甚至可以注入一些 shell 脚本到虚拟机中运行。在自动化方面启了很大的作用。Heat 的实现就依赖于 cloud-init 服务。&lt;/p&gt;
 &lt;p&gt;在 OpenStack 上，cloud-init 应该从 http://169.254.169.254 去拿到所需要的信息。而这个服务是通过 iptables 转到了 neutron-metadata-agent 服务上&lt;/p&gt;
@@ -389,13 +389,13 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;/ol&gt;
 &lt;h2 id="ref"&gt;REF&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;[1] &lt;a href="http://niusmallnan.com/_build/html/_templates/openstack/inject_passwd.html#cloud-init"&gt;http://niusmallnan.com/_build/html/_templates/openstack/inject_passwd.html#cloud-init&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[2] &lt;a href="https://github.com/qemu/qemu/commit/215a2771a7b6b29037ee8deba484815d816b6fdd"&gt;https://github.com/qemu/qemu/commit/215a2771a7b6b29037ee8deba484815d816b6fdd&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[3] &lt;a href="https://github.com/qemu/qemu/commit/259434b8067e1c61017e9a5b8667b6526b474ff2"&gt;https://github.com/qemu/qemu/commit/259434b8067e1c61017e9a5b8667b6526b474ff2&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[4] &lt;a href="https://review.openstack.org/#/c/17274/"&gt;https://review.openstack.org/#/c/17274/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[5] &lt;a href="https://github.com/openstack/cloudbase-init/blob/master/cloudbaseinit/metadata/services/httpservice.py"&gt;https://github.com/openstack/cloudbase-init/blob/master/cloudbaseinit/metadata/services/httpservice.py&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[6] &lt;a href="https://github.com/vvaldez/openstack-password-reset"&gt;https://github.com/vvaldez/openstack-password-reset&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[0] &lt;a href="https://zhangchenchen.github.io/2017/01/19/openstack-reset-instance-password"&gt;https://zhangchenchen.github.io/2017/01/19/openstack-reset-instance-password&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[1] &lt;a href="http://niusmallnan.com/_build/html/_templates/openstack/inject_passwd.html#cloud-init" target="_blank"&gt;http://niusmallnan.com/_build/html/_templates/openstack/inject_passwd.html#cloud-init&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[2] &lt;a href="https://github.com/qemu/qemu/commit/215a2771a7b6b29037ee8deba484815d816b6fdd" target="_blank"&gt;https://github.com/qemu/qemu/commit/215a2771a7b6b29037ee8deba484815d816b6fdd&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[3] &lt;a href="https://github.com/qemu/qemu/commit/259434b8067e1c61017e9a5b8667b6526b474ff2" target="_blank"&gt;https://github.com/qemu/qemu/commit/259434b8067e1c61017e9a5b8667b6526b474ff2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[4] &lt;a href="https://review.openstack.org/#/c/17274/" target="_blank"&gt;https://review.openstack.org/#/c/17274/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[5] &lt;a href="https://github.com/openstack/cloudbase-init/blob/master/cloudbaseinit/metadata/services/httpservice.py" target="_blank"&gt;https://github.com/openstack/cloudbase-init/blob/master/cloudbaseinit/metadata/services/httpservice.py&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[6] &lt;a href="https://github.com/vvaldez/openstack-password-reset" target="_blank"&gt;https://github.com/vvaldez/openstack-password-reset&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[0] &lt;a href="https://zhangchenchen.github.io/2017/01/19/openstack-reset-instance-password" target="_blank"&gt;https://zhangchenchen.github.io/2017/01/19/openstack-reset-instance-password&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 20 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-20:/everything-about-vm-password.html</guid><category>Linux</category><category>OpenStack</category></item><item><title>Source to Image 工具介绍</title><link>http://xcodest.me/s2i.html</link><description>&lt;h2 id="_1"&gt;介绍&lt;/h2&gt;
 &lt;p&gt;Source to Image(S2I) 是一个创建 Docker 镜像的工具。也是 openshift 上面的主要构建镜像的方式之一。他的优点包括：&lt;/p&gt;
 &lt;ol&gt;
@@ -412,7 +412,7 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;li&gt;&lt;code&gt;run&lt;/code&gt; 主要指明你的源代码如何运行起来的&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;usage&lt;/code&gt; 打印使用说明&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;redhat 官方有一些已经编写好的镜像例子&lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;，可以从找到。像 &lt;a href="https://github.com/sclorg/s2i-python-container"&gt;Python&lt;/a&gt;, &lt;a href="https://github.com/sclorg/s2i-ruby-container"&gt;Ruby&lt;/a&gt;。利用这些镜像，再加上你的源代码，可以快速构建出应用镜像。&lt;/p&gt;
+&lt;p&gt;redhat 官方有一些已经编写好的镜像例子&lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;，可以从找到。像 &lt;a href="https://github.com/sclorg/s2i-python-container" target="_blank"&gt;Python&lt;/a&gt;, &lt;a href="https://github.com/sclorg/s2i-ruby-container" target="_blank"&gt;Ruby&lt;/a&gt;。利用这些镜像，再加上你的源代码，可以快速构建出应用镜像。&lt;/p&gt;
 &lt;h2 id="s2i_1"&gt;安装 S2I 工具&lt;/h2&gt;
 &lt;p&gt;S2I 是一个 Go 编写的程序，你可以从 Github 上面下载已经编译的二进制文件&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;，也可以自己编译。下面是手动编译的方法。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nv"&gt;S2I_URL&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;github.com/openshift/source-to-image
@@ -504,34 +504,34 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;hr&gt;
 &lt;ol&gt;
 &lt;li id="fn-1"&gt;
-&lt;p&gt;&lt;a href="https://github.com/openshift/source-to-image/releases"&gt;https://github.com/openshift/source-to-image/releases&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/openshift/source-to-image/releases" target="_blank"&gt;https://github.com/openshift/source-to-image/releases&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-2"&gt;
-&lt;p&gt;&lt;a href="https://github.com/sclorg?q=s2i"&gt;https://github.com/sclorg?q=s2i&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/sclorg?q=s2i" target="_blank"&gt;https://github.com/sclorg?q=s2i&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-3"&gt;
-&lt;p&gt;&lt;a href="https://blog.openshift.com/create-s2i-builder-image/"&gt;https://blog.openshift.com/create-s2i-builder-image/&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://blog.openshift.com/create-s2i-builder-image/" target="_blank"&gt;https://blog.openshift.com/create-s2i-builder-image/&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-4"&gt;
-&lt;p&gt;&lt;a href="https://hub.docker.com/r/centos/s2i-base-centos7/"&gt;https://hub.docker.com/r/centos/s2i-base-centos7/&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://hub.docker.com/r/centos/s2i-base-centos7/" target="_blank"&gt;https://hub.docker.com/r/centos/s2i-base-centos7/&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-5"&gt;
-&lt;p&gt;&lt;a href="https://github.com/openshift/source-to-image"&gt;https://github.com/openshift/source-to-image&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/openshift/source-to-image" target="_blank"&gt;https://github.com/openshift/source-to-image&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 16 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-16:/s2i.html</guid><category>Docker</category><category>Container</category></item><item><title>vSphere, ESXi 和 vCenter 的区别</title><link>http://xcodest.me/difference-between-vsphere-esxi-and-vcenter.html</link><description>&lt;blockquote&gt;
 &lt;p&gt;最近在看 VMware 一直没有搞清楚这几个产品之间的区别和联系。正好在网上搜索到一个好文，翻译下来。&lt;/p&gt;
 &lt;p&gt;本文翻译自：http://www.mustbegeek.com/difference-between-vsphere-esxi-and-vcenter/&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;最近对 VMware 虚拟化解决方案有很多的疑惑。毫无疑问，VMware是虚拟化解决方案的老大。但是第一次接触 Vmware 虚拟化平台的人面对 VMware vSphere 和他的组件经常感觉到疑惑。所以今天我将解释下 vSphere 和他的组件。能弄清楚 vSphere，EXSi 和 vCenter 的区别是很重要的。为了更深入了解和体验 vSphere, 你还可以&lt;a href="http://www.mustbegeek.com/installing-vsphere-in-vmware-workstation/"&gt;在 VMware Workstation 中安装 vSphere&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;最近对 VMware 虚拟化解决方案有很多的疑惑。毫无疑问，VMware是虚拟化解决方案的老大。但是第一次接触 Vmware 虚拟化平台的人面对 VMware vSphere 和他的组件经常感觉到疑惑。所以今天我将解释下 vSphere 和他的组件。能弄清楚 vSphere，EXSi 和 vCenter 的区别是很重要的。为了更深入了解和体验 vSphere, 你还可以&lt;a href="http://www.mustbegeek.com/installing-vsphere-in-vmware-workstation/" target="_blank"&gt;在 VMware Workstation 中安装 vSphere&lt;/a&gt;。&lt;/p&gt;
 &lt;h2 id="vsphereesxi-vcenter"&gt;vSphere，ESXi 和 vCenter 的区别&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;VMware Inc.&lt;/strong&gt; 是一家软件公司。它开发了许多&lt;a href="http://www.vmware.com/products/"&gt;产品&lt;/a&gt;，尤其是各种云解决方案 。他的云解决方案包括&lt;a href="https://www.vmware.com/products/vcloud-suite.html"&gt;云产品&lt;/a&gt;，&lt;a href="https://www.vmware.com/products/datacenter-virtualization.html"&gt;数据中心产品&lt;/a&gt;和&lt;a href="https://www.vmware.com/products/desktop-virtualization.html"&gt;桌面产品&lt;/a&gt;等。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;VMware Inc.&lt;/strong&gt; 是一家软件公司。它开发了许多&lt;a href="http://www.vmware.com/products/" target="_blank"&gt;产品&lt;/a&gt;，尤其是各种云解决方案 。他的云解决方案包括&lt;a href="https://www.vmware.com/products/vcloud-suite.html" target="_blank"&gt;云产品&lt;/a&gt;，&lt;a href="https://www.vmware.com/products/datacenter-virtualization.html" target="_blank"&gt;数据中心产品&lt;/a&gt;和&lt;a href="https://www.vmware.com/products/desktop-virtualization.html" target="_blank"&gt;桌面产品&lt;/a&gt;等。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;vSphere&lt;/strong&gt; 是在数据中心产品下的一套软件。vSphere 类似微软的 Office 办公套件，Office 办公套件包含了许多软件如Word, Excel, Access 等。和 Office 一样，vSphere 也是一个软件的集合。他包括了 vCenter, ESXi 和 vSphere 等。所以，这些软件联合起来就是 vSphere。vSphere 不是一个你可以安装使用的软件。它只是一个包含其它组件的集合。&lt;/p&gt;
-&lt;p&gt;ESXi, vSphere client 和 vCeneter 都是 vSphere 的组件。&lt;strong&gt;ESXi&lt;/strong&gt;是 vSphere 中最重要的一个组件。ESXi 是虚拟化服务。所有的虚拟机都是运行在 ESXi 服务上面。为了安装，管理和访问这些虚拟机，你需要另外的 vSphere 套件，也就是 vSphere client 或 vCenter。&lt;strong&gt;vSphere client&lt;/strong&gt;允许管理员访问 ESXi 服务并管理虚拟机。vSphere client 是安装在客户机(也就是管理员的笔记本)上面。vSphere client 被用来连接 ESXi 服务器和管理任务。那么什么是 vCenter?为什么虚拟它?尝试下在没有 vCenter server 的时候，只用 vSphere client 来&lt;a href="http://www.mustbegeek.com/create-copy-of-existing-virtual-machine-in-esxi-server/"&gt;克隆存在的虚拟机&lt;/a&gt;。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;vCenter server&lt;/strong&gt; 和 vSphere client 很像，但是它和功能更加强大。vCenter server 是安装在 Window 服务器或 Linux 服务器里面。VMware vCenter server 是一个中心化的管理应用。你可以通过它管理所有的虚拟机和 ESXi 物理机。vSphere client 可以通过访问 vCenter Server 来管理 EXSi 服务器。vCenter server 是一个企业级的产品，有许多企业级的功能，像 vMotion, VMware High Availability, VMware Update Manager 和 VMware Distributed Resource Scheduler(DRS)。你可以方便的&lt;a href="http://www.mustbegeek.com/clone-virtual-machine-in-vmware-vcenter/"&gt;通过 vCenter server 克隆存在的虚拟机&lt;/a&gt;。所以，vCenter 也是 vSphere 套件的一个重要组成部分。你需要单独购买 vCenter 的 license。&lt;/p&gt;
+&lt;p&gt;ESXi, vSphere client 和 vCeneter 都是 vSphere 的组件。&lt;strong&gt;ESXi&lt;/strong&gt;是 vSphere 中最重要的一个组件。ESXi 是虚拟化服务。所有的虚拟机都是运行在 ESXi 服务上面。为了安装，管理和访问这些虚拟机，你需要另外的 vSphere 套件，也就是 vSphere client 或 vCenter。&lt;strong&gt;vSphere client&lt;/strong&gt;允许管理员访问 ESXi 服务并管理虚拟机。vSphere client 是安装在客户机(也就是管理员的笔记本)上面。vSphere client 被用来连接 ESXi 服务器和管理任务。那么什么是 vCenter?为什么虚拟它?尝试下在没有 vCenter server 的时候，只用 vSphere client 来&lt;a href="http://www.mustbegeek.com/create-copy-of-existing-virtual-machine-in-esxi-server/" target="_blank"&gt;克隆存在的虚拟机&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;vCenter server&lt;/strong&gt; 和 vSphere client 很像，但是它和功能更加强大。vCenter server 是安装在 Window 服务器或 Linux 服务器里面。VMware vCenter server 是一个中心化的管理应用。你可以通过它管理所有的虚拟机和 ESXi 物理机。vSphere client 可以通过访问 vCenter Server 来管理 EXSi 服务器。vCenter server 是一个企业级的产品，有许多企业级的功能，像 vMotion, VMware High Availability, VMware Update Manager 和 VMware Distributed Resource Scheduler(DRS)。你可以方便的&lt;a href="http://www.mustbegeek.com/clone-virtual-machine-in-vmware-vcenter/" target="_blank"&gt;通过 vCenter server 克隆存在的虚拟机&lt;/a&gt;。所以，vCenter 也是 vSphere 套件的一个重要组成部分。你需要单独购买 vCenter 的 license。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="vSphere-products.png" src="images/2018/vSphere-product.png"&gt;&lt;/p&gt;
-&lt;p&gt;这个图描述了 vSphere 套间之前的关系。vSphere 是一个产品套件，&lt;a href="http://www.mustbegeek.com/install-configure-vmware-esxi-6-0/"&gt;ESXi 是安装在物理机上面的服务&lt;/a&gt;。vSphere Client 安装在笔记本或 PC 机上面，用来访问 ESXi 服务并安装和管理上面的虚拟机。vCenter Server 安装在了 ESXi 服务器的虚拟机里面。vCenter 也可以安装在单独的物理服务器上面，但是虚拟化不应该更好么? vCenter 服务通常用在有很多 EXSi 服务和许多虚拟机的大规模环境中。vCenter 也可以使用 vSphere client 来管理。所以 vSphere client 可以在小环境中直接管理 ESXi 服务。也可以在大规模的环境中，通过 vCenter 服务间接管理 ESXi 服务。&lt;/p&gt;
-&lt;p&gt;你可以在你的电脑中&lt;a href="http://www.mustbegeek.com/virtualization/installing-vsphere-in-vmware-workstation/"&gt;安装 vSphere&lt;/a&gt;来体验这些技术。更多信息，请参看&lt;a href="http://www.vmware.com/"&gt;VMware 官网&lt;/a&gt;。&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 08 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-08:/difference-between-vsphere-esxi-and-vcenter.html</guid><category>vmware</category></item><item><title>Intel CPU 漏洞是什么，又如何应对</title><link>http://xcodest.me/meltdown-and-spectre.html</link><description>&lt;p&gt;新年刚过，一个 Intel CPU 的漏洞消息如晴天霹雳，掀起了一波讨论浪潮。Intel 的股价也应声而且倒。&lt;/p&gt;
+&lt;p&gt;这个图描述了 vSphere 套间之前的关系。vSphere 是一个产品套件，&lt;a href="http://www.mustbegeek.com/install-configure-vmware-esxi-6-0/" target="_blank"&gt;ESXi 是安装在物理机上面的服务&lt;/a&gt;。vSphere Client 安装在笔记本或 PC 机上面，用来访问 ESXi 服务并安装和管理上面的虚拟机。vCenter Server 安装在了 ESXi 服务器的虚拟机里面。vCenter 也可以安装在单独的物理服务器上面，但是虚拟化不应该更好么? vCenter 服务通常用在有很多 EXSi 服务和许多虚拟机的大规模环境中。vCenter 也可以使用 vSphere client 来管理。所以 vSphere client 可以在小环境中直接管理 ESXi 服务。也可以在大规模的环境中，通过 vCenter 服务间接管理 ESXi 服务。&lt;/p&gt;
+&lt;p&gt;你可以在你的电脑中&lt;a href="http://www.mustbegeek.com/virtualization/installing-vsphere-in-vmware-workstation/" target="_blank"&gt;安装 vSphere&lt;/a&gt;来体验这些技术。更多信息，请参看&lt;a href="http://www.vmware.com/" target="_blank"&gt;VMware 官网&lt;/a&gt;。&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 08 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-08:/difference-between-vsphere-esxi-and-vcenter.html</guid><category>vmware</category></item><item><title>Intel CPU 漏洞是什么，又如何应对</title><link>http://xcodest.me/meltdown-and-spectre.html</link><description>&lt;p&gt;新年刚过，一个 Intel CPU 的漏洞消息如晴天霹雳，掀起了一波讨论浪潮。Intel 的股价也应声而且倒。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="intel-stock" src="images/2018/intel-stock.png"&gt;&lt;/p&gt;
 &lt;p&gt;这个漏洞几乎影响了现在所有正在使用的 CPU 型号，囊括了包含Intel, AMD, ARM在内的所有主流 CPU 厂商。影响之大，前所未有。究竟这是怎么一个问题，又如何避免?&lt;/p&gt;
 &lt;h2 id="_1"&gt;时间线&lt;/h2&gt;
@@ -547,11 +547,11 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;/ol&gt;
 &lt;p&gt;基于这三种变种问题，现在有两种已知的攻击方式&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;a href="https://spectreattack.com/spectre.pdf"&gt;Spectre&lt;/a&gt; (幽灵)，基于变种 1 和变种 2&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://meltdownattack.com/meltdown.pdf"&gt;Meltdown&lt;/a&gt; (熔断)，基于变种 3&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://spectreattack.com/spectre.pdf" target="_blank"&gt;Spectre&lt;/a&gt; (幽灵)，基于变种 1 和变种 2&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://meltdownattack.com/meltdown.pdf" target="_blank"&gt;Meltdown&lt;/a&gt; (熔断)，基于变种 3&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id="meltdown"&gt;Meltdown&lt;/h2&gt;
-&lt;p&gt;Meltdown 允许没有授权的进程访问系统级的内存数据。这个漏洞主影响 Intel 系统的 CPU, AMD 并不受影响。所有实现了&lt;a href="https://en.wikipedia.org/wiki/Out-of-order_execution"&gt;out-of-order execution&lt;/a&gt;的Intel CPU 都可能受影响。这几乎包括了 1995 年后 Intel 生产的所有 CPU(除了 2013 年之前生产的 Intel Itanium and Intel Atom)。&lt;/p&gt;
+&lt;p&gt;Meltdown 允许没有授权的进程访问系统级的内存数据。这个漏洞主影响 Intel 系统的 CPU, AMD 并不受影响。所有实现了&lt;a href="https://en.wikipedia.org/wiki/Out-of-order_execution" target="_blank"&gt;out-of-order execution&lt;/a&gt;的Intel CPU 都可能受影响。这几乎包括了 1995 年后 Intel 生产的所有 CPU(除了 2013 年之前生产的 Intel Itanium and Intel Atom)。&lt;/p&gt;
 &lt;h3 id="_3"&gt;影响&lt;/h3&gt;
 &lt;p&gt;这个问题，最大的影响是各大公有云厂商， 像 Google Cloud Platform, AWS, 阿里云等。&lt;/p&gt;
 &lt;p&gt;这个问题的发现者称，Xen(半虚拟化) 和 containers (docker, lxc, OpenVZ) 都受到影响。对于全虚拟化，当攻击客户机时，只能读取到客户机的内核内存，并不能读到宿主机的内核内存。&lt;/p&gt;
@@ -587,45 +587,45 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;p&gt;Following is copied from ttx post&lt;sup id="fnref-11"&gt;&lt;a class="footnote-ref" href="#fn-11"&gt;11&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Where can I learn more ?&lt;/p&gt;
-&lt;p&gt;You can find lots of explanations over the Internet. To understand the basic flaw and the CPU technologies involved, I recommend reading &lt;a href="https://www.raspberrypi.org/blog/why-raspberry-pi-isnt-vulnerable-to-spectre-or-meltdown/"&gt;Eben Upton's great post&lt;/a&gt;. If that's too deep or you need a good analogy to tell your less-technical friends, I find &lt;a href="https://medium.com/@rgmerk/an-explanation-of-meltdown-and-spectre-for-non-programmers-7e98b0a28da4"&gt;this one by Robert Merkel&lt;/a&gt; not too bad.&lt;/p&gt;
-&lt;p&gt;For technical details on the vulnerability themselves, &lt;a href="https://googleprojectzero.blogspot.fr/2018/01/reading-privileged-memory-with-side.html"&gt;Jann Horn's post on Google Project Zero blog&lt;/a&gt; should be first on your list. You can also read the Spectre and Meltdown papers.&lt;/p&gt;
-&lt;p&gt;For more information on the various mitigation techniques, I recommend starting with this article from &lt;a href="https://security.googleblog.com/2018/01/more-details-about-mitigations-for-cpu_4.html"&gt;Google's Security blog&lt;/a&gt;. For information about Linux kernel patches in particular, I recommend &lt;a href="http://kroah.com/log/blog/2018/01/06/meltdown-status/"&gt;Greg Kroah-Hartman's post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You can find lots of explanations over the Internet. To understand the basic flaw and the CPU technologies involved, I recommend reading &lt;a href="https://www.raspberrypi.org/blog/why-raspberry-pi-isnt-vulnerable-to-spectre-or-meltdown/" target="_blank"&gt;Eben Upton's great post&lt;/a&gt;. If that's too deep or you need a good analogy to tell your less-technical friends, I find &lt;a href="https://medium.com/@rgmerk/an-explanation-of-meltdown-and-spectre-for-non-programmers-7e98b0a28da4" target="_blank"&gt;this one by Robert Merkel&lt;/a&gt; not too bad.&lt;/p&gt;
+&lt;p&gt;For technical details on the vulnerability themselves, &lt;a href="https://googleprojectzero.blogspot.fr/2018/01/reading-privileged-memory-with-side.html" target="_blank"&gt;Jann Horn's post on Google Project Zero blog&lt;/a&gt; should be first on your list. You can also read the Spectre and Meltdown papers.&lt;/p&gt;
+&lt;p&gt;For more information on the various mitigation techniques, I recommend starting with this article from &lt;a href="https://security.googleblog.com/2018/01/more-details-about-mitigations-for-cpu_4.html" target="_blank"&gt;Google's Security blog&lt;/a&gt;. For information about Linux kernel patches in particular, I recommend &lt;a href="http://kroah.com/log/blog/2018/01/06/meltdown-status/" target="_blank"&gt;Greg Kroah-Hartman's post&lt;/a&gt;.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;div class="footnote"&gt;
 &lt;hr&gt;
 &lt;ol&gt;
 &lt;li id="fn-1"&gt;
-&lt;p&gt;&lt;a href="https://googleprojectzero.blogspot.com/2018/01/reading-privileged-memory-with-side.html"&gt;https://googleprojectzero.blogspot.com/2018/01/reading-privileged-memory-with-side.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://googleprojectzero.blogspot.com/2018/01/reading-privileged-memory-with-side.html" target="_blank"&gt;https://googleprojectzero.blogspot.com/2018/01/reading-privileged-memory-with-side.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-2"&gt;
-&lt;p&gt;&lt;a href="https://access.redhat.com/errata/RHSA-2018:0007"&gt;https://access.redhat.com/errata/RHSA-2018:0007&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://access.redhat.com/errata/RHSA-2018:0007" target="_blank"&gt;https://access.redhat.com/errata/RHSA-2018:0007&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-3"&gt;
-&lt;p&gt;&lt;a href="https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/SpectreAndMeltdown"&gt;https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/SpectreAndMeltdown&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/SpectreAndMeltdown" target="_blank"&gt;https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/SpectreAndMeltdown&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-4"&gt;
-&lt;p&gt;&lt;a href="https://www.zhihu.com/question/265012502"&gt;https://www.zhihu.com/question/265012502&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.zhihu.com/question/265012502" target="_blank"&gt;https://www.zhihu.com/question/265012502&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-5"&gt;
-&lt;p&gt;&lt;a href="https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability)"&gt;https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability)&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability)" target="_blank"&gt;https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability)&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-6"&gt;
-&lt;p&gt;&lt;a href="https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)"&gt;https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-6" title="Jump back to footnote 6 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)" target="_blank"&gt;https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-6" title="Jump back to footnote 6 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-7"&gt;
-&lt;p&gt;&lt;a href="http://xcodest.me/meltdown-and-spectre.html"&gt;http://xcodest.me/meltdown-and-spectre.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-7" title="Jump back to footnote 7 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://xcodest.me/meltdown-and-spectre.html" target="_blank"&gt;http://xcodest.me/meltdown-and-spectre.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-7" title="Jump back to footnote 7 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-8"&gt;
-&lt;p&gt;&lt;a href="https://access.redhat.com/security/vulnerabilities/speculativeexecution"&gt;https://access.redhat.com/security/vulnerabilities/speculativeexecution&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-8" title="Jump back to footnote 8 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://access.redhat.com/security/vulnerabilities/speculativeexecution" target="_blank"&gt;https://access.redhat.com/security/vulnerabilities/speculativeexecution&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-8" title="Jump back to footnote 8 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-9"&gt;
-&lt;p&gt;&lt;a href="https://lists.centos.org/pipermail/centos-announce/2018-January/022696.html"&gt;https://lists.centos.org/pipermail/centos-announce/2018-January/022696.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-9" title="Jump back to footnote 9 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://lists.centos.org/pipermail/centos-announce/2018-January/022696.html" target="_blank"&gt;https://lists.centos.org/pipermail/centos-announce/2018-January/022696.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-9" title="Jump back to footnote 9 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-10"&gt;
-&lt;p&gt;&lt;a href="https://lists.centos.org/pipermail/centos-announce/2018-January/thread.html"&gt;https://lists.centos.org/pipermail/centos-announce/2018-January/thread.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-10" title="Jump back to footnote 10 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://lists.centos.org/pipermail/centos-announce/2018-January/thread.html" target="_blank"&gt;https://lists.centos.org/pipermail/centos-announce/2018-January/thread.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-10" title="Jump back to footnote 10 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-11"&gt;
-&lt;p&gt;&lt;a href="https://ttx.re/openstack-spectre-meltdown-faq.html"&gt;https://ttx.re/openstack-spectre-meltdown-faq.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-11" title="Jump back to footnote 11 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://ttx.re/openstack-spectre-meltdown-faq.html" target="_blank"&gt;https://ttx.re/openstack-spectre-meltdown-faq.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-11" title="Jump back to footnote 11 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 04 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-04:/meltdown-and-spectre.html</guid><category>Linux</category><category>OS</category></item><item><title>rbd 是否支持注入</title><link>http://xcodest.me/inject-file-in-rbd.html</link><description>&lt;h2 id="_1"&gt;引子&lt;/h2&gt;
@@ -657,28 +657,28 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;hr&gt;
 &lt;ol&gt;
 &lt;li id="fn-1"&gt;
-&lt;p&gt;&lt;a href="https://github.com/libguestfs/libguestfs/commit/694a091d3faac78acbd0b5a368856b569c7ba5e2"&gt;https://github.com/libguestfs/libguestfs/commit/694a091d3faac78acbd0b5a368856b569c7ba5e2&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/libguestfs/libguestfs/commit/694a091d3faac78acbd0b5a368856b569c7ba5e2" target="_blank"&gt;https://github.com/libguestfs/libguestfs/commit/694a091d3faac78acbd0b5a368856b569c7ba5e2&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-2"&gt;
-&lt;p&gt;&lt;a href="https://github.com/libguestfs/libguestfs/commit/186bb67c6e8496d04a6f5646df9b2fb483cdc189"&gt;https://github.com/libguestfs/libguestfs/commit/186bb67c6e8496d04a6f5646df9b2fb483cdc189&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/libguestfs/libguestfs/commit/186bb67c6e8496d04a6f5646df9b2fb483cdc189" target="_blank"&gt;https://github.com/libguestfs/libguestfs/commit/186bb67c6e8496d04a6f5646df9b2fb483cdc189&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-3"&gt;
-&lt;p&gt;&lt;a href="https://github.com/openstack/nova/blob/master/nova/virt/libvirt/driver.py#L3269"&gt;https://github.com/openstack/nova/blob/master/nova/virt/libvirt/driver.py#L3269&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/openstack/nova/blob/master/nova/virt/libvirt/driver.py#L3269" target="_blank"&gt;https://github.com/openstack/nova/blob/master/nova/virt/libvirt/driver.py#L3269&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-4"&gt;
-&lt;p&gt;&lt;a href="http://lists.openstack.org/pipermail/openstack-dev/2016-November/107195.html"&gt;http://lists.openstack.org/pipermail/openstack-dev/2016-November/107195.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://lists.openstack.org/pipermail/openstack-dev/2016-November/107195.html" target="_blank"&gt;http://lists.openstack.org/pipermail/openstack-dev/2016-November/107195.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-5"&gt;
-&lt;p&gt;&lt;a href="http://lists.openstack.org/pipermail/openstack-dev/2016-July/098703.html"&gt;http://lists.openstack.org/pipermail/openstack-dev/2016-July/098703.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://lists.openstack.org/pipermail/openstack-dev/2016-July/098703.html" target="_blank"&gt;http://lists.openstack.org/pipermail/openstack-dev/2016-July/098703.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-6"&gt;
-&lt;p&gt;&lt;a href="http://lists.openstack.org/pipermail/openstack-dev/2017-March/113171.html"&gt;http://lists.openstack.org/pipermail/openstack-dev/2017-March/113171.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-6" title="Jump back to footnote 6 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://lists.openstack.org/pipermail/openstack-dev/2017-March/113171.html" target="_blank"&gt;http://lists.openstack.org/pipermail/openstack-dev/2017-March/113171.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-6" title="Jump back to footnote 6 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-7"&gt;
-&lt;p&gt;&lt;a href="https://review.openstack.org/509013"&gt;https://review.openstack.org/509013&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-7" title="Jump back to footnote 7 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/509013" target="_blank"&gt;https://review.openstack.org/509013&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-7" title="Jump back to footnote 7 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-8"&gt;
-&lt;p&gt;&lt;a href="https://blueprints.launchpad.net/nova/+spec/disable-file-injection-by-default"&gt;https://blueprints.launchpad.net/nova/+spec/disable-file-injection-by-default&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-8" title="Jump back to footnote 8 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://blueprints.launchpad.net/nova/+spec/disable-file-injection-by-default" target="_blank"&gt;https://blueprints.launchpad.net/nova/+spec/disable-file-injection-by-default&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-8" title="Jump back to footnote 8 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 25 Dec 2017 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2017-12-25:/inject-file-in-rbd.html</guid></item><item><title>如何在 OpenStack 中隐藏 Glance 镜像</title><link>http://xcodest.me/hide-glance-image.html</link><description>&lt;h2 id="_1"&gt;问题&lt;/h2&gt;
@@ -1662,10 +1662,10 @@ pip install .
 &lt;hr/&gt;
 &lt;ol&gt;
 &lt;li id="fn-1"&gt;
-&lt;p&gt;&lt;a href="https://github.com/openstack/gertty"&gt;https://github.com/openstack/gertty&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/openstack/gertty" target="_blank"&gt;https://github.com/openstack/gertty&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-2"&gt;
-&lt;p&gt;&lt;a href="https://github.com/openstack/gertty/tree/master/examples"&gt;https://github.com/openstack/gertty/tree/master/examples&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/openstack/gertty/tree/master/examples" target="_blank"&gt;https://github.com/openstack/gertty/tree/master/examples&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 11 Apr 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-04-11:/effective-code-review-tool-gertty.html</guid><category>CodeReview</category></item><item><title>cloud-init 导致虚拟机启动太慢</title><link>http://xcodest.me/cloud-init-cause-vm-boot-slow.html</link><description>
@@ -1986,31 +1986,31 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;hr/&gt;
 &lt;ol&gt;
 &lt;li id="fn-1"&gt;
-&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-priorities"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-priorities&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-priorities" target="_blank"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-priorities&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-2"&gt;
-&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-upgrades"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-upgrades&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-upgrades" target="_blank"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-upgrades&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-3"&gt;
-&lt;p&gt;&lt;a href="https://blueprints.launchpad.net/kolla?searchtext=upgrade"&gt;https://blueprints.launchpad.net/kolla?searchtext=upgrade&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://blueprints.launchpad.net/kolla?searchtext=upgrade" target="_blank"&gt;https://blueprints.launchpad.net/kolla?searchtext=upgrade&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-4"&gt;
-&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-infrastructure-upgrades"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-infrastructure-upgrades&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-infrastructure-upgrades" target="_blank"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-infrastructure-upgrades&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-5"&gt;
-&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;a class="footnote-backref" href="#fnref2-5" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl" target="_blank"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;a class="footnote-backref" href="#fnref2-5" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-6"&gt;
-&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-backport"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-backport&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-6" title="Jump back to footnote 6 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-backport" target="_blank"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-backport&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-6" title="Jump back to footnote 6 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-7"&gt;
-&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-roadmap"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-roadmap&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-7" title="Jump back to footnote 7 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-roadmap" target="_blank"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-roadmap&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-7" title="Jump back to footnote 7 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-8"&gt;
-&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-security"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-security&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-8" title="Jump back to footnote 8 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-security" target="_blank"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-security&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-8" title="Jump back to footnote 8 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-9"&gt;
-&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-kolla-code-sharing"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-kolla-code-sharing&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-9" title="Jump back to footnote 9 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-kolla-code-sharing" target="_blank"&gt;https://etherpad.openstack.org/p/kolla-mitaka-midcycle-kolla-code-sharing&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-9" title="Jump back to footnote 9 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 16 Feb 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-02-16:/kolla-mitaka-midcycle-discuss.html</guid><category>Kolla</category></item><item><title>iptables forward the vrrp packets issue</title><link>http://xcodest.me/iptables-forward-the-vrrp-packets-issue.html</link><description>&lt;p&gt;&lt;img alt="功夫熊猫" src="images/kungfupanda.jpg"&gt;&lt;/p&gt;
@@ -2041,7 +2041,7 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;hr&gt;
 &lt;ol&gt;
 &lt;li id="fn-1"&gt;
-&lt;p&gt;&lt;a href="https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers"&gt;https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers" target="_blank"&gt;https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 02 Feb 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-02-02:/iptables-forward-the-vrrp-packets-issue.html</guid><category>iptables</category><category>vrrp</category></item><item><title>OpenStack Kolla 项目介绍</title><link>http://xcodest.me/kolla-introduce.html</link><description>
@@ -2057,7 +2057,7 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;/ul&gt;
 &lt;p&gt;其实这些问题只要是由 Docker 来解决的。这也是 Kolla 使用 Docker 的原因。&lt;/p&gt;
 &lt;h1 id="_3"&gt;架构&lt;/h1&gt;
-&lt;p&gt;kolla 代码在&lt;a href="https://github.com/openstack/kolla"&gt;https://github.com/openstack/kolla&lt;/a&gt;。现在 Kolla 主要分成两个部分。&lt;/p&gt;
+&lt;p&gt;kolla 代码在&lt;a href="https://github.com/openstack/kolla" target="_blank"&gt;https://github.com/openstack/kolla&lt;/a&gt;。现在 Kolla 主要分成两个部分。&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Docker Images Build &lt;/li&gt;
 &lt;li&gt;Ansible 部署(这部分将来会迁移到 kolla-ansible 项目)&lt;/li&gt;
@@ -2112,37 +2112,37 @@ multihost 的环境&lt;/p&gt;
 &lt;/ul&gt;
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="https://wiki.openstack.org/wiki/Kolla"&gt;Kolla Wiki Page&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://wiki.openstack.org/wiki/Kolla" target="_blank"&gt;Kolla Wiki Page&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="footnote"&gt;
 &lt;hr/&gt;
 &lt;ol&gt;
 &lt;li id="fn-1"&gt;
-&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/248812/"&gt;Add docker module in Kolla&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/248812/" target="_blank"&gt;Add docker module in Kolla&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-2"&gt;
-&lt;p&gt;&lt;a href="https://github.com/ansible/ansible-modules-core/issues/2257"&gt;Docker 1.8.3 is broken under certain conditions&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/ansible/ansible-modules-core/issues/2257" target="_blank"&gt;Docker 1.8.3 is broken under certain conditions&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-3"&gt;
-&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/260389/"&gt;use oslo.config instead of raw argparse.ArgumentParser&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/260389/" target="_blank"&gt;use oslo.config instead of raw argparse.ArgumentParser&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-4"&gt;
-&lt;p&gt;&lt;a href="http://lists.openstack.org/pipermail/openstack-dev/2015-December/083089.html"&gt;Mail List: Adding Ubuntu Liberty to Kolla-Mitaka&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://lists.openstack.org/pipermail/openstack-dev/2015-December/083089.html" target="_blank"&gt;Mail List: Adding Ubuntu Liberty to Kolla-Mitaka&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-5"&gt;
-&lt;p&gt;&lt;a href="https://launchpad.net/~ubuntu-cloud-archive/+archive/ubuntu/mitaka-staging"&gt;Staging PPA for mitaka&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://launchpad.net/~ubuntu-cloud-archive/+archive/ubuntu/mitaka-staging" target="_blank"&gt;Staging PPA for mitaka&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-6"&gt;
-&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/261957/"&gt;Gerrit: Base and openstack-base ubuntu binary containers&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-6" title="Jump back to footnote 6 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/261957/" target="_blank"&gt;Gerrit: Base and openstack-base ubuntu binary containers&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-6" title="Jump back to footnote 6 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-7"&gt;
-&lt;p&gt;&lt;a href="https://blueprints.launchpad.net/kolla/+spec/binary-ubuntu"&gt;BP:Ubuntu binary containers&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-7" title="Jump back to footnote 7 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://blueprints.launchpad.net/kolla/+spec/binary-ubuntu" target="_blank"&gt;BP:Ubuntu binary containers&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-7" title="Jump back to footnote 7 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-8"&gt;
-&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/257568/"&gt;Gerrit: Playbook for keystone upgrade&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-8" title="Jump back to footnote 8 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/#/c/257568/" target="_blank"&gt;Gerrit: Playbook for keystone upgrade&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-8" title="Jump back to footnote 8 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn-9"&gt;
-&lt;p&gt;&lt;a href="https://github.com/openstack/kolla-mesos"&gt;kolla-mesos&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-9" title="Jump back to footnote 9 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/openstack/kolla-mesos" target="_blank"&gt;kolla-mesos&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref-9" title="Jump back to footnote 9 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 11 Jan 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-01-11:/kolla-introduce.html</guid><category>Kolla</category><category>OpenStack</category></item><item><title>Get all the repo from OpenStack</title><link>http://xcodest.me/get-all-repos-from-openstack.html</link><description>&lt;p&gt;OpenStack的源因为你我都知道的原因，一直不稳定，导致 devstack 时经常失败。特定写了个脚本，可以拿到所有的仓库地址，方便做本地的mirror。&lt;/p&gt;
@@ -2367,13 +2367,13 @@ git clone git://github.com/ansible/ansible.git --recursive
 
 &lt;span class="c1"&gt;# install&lt;/span&gt;
 pip install .
-&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 30 Dec 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-12-30:/ansible-install.html</guid><category>Ansible</category></item><item><title>Deploy Docker Registry Service</title><link>http://xcodest.me/deploy-docker-registry-service.html</link><description>&lt;p&gt;使用 Docker 时，很多情况下需要搭建自己的 registry 服务。把一些私有的 Image 放到上面用。官方有一个 registry 的&lt;a href="https://hub.docker.com/_/registry/"&gt;镜像&lt;/a&gt;可以拉下来，直接用。如下：&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 30 Dec 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-12-30:/ansible-install.html</guid><category>Ansible</category></item><item><title>Deploy Docker Registry Service</title><link>http://xcodest.me/deploy-docker-registry-service.html</link><description>&lt;p&gt;使用 Docker 时，很多情况下需要搭建自己的 registry 服务。把一些私有的 Image 放到上面用。官方有一个 registry 的&lt;a href="https://hub.docker.com/_/registry/" target="_blank"&gt;镜像&lt;/a&gt;可以拉下来，直接用。如下：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker run -p 5000:5000 -v &amp;lt;HOST_DIR&amp;gt;:/tmp/registry-dev registry
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;但是默认没有加上 ssl(如果没有，只能给本机提供服务)， proxy也没有开启。&lt;/p&gt;
-&lt;p&gt;我自己写了一个 docker compose, 默认开启了以上两个功能，代码见&lt;a href="https://github.com/jeffrey4l/docker-registry"&gt;这里&lt;/a&gt;。默认使用了 host 的 /data/docker-registry/data 目录做数据 volume, 所以请保证这个目录存在。&lt;/p&gt;
+&lt;p&gt;我自己写了一个 docker compose, 默认开启了以上两个功能，代码见&lt;a href="https://github.com/jeffrey4l/docker-registry" target="_blank"&gt;这里&lt;/a&gt;。默认使用了 host 的 /data/docker-registry/data 目录做数据 volume, 所以请保证这个目录存在。&lt;/p&gt;
 &lt;p&gt;使用自己建立的 registry 服务时，要修改 docker 的服务启动脚本，加上如下参数：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--insecure-registry your.domain.com:5000 --registry-mirror=https://your.domain.com:5000
 &lt;/pre&gt;&lt;/div&gt;
@@ -2532,7 +2532,7 @@ KeyboardInterrupt
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;The root cause is explained in &lt;a href="http://stackoverflow.com/a/1408476/893981"&gt;stackoverflow&lt;/a&gt;. And the bug is &lt;a href="http://bugs.python.org/issue8296"&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The root cause is explained in &lt;a href="http://stackoverflow.com/a/1408476/893981" target="_blank"&gt;stackoverflow&lt;/a&gt;. And the bug is &lt;a href="http://bugs.python.org/issue8296" target="_blank"&gt;here&lt;/a&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 This is a Python bug. When waiting for a condition in threading.Condition.wait(), KeyboardInterrupt is never sent. Repro:
 
@@ -2594,9 +2594,9 @@ or similar.
 
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="http://bugs.python.org/issue8296"&gt;Python Bug&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://unix.stackexchange.com/a/149756"&gt;How Ctrl+c works&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://stackoverflow.com/a/1408476/893981"&gt;Keyboard Interrupts with python's multiprocessing Pool&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://bugs.python.org/issue8296" target="_blank"&gt;Python Bug&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://unix.stackexchange.com/a/149756" target="_blank"&gt;How Ctrl+c works&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://stackoverflow.com/a/1408476/893981" target="_blank"&gt;Keyboard Interrupts with python's multiprocessing Pool&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 17 Nov 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-11-17:/interrupt-the-python-multiprocessing-pool-in-graceful-way.html</guid><category>Python</category></item><item><title>Glance Create Image from Existent Image in Ceph</title><link>http://xcodest.me/glance-create-image-from-existent-image-in-ceph.html</link><description>&lt;p&gt;当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。&lt;/p&gt;
 &lt;p&gt;可以先用 rbd 上传镜像，转换格式(也会比较慢，还不如直接上传 RAW 格式的镜像)。然后再做好对应的 snap , 并加以保护。是后一步的location必须按格式写(见[0])，这样才会使用rbd的 COW clone 功能。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# image format 2 support layering&lt;/span&gt;
@@ -2616,10 +2616,10 @@ glance image-create --id &lt;span class="nv"&gt;$uuid&lt;/span&gt; --name ubuntu
 
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;[0] &lt;a href="https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179"&gt;https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[1] &lt;a href="http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf"&gt;http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;[2] &lt;a href="http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/"&gt;http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 04 Jun 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-06-04:/glance-create-image-from-existent-image-in-ceph.html</guid></item><item><title>Python MetaClass Magic</title><link>http://xcodest.me/python-metaclass-magic.html</link><description>&lt;p&gt;在 Nova 代码中[&lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075"&gt;0&lt;/a&gt;]发现一个神奇的应用，利用 decrator 来区分同名的函数，根据 decrator 上面定义的版本，来调用不同的方法。仔细学习了一下。它是用到了 MetaClass。主要思路是：&lt;/p&gt;
+&lt;li&gt;[0] &lt;a href="https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179" target="_blank"&gt;https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[1] &lt;a href="http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf" target="_blank"&gt;http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[2] &lt;a href="http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/" target="_blank"&gt;http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 04 Jun 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-06-04:/glance-create-image-from-existent-image-in-ceph.html</guid></item><item><title>Python MetaClass Magic</title><link>http://xcodest.me/python-metaclass-magic.html</link><description>&lt;p&gt;在 Nova 代码中[&lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075" target="_blank"&gt;0&lt;/a&gt;]发现一个神奇的应用，利用 decrator 来区分同名的函数，根据 decrator 上面定义的版本，来调用不同的方法。仔细学习了一下。它是用到了 MetaClass。主要思路是：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;在 decrator 里面，把被装饰的方法存在类的一个属性里面(version_methods)&lt;/li&gt;
 &lt;li&gt;使用自定义的metaclass, 删除掉父类上的version_methods，并把这个属性放到子类中。这样做是为了防止子类共享父类的version_methods属性。&lt;/li&gt;
@@ -2729,9 +2729,9 @@ SubClass2().foo({"version": "2.0"})
     &lt;/noscript&gt;
 &lt;/div&gt;
 &lt;ul&gt;
-&lt;li&gt;[0] &lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075"&gt;https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 18 May 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-05-18:/python-metaclass-magic.html</guid><category>Python</category></item><item><title>Oz Templates</title><link>http://xcodest.me/oz-templates.html</link><description>&lt;p&gt;最近利用&lt;a href="https://github.com/clalancette/oz"&gt;OZ&lt;/a&gt;做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下&lt;/p&gt;
-&lt;p&gt;项目地址: &lt;a href="https://github.com/jeffrey4l/oz-templates"&gt;https://github.com/jeffrey4l/oz-templates&lt;/a&gt;&lt;/p&gt;
+&lt;li&gt;[0] &lt;a href="https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075" target="_blank"&gt;https://github.com/openstack/nova/blob/c13f693d496f4ea5dbc78244fefd9ec2d6ea8de5/nova/api/openstack/wsgi.py#L1075&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 18 May 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-05-18:/python-metaclass-magic.html</guid><category>Python</category></item><item><title>Oz Templates</title><link>http://xcodest.me/oz-templates.html</link><description>&lt;p&gt;最近利用&lt;a href="https://github.com/clalancette/oz" target="_blank"&gt;OZ&lt;/a&gt;做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下&lt;/p&gt;
+&lt;p&gt;项目地址: &lt;a href="https://github.com/jeffrey4l/oz-templates" target="_blank"&gt;https://github.com/jeffrey4l/oz-templates&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;以下是README里的内容。&lt;/p&gt;
 &lt;h2 id="usage"&gt;Usage&lt;/h2&gt;
 &lt;p&gt;The isos are located in &lt;code&gt;/data/isos/&lt;/code&gt;. The isos' name are conversionally.
@@ -2807,7 +2807,7 @@ make all
 
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html"&gt;Re-raising Exceptions&lt;/a&gt; - by Ian Bicking&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html" target="_blank"&gt;Re-raising Exceptions&lt;/a&gt; - by Ian Bicking&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 06 May 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-05-06:/How_to_raise_python_exception.html</guid><category>Python</category><category>Exception</category></item><item><title>Logstash Debug</title><link>http://xcodest.me/logstash_debug.html</link><description>&lt;p&gt;Logstash 能使用 rubydebug 这个 codec 进行 debug。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;input {
     stdin {}
@@ -2842,8 +2842,8 @@ Pipeline started {:level=&amp;gt;:info}
 
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/codecs/rubydebug"&gt;http://logstash.net/docs/1.4.2/codecs/rubydebug&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/flags"&gt;http://logstash.net/docs/1.4.2/flags&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/codecs/rubydebug" target="_blank"&gt;http://logstash.net/docs/1.4.2/codecs/rubydebug&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/flags" target="_blank"&gt;http://logstash.net/docs/1.4.2/flags&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 23 Mar 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-03-23:/logstash_debug.html</guid></item><item><title>Nova Security Group相关配置</title><link>http://xcodest.me/nova-security-groupxiang-guan-pei-zhi.html</link><description>&lt;h1 id="_1"&gt;相关配置&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;network_api_class - 设置 network 模块所用的api&lt;ul&gt;
@@ -2895,9 +2895,9 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;a href="http://kennethjiang.blogspot.jp/2012/02/ebtables-in-openstack-nova-and.html"&gt;ebtables in Openstack Nova&lt;/a&gt; - nwfilter explaination&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://blueprints.launchpad.net/neutron/+spec/arp-spoof-patch-ebtables"&gt;Preventing ARP spoofing via ebtables&lt;/a&gt; - Neutron BP for preventing arp snoofing. Expected in Kilo&lt;ol&gt;
-&lt;li&gt;&lt;a href="https://bugs.launchpad.net/neutron/+bug/1274034"&gt;Neutron firewall anti-spoofing does not prevent ARP poisoning&lt;/a&gt; - Related bug&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://kennethjiang.blogspot.jp/2012/02/ebtables-in-openstack-nova-and.html" target="_blank"&gt;ebtables in Openstack Nova&lt;/a&gt; - nwfilter explaination&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://blueprints.launchpad.net/neutron/+spec/arp-spoof-patch-ebtables" target="_blank"&gt;Preventing ARP spoofing via ebtables&lt;/a&gt; - Neutron BP for preventing arp snoofing. Expected in Kilo&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://bugs.launchpad.net/neutron/+bug/1274034" target="_blank"&gt;Neutron firewall anti-spoofing does not prevent ARP poisoning&lt;/a&gt; - Related bug&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 18 Mar 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-03-18:/nova-security-groupxiang-guan-pei-zhi.html</guid><category>Network</category></item><item><title>关于减肥你应该知道的十件事 - 观后总结</title><link>http://xcodest.me/ten-things-you-need-know-abount-loss-weight.html</link><description>&lt;p&gt;看了BBC出的"BBC：关于减肥你应该知道的十件事"，做了一些笔记。&lt;/p&gt;
@@ -2931,7 +2931,7 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 &lt;/ol&gt;
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="http://open.163.com/movie/2013/5/E/1/M8TBLASMF_M8TBLJSE1.html"&gt;BBC：关于减肥你应该知道的十件事&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://open.163.com/movie/2013/5/E/1/M8TBLASMF_M8TBLJSE1.html" target="_blank"&gt;BBC：关于减肥你应该知道的十件事&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 12 Mar 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-03-12:/ten-things-you-need-know-abount-loss-weight.html</guid></item><item><title>Cinder V2 API</title><link>http://xcodest.me/cinder-v2-api.html</link><description>&lt;p&gt;cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).&lt;/p&gt;
 &lt;h1 id="enable-the-v2-in-cinder"&gt;Enable the v2 in cinder&lt;/h1&gt;
 &lt;p&gt;Change the following config. The v1 and v2 is enabled in default.&lt;/p&gt;
@@ -3026,7 +3026,7 @@ $ virsh capabilities | grep uuid
 
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="http://libvirt.org/guide/html/Application_Development_Guide-Connections-Capability_Info.html"&gt;Libvirt Capability Information&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://libvirt.org/guide/html/Application_Development_Guide-Connections-Capability_Info.html" target="_blank"&gt;Libvirt Capability Information&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 10 Feb 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-02-10:/libvirt-uuid.html</guid><category>Libvirt</category></item><item><title>tun &amp; veth设备</title><link>http://xcodest.me/tun-vethshe-bei.html</link><description>&lt;p&gt;OpenStack 的 Neutron 中会建立好多网卡设备。大体上这些网卡可以分为两类 tun 和 veth。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="OpenStack Neutron Network" class="img-responsive" src="/images/neutron-ovs-compute.png"&gt;&lt;/p&gt;
 &lt;p&gt;用&lt;code&gt;ethtool&lt;/code&gt;可以得到网卡所用的驱动，从而得到网上设备是哪一类。&lt;/p&gt;
@@ -3068,9 +3068,9 @@ ip tuntap add mode tun
 &lt;p&gt;这里建立了一对veth设备，名字分别是 veth0 和 veth1。当向其中一个设备写入数据时，另一个设备就能拿到写入的数据。在 OpenStack 中的使用就是来穿透 namespace.&lt;/p&gt;
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="http://wangcong.org/2011/06/19/-e5-85-b3-e4-ba-8e-tuntap/"&gt;关于 tun/tap 设备&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://wangcong.org/2011/07/03/-e4-bb-80-e4-b9-88-e6-98-af-veth/"&gt;什么是veth&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://www.51know.info/system_base/tun_tap.html"&gt;linux下TUN/TAP虚拟网卡的使用&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://wangcong.org/2011/06/19/-e5-85-b3-e4-ba-8e-tuntap/" target="_blank"&gt;关于 tun/tap 设备&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://wangcong.org/2011/07/03/-e4-bb-80-e4-b9-88-e6-98-af-veth/" target="_blank"&gt;什么是veth&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.51know.info/system_base/tun_tap.html" target="_blank"&gt;linux下TUN/TAP虚拟网卡的使用&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 09 Feb 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-02-09:/tun-vethshe-bei.html</guid><category>Network</category></item><item><title>中信9积分</title><link>http://xcodest.me/ecitic9.html</link><description>&lt;p&gt;中信的i白金是张好卡，也是我的主力使用卡。其中9积分的活动还是比较厚道的。这个羊毛可以薅一薅。但是参加的店和地址还不少。我把北京西城这边的统计了一下。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;西树泡芙 - 9积分换36元消费金1次&lt;ul&gt;
@@ -3097,7 +3097,7 @@ ip tuntap add mode tun
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;另活动页面在 &lt;a href="http://creditcard.ecitic.com/youhui/120926/wanning.shtml"&gt;http://creditcard.ecitic.com/youhui/120926/wanning.shtml&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 05 Feb 2015 20:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-02-05:/ecitic9.html</guid></item><item><title>MySQL Errno 150</title><link>http://xcodest.me/mysql-errno-150.html</link><description>&lt;p&gt;做OpenStack icehouse 升级到 Juno过程中，升级Neutron数据库时遇到这个错误。&lt;/p&gt;
+&lt;p&gt;另活动页面在 &lt;a href="http://creditcard.ecitic.com/youhui/120926/wanning.shtml" target="_blank"&gt;http://creditcard.ecitic.com/youhui/120926/wanning.shtml&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 05 Feb 2015 20:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-02-05:/ecitic9.html</guid></item><item><title>MySQL Errno 150</title><link>http://xcodest.me/mysql-errno-150.html</link><description>&lt;p&gt;做OpenStack icehouse 升级到 Juno过程中，升级Neutron数据库时遇到这个错误。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="n"&gt;neutron&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;migration&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;migrate_to_ml2&lt;/span&gt; &lt;span class="n"&gt;openvswitch&lt;/span&gt; &lt;span class="nl"&gt;mysql&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//USER:PASSWORD@10.251.1.8/neutron&lt;/span&gt;
 &lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
   &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/runpy.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;162&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_run_module_as_main&lt;/span&gt;
@@ -3165,8 +3165,8 @@ ip tuntap add mode tun
 
 &lt;h1 id="ref"&gt;REF&lt;/h1&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;a href="https://bugs.launchpad.net/neutron/+bug/1332564"&gt;https://bugs.launchpad.net/neutron/+bug/1332564&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html"&gt;http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://bugs.launchpad.net/neutron/+bug/1332564" target="_blank"&gt;https://bugs.launchpad.net/neutron/+bug/1332564&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html" target="_blank"&gt;http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 14 Jan 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-01-14:/mysql-errno-150.html</guid><category>MySQL</category></item><item><title>PIP install from local</title><link>http://xcodest.me/pip-install-from-local.html</link><description>&lt;p&gt;在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。&lt;/p&gt;
 &lt;p&gt;先在有网络的环境中下载下来所有需要的包：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install --download &lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;HOME&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/.pip-packages -r requirement.txt
@@ -3223,7 +3223,7 @@ nova-manage flavor create --name compute-12 --cpu 12 --memory 16384 --root_gb $D
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;The root cause is explained on &lt;a href="https://docs.python.org/2/library/stringio.html#cStringIO.StringIO"&gt;document for cStringIO&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The root cause is explained on &lt;a href="https://docs.python.org/2/library/stringio.html#cStringIO.StringIO" target="_blank"&gt;document for cStringIO&lt;/a&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Unlike the StringIO module, this module is not able to accept Unicode strings that cannot be encoded as plain ASCII strings.&lt;/p&gt;
 &lt;/blockquote&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 09 Sep 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-09-09:/python-cstring-unicode.html</guid><category>Python</category></item><item><title>Migrate SVN to GitLab</title><link>http://xcodest.me/migrate-svn-to-gitlab.html</link><description>&lt;ul&gt;
@@ -3265,7 +3265,7 @@ git push origin --tags
 
 
 &lt;h2 id="_1"&gt;参考&lt;/h2&gt;
-&lt;p&gt;&lt;a href="http://git-scm.com/book/en/Git-and-Other-Systems-Migrating-to-Git"&gt;Git and Other Systems - Migrating to Git&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 12 Aug 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-08-12:/migrate-svn-to-gitlab.html</guid><category>Git</category></item><item><title>硬派健身-减肥篇 阅读笔记</title><link>http://xcodest.me/hard-gym-reading-note.html</link><description>&lt;h2 id="_1"&gt;战肥肉有氧不敌，强塑身无氧超神&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://git-scm.com/book/en/Git-and-Other-Systems-Migrating-to-Git" target="_blank"&gt;Git and Other Systems - Migrating to Git&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 12 Aug 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-08-12:/migrate-svn-to-gitlab.html</guid><category>Git</category></item><item><title>硬派健身-减肥篇 阅读笔记</title><link>http://xcodest.me/hard-gym-reading-note.html</link><description>&lt;h2 id="_1"&gt;战肥肉有氧不敌，强塑身无氧超神&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;长时间有氧运动——似是而非的减肥妙计&lt;ol&gt;
 &lt;li&gt;当我们的身体状态稳定，身体素质、生活习惯变化不大时，我们的体重和体脂含量都是只能加，不能减，只能胖，不能瘦。这就是我们序章介绍过的体重设定点理论。&lt;/li&gt;
@@ -3370,7 +3370,7 @@ glance-api加载的pipeline的名字。&lt;/p&gt;
 。&lt;/p&gt;
 &lt;h2 id="ref"&gt;REF&lt;/h2&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;a href="http://docs.openstack.org/developer/glance/cache.html"&gt;The Glance Image Cache&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://docs.openstack.org/developer/glance/cache.html" target="_blank"&gt;The Glance Image Cache&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 17 Jul 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-07-17:/glance-image-cache.html</guid><category>Glance</category></item><item><title>Salt Mine</title><link>http://xcodest.me/salt-mine.html</link><description>&lt;p&gt;Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。&lt;/p&gt;
 &lt;p&gt;可以通过两种方法来配置:&lt;/p&gt;
 &lt;ol&gt;
@@ -3418,7 +3418,7 @@ jeffrey-thinkpad:
 
 &lt;h2 id="ref"&gt;REF&lt;/h2&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;a href="http://docs.saltstack.com/en/latest/topics/mine/"&gt;Salt Mine&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://docs.saltstack.com/en/latest/topics/mine/" target="_blank"&gt;Salt Mine&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 16 Jul 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-07-16:/salt-mine.html</guid><category>SaltStack</category></item><item><title>linux bonding mode 6 break the vms</title><link>http://xcodest.me/linux-bonding-mode-6-break-the-vms.html</link><description>&lt;p&gt;操作系统： ubuntu 12.04.1
 内核 linux 3.2&lt;/p&gt;
 &lt;p&gt;今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。&lt;/p&gt;
@@ -3443,7 +3443,7 @@ jeffrey-thinkpad:
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个&lt;a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results"&gt;邮件列表&lt;/a&gt;中找到原因，如下：&lt;/p&gt;
+&lt;p&gt;使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个&lt;a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results" target="_blank"&gt;邮件列表&lt;/a&gt;中找到原因，如下：&lt;/p&gt;
 &lt;p&gt;To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1&lt;/p&gt;
 &lt;p&gt;THE LONG VERSION&lt;/p&gt;
 &lt;p&gt;There is an issue with the way nova uses dnsmasq in VLAN mode. It starts up a
@@ -3478,7 +3478,7 @@ fixed_ip_disassociate_timeout=1209600
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;This is also documented &lt;a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues"&gt; Known issue with failed DHCP leases in VLAN configuration&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 27 Aug 2013 08:50:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2013-08-27:/dhcp-lease-errors-in-vlan-mode.html</guid><category>DHCP</category><category>Network</category><category>VLAN</category></item><item><title>Openstack Brief</title><link>http://xcodest.me/openstack-brief.html</link><description>&lt;p&gt;自从Openstack诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于Grizzly的版本来写的。&lt;/p&gt;
+&lt;p&gt;This is also documented &lt;a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues" target="_blank"&gt; Known issue with failed DHCP leases in VLAN configuration&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 27 Aug 2013 08:50:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2013-08-27:/dhcp-lease-errors-in-vlan-mode.html</guid><category>DHCP</category><category>Network</category><category>VLAN</category></item><item><title>Openstack Brief</title><link>http://xcodest.me/openstack-brief.html</link><description>&lt;p&gt;自从Openstack诞生之日起，就受到越来越多的开发者，用户的关注。整个代码的规模和质量正在飞速的发展。随着各种功能的增加，Openstack下面已经拥有了相当多子项目，来完成各种各样的功能。本文将简单介绍各个子项目的功能和发展。所有的项目现状是基于Grizzly的版本来写的。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Keystone&lt;/li&gt;
 &lt;li&gt;Nova&lt;/li&gt;

@@ -4,17 +4,19 @@ Date: 2015-12-31
 ## Info
 
 * Jeffrey Zhang (Jeffrey4l)
-* Email: echo emhhbmcubGVpLmZseUBnbWFpbC5jb20K | base64 -d
+* Email: `echo emhhbmcubGVpLmZseUBnbWFpbC5jb20K | base64 -d`
 * Tags: OpenStack, Python, Linux, Container, Kubernetes, OpenShift.
 
 ## 演讲经历
 
 ### 2018
 
-- 2018-5 OpenStack Sydney Summit - Kolla Project Update
+- 2018-6 2018 OpenInfra Days China [企业级容器应用平台——OpenShift最佳实践](http://www.itdks.com/eventlist/detail/2331)
+- 2018-6 2018 OpenInfra Days China [Ansible 驱动的 CI / CD 工具  Zuul](http://www.itdks.com/eventlist/detail/2333)
 
 ### 2017
 
+- 2018-11 OpenStack Sydney Summit - Kolla Project Update
 - 2017-7 2017 OpenStack Days China - 基于 Ansible 自动化管理 OpenStack 及云上资源
 
 ### 2016

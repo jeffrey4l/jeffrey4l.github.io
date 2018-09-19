@@ -1,7 +1,7 @@
 title: OpenStack Rocky Release
 date: 2018-9-10
-category: OpenSTack
-tags: Linux OpenSSL
+category: OpenStack
+tags: Linux OpenStack
 status: draft
 
 

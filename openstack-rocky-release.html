@@ -126,8 +126,8 @@
     <h2 id="glance">Glance</h2>
 <ul>
 <li>增加了和 cinder 一样多后端存储的支持。当需要配置多个后端存储时，不用像之前一样，只能配置多个 glance 服务了。</li>
-<li>支持了镜像格式的自动转换。之前 glance 有一套 tasks API, 可以创建一个后台任务，可以用来做镜像自动转化，但是使用起来比较复杂[1]。需要管理员修改配置文件，而且需要使用单独的 Task Create 接口。现在如果打开这个功能后，当用户使用 image import 接口时，会自动的做镜像的格式转换[1]。</li>
-<li>Glance 一直使用 md5 做为 checksum 字段的算法，用于数据效验和防篡改。但是 md5 已经被证明是不安全的算法。新版本可以通过修改配置文件的方式，使用更加安全的算法<sup id="fnref-3"><a class="footnote-ref" href="#fn-3">3</a></sup>。</li>
+<li>支持了镜像格式的自动转换。之前 glance 有一套 tasks API, 可以创建一个后台任务，可以用来做镜像自动转化，但是使用起来比较复杂<sup id="fnref-1"><a class="footnote-ref" href="#fn-1">1</a></sup>。需要管理员修改配置文件，而且需要使用单独的 Task Create 接口。现在如果打开这个功能后，当用户使用 image import 接口时，会自动的做镜像的格式转换<sup id="fnref2-1"><a class="footnote-ref" href="#fn-1">1</a></sup>。</li>
+<li>Glance 一直使用 md5 做为 checksum 字段的算法，用于数据效验和防篡改。但是 md5 已经被证明是不安全的算法。新版本可以通过修改配置文件的方式，使用更加安全的算法<sup id="fnref-2"><a class="footnote-ref" href="#fn-2">2</a></sup><sup id="fnref-3"><a class="footnote-ref" href="#fn-3">3</a></sup>。</li>
 </ul>
 <h2 id="nova">Nova</h2>
 <ul>
@@ -159,7 +159,7 @@
 <hr>
 <ol>
 <li id="fn-1">
-<p><a href="https://www.sebastien-han.fr/blog/2015/05/11/openstack-glance-a-first-glimpse-at-image-conversion/" target="_blank">https://www.sebastien-han.fr/blog/2015/05/11/openstack-glance-a-first-glimpse-at-image-conversion/</a>&#160;<a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+<p><a href="https://www.sebastien-han.fr/blog/2015/05/11/openstack-glance-a-first-glimpse-at-image-conversion/" target="_blank">https://www.sebastien-han.fr/blog/2015/05/11/openstack-glance-a-first-glimpse-at-image-conversion/</a>&#160;<a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2-1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
 </li>
 <li id="fn-2">
 <p><a href="https://review.openstack.org/572515" target="_blank">https://review.openstack.org/572515</a>&#160;<a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text">&#8617;</a></p>

@@ -2,14 +2,13 @@ title: OpenStack Rocky Release
 date: 2018-9-20
 category: OpenStack
 tags: Linux,OpenStack
-status: draft
 
 
 ## Glance
 
 * 增加了和 cinder 一样多后端存储的支持。当需要配置多个后端存储时，不用像之前一样，只能配置多个 glance 服务了。
-* 支持了镜像格式的自动转换。之前 glance 有一套 tasks API, 可以创建一个后台任务，可以用来做镜像自动转化，但是使用起来比较复杂[1]。需要管理员修改配置文件，而且需要使用单独的 Task Create 接口。现在如果打开这个功能后，当用户使用 image import 接口时，会自动的做镜像的格式转换[1]。
-* Glance 一直使用 md5 做为 checksum 字段的算法，用于数据效验和防篡改。但是 md5 已经被证明是不安全的算法。新版本可以通过修改配置文件的方式，使用更加安全的算法[^3]。
+* 支持了镜像格式的自动转换。之前 glance 有一套 tasks API, 可以创建一个后台任务，可以用来做镜像自动转化，但是使用起来比较复杂[^1]。需要管理员修改配置文件，而且需要使用单独的 Task Create 接口。现在如果打开这个功能后，当用户使用 image import 接口时，会自动的做镜像的格式转换[^1]。
+* Glance 一直使用 md5 做为 checksum 字段的算法，用于数据效验和防篡改。但是 md5 已经被证明是不安全的算法。新版本可以通过修改配置文件的方式，使用更加安全的算法[^2][^3]。
 
 ## Nova
 
@@ -39,9 +38,9 @@ status: draft
 
 
 
-[^1]: https://www.sebastien-han.fr/blog/2015/05/11/openstack-glance-a-first-glimpse-at-image-conversion/
-[^2]: https://review.openstack.org/572515
-[^3]: https://review.openstack.org/587225
-[^4]: https://docs.openstack.org/releasenotes/nova/rocky.html
-[^5]: https://docs.openstack.org/releasenotes/kolla/rocky.html
-[^6]: https://docs.openstack.org/releasenotes/kolla-ansible/rocky.html
+[^1]: <https://www.sebastien-han.fr/blog/2015/05/11/openstack-glance-a-first-glimpse-at-image-conversion/>
+[^2]: <https://review.openstack.org/572515>
+[^3]: <https://review.openstack.org/587225>
+[^4]: <https://docs.openstack.org/releasenotes/nova/rocky.html>
+[^5]: <https://docs.openstack.org/releasenotes/kolla/rocky.html>
+[^6]: <https://docs.openstack.org/releasenotes/kolla-ansible/rocky.html>

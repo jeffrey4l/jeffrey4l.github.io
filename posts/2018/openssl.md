@@ -1,8 +1,10 @@
+---
 title: 如何生成证书
 date: 2018-1-1
 category: Linux
 tags: Linux OpenSSL
 status: draft
+---
 
 ## 直接生自签证书
 

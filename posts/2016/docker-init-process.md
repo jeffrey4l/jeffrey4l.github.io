@@ -1,54 +1,48 @@
-Docker init 进程
-================
-
-:date: 2016-11-07
-:tags: Linux, Docker
-:slug: docker-init-process
-:category: Linux
+title: Docker init 进程
+date: 2016-11-07
+tags: Linux, Docker
+slug: docker-init-process
+category: Linux
 
 应用容器化后，重启容器的时候，经常会很慢，而且docker daemon 日志中经常会抛出以
 下错误
 
-::
-
-    dockerd[559]: msg="Container 5054f failed to exit within 10 seconds of
-    signal 15 - using the force"
+```
+dockerd[559]: msg="Container 5054f failed to exit within 10 seconds of
+signal 15 - using the force"
+```
 
 默认的的 signal 15 根本就没有使其退出，最后还是 10 秒超时后强制退出(kill)的。而
 且有时还会出现大量僵尸进程
 
 这可不是一个好现象。本文解释其原因及解决方法。
 
-背景知识
---------
+## 背景知识
 
-信号
-~~~~
+### 信号
 
 这个是 Linux 最常见一个概念，一般杀死进程时都会用到 ``kill <pid>`` 。 不同的信
 号有不同的默认行为。用户可以注册自己的信号处理函数，来覆盖掉默认行为。
 
-僵尸进程
-~~~~~~~~
+### 僵尸进程
 
 僵尸进程是终止运行的进程，为什么它们是有害的? 
 
 虽然应用申请的内存已经释放了，但是你依然能通过 ``ps`` 看到它。这是因为有一些内
 核资源没有释放。下面是 Linux ``waitpid`` 的 man page:
 
-    As long as a zombie is not removed from the system via a wait, it will
-    consume a slot in the kernel process table, and if this table fills, it
-    will not be possible to create further processes."
+```
+As long as a zombie is not removed from the system via a wait, it will
+consume a slot in the kernel process table, and if this table fills, it
+will not be possible to create further processes."
+```
 
-
-容器化后的问题
---------------
+## 容器化后的问题
 
 容器化后，由于单容器单进程，已经没有传统意义上的 init 进程了。应用进程直接占用
 了 pid 1 的进程号。从而导致以下两个问题。
 
-进程不能正常终止
-~~~~~~~~~~~~~~~~
+### 进程不能正常终止
 
 Linux 内核中会对 pid 1 进程发送特殊的信号量。
 
@@ -61,8 +55,7 @@ Linux 内核中会对 pid 1 进程发送特殊的信号量。
 常见的使用是 docker run my-container script. 给 ``docker run`` 进程发送
 ``SIGTERM`` 信号会杀掉 ``docker run`` 进程，但是容器还在后台运行。
 
-孤儿僵尸进程不能正常回收
-~~~~~~~~~~~~~~~~~~~~~~~~
+### 孤儿僵尸进程不能正常回收
 
 当进程退出时，它会变成僵尸进程，直到它的父进程调用 ``wait()`` ( 或其变种 ) 的系
 统调用。process table 里面会把它的标记为 ``defunct`` 状态。一般情况下，父进程应
@@ -74,7 +67,7 @@ Linux 内核中会对 pid 1 进程发送特殊的信号量。
 但是，通常情况下，大部分进程不会处理偶然依附在自己进程上的随机子进程，所以在容器
 中，会出现许多僵尸进程。
     
-解决方案
+## 解决方案
 --------
 
 让所有的应用能正确的处理以上的情况，不太现实。好在现在有很多解决方案，例如
@@ -87,25 +80,19 @@ dumb-init [0] 。他像是一个小型 init 服务，他启动一个子进程并
 
 使用方法如下, 在 Dockerfile 里面加上：
 
-::
+```
+# install dumb-init
+RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64
+RUN chmod +x /usr/local/bin/dumb-init
 
-    # install dumb-init
-    RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64
-    RUN chmod +x /usr/local/bin/dumb-init
-
-    # Runs "/usr/bin/dumb-init -- /my/script --with --args"
-    ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-    CMD ["/my/script", "--with", "--args"]
+# Runs "/usr/bin/dumb-init -- /my/script --with --args"
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["/my/script", "--with", "--args"]
+```
 
 类似的方案 tini [1], pidunu[3]
 
-Kolla 相关
-----------
-
-Kolla 最近已经发布了 newton 版本的 release 。 已经加上了 dumb-init 的解决方案。
-
-
-参考资料
+## 参考资料
 --------
 [0] https://github.com/Yelp/dumb-init
 [1] https://github.com/krallin/tini

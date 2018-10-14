@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-      <title> 论Python的异常的合理抛出姿势 - 代码杂货铺</title>
+      <title> ansible set_stats - 代码杂货铺</title>
     <meta charset="utf-8" />
 
-    <meta name="tags" contents="Python" />
-    <meta name="tags" contents="Exception" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
     <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
@@ -110,83 +108,81 @@
   <div class="col-md-12 col-xs-12">
   <section id="content" class="body">
   <header>
-    <h1 class="entry-title">论Python的异常的合理抛出姿势</h1>
+    <h1 class="entry-title">ansible set_stats</h1>
     <div class="entry-info">
       <span class="glyphicon glyphicon-list-alt"></span>
-      <span class="post-date"> 2015-05-06 </span>
+      <span class="post-date"> 2018-10-14 </span>
       <!--
-      <a class="post-category label label-default" href="http://xcodest.me/category/programming.html">Programming</a>
+      <a class="post-category label label-default" href="http://xcodest.me/category/others.html">Others</a>
       -->
       <span class="glyphicon glyphicon-tags"></span>
-      <a class="post-tag label label-default" href="http://xcodest.me/tag/python.html">Python</a>
-      <a class="post-tag label label-default" href="http://xcodest.me/tag/exception.html">Exception</a>
     </div>
   </header>
   <div class="entry-content">
-    <p>当需要重新抛出 Python 的异常时，很多人都处理不好。本文总结了一些处理方法。</p>
-<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">do_something</span><span class="p">()</span>
-<span class="k">except</span><span class="p">:</span>
-    <span class="n">do_cleanup</span><span class="p">()</span>
+    <p><code>set_stats</code> 支持用户设置任意数值，用以在 ansible 运行完后显示。</p>
+<p>使用例子如下</p>
+<div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">all</span>
+  <span class="l l-Scalar l-Scalar-Plain">gather_facts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+  <span class="l l-Scalar l-Scalar-Plain">pre_tasks</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">set ceph iscsi gateway install &#39;In Progress&#39;</span>
+      <span class="l l-Scalar l-Scalar-Plain">run_once</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+      <span class="l l-Scalar l-Scalar-Plain">set_stats</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">data</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">installer_phase_ceph_iscsi_gw</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="s">&quot;In</span><span class="nv"> </span><span class="s">Progress&quot;</span>
+            <span class="l l-Scalar l-Scalar-Plain">start</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">lookup(&#39;pipe&#39;,</span><span class="nv"> </span><span class="s">&#39;date</span><span class="nv"> </span><span class="s">+%Y%m%d%H%M%SZ&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">msg</span><span class="p p-Indicator">:</span> <span class="s">&#39;hello</span><span class="nv"> </span><span class="s">world&#39;</span>
+  <span class="l l-Scalar l-Scalar-Plain">post_tasks</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">set ceph iscsi gw install &#39;Complete&#39;</span>
+      <span class="l l-Scalar l-Scalar-Plain">run_once</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+      <span class="l l-Scalar l-Scalar-Plain">set_stats</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">data</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">installer_phase_ceph_iscsi_gw</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="s">&quot;Complete&quot;</span>
+            <span class="l l-Scalar l-Scalar-Plain">end</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">lookup(&#39;pipe&#39;,</span><span class="nv"> </span><span class="s">&#39;date</span><span class="nv"> </span><span class="s">+%Y%m%d%H%M%SZ&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </pre></div>
 
 
-<p>这种处理会直接把内部异常吃掉，当有问题/Bug时，会很难处理，所以不推荐。</p>
-<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">do_something</span><span class="p">()</span>
-<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="n">do_cleanup</span><span class="p">()</span>
-    <span class="k">print</span> <span class="n">e</span>
-    <span class="c1"># or</span>
-    <span class="kn">import</span> <span class="nn">traceback</span>
-    <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+<p>在运行 ansible 时，需在<code>ansible.cfg</code> 里配置 <code>show_custom_stats=true</code> 或通过环境变量配置<code>ANSIBLE_SHOW_CUSTOM_STATS=true</code></p>
+<div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nv">ANSIBLE_SHOW_CUSTOM_STATS</span><span class="o">=</span><span class="nb">true</span> ansible-playbook -i inventory test.yml
+
+<span class="go">PLAY [all]</span>
+
+<span class="go">TASK [set ceph iscsi gateway install &#39;In Progress&#39;] </span>
+<span class="go">ok: [10.10.0.2]</span>
+
+<span class="go">TASK [debug] </span>
+<span class="go">ok: [10.10.0.2] =&gt; {</span>
+<span class="go">    &quot;msg&quot;: &quot;hello world&quot;</span>
+<span class="go">}</span>
+
+<span class="go">TASK [set ceph iscsi gw install &#39;Complete&#39;] </span>
+<span class="go">ok: [10.10.0.2]</span>
+
+<span class="go">PLAY RECAP </span>
+<span class="go">10.10.0.2                  : ok=3    changed=0    unreachable=0    failed=0   </span>
+
+
+<span class="go">CUSTOM STATS: </span>
+<span class="go">    RUN: { &quot;installer_phase_ceph_iscsi_gw&quot;: {  &quot;end&quot;: &quot;20181009151731Z&quot;,  &quot;start&quot;: &quot;20181009151731Z&quot;,  &quot;status&quot;: &quot;Complete&quot; }}</span>
 </pre></div>
 
 
-<p>这种直接打印的，一是不能很好的输出到日志里。二是不能把错误交到上层调用者，不能让其知道这是有问题。</p>
-<div class="highlight"><pre><span></span><span class="k">try</span><span class="o">:</span>
-    <span class="n">do_somethink</span><span class="o">()</span>
-<span class="n">except</span><span class="o">:</span>
-    <span class="n">do_cleanup</span><span class="o">()</span>
-    <span class="n">raise</span>
-</pre></div>
-
-
-<p>用这种，主要是为了做cleanup。直接<code>raise</code>后，异常会抛向上层。没有catch的效果一样。</p>
-<p>这里还有一种和上面这个类似的效果的</p>
-<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">do_something</span><span class="p">()</span>
-<span class="k">except</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="n">exc_info</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
-    <span class="k">raise</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-</pre></div>
-
-
-<p>最后，当要抛出自己重新包装后的异常时，最好把原始的异常也带上。这样有利于问题的debug。</p>
-<div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">do_something</span><span class="p">()</span>
-<span class="k">except</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="n">exc_info</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
-    <span class="k">raise</span> <span class="n">MyException</span><span class="p">(),</span> <span class="bp">None</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-</pre></div>
-
-
-<h1 id="ref">REF</h1>
-<ul>
-<li><a href="http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html" target="_blank">Re-raising Exceptions</a> - by Ian Bicking</li>
-</ul>
+<p>可以看到，结果上已经把 custom stats 的值打印出来了。</p>
     <div class="copyright">
-      <p><span>原始链接:</span><a href="http://xcodest.me/How_to_raise_python_exception.html" target="_blank">http://xcodest.me/How_to_raise_python_exception.html </a></p>
+      <p><span>原始链接:</span><a href="http://xcodest.me/ansible-set-stats.html" target="_blank">http://xcodest.me/ansible-set-stats.html </a></p>
       <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
     </div>
   </div><!-- /.entry-content -->
   <div>
     <nav>
       <ul class="pager">
-        <li class="previous"><a href="logstash_debug.html">&larr; Older</a></li>
-        <li class="next"><a href="oz-templates.html">Newer &rarr;</a></li>
+        <li class="previous"><a href="openstack-rocky-release.html">&larr; Older</a></li>
+        <li class="next disabled"><span href="">Newer &rarr;</span></li>
       </ul>
     </nav>
   </div>
@@ -195,8 +191,8 @@
       <div id="disqus_thread"></div>
       <script type="text/javascript">
         var disqus_shortname = 'xcodest';
-        var disqus_identifier = 'How_to_raise_python_exception.html';
-        var disqus_url = 'http://xcodest.me/How_to_raise_python_exception.html';
+        var disqus_identifier = 'ansible-set-stats.html';
+        var disqus_url = 'http://xcodest.me/ansible-set-stats.html';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//xcodest.disqus.com/embed.js';

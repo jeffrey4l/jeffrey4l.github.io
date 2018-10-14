@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+      <title> 制作镜像的最佳实践 - 代码杂货铺</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
+    <script src="http://xcodest.me/theme/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://xcodest.me/theme/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://xcodest.me/theme/js/xcodest.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
+    <link href="http://xcodest.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="代码杂货铺 RSS Feed" />
+</head>
+
+<body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+          <div class="navbar navbar-default">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target="#sidebar">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://xcodest.me">
+                  代码杂货铺
+                </a>
+              </div>
+              <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                  <li><a href="/archives.html">Archives</a></li>
+                  <li><a href="/tags.html">Tags</a></li>
+                  <li>
+                    <a href="http://xcodest.me/pages/about.html">About</a>
+                  </li>
+                </ul>
+                <form class="navbar-form navbar-right" action="https://google.com/search" target="_blank">
+                  <div class="input-group">
+                    <input name="q" type="text" class="form-control" required placeholder="Search Xcodest.com..."/>
+                    <input type="hidden" name="sitesearch" value="xcodest.me"/>
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                      </button>
+                    </span>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
+          <div class="panel panel-default">
+            <div class="panel-heading">欢迎订阅我的公众号</div>
+            <div class="list-group">
+               <img class="qrcode" src="http://xcodest.me/images/qrcode.jpg"/>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Social</div>
+            <div class="list-group">
+ 
+              <a class="list-group-item" href="http://github.com/jeffrey4l" target="_blank">Github</a>
+ 
+              <a class="list-group-item" href="https://twitter.com/Jeffrey4l" target="_blank">Twitter</a>
+ 
+              <a class="list-group-item" href="http://weibo.com/jeffrey4l" target="_blank">微博</a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Categories</div>
+            <div class="list-group">
+              <a class="list-group-item" href="http://xcodest.me/category/ceph.html">Ceph<span class="badge">1</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/cloud.html">Cloud<span class="badge">1</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/container.html">Container<span class="badge">2</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/database.html">Database<span class="badge">1</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/life.html">Life<span class="badge">3</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/others.html">Others<span class="badge">2</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Blogroll</div>
+            <div class="list-group">
+              <a class="list-group-item" href="http://99cloud.net" target="_blank">99cloud(九州云)</a>
+              <a class="list-group-item" href="http://chenshake.com/" target="_blank">陈沙克日志</a>
+              <a class="list-group-item" href="http://coolshell.cn" target="_blank">酷壳 - CoolShell.Cn</a>
+              <a class="list-group-item" href="https://sdake.io/" target="_blank">Steven Dake</a>
+              <a class="list-group-item" href="https://sebastien-han.fr/" target="_blank">SÉBASTIEN HAN</a>
+              <a class="list-group-item" href="http://blog.csdn.net/quqi99" target="_blank">技术并艺术着</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 col-xs-12">
+<div class="row">
+  <div class="col-md-12 col-xs-12">
+  <section id="content" class="body">
+  <header>
+    <h1 class="entry-title">制作镜像的最佳实践</h1>
+    <div class="entry-info">
+      <span class="glyphicon glyphicon-list-alt"></span>
+      <span class="post-date"> 2018-10-03 </span>
+      <!--
+      <a class="post-category label label-default" href="http://xcodest.me/category/others.html">Others</a>
+      -->
+      <span class="glyphicon glyphicon-tags"></span>
+    </div>
+  </header>
+  <div class="entry-content">
+    <ul>
+<li>选择合适的基础镜像</li>
+<li></li>
+</ul>
+<h2 id="_1">构建体积更小的镜像</h2>
+<p>构建体积更小的镜像，有利于镜像本身的传输，尤其在 Kubernetes 的环境中，镜像的传输会更加频繁，更小的体积意味着更快的调度时间和更小的空间占用。那如何构建更加小的镜像呢?</p>
+<h3 id="_2">使用更小的基础镜像</h3>
+<p>不同的基础镜像构建相同的应用会有不同的大小。使用更小基础镜像会有利于减小最终镜像的大小。建议非特殊情况下，使用 alpine 镜像。他的基础镜像只有不到 5MB, 而且还自带包管理工具。一般需求都可以满足。</p>
+<div class="highlight"><pre><span></span>FROM alpine
+RUN apk add nginx
+</pre></div>
+
+
+<p>如果你的应用可以独立运行，如 Go 编译出来的 Binary 文件，还可以直接使用 scratch 这个空白镜像。</p>
+<div class="highlight"><pre><span></span>FROM scratch
+COPY mybinary /mybinary
+CMD [ &quot;/mybinary&quot; ]
+</pre></div>
+
+
+<h3 id="run">合并 RUN 命令</h3>
+<p>不同的 RUN 命令如果先后做了文件的增加和删除，因为镜像分层文件系统的原因，还是会增加镜像体积的。如果两个 RUN 命令合并后，才会达到所想的效果。</p>
+<div class="highlight"><pre><span></span>...
+RUN curl http://xyz.abc -o abc.tar.gz \
+    ...
+    rm -rf abc.tar.gz
+...
+</pre></div>
+
+
+<h3 id="_3">去除掉不用的软件包</h3>
+<p>在安装包的过程中，尽量只安装需要用到的包。尤其是在编译过程中，难免会安装一些运行过程中不需要的软件包，如 glibc-devel 等。那在最后，最好把这些包去掉，来节省镜像空间。又因为镜像分层系统的原因，这些安装和卸载的语法还应该处理同一个 RUN 命令下</p>
+<div class="highlight"><pre><span></span>...
+RUN BUILD_DEP_PKGS=&quot;
+       gcc \
+       libc-devel&quot;
+    &amp;&amp; yum -y install $BUILD_DEP_PKGS \
+    ...
+    &amp;&amp; yum -y remove $BUILD_DEP_PKGS
+...
+</pre></div>
+
+
+<h2 id="demo">Demo</h2>
+<div class="highlight"><pre><span></span>FROM centos:7
+
+EXPOSE 8080
+EXPOSE 8443
+
+ARG http_proxy
+ARG https_proxy
+
+ARG NGINX_MODULE_VTS_VERSION=v0.1.18
+ARG NGINX_VERSION=1.13.3
+ARG TINI_VERSION=v0.18.0
+
+ENV NGINX_GROUP nginx
+ENV NGINX_HOME_TMP /var/spool/nginx/tmp
+ENV NGINX_HOME /var/lib/nginx
+ENV NGINX_USER nginx
+
+ENV NGINX_DOWNLOAD_URL http://nginx.org/download/nginx-<span class="cp">${</span><span class="n">NGINX_VERSION</span><span class="cp">}</span>.tar.gz
+
+RUN BUILD_DEP_PKGS=&quot;\
+        cpp \
+        expat-devel \
+        fontconfig-devel \
+        freetype-devel \
+        gcc \
+        gd-devel \
+        git \
+        glibc-devel \
+        glibc-headers \
+        kernel-headers \
+        keyutils-libs-devel \
+        krb5-devel \
+        libcom_err-devel \
+        libjpeg-turbo-devel \
+        libpng-devel \
+        libselinux-devel \
+        libsepol-devel \
+        libverto-devel \
+        libX11-devel \
+        libXau-devel \
+        libxcb-devel \
+        libxcb-devel \
+        libXpm-devel \
+        make \
+        openssl-devel \
+        pcre-devel \
+        xorg-x11-proto-devel \
+        zlib-devel \
+        &quot; \
+    <span class="err">&amp;&amp;</span> rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 \
+    <span class="err">&amp;&amp;</span> yum -y --setopt=install_weak_deps=false --setopt=tsflags=nodocs --setopt=override_install_langs=en_US.utf8 \
+        install \
+        <span class="cp">${</span><span class="n">BUILD_DEP_PKGS</span><span class="cp">}</span> \
+        rsync \
+        wget \
+    <span class="err">&amp;&amp;</span> curl -L https://github.com/krallin/tini/releases/download/<span class="cp">${</span><span class="n">TINI_VERSION</span><span class="cp">}</span>/tini -o /tini \
+    <span class="err">&amp;&amp;</span> chmod +x /tini \
+    <span class="err">&amp;&amp;</span> wget <span class="cp">${</span><span class="n">NGINX_DOWNLOAD_URL</span><span class="cp">}</span> -O /tmp/nginx.tar.gz \
+    <span class="err">&amp;&amp;</span> tar xf /tmp/nginx.tar.gz -C /tmp \
+    <span class="err">&amp;&amp;</span> git clone --branch <span class="cp">${</span><span class="n">NGINX_MODULE_VTS_VERSION</span><span class="cp">}</span> https://github.com/vozlt/nginx-module-vts.git /tmp/nginx-module-vts \
+    <span class="err">&amp;&amp;</span> ( \
+        cd /tmp/nginx-<span class="cp">${</span><span class="n">NGINX_VERSION</span><span class="cp">}</span> \
+        <span class="err">&amp;&amp;</span> ./configure \
+                --add-module=/tmp/nginx-module-vts \
+                --conf-path=/etc/nginx/nginx.conf \
+                --error-log-path=/var/log/nginx/error.log \
+                --group=<span class="cp">${</span><span class="n">NGINX_GROUP</span><span class="cp">}</span> \
+                --http-client-body-temp-path=<span class="cp">${</span><span class="n">NGINX_HOME_TMP</span><span class="cp">}</span>/client_body \
+                --http-fastcgi-temp-path=<span class="cp">${</span><span class="n">NGINX_HOME_TMP</span><span class="cp">}</span>/fastcgi \
+                --http-log-path=/var/log/nginx/access.log \
+                --http-proxy-temp-path=<span class="cp">${</span><span class="n">NGINX_HOME_TMP</span><span class="cp">}</span>/proxy \
+                --http-uwsgi-temp-path=<span class="cp">${</span><span class="n">NGINX_HOME_TMP</span><span class="cp">}</span>/uwsgi \
+                --lock-path=/var/local/subsys/nginx \
+                --modules-path=/usr/lib64/nginx/modules \
+                --pid-path=/var/run/nginx/nginx.pid \
+                --prefix=/etc/nginx \
+                --sbin-path=/usr/bin/nginx \
+                --user=<span class="cp">${</span><span class="n">NGINX_USER</span><span class="cp">}</span> \
+                --with-http_gzip_static_module \
+                --with-http_image_filter_module \
+                --with-http_realip_module \
+                --with-http_secure_link_module \
+                --with-http_ssl_module \
+                --with-http_stub_status_module \
+                --with-http_sub_module \
+                --with-http_v2_module \
+                --without-http_scgi_module \
+                --without-mail_imap_module \
+                --without-mail_pop3_module \
+                --without-mail_smtp_module \
+                --without-poll_module \
+                --without-select_module \
+                --with-threads \
+        <span class="err">&amp;&amp;</span> make -j4 \
+        <span class="err">&amp;&amp;</span> make install \
+        <span class="err">&amp;&amp;</span> cp -r conf/* /etc/nginx/ \
+        ) \
+    <span class="err">&amp;&amp;</span> rm -rf /tmp/nginx.tar.gz \
+        /tmp/nginx-module-vts \
+        /tmp/nginx-<span class="cp">${</span><span class="n">NGINX_VERSION</span><span class="cp">}</span> \
+    <span class="err">&amp;&amp;</span> yum -y remove <span class="cp">${</span><span class="n">BUILD_DEP_PKGS</span><span class="cp">}</span> \
+    <span class="err">&amp;&amp;</span> yum clean all \
+    <span class="err">&amp;&amp;</span> mkdir -p <span class="cp">${</span><span class="n">NGINX_HOME_TMP</span><span class="cp">}</span>/{client_body,proxy,fastcgi,uwsgi} \
+    <span class="err">&amp;&amp;</span> mkdir -p /usr/share/nginx \
+    <span class="err">&amp;&amp;</span> mkdir -p /var/run/nginx \
+    <span class="err">&amp;&amp;</span> mkdir -p /var/www \
+    <span class="err">&amp;&amp;</span> mv /etc/nginx/html /usr/share/nginx/ \
+    <span class="err">&amp;&amp;</span> rm -rf /etc/nginx/*.default \
+    <span class="err">&amp;&amp;</span> chmod -R a+rwx <span class="cp">${</span><span class="n">NGINX_HOME_TMP</span><span class="cp">}</span> \
+    <span class="err">&amp;&amp;</span> chmod -R a+rwx /etc/nginx \
+    <span class="err">&amp;&amp;</span> chmod -R a+rwx /var/log/nginx \
+    <span class="err">&amp;&amp;</span> chmod -R a+rwx /var/run/nginx \
+    <span class="err">&amp;&amp;</span> sed -i &#39;/listen/s,listen\s*80;,listen 8080;,g&#39; /etc/nginx/nginx.conf \
+    <span class="err">&amp;&amp;</span> sed -i &#39;/^#user/s,#\(user.*\),\1,g&#39; /etc/nginx/nginx.conf \
+    <span class="err">&amp;&amp;</span> ln -sf /var/log/nginx /etc/nginx/logs \
+    <span class="err">&amp;&amp;</span> ln -sf /var/www /etc/nginx/www
+</pre></div>
+    <div class="copyright">
+      <p><span>原始链接:</span><a href="http://xcodest.me/drafts/zhi-zuo-jing-xiang-de-zui-jia-shi-jian.html" target="_blank">http://xcodest.me/drafts/zhi-zuo-jing-xiang-de-zui-jia-shi-jian.html </a></p>
+      <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
+    </div>
+  </div><!-- /.entry-content -->
+</section>
+</div>
+</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12 text-center footer">
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1257099267'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1257099267' type='text/javascript'%3E%3C/script%3E"));</script>
+        </div>
+    </div>
+</body>
+</html>

@@ -31,7 +31,11 @@
             end: &quot;{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}&quot;</code></pre>
 
 
-<p>在运行 ansible 时，需在<code>ansible.cfg</code> 里配置 <code>show_custom_stats=true</code> 或通过环境变量配置<code>ANSIBLE_SHOW_CUSTOM_STATS=true</code></p>
+<ul>
+<li>data 参数可以配置任意的值</li>
+<li>还有一个 aggregate 的参数，默认值是 yes, 他表示是否要和已经存在的值聚合。</li>
+</ul>
+<p>在运行 ansible 时，需在<code>ansible.cfg</code> 里配置 <code>show_custom_stats=true</code> 或通过环境变量配置<code>ANSIBLE_SHOW_CUSTOM_STATS=true</code> 来开启 stats 的输出。</p>
 <pre class="codehilite"><code class="language-console">$ ANSIBLE_SHOW_CUSTOM_STATS=true ansible-playbook -i inventory test.yml
 
 PLAY [all]
@@ -55,7 +59,12 @@ CUSTOM STATS:
     RUN: { &quot;installer_phase_ceph_iscsi_gw&quot;: {  &quot;end&quot;: &quot;20181009151731Z&quot;,  &quot;start&quot;: &quot;20181009151731Z&quot;,  &quot;status&quot;: &quot;Complete&quot; }}</code></pre>
 
 
-<p>可以看到，结果上已经把 custom stats 的值打印出来了。</p>
+<p>可以看到，结果上已经把 custom stats 的值打印出来了。这样就可以把运行过程中的一些状态或统计信息输出出来，方便 playbooks 运行完成后，查看其运行状态。</p>
+<p>以外，这个模块也适用于 windows</p>
+<h2 id="_1">相关链接</h2>
+<ul>
+<li>[1] <a href="https://docs.ansible.com/ansible/2.6/modules/set_stats_module.html">https://docs.ansible.com/ansible/2.6/modules/set_stats_module.html</a></li>
+</ul>
     <p> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">

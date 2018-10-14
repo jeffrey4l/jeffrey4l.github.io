@@ -27,7 +27,11 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;在运行 ansible 时，需在&lt;code&gt;ansible.cfg&lt;/code&gt; 里配置 &lt;code&gt;show_custom_stats=true&lt;/code&gt; 或通过环境变量配置&lt;code&gt;ANSIBLE_SHOW_CUSTOM_STATS=true&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;data 参数可以配置任意的值&lt;/li&gt;
+&lt;li&gt;还有一个 aggregate 的参数，默认值是 yes, 他表示是否要和已经存在的值聚合。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在运行 ansible 时，需在&lt;code&gt;ansible.cfg&lt;/code&gt; 里配置 &lt;code&gt;show_custom_stats=true&lt;/code&gt; 或通过环境变量配置&lt;code&gt;ANSIBLE_SHOW_CUSTOM_STATS=true&lt;/code&gt; 来开启 stats 的输出。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nv"&gt;ANSIBLE_SHOW_CUSTOM_STATS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt; ansible-playbook -i inventory test.yml
 
 &lt;span class="go"&gt;PLAY [all]&lt;/span&gt;
@@ -52,7 +56,12 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;可以看到，结果上已经把 custom stats 的值打印出来了。&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sun, 14 Oct 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-10-14:/ansible-set-stats.html</guid></item><item><title>OpenStack Rocky Release</title><link>http://xcodest.me/openstack-rocky-release.html</link><description>&lt;h2 id="glance"&gt;Glance&lt;/h2&gt;
+&lt;p&gt;可以看到，结果上已经把 custom stats 的值打印出来了。这样就可以把运行过程中的一些状态或统计信息输出出来，方便 playbooks 运行完成后，查看其运行状态。&lt;/p&gt;
+&lt;p&gt;以外，这个模块也适用于 windows&lt;/p&gt;
+&lt;h2 id="_1"&gt;相关链接&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;[1] &lt;a href="https://docs.ansible.com/ansible/2.6/modules/set_stats_module.html" target="_blank"&gt;https://docs.ansible.com/ansible/2.6/modules/set_stats_module.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sun, 14 Oct 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-10-14:/ansible-set-stats.html</guid></item><item><title>OpenStack Rocky Release</title><link>http://xcodest.me/openstack-rocky-release.html</link><description>&lt;h2 id="glance"&gt;Glance&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;增加了和 cinder 一样多后端存储的支持。当需要配置多个后端存储时，不用像之前一样，只能配置多个 glance 服务了。&lt;/li&gt;
 &lt;li&gt;支持了镜像格式的自动转换。之前 glance 有一套 tasks API, 可以创建一个后台任务，可以用来做镜像自动转化，但是使用起来比较复杂&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;。需要管理员修改配置文件，而且需要使用单独的 Task Create 接口。现在如果打开这个功能后，当用户使用 image import 接口时，会自动的做镜像的格式转换&lt;sup id="fnref2-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/li&gt;

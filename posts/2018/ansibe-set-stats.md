@@ -57,7 +57,6 @@ ok: [10.10.0.2]
 PLAY RECAP 
 10.10.0.2                  : ok=3    changed=0    unreachable=0    failed=0   
 
-
 CUSTOM STATS: 
 	RUN: { "installer_phase_ceph_iscsi_gw": {  "end": "20181009151731Z",  "start": "20181009151731Z",  "status": "Complete" }}
 ```

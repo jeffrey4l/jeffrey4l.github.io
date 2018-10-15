@@ -12,9 +12,10 @@ CentOS 6 要实现分区自动扩展，要安装以下三个包
 
 ::
 
-    yum install cloud-init cloud-utils-growpart dracut-modules-growroot
+    yum -y install cloud-init cloud-utils-growpart dracut-modules-growroot
     # 生新生成 initramfs
     dracut -f
+    systemctl enable cloud-init
 
 ``dracut`` 把 ``growroot`` 的脚本封装到 ``initramfs`` 里面。 把系统启动时，
 ``initramfs`` 利用 ``growpart`` 命令把根分区进行扩展。然后启动真正的
@@ -33,7 +34,8 @@ CentOS 7 使用的是 3.10 ( > 3.8 ) 的内核，所以并不需要 dracut-modul
 
 ::
 
-    yum install cloud-init cloud-utils-growpart
+    yum -y install cloud-init cloud-utils-growpart
+    systemctl enable cloud-init
 
 * [0] http://openstack.openstack.narkive.com/opyLuPqC/centos-6-5-cloud-init-growpart-resizefs-does-not-work-on-first-boot
 

@@ -1,5 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>代码杂货铺</title><link>http://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Sun, 14 Oct 2018 00:00:00 +0800</lastBuildDate><item><title>ansible set_stats</title><link>http://xcodest.me/ansible-set-stats.html</link><description>&lt;p&gt;&lt;code&gt;set_stats&lt;/code&gt; 支持用户设置任意数值，用以在 ansible 运行完后显示。&lt;/p&gt;
+<rss version="2.0"><channel><title>代码杂货铺</title><link>http://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Mon, 22 Oct 2018 00:00:00 +0800</lastBuildDate><item><title>使用 Ansible 管理 Kubernetes 资源</title><link>http://xcodest.me/use-ansible-manage-kubernetes-resources.html</link><description>&lt;p&gt;前两天，一篇&lt;a href="https://medium.com/virtuslab/think-twice-before-using-helm-25fbb18bc822" target="_blank"&gt;「Think twice before using Helm」&lt;/a&gt;(译文:&lt;a href="https://mp.weixin.qq.com/s/5iG9kZl7Qp5l3_BCXajrSA" target="_blank"&gt;「恕我直言，对Helm大家还是要三思而后用」&lt;/a&gt;) 引起了大家的关注。作者从认证，生命周期管理，错误处理等多个角度说明了 Helm 自身的问题。我基本赞同作者的观点。多数情况下我们只是把 helm 当做一个模板引擎在使用，把 charts 生成 Kubernetes 可以处理的格式。但是从使用角度来说，这个模板实现的太重了。有兴趣的可以去读读原文。&lt;/p&gt;
+&lt;p&gt;那如果 Helm 不轻量好用的话，我们有啥其他选择?&lt;/p&gt;
+&lt;p&gt;Ansible 做为部署管理的工具，正在受到越来越多的运维人员的追捧。他支持 Jinja2 的模板引擎，而且是无代理节点的架构，很方便来做一些模板工作。所以本文来介绍使用 Ansible 如何管理 Kubernetes 上面的资源。&lt;/p&gt;
+&lt;p&gt;首先使用 Ansible 避免不了使用其模块。与 Kubernetes 相关的模块可以从[1]找到。现在主要有&lt;code&gt;k8s&lt;/code&gt;, &lt;code&gt;k8s_facts&lt;/code&gt;, &lt;code&gt;k8s_scale&lt;/code&gt;, &lt;code&gt;kubernetes&lt;/code&gt;和&lt;code&gt;oc&lt;/code&gt; 5个模块。其中 &lt;code&gt;kubernetes&lt;/code&gt; 和 &lt;code&gt;oc&lt;/code&gt; 模块因为实现逻辑不好用，在 ansible 2.6 版本中已经废弃掉， 推荐使用前三个。其中，&lt;code&gt;k8s_scale&lt;/code&gt; 来自 ansible 2.5, &lt;code&gt;k8s&lt;/code&gt; 来自 ansible 2.6, &lt;code&gt;k8s_facts&lt;/code&gt; 来自 ansible 2.7。使用这三个模块的话，还需要安装 &lt;code&gt;openshift&lt;/code&gt; 的 Python 包。以下代码全部基于 ansible 2.7 版本。&lt;/p&gt;
+&lt;h2 id="k8s"&gt;k8s 模块&lt;/h2&gt;
+&lt;p&gt;管理 kubernetes 各种资源的话，使用 &lt;code&gt;k8s&lt;/code&gt; 模块就可以了，如下是创建 namespace 的写法&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Create a k8s namespace&lt;/span&gt;
+  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;k8s&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;testing&lt;/span&gt;
+    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;api_version&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;v1&lt;/span&gt;
+    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;kind&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Namespace&lt;/span&gt;
+    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;state&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;present&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;如果要创建一个 Service, 也可以使用如下面的写法。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Create a Service object from an inline definition&lt;/span&gt;
+  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;k8s&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;state&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;present&lt;/span&gt;
+    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;definition&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+      &lt;span class="l l-Scalar l-Scalar-Plain"&gt;apiVersion&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;v1&lt;/span&gt;
+      &lt;span class="l l-Scalar l-Scalar-Plain"&gt;kind&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Service&lt;/span&gt;
+      &lt;span class="l l-Scalar l-Scalar-Plain"&gt;metadata&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+        &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;web&lt;/span&gt;
+        &lt;span class="l l-Scalar l-Scalar-Plain"&gt;namespace&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;testing&lt;/span&gt;
+        &lt;span class="l l-Scalar l-Scalar-Plain"&gt;labels&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+          &lt;span class="l l-Scalar l-Scalar-Plain"&gt;app&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;galaxy&lt;/span&gt;
+          &lt;span class="l l-Scalar l-Scalar-Plain"&gt;service&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;web&lt;/span&gt;
+      &lt;span class="l l-Scalar l-Scalar-Plain"&gt;spec&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+        &lt;span class="l l-Scalar l-Scalar-Plain"&gt;selector&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+          &lt;span class="l l-Scalar l-Scalar-Plain"&gt;app&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;galaxy&lt;/span&gt;
+          &lt;span class="l l-Scalar l-Scalar-Plain"&gt;service&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;web&lt;/span&gt;
+        &lt;span class="l l-Scalar l-Scalar-Plain"&gt;ports&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+          &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;protocol&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;TCP&lt;/span&gt;
+            &lt;span class="l l-Scalar l-Scalar-Plain"&gt;targetPort&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;8000&lt;/span&gt;
+            &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;port-8000-tcp&lt;/span&gt;
+            &lt;span class="l l-Scalar l-Scalar-Plain"&gt;port&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;8000&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;可以看到 &lt;code&gt;definition&lt;/code&gt; 里面就是原生的 Kubernetes 里面的写法，而 &lt;code&gt;k8s&lt;/code&gt; 模块的参数也写少，所以上手会很快。&lt;/p&gt;
+&lt;p&gt;如果 k8s 模块和 ansible &lt;code&gt;lookup&lt;/code&gt; 插件合用的话，可以写出更加简洁的代码，如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;# tasks.yml&lt;/span&gt;
+&lt;span class="x"&gt;- name: Create a Service object from an external file&lt;/span&gt;
+&lt;span class="x"&gt;  var:&lt;/span&gt;
+&lt;span class="x"&gt;    name: &amp;quot;web&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;  k8s:&lt;/span&gt;
+&lt;span class="x"&gt;    state: present&lt;/span&gt;
+&lt;span class="x"&gt;    definition:&lt;/span&gt;
+&lt;span class="x"&gt;      &lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt; &lt;span class="nv"&gt;lookup&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;template&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/path/to/service.yml&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nf"&gt;to_yaml&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;indent&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;# /path/to/service.yml&lt;/span&gt;
+&lt;span class="x"&gt;---&lt;/span&gt;
+&lt;span class="x"&gt;apiVersion: v1&lt;/span&gt;
+&lt;span class="x"&gt;kind: Service&lt;/span&gt;
+&lt;span class="x"&gt;metadata:&lt;/span&gt;
+&lt;span class="x"&gt;  name: &lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt; &lt;span class="nv"&gt;name&lt;/span&gt; &lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;          # &amp;lt;-- 这里可以使用变量&lt;/span&gt;
+&lt;span class="x"&gt;namespace: testing&lt;/span&gt;
+&lt;span class="x"&gt;labels:&lt;/span&gt;
+&lt;span class="x"&gt;  app: galaxy&lt;/span&gt;
+&lt;span class="x"&gt;  service: web&lt;/span&gt;
+&lt;span class="x"&gt;spec:&lt;/span&gt;
+&lt;span class="x"&gt;  selector:&lt;/span&gt;
+&lt;span class="x"&gt;    app: galaxy&lt;/span&gt;
+&lt;span class="x"&gt;    service: web&lt;/span&gt;
+&lt;span class="x"&gt;ports:&lt;/span&gt;
+&lt;span class="x"&gt;  - protocol: TCP&lt;/span&gt;
+&lt;span class="x"&gt;    targetPort: 8000&lt;/span&gt;
+&lt;span class="x"&gt;    name: port-8000-tcp&lt;/span&gt;
+&lt;span class="x"&gt;    port: 8000&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;可以看到 Kubernetes service 文件可以完全从 task 里面独立出来，独立后的写法就是原生的 kubernetes 的格式，基本就和 Charts 的结构差不多了。&lt;/p&gt;
+&lt;p&gt;基于此，完全可以使用这种方式替换掉 helm 的模板功能，而且没有引入任何额外的依赖，就是直接的 ansible 生成相关文件，丢给 kubernetes api 来处理。等部署完成后，我们也可以脱离 Ansible 继续通过 &lt;code&gt;kubelet&lt;/code&gt; 命令维护这些资源。也正是由于这么简洁的实现，&lt;code&gt;k8s&lt;/code&gt; 模块可以管理 Kubernetes 和 OpenShift, 也可以管理各种 &lt;code&gt;CRD&lt;/code&gt; 资源。&lt;/p&gt;
+&lt;p&gt;相比于 helm ， 这种方法的缺点在于 YAML 文件都要自己写，没有社区在维护的 Charts。不像 helm 那样，一个命令就可以把服务都安装上。前期的工作还是挺多的。但是从另外一个角度来说，社区维护的 Charts 做一些 Demo 还可以，真要生产上面使用，还是要做大量工作的。所以从这个角度上讲，使用 Ansible 也没有带来太大的工作量。&lt;/p&gt;
+&lt;p&gt;我更期待社区可以使用 Ansible 直接管理 Charts 资源，或可以有一个工具把 Charts 的 Go 模板转成 Ansible 可以接受的 Jinja2 格式。&lt;/p&gt;
+&lt;h2 id="k8s_scale-k8s_facts"&gt;k8s_scale 和  k8s_facts 模块&lt;/h2&gt;
+&lt;p&gt;这两个模块算辅助的功能，我觉得使用的机会可能并不会太多。&lt;code&gt;k8s_scale&lt;/code&gt; 的例子如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;- name: Scale deployment up, and extend timeout
+  k8s_scale:
+    api_version: v1
+    kind: Deployment
+    name: elastic
+    namespace: myproject
+    replicas: 3
+    wait_timeout: 60
+
+- name: Scale deployment down when current replicas match
+  k8s_scale:
+    api_version: v1
+    kind: Deployment
+    name: elastic
+    namespace: myproject
+    current_replicas: 3
+    replicas: 2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;它可以动态调整 Deployment 的 &lt;code&gt;replicas&lt;/code&gt; 个数，基本上等同于&lt;code&gt;kubectl scale&lt;/code&gt; 命令，但是这个功能基本可以使用 &lt;code&gt;k8s&lt;/code&gt; 模块通过改变 &lt;code&gt;replicas&lt;/code&gt; 参数来调整。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;k8s_facts&lt;/code&gt;的例子如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;- name: Get an existing Service object
+  k8s_facts:
+    api_version: v1
+    kind: Service
+    name: web
+    namespace: testing
+  register: web_service
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;使用他，你可以检查某个资源是否存在，如果存在的话，还可以获得这个资源的yaml 文件描述，我觉得在 Ansible 流程控制中会有一些作用，可以根据当前 Kubernets 里面资源情况，有选择的做一些动作。&lt;/p&gt;
+&lt;h2 id="_1"&gt;小技巧&lt;/h2&gt;
+&lt;p&gt;因为 Ansible 是 Python 编写的，在使用 pip 安装时容易破坏系统已经安装的 Python 包，推荐使用虚拟环境来安装。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# mkvirtualenv --system-site-packages ansible
+# pip install &amp;#39;ansible&amp;lt;2.7&amp;#39; openshift
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;使用时，需要指定 Ansible 使用的 python interpreter 变量 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# workon ansible
+# ansible-playbook -i localhost, -c local test.yml  -e ansible_python_interpreter=&lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;VIRTUAL_ENV&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;/bin/python
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id="demo"&gt;demo&lt;/h2&gt;
+&lt;p&gt;以下是使用 ansible 在 OpenShift 上面部署 echoserver 的一个完整例子&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;---&lt;/span&gt;
+&lt;span class="x"&gt;- hosts: localhost&lt;/span&gt;
+&lt;span class="x"&gt;  connection: local&lt;/span&gt;
+&lt;span class="x"&gt;  gather_facts: false&lt;/span&gt;
+&lt;span class="x"&gt;  vars:&lt;/span&gt;
+&lt;span class="x"&gt;    namespace: demo&lt;/span&gt;
+&lt;span class="x"&gt;  tasks:&lt;/span&gt;
+&lt;span class="x"&gt;    - name: Create echo server deployment config&lt;/span&gt;
+&lt;span class="x"&gt;      k8s:&lt;/span&gt;
+&lt;span class="x"&gt;        namespace: &amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt; &lt;span class="nv"&gt;namespace&lt;/span&gt; &lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;        definition:&lt;/span&gt;
+&lt;span class="x"&gt;          apiVersion: v1&lt;/span&gt;
+&lt;span class="x"&gt;          kind: DeploymentConfig&lt;/span&gt;
+&lt;span class="x"&gt;          metadata:&lt;/span&gt;
+&lt;span class="x"&gt;            name: echoserver&lt;/span&gt;
+&lt;span class="x"&gt;          spec:&lt;/span&gt;
+&lt;span class="x"&gt;            replicas: 1&lt;/span&gt;
+&lt;span class="x"&gt;            template:&lt;/span&gt;
+&lt;span class="x"&gt;              metadata:&lt;/span&gt;
+&lt;span class="x"&gt;                labels:&lt;/span&gt;
+&lt;span class="x"&gt;                  app: echoserver&lt;/span&gt;
+&lt;span class="x"&gt;              spec:&lt;/span&gt;
+&lt;span class="x"&gt;                containers:&lt;/span&gt;
+&lt;span class="x"&gt;                  - name: echoserver&lt;/span&gt;
+&lt;span class="x"&gt;                    image: googlecontainer/echoserver:1.5&lt;/span&gt;
+&lt;span class="x"&gt;                    readnessProbe:&lt;/span&gt;
+&lt;span class="x"&gt;                      httpGet:&lt;/span&gt;
+&lt;span class="x"&gt;                        port: 8080&lt;/span&gt;
+&lt;span class="x"&gt;                        path: /&lt;/span&gt;
+&lt;span class="x"&gt;                      initialDelaySeconds: 20&lt;/span&gt;
+&lt;span class="x"&gt;                      periodSeconds: 5&lt;/span&gt;
+&lt;span class="x"&gt;                    livenessProbe:&lt;/span&gt;
+&lt;span class="x"&gt;                      httpGet:&lt;/span&gt;
+&lt;span class="x"&gt;                        port: 8080&lt;/span&gt;
+&lt;span class="x"&gt;                        path: /&lt;/span&gt;
+&lt;span class="x"&gt;                      initialDelaySeconds: 10&lt;/span&gt;
+&lt;span class="x"&gt;                      periodSeconds: 3&lt;/span&gt;
+&lt;span class="x"&gt;    - name: Create echo server service&lt;/span&gt;
+&lt;span class="x"&gt;      k8s:&lt;/span&gt;
+&lt;span class="x"&gt;        namespace: &amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt; &lt;span class="nv"&gt;namespace&lt;/span&gt; &lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;        definition:&lt;/span&gt;
+&lt;span class="x"&gt;          apiVersion: v1&lt;/span&gt;
+&lt;span class="x"&gt;          kind: Service&lt;/span&gt;
+&lt;span class="x"&gt;          metadata:&lt;/span&gt;
+&lt;span class="x"&gt;            name: echoserver&lt;/span&gt;
+&lt;span class="x"&gt;          spec:&lt;/span&gt;
+&lt;span class="x"&gt;            ports:&lt;/span&gt;
+&lt;span class="x"&gt;              - name: http&lt;/span&gt;
+&lt;span class="x"&gt;                port: 8080&lt;/span&gt;
+&lt;span class="x"&gt;                targetPort: 8080&lt;/span&gt;
+&lt;span class="x"&gt;            selector:&lt;/span&gt;
+&lt;span class="x"&gt;              app: echoserver&lt;/span&gt;
+&lt;span class="x"&gt;    - name: Create echo server router&lt;/span&gt;
+&lt;span class="x"&gt;      k8s:&lt;/span&gt;
+&lt;span class="x"&gt;        namespace: &amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt; &lt;span class="nv"&gt;namespace&lt;/span&gt; &lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="x"&gt;        definition:&lt;/span&gt;
+&lt;span class="x"&gt;          kind: Route&lt;/span&gt;
+&lt;span class="x"&gt;          apiVersion: route.openshift.io/v1&lt;/span&gt;
+&lt;span class="x"&gt;          metadata:&lt;/span&gt;
+&lt;span class="x"&gt;            name: echoserver&lt;/span&gt;
+&lt;span class="x"&gt;          spec:&lt;/span&gt;
+&lt;span class="x"&gt;            host: echoserver.local&lt;/span&gt;
+&lt;span class="x"&gt;            to:&lt;/span&gt;
+&lt;span class="x"&gt;              kind: Service&lt;/span&gt;
+&lt;span class="x"&gt;              name: echoserver&lt;/span&gt;
+&lt;span class="x"&gt;            port:&lt;/span&gt;
+&lt;span class="x"&gt;              targetPort: http&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;[1] &lt;a href="https://docs.ansible.com/ansible/latest/modules/list_of_clustering_modules.html" target="_blank"&gt;https://docs.ansible.com/ansible/latest/modules/list_of_clustering_modules.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 22 Oct 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-10-22:/use-ansible-manage-kubernetes-resources.html</guid></item><item><title>ansible set_stats</title><link>http://xcodest.me/ansible-set-stats.html</link><description>&lt;p&gt;&lt;code&gt;set_stats&lt;/code&gt; 支持用户设置任意数值，用以在 ansible 运行完后显示。&lt;/p&gt;
 &lt;p&gt;使用例子如下&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nn"&gt;---&lt;/span&gt;
 &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;hosts&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;all&lt;/span&gt;

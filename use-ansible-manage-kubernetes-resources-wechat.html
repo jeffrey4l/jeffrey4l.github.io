@@ -50,8 +50,7 @@
     name: &quot;web&quot;
   k8s:
     state: present
-    definition:
-      {{ lookup('template', '/path/to/service.yml') | to_yaml(indent=6) }}</code></pre>
+    definition: &quot;{{ lookup('template', '/path/to/service.yml') | from_yaml }}&quot;</code></pre>
 
 
 <pre class="codehilite"><code># /path/to/service.yml

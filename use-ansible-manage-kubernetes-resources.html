@@ -167,8 +167,7 @@
 <span class="x">    name: &quot;web&quot;</span>
 <span class="x">  k8s:</span>
 <span class="x">    state: present</span>
-<span class="x">    definition:</span>
-<span class="x">      </span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;template&#39;</span><span class="o">,</span> <span class="s1">&#39;/path/to/service.yml&#39;</span><span class="o">)</span> <span class="o">|</span> <span class="nf">to_yaml</span><span class="o">(</span><span class="nv">indent</span><span class="o">=</span><span class="m">6</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+<span class="x">    definition: &quot;</span><span class="cp">{{</span> <span class="nv">lookup</span><span class="o">(</span><span class="s1">&#39;template&#39;</span><span class="o">,</span> <span class="s1">&#39;/path/to/service.yml&#39;</span><span class="o">)</span> <span class="o">|</span> <span class="nf">from_yaml</span> <span class="cp">}}</span><span class="x">&quot;</span>
 </pre></div>
 
 

@@ -60,8 +60,7 @@ Ansible 做为部署管理的工具，正在受到越来越多的运维人员的
     name: "web"
   k8s:
     state: present
-    definition:
-      {{ lookup('template', '/path/to/service.yml') | to_yaml(indent=6) }}
+    definition: "{{ lookup('template', '/path/to/service.yml') | from_yaml }}"
 ```
 
 ```

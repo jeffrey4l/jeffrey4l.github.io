@@ -1,39 +1,57 @@
 <html>
   <head>
-    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
-  </head>
-  <body>
-    <p>由于 Ansible 是通过 SSH 进行通讯的，所以只用安装 master 端就可以了。并不像 puppet/SaltStack 那样在 slave/minion 端进行安装。</p>
-<p>由于是用 Python 编写的，安装起来和普通 Python 应用没有太大区别。可以通过源码，pypi, 操作系统的包管理进行安装。</p>
-<h1 id="_1">系统包管理</h1>
-<h2 id="rpm">RPM 系</h2>
-<pre class="codehilite"><code># install epel source
+  <style type="text/css">h1:hover a.anchor {text-decoration:none}
+h2:hover a.anchor {text-decoration:none}
+h3:hover a.anchor {text-decoration:none}
+h4:hover a.anchor {text-decoration:none}
+h5:hover a.anchor {text-decoration:none}
+h6:hover a.anchor {text-decoration:none}
+body > h1:first-child + h2 {margin-top:0;padding-top:0}
+a:first-child h1 {margin-top:0;padding-top:0}
+a:first-child h2 {margin-top:0;padding-top:0}
+a:first-child h3 {margin-top:0;padding-top:0}
+a:first-child h4 {margin-top:0;padding-top:0}
+a:first-child h5 {margin-top:0;padding-top:0}
+a:first-child h6 {margin-top:0;padding-top:0}
+table tr:nth-child(2n) {background-color:#f8f8f8}</style>
+</head>
+  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>由于 Ansible 是通过 SSH 进行通讯的，所以只用安装 master 端就可以了。并不像 puppet/SaltStack 那样在 slave/minion 端进行安装。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>由于是用 Python 编写的，安装起来和普通 Python 应用没有太大区别。可以通过源码，pypi, 操作系统的包管理进行安装。</p>
+<h1 id="_1" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">系统包管理</h1>
+<h2 id="rpm" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">RPM 系</h2>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span># install epel source
 yum install -y epel-release
-yum install ansible</code></pre>
+yum install ansible
+</pre></div>
 
 
-<h2 id="apt">Apt 系</h2>
-<pre class="codehilite"><code class="language-bash">apt-get install -y software-properties-common
+<h2 id="apt" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">Apt 系</h2>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>apt-get install -y software-properties-common
 apt-add-repository -y ppa:ansible/ansible
 apt-get update
-apt-get install -y ansible</code></pre>
+apt-get install -y ansible
+</pre></div>
 
 
-<h1 id="pypi">pypi安装</h1>
-<p>通过pypi相当简单，直接用pip就可安装</p>
-<pre class="codehilite"><code>pip install ansible</code></pre>
+<h1 id="pypi" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">pypi安装</h1>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>通过pypi相当简单，直接用pip就可安装</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>pip install ansible
+</pre></div>
 
 
-<h1 id="_2">源码安装</h1>
-<pre class="codehilite"><code class="language-bash"># download the source from github
-# ansible has two git submodules, so the --recursive is required.
+<h1 id="_2" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">源码安装</h1>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span><span style="color: #408080; font-style: italic"># download the source from github</span>
+<span style="color: #408080; font-style: italic"># ansible has two git submodules, so the --recursive is required.</span>
 git clone git://github.com/ansible/ansible.git --recursive
-cd ./ansible
+<span style="color: #008000">cd</span> ./ansible
 
-# install
-pip install .</code></pre>
-    <p> 点击「阅读原文」，能看到更好的排版。 </p>
+<span style="color: #408080; font-style: italic"># install</span>
+pip install .
+</pre></div>
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">
       <p>文档信息</p>

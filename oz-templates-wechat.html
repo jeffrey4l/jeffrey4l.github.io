@@ -1,35 +1,50 @@
 <html>
   <head>
-    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
-  </head>
-  <body>
-    <p>最近利用<a href="https://github.com/clalancette/oz">OZ</a>做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下</p>
-<p>项目地址: <a href="https://github.com/jeffrey4l/oz-templates">https://github.com/jeffrey4l/oz-templates</a></p>
-<p>以下是README里的内容。</p>
-<h2 id="usage">Usage</h2>
-<p>The isos are located in <code>/data/isos/</code>. The isos' name are conversionally.
+  <style type="text/css">h1:hover a.anchor {text-decoration:none}
+h2:hover a.anchor {text-decoration:none}
+h3:hover a.anchor {text-decoration:none}
+h4:hover a.anchor {text-decoration:none}
+h5:hover a.anchor {text-decoration:none}
+h6:hover a.anchor {text-decoration:none}
+body > h1:first-child + h2 {margin-top:0;padding-top:0}
+a:first-child h1 {margin-top:0;padding-top:0}
+a:first-child h2 {margin-top:0;padding-top:0}
+a:first-child h3 {margin-top:0;padding-top:0}
+a:first-child h4 {margin-top:0;padding-top:0}
+a:first-child h5 {margin-top:0;padding-top:0}
+a:first-child h6 {margin-top:0;padding-top:0}
+table tr:nth-child(2n) {background-color:#f8f8f8}</style>
+</head>
+  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>最近利用<a href="https://github.com/clalancette/oz" style="color:#4183C4">OZ</a>做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>项目地址: <a href="https://github.com/jeffrey4l/oz-templates" style="color:#4183C4">https://github.com/jeffrey4l/oz-templates</a></p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>以下是README里的内容。</p>
+<h2 id="usage" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">Usage</h2>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>The isos are located in <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">/data/isos/</code>. The isos' name are conversionally.
 Including</p>
-<ul>
-<li>CentOS-6.3-x86_64-bin-DVD1.iso</li>
-<li>RHEL-6.3-x86_64-DVD.iso</li>
-<li>ubuntu-14.04.1-server-amd64.iso</li>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>CentOS-6.3-x86_64-bin-DVD1.iso</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>RHEL-6.3-x86_64-DVD.iso</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>ubuntu-14.04.1-server-amd64.iso</li>
 </ul>
-<pre class="codehilite"><code>git clone https://github.com/clalancette/oz.git
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>git clone https://github.com/clalancette/oz.git
 cd oz
 git clone https://github.com/jeffrey4l/oz-templates.git
 cd oz-templates
-make all</code></pre>
+make all
+</pre></div>
 
 
-<h2 id="detail">Detail</h2>
-<p>The image are configured as following</p>
-<ul>
-<li>without lvm, which will helpful for partion auto extend.</li>
-<li>Default image size is 40GB</li>
-<li>Installed cloud-init with some basic configuration.</li>
+<h2 id="detail" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">Detail</h2>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>The image are configured as following</p>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>without lvm, which will helpful for partion auto extend.</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>Default image size is 40GB</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>Installed cloud-init with some basic configuration.</li>
 </ul>
-    <p> 点击「阅读原文」，能看到更好的排版。 </p>
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">
       <p>文档信息</p>

@@ -1,32 +1,50 @@
 <html>
   <head>
-    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
-  </head>
-  <body>
-    <p>当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。</p>
-<p>可以先用 rbd 上传镜像，转换格式(也会比较慢，还不如直接上传 RAW 格式的镜像)。然后再做好对应的 snap , 并加以保护。是后一步的location必须按格式写(见[0])，这样才会使用rbd的 COW clone 功能。</p>
-<pre class="codehilite"><code class="language-shell"># image format 2 support layering
-rbd --image-format 2 import /tmp/ubuntu14.04.2.dsk $uuid
+  <style type="text/css">h1:hover a.anchor {text-decoration:none}
+h2:hover a.anchor {text-decoration:none}
+h3:hover a.anchor {text-decoration:none}
+h4:hover a.anchor {text-decoration:none}
+h5:hover a.anchor {text-decoration:none}
+h6:hover a.anchor {text-decoration:none}
+body > h1:first-child + h2 {margin-top:0;padding-top:0}
+a:first-child h1 {margin-top:0;padding-top:0}
+a:first-child h2 {margin-top:0;padding-top:0}
+a:first-child h3 {margin-top:0;padding-top:0}
+a:first-child h4 {margin-top:0;padding-top:0}
+a:first-child h5 {margin-top:0;padding-top:0}
+a:first-child h6 {margin-top:0;padding-top:0}
+table tr:nth-child(2n) {background-color:#f8f8f8}</style>
+</head>
+  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>当使用 Ceph + Glance 时，镜像需要使用 RAW 格式，这会导致创建镜像时非常的慢。有的时候，也需要把 Ceph 中现有的镜像导入到 Glance 中。这时可以使用 --location 参数来指定镜像所在的远程位置。也就可以使用现有的 Ceph 镜像来快速创建。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>可以先用 rbd 上传镜像，转换格式(也会比较慢，还不如直接上传 RAW 格式的镜像)。然后再做好对应的 snap , 并加以保护。是后一步的location必须按格式写(见[0])，这样才会使用rbd的 COW clone 功能。</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span><span style="color: #408080; font-style: italic"># image format 2 support layering</span>
+rbd --image-format <span style="color: #666666">2</span> import /tmp/ubuntu14.04.2.dsk <span style="color: #19177C">$uuid</span>
 
-# Convert to raw image type
-qemu-img convert -O raw rbd:$pool/$uuid rbd:$pool/$uuid
+<span style="color: #408080; font-style: italic"># Convert to raw image type</span>
+qemu-img convert -O raw rbd:<span style="color: #19177C">$pool</span>/<span style="color: #19177C">$uuid</span> rbd:<span style="color: #19177C">$pool</span>/<span style="color: #19177C">$uuid</span>
 
-# Make Snapshot and protect it which is require by image clone in nova libvirt.
-rbd --pool images snap create --snap snap $uuid
-rbd --pool images snap protect --image $uuid --snap snap
+<span style="color: #408080; font-style: italic"># Make Snapshot and protect it which is require by image clone in nova libvirt.</span>
+rbd --pool images snap create --snap snap <span style="color: #19177C">$uuid</span>
+rbd --pool images snap protect --image <span style="color: #19177C">$uuid</span> --snap snap
 
-# Create Image in Glance
-glance image-create --id $uuid --name ubuntu14.04.2 --disk-format raw --container-format bare --is-public True --location rbd://$fsid/images/$uuid/snap</code></pre>
+<span style="color: #408080; font-style: italic"># Create Image in Glance</span>
+glance image-create --id <span style="color: #19177C">$uuid</span> --name ubuntu14.04.2 --disk-format raw --container-format bare --is-public True --location rbd://<span style="color: #19177C">$fsid</span>/images/<span style="color: #19177C">$uuid</span>/snap
+</pre></div>
 
 
-<h1 id="ref">REF</h1>
-<ul>
-<li>[0] <a href="https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179">https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179</a></li>
-<li>[1] <a href="http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf">http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf</a></li>
-<li>[2] <a href="http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/">http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/</a></li>
+<h1 id="ref" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">REF</h1>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>[0] <a href="https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179" style="color:#4183C4; margin-top:0">https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179</a>
+</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>[1] <a href="http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf" style="color:#4183C4; margin-top:0">http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf</a>
+</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>[2] <a href="http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/" style="color:#4183C4; margin-top:0">http://www.sebastien-han.fr/blog/2013/05/07/use-existing-rbd-images-and-put-it-into-glance/</a>
+</li>
 </ul>
-    <p> 点击「阅读原文」，能看到更好的排版。 </p>
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">
       <p>文档信息</p>

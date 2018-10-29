@@ -1,65 +1,79 @@
 <html>
   <head>
-    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
-  </head>
-  <body>
-    <h2 id="glance">Glance</h2>
-<ul>
-<li>增加了和 cinder 一样多后端存储的支持。当需要配置多个后端存储时，不用像之前一样，只能配置多个 glance 服务了。</li>
-<li>支持了镜像格式的自动转换。之前 glance 有一套 tasks API, 可以创建一个后台任务，可以用来做镜像自动转化，但是使用起来比较复杂<sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>。需要管理员修改配置文件，而且需要使用单独的 Task Create 接口。现在如果打开这个功能后，当用户使用 image import 接口时，会自动的做镜像的格式转换<sup id="fnref2:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>。</li>
-<li>Glance 一直使用 md5 做为 checksum 字段的算法，用于数据效验和防篡改。但是 md5 已经被证明是不安全的算法。新版本可以通过修改配置文件的方式，使用更加安全的算法<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup><sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>。</li>
+  <style type="text/css">h1:hover a.anchor {text-decoration:none}
+h2:hover a.anchor {text-decoration:none}
+h3:hover a.anchor {text-decoration:none}
+h4:hover a.anchor {text-decoration:none}
+h5:hover a.anchor {text-decoration:none}
+h6:hover a.anchor {text-decoration:none}
+body > h1:first-child + h2 {margin-top:0;padding-top:0}
+a:first-child h1 {margin-top:0;padding-top:0}
+a:first-child h2 {margin-top:0;padding-top:0}
+a:first-child h3 {margin-top:0;padding-top:0}
+a:first-child h4 {margin-top:0;padding-top:0}
+a:first-child h5 {margin-top:0;padding-top:0}
+a:first-child h6 {margin-top:0;padding-top:0}
+table tr:nth-child(2n) {background-color:#f8f8f8}</style>
+</head>
+  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
+    <h2 id="glance" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6; margin-top:0; padding-top:0">Glance</h2>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>增加了和 cinder 一样多后端存储的支持。当需要配置多个后端存储时，不用像之前一样，只能配置多个 glance 服务了。</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>支持了镜像格式的自动转换。之前 glance 有一套 tasks API, 可以创建一个后台任务，可以用来做镜像自动转化，但是使用起来比较复杂<sup id="fnref:1" style="margin-top:0; font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:1" rel="footnote" style="color:#4183C4; margin-top:0; display:none">1</a></sup>。需要管理员修改配置文件，而且需要使用单独的 Task Create 接口。现在如果打开这个功能后，当用户使用 image import 接口时，会自动的做镜像的格式转换<sup id="fnref2:1" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:1" rel="footnote" style="color:#4183C4; margin-top:0; display:none">1</a></sup>。</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>Glance 一直使用 md5 做为 checksum 字段的算法，用于数据效验和防篡改。但是 md5 已经被证明是不安全的算法。新版本可以通过修改配置文件的方式，使用更加安全的算法<sup id="fnref:2" style="margin-top:0; font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:2" rel="footnote" style="color:#4183C4; margin-top:0; display:none">2</a></sup><sup id="fnref:3" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:3" rel="footnote" style="color:#4183C4; margin-top:0; display:none">3</a></sup>。</li>
 </ul>
-<h2 id="nova">Nova</h2>
-<ul>
-<li>增加了对 AArch64 处理的支持</li>
-<li>支持动态的开启或关闭某个 cell</li>
-<li>nova placement api 增加了 member_of 参数，完善了对 resource provider 聚合的支持。</li>
-<li>自动向 placement 服务中上报 CPU 的特征信息，可用于细粒度的虚拟机调度</li>
-<li>nova placement 服务增加了角色控制</li>
-<li>ironic driver 支持进入 rescue 模式进行机器修复</li>
-<li>virtio-net 驱动支持多队列，提升网络性能</li>
-<li>libvirt driver 增加对 NVMe, ScaleIO 存储的支持。</li>
-<li>libvirt driver 增强对 Cinder 前端 QoS 的支持，包括 quota:read_bytes_sec_max, quota:write_bytes_sec_max 等</li>
-<li>支持配置 neutron 网络的 NUMA 亲和性</li>
-<li>PowerVM driver 支持热插拔网卡，虚拟机快照， vSCSI FC。</li>
+<h2 id="nova" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">Nova</h2>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>增加了对 AArch64 处理的支持</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>支持动态的开启或关闭某个 cell</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>nova placement api 增加了 member_of 参数，完善了对 resource provider 聚合的支持。</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>自动向 placement 服务中上报 CPU 的特征信息，可用于细粒度的虚拟机调度</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>nova placement 服务增加了角色控制</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>ironic driver 支持进入 rescue 模式进行机器修复</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>virtio-net 驱动支持多队列，提升网络性能</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>libvirt driver 增加对 NVMe, ScaleIO 存储的支持。</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>libvirt driver 增强对 Cinder 前端 QoS 的支持，包括 quota:read_bytes_sec_max, quota:write_bytes_sec_max 等</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>支持配置 neutron 网络的 NUMA 亲和性</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>PowerVM driver 支持热插拔网卡，虚拟机快照， vSCSI FC。</li>
 </ul>
-<h2 id="kolla">kolla</h2>
-<ul>
-<li>增加 Apache Storm, Logstash 5.x, Monasca Thresh, radvd, prometheus, cadvisor 等镜像</li>
-<li>horizon 镜像增加了 blazar, congress, octavia 界面的支持</li>
-<li>支持 Ceph Bluestore 的部署</li>
-<li>支持 Monasca Log Persister 和 Monasa Log Transformer 部署。</li>
-<li>支持关闭 nova_ssh 容器</li>
-<li>默认配置 mariadb binary logs 有效时间为 14天</li>
-<li>支持 Prometheus/AlertManager/Node Exporter/ 的部署</li>
-<li>支持额外的 ml2 配置文件</li>
-<li>支持 Glance 的零宕机升级</li>
+<h2 id="kolla" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">kolla</h2>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>增加 Apache Storm, Logstash 5.x, Monasca Thresh, radvd, prometheus, cadvisor 等镜像</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>horizon 镜像增加了 blazar, congress, octavia 界面的支持</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>支持 Ceph Bluestore 的部署</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>支持 Monasca Log Persister 和 Monasa Log Transformer 部署。</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>支持关闭 nova_ssh 容器</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>默认配置 mariadb binary logs 有效时间为 14天</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>支持 Prometheus/AlertManager/Node Exporter/ 的部署</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>支持额外的 ml2 配置文件</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>支持 Glance 的零宕机升级</li>
 </ul>
-<div class="footnote">
-<hr />
-<ol>
-<li id="fn:1">
-<p><a href="https://www.sebastien-han.fr/blog/2015/05/11/openstack-glance-a-first-glimpse-at-image-conversion/">https://www.sebastien-han.fr/blog/2015/05/11/openstack-glance-a-first-glimpse-at-image-conversion/</a>&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+<div class="footnote" style="font-size:12px">
+<hr style="border:0 none; color:#ccc; height:4px; padding:0; border-top:1px solid #8c8b8b" height="4">
+<ol style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li id="fn:1" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://www.sebastien-han.fr/blog/2015/05/11/openstack-glance-a-first-glimpse-at-image-conversion/" style="color:#4183C4; margin-top:0">https://www.sebastien-han.fr/blog/2015/05/11/openstack-glance-a-first-glimpse-at-image-conversion/</a> <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text" style="color:#4183C4; display:none">↩</a><a class="footnote-backref" href="#fnref2:1" rev="footnote" title="Jump back to footnote 1 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
-<li id="fn:2">
-<p><a href="https://review.openstack.org/572515">https://review.openstack.org/572515</a>&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+<li id="fn:2" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://review.openstack.org/572515" style="color:#4183C4; margin-top:0">https://review.openstack.org/572515</a> <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
-<li id="fn:3">
-<p><a href="https://review.openstack.org/587225">https://review.openstack.org/587225</a>&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+<li id="fn:3" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://review.openstack.org/587225" style="color:#4183C4; margin-top:0">https://review.openstack.org/587225</a> <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
-<li id="fn:4">
-<p><a href="https://docs.openstack.org/releasenotes/nova/rocky.html">https://docs.openstack.org/releasenotes/nova/rocky.html</a>&#160;<a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+<li id="fn:4" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://docs.openstack.org/releasenotes/nova/rocky.html" style="color:#4183C4; margin-top:0">https://docs.openstack.org/releasenotes/nova/rocky.html</a> <a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
-<li id="fn:5">
-<p><a href="https://docs.openstack.org/releasenotes/kolla/rocky.html">https://docs.openstack.org/releasenotes/kolla/rocky.html</a>&#160;<a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+<li id="fn:5" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://docs.openstack.org/releasenotes/kolla/rocky.html" style="color:#4183C4; margin-top:0">https://docs.openstack.org/releasenotes/kolla/rocky.html</a> <a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
-<li id="fn:6">
-<p><a href="https://docs.openstack.org/releasenotes/kolla-ansible/rocky.html">https://docs.openstack.org/releasenotes/kolla-ansible/rocky.html</a>&#160;<a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+<li id="fn:6" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://docs.openstack.org/releasenotes/kolla-ansible/rocky.html" style="color:#4183C4; margin-top:0">https://docs.openstack.org/releasenotes/kolla-ansible/rocky.html</a> <a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 6 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
 </ol>
 </div>
-    <p> 点击「阅读原文」，能看到更好的排版。 </p>
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">
       <p>文档信息</p>

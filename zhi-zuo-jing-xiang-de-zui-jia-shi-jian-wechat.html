@@ -1,50 +1,70 @@
 <html>
   <head>
-    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
-  </head>
-  <body>
-    <ul>
-<li>选择合适的基础镜像</li>
-<li></li>
+  <style type="text/css">h1:hover a.anchor {text-decoration:none}
+h2:hover a.anchor {text-decoration:none}
+h3:hover a.anchor {text-decoration:none}
+h4:hover a.anchor {text-decoration:none}
+h5:hover a.anchor {text-decoration:none}
+h6:hover a.anchor {text-decoration:none}
+body > h1:first-child + h2 {margin-top:0;padding-top:0}
+a:first-child h1 {margin-top:0;padding-top:0}
+a:first-child h2 {margin-top:0;padding-top:0}
+a:first-child h3 {margin-top:0;padding-top:0}
+a:first-child h4 {margin-top:0;padding-top:0}
+a:first-child h5 {margin-top:0;padding-top:0}
+a:first-child h6 {margin-top:0;padding-top:0}
+table tr:nth-child(2n) {background-color:#f8f8f8}</style>
+</head>
+  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
+    <ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>选择合适的基础镜像</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
 </ul>
-<h2 id="_1">构建体积更小的镜像</h2>
-<p>构建体积更小的镜像，有利于镜像本身的传输，尤其在 Kubernetes 的环境中，镜像的传输会更加频繁，更小的体积意味着更快的调度时间和更小的空间占用。那如何构建更加小的镜像呢?</p>
-<h3 id="_2">使用更小的基础镜像</h3>
-<p>不同的基础镜像构建相同的应用会有不同的大小。使用更小基础镜像会有利于减小最终镜像的大小。建议非特殊情况下，使用 alpine 镜像。他的基础镜像只有不到 5MB, 而且还自带包管理工具。一般需求都可以满足。</p>
-<pre class="codehilite"><code>FROM alpine
-RUN apk add nginx</code></pre>
+<h2 id="_1" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">构建体积更小的镜像</h2>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>构建体积更小的镜像，有利于镜像本身的传输，尤其在 Kubernetes 的环境中，镜像的传输会更加频繁，更小的体积意味着更快的调度时间和更小的空间占用。那如何构建更加小的镜像呢?</p>
+<h3 id="_2" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #1A95A5; color:#26c6da; font-size:18px; line-height:1.6">使用更小的基础镜像</h3>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>不同的基础镜像构建相同的应用会有不同的大小。使用更小基础镜像会有利于减小最终镜像的大小。建议非特殊情况下，使用 alpine 镜像。他的基础镜像只有不到 5MB, 而且还自带包管理工具。一般需求都可以满足。</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>FROM alpine
+RUN apk add nginx
+</pre></div>
 
 
-<p>如果你的应用可以独立运行，如 Go 编译出来的 Binary 文件，还可以直接使用 scratch 这个空白镜像。</p>
-<pre class="codehilite"><code>FROM scratch
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>如果你的应用可以独立运行，如 Go 编译出来的 Binary 文件，还可以直接使用 scratch 这个空白镜像。</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>FROM scratch
 COPY mybinary /mybinary
-CMD [ &quot;/mybinary&quot; ]</code></pre>
+CMD [ "/mybinary" ]
+</pre></div>
 
 
-<h3 id="run">合并 RUN 命令</h3>
-<p>不同的 RUN 命令如果先后做了文件的增加和删除，因为镜像分层文件系统的原因，还是会增加镜像体积的。如果两个 RUN 命令合并后，才会达到所想的效果。</p>
-<pre class="codehilite"><code>...
+<h3 id="run" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #1A95A5; color:#26c6da; font-size:18px; line-height:1.6">合并 RUN 命令</h3>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>不同的 RUN 命令如果先后做了文件的增加和删除，因为镜像分层文件系统的原因，还是会增加镜像体积的。如果两个 RUN 命令合并后，才会达到所想的效果。</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>...
 RUN curl http://xyz.abc -o abc.tar.gz \
     ...
     rm -rf abc.tar.gz
-...</code></pre>
+...
+</pre></div>
 
 
-<h3 id="_3">去除掉不用的软件包</h3>
-<p>在安装包的过程中，尽量只安装需要用到的包。尤其是在编译过程中，难免会安装一些运行过程中不需要的软件包，如 glibc-devel 等。那在最后，最好把这些包去掉，来节省镜像空间。又因为镜像分层系统的原因，这些安装和卸载的语法还应该处理同一个 RUN 命令下</p>
-<pre class="codehilite"><code>...
-RUN BUILD_DEP_PKGS=&quot;
+<h3 id="_3" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #1A95A5; color:#26c6da; font-size:18px; line-height:1.6">去除掉不用的软件包</h3>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>在安装包的过程中，尽量只安装需要用到的包。尤其是在编译过程中，难免会安装一些运行过程中不需要的软件包，如 glibc-devel 等。那在最后，最好把这些包去掉，来节省镜像空间。又因为镜像分层系统的原因，这些安装和卸载的语法还应该处理同一个 RUN 命令下</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>...
+RUN BUILD_DEP_PKGS="
        gcc \
-       libc-devel&quot;
+       libc-devel"
     &amp;&amp; yum -y install $BUILD_DEP_PKGS \
     ...
     &amp;&amp; yum -y remove $BUILD_DEP_PKGS
-...</code></pre>
+...
+</pre></div>
 
 
-<h2 id="demo">Demo</h2>
-<pre class="codehilite"><code>FROM centos:7
+<h3 id="lastlog-faillog" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #1A95A5; color:#26c6da; font-size:18px; line-height:1.6">关闭用户初始化 lastlog 和 faillog 数据库</h3>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>如果你要在镜像中创建新的用户，可以不初始化用户相关的 lastlog 和  faillog 数据库[1]。可以使用 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">useradd -l</code> 或把 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">/var/log/faillog</code> 和 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">/var/log/lastlog</code> 文件删除掉，彻底关掉该功能。每个用户大概用占用掉 4k 左右的空间。</p>
+<h2 id="demo" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">Demo</h2>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>FROM centos:7
 
 EXPOSE 8080
 EXPOSE 8443
@@ -63,7 +83,7 @@ ENV NGINX_USER nginx
 
 ENV NGINX_DOWNLOAD_URL http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 
-RUN BUILD_DEP_PKGS=&quot;\
+RUN BUILD_DEP_PKGS="\
         cpp \
         expat-devel \
         fontconfig-devel \
@@ -92,7 +112,7 @@ RUN BUILD_DEP_PKGS=&quot;\
         pcre-devel \
         xorg-x11-proto-devel \
         zlib-devel \
-        &quot; \
+        " \
     &amp;&amp; rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 \
     &amp;&amp; yum -y --setopt=install_weak_deps=false --setopt=tsflags=nodocs --setopt=override_install_langs=en_US.utf8 \
         install \
@@ -159,8 +179,15 @@ RUN BUILD_DEP_PKGS=&quot;\
     &amp;&amp; sed -i '/listen/s,listen\s*80;,listen 8080;,g' /etc/nginx/nginx.conf \
     &amp;&amp; sed -i '/^#user/s,#\(user.*\),\1,g' /etc/nginx/nginx.conf \
     &amp;&amp; ln -sf /var/log/nginx /etc/nginx/logs \
-    &amp;&amp; ln -sf /var/www /etc/nginx/www</code></pre>
-    <p> 点击「阅读原文」，能看到更好的排版。 </p>
+    &amp;&amp; ln -sf /var/www /etc/nginx/www
+</pre></div>
+
+
+<h2 id="ref" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">REF</h2>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>[1] https://github.com/sagemathinc/cocalc/issues/2287#issue-249824529</li>
+</ul>
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">
       <p>文档信息</p>

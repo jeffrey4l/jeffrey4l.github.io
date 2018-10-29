@@ -1,8 +1,8 @@
 body {
    font-family: "Helvetica Neue", Helvetica, sans-serif;
-   color: #666;
-   font-size: 16px;
-   line-height: 2.2;
+   color: #333333;
+   font-size: 18px;
+   line-height: 1.6;
    padding-top: 10px;
    padding-bottom: 10px;
    background-color: white;
@@ -29,7 +29,6 @@ h1, h2, h3, h4, h5, h6 {
    margin: 20px 0 10px;
    padding: 0;
    font-weight: bold;
-   -webkit-font-smoothing: antialiased;
    cursor: text;
    position: relative; }
 
@@ -70,7 +69,7 @@ h3 {
     border-left: solid 8px #1A95A5;
     color: #26c6da;
     font-size: 18px;
-    line-height: 1.5;
+    line-height: 1.6;
     padding: 2px 0px 0px 10px;
 }
 
@@ -85,7 +84,12 @@ h6 {
    font-size: 14px; }
 
 p, blockquote, ul, ol, dl, li, table, pre {
-   margin: 15px 0; }
+   margin: 15px 0;
+   font-family: "Helvetica Neue", Helvetica, sans-serif;
+   color: rgb(33, 33, 33);
+   font-size: 18px;
+   min-height: 1em;
+   }
 
 hr {
    border: 0 none;
@@ -249,10 +253,9 @@ span.float-right > span {
    text-align: right; }
 
 code, tt {
-   font-size: 13px;
+   font-size: 16px;
    margin: 0 2px;
    padding: 0 7px;
-   white-space: nowrap;
    border: 1px solid #eaeaea;
    background-color: #f8f8f8;
    border-radius: 4px; }
@@ -260,23 +263,25 @@ code, tt {
 pre code {
    margin: 0;
    padding: 0;
-   white-space: pre;
    border: none;
    background: transparent; }
 
 .highlight pre {
+    font-family: Consolas,Monaco,andale mono,ubuntu mono,monospace;
    background-color: #f8f8f8;
    border: 1px solid #cccccc;
-   font-size: 13px;
+   font-size: 16px;
    line-height: 19px;
    overflow: auto;
    padding: 6px 10px;
-   border-radius: 3px; }
+   border-radius: 3px; 
+   }
 
 pre {
+   font-family: Consolas,Monaco,andale mono,ubuntu mono,monospace;
+   font-size: 16px;
    background-color: #f8f8f8;
    border: 1px solid #cccccc;
-   font-size: 13px;
    line-height: 19px;
    overflow: auto;
    padding: 6px 10px;
@@ -288,6 +293,8 @@ pre code, pre tt {
    background-color: transparent;
    border: none; 
    overflow-y: hidden;
+   font-family: Consolas,Monaco,andale mono,ubuntu mono,monospace;
+   font-size: 16px;
 }
 
 sup {

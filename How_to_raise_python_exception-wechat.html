@@ -1,59 +1,79 @@
 <html>
   <head>
-    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
-  </head>
-  <body>
-    <p>当需要重新抛出 Python 的异常时，很多人都处理不好。本文总结了一些处理方法。</p>
-<pre class="codehilite"><code class="language-python">try:
+  <style type="text/css">h1:hover a.anchor {text-decoration:none}
+h2:hover a.anchor {text-decoration:none}
+h3:hover a.anchor {text-decoration:none}
+h4:hover a.anchor {text-decoration:none}
+h5:hover a.anchor {text-decoration:none}
+h6:hover a.anchor {text-decoration:none}
+body > h1:first-child + h2 {margin-top:0;padding-top:0}
+a:first-child h1 {margin-top:0;padding-top:0}
+a:first-child h2 {margin-top:0;padding-top:0}
+a:first-child h3 {margin-top:0;padding-top:0}
+a:first-child h4 {margin-top:0;padding-top:0}
+a:first-child h5 {margin-top:0;padding-top:0}
+a:first-child h6 {margin-top:0;padding-top:0}
+table tr:nth-child(2n) {background-color:#f8f8f8}</style>
+</head>
+  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>当需要重新抛出 Python 的异常时，很多人都处理不好。本文总结了一些处理方法。</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span><span style="color: #008000; font-weight: bold">try</span>:
     do_something()
-except:
-    do_cleanup()</code></pre>
+<span style="color: #008000; font-weight: bold">except</span>:
+    do_cleanup()
+</pre></div>
 
 
-<p>这种处理会直接把内部异常吃掉，当有问题/Bug时，会很难处理，所以不推荐。</p>
-<pre class="codehilite"><code>try:
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>这种处理会直接把内部异常吃掉，当有问题/Bug时，会很难处理，所以不推荐。</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>try:
     do_something()
 except Exception as e:
     do_cleanup()
     print e
     # or
     import traceback
-    traceback.print_exc()</code></pre>
+    traceback.print_exc()
+</pre></div>
 
 
-<p>这种直接打印的，一是不能很好的输出到日志里。二是不能把错误交到上层调用者，不能让其知道这是有问题。</p>
-<pre class="codehilite"><code>try:
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>这种直接打印的，一是不能很好的输出到日志里。二是不能把错误交到上层调用者，不能让其知道这是有问题。</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>try:
     do_somethink()
 except:
     do_cleanup()
-    raise</code></pre>
+    raise
+</pre></div>
 
 
-<p>用这种，主要是为了做cleanup。直接<code>raise</code>后，异常会抛向上层。没有catch的效果一样。</p>
-<p>这里还有一种和上面这个类似的效果的</p>
-<pre class="codehilite"><code>try:
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>用这种，主要是为了做cleanup。直接<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">raise</code>后，异常会抛向上层。没有catch的效果一样。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>这里还有一种和上面这个类似的效果的</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>try:
     do_something()
 except:
     import sys
     exc_info = sys.exc_info()
-    raise exc_info[0], exc_info[1], exc_info[2]</code></pre>
+    raise exc_info[0], exc_info[1], exc_info[2]
+</pre></div>
 
 
-<p>最后，当要抛出自己重新包装后的异常时，最好把原始的异常也带上。这样有利于问题的debug。</p>
-<pre class="codehilite"><code>try:
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>最后，当要抛出自己重新包装后的异常时，最好把原始的异常也带上。这样有利于问题的debug。</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>try:
     do_something()
 except:
     import sys
     exc_info = sys.exc_info()
-    raise MyException(), None, exc_info[2]</code></pre>
+    raise MyException(), None, exc_info[2]
+</pre></div>
 
 
-<h1 id="ref">REF</h1>
-<ul>
-<li><a href="http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html">Re-raising Exceptions</a> - by Ian Bicking</li>
+<h1 id="ref" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">REF</h1>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>
+<a href="http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html" style="color:#4183C4; margin-top:0">Re-raising Exceptions</a> - by Ian Bicking</li>
 </ul>
-    <p> 点击「阅读原文」，能看到更好的排版。 </p>
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">
       <p>文档信息</p>

@@ -1,183 +1,199 @@
 <html>
   <head>
-    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
-  </head>
-  <body>
-    <div class="toc">
-<ul>
-<li><a href="#_1">讨论的优先级安排</a></li>
-<li><a href="#upgrade">Upgrade</a><ul>
-<li><a href="#openstack">OpenStack 组件</a></li>
-<li><a href="#_2">基础服务组件</a></li>
+  <style type="text/css">h1:hover a.anchor {text-decoration:none}
+h2:hover a.anchor {text-decoration:none}
+h3:hover a.anchor {text-decoration:none}
+h4:hover a.anchor {text-decoration:none}
+h5:hover a.anchor {text-decoration:none}
+h6:hover a.anchor {text-decoration:none}
+body > h1:first-child + h2 {margin-top:0;padding-top:0}
+a:first-child h1 {margin-top:0;padding-top:0}
+a:first-child h2 {margin-top:0;padding-top:0}
+a:first-child h3 {margin-top:0;padding-top:0}
+a:first-child h4 {margin-top:0;padding-top:0}
+a:first-child h5 {margin-top:0;padding-top:0}
+a:first-child h6 {margin-top:0;padding-top:0}
+table tr:nth-child(2n) {background-color:#f8f8f8}</style>
+</head>
+  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
+    <div class="toc" style="display:none">
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="#_1" style="color:#4183C4; margin-top:0">讨论的优先级安排</a></li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<a href="#upgrade" style="color:#4183C4; margin-top:0">Upgrade</a><ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="#openstack" style="color:#4183C4; margin-top:0">OpenStack 组件</a></li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'><a href="#_2" style="color:#4183C4; margin-top:0">基础服务组件</a></li>
 </ul>
 </li>
-<li><a href="#diagnosticslogging">Diagnostics/Logging</a></li>
-<li><a href="#security">Security</a></li>
-<li><a href="#backport">Backport</a></li>
-<li><a href="#kolla-code-sharing">kolla code sharing</a></li>
-<li><a href="#roadmap">Roadmap</a><ul>
-<li><a href="#mitaka-3-roadmap">Mitaka-3 Roadmap</a></li>
-<li><a href="#newton-roadmap">Newton Roadmap</a></li>
-<li><a href="#ocata-roadmap">Ocata Roadmap</a></li>
-<li><a href="#p-roadmap">P Roadmap</a></li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'><a href="#diagnosticslogging" style="color:#4183C4; margin-top:0">Diagnostics/Logging</a></li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'><a href="#security" style="color:#4183C4; margin-top:0">Security</a></li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'><a href="#backport" style="color:#4183C4; margin-top:0">Backport</a></li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'><a href="#kolla-code-sharing" style="color:#4183C4; margin-top:0">kolla code sharing</a></li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<a href="#roadmap" style="color:#4183C4; margin-top:0">Roadmap</a><ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="#mitaka-3-roadmap" style="color:#4183C4; margin-top:0">Mitaka-3 Roadmap</a></li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'><a href="#newton-roadmap" style="color:#4183C4; margin-top:0">Newton Roadmap</a></li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'><a href="#ocata-roadmap" style="color:#4183C4; margin-top:0">Ocata Roadmap</a></li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'><a href="#p-roadmap" style="color:#4183C4; margin-top:0">P Roadmap</a></li>
 </ul>
 </li>
-<li><a href="#ref">REF</a></li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'><a href="#ref" style="color:#4183C4; margin-top:0">REF</a></li>
 </ul>
 </div>
-<p>2016年2月9日-10日，Kolla Team 举办了 Mitaka 的中期会议，对遇到的问题、解决的方法及接下来的工作内容做了深入讨论。</p>
-<h1 id="_1">讨论的优先级安排</h1>
-<p>首先对本次讨论进行了优先级安排<sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>。</p>
-<ul>
-<li>Upgrades： 这是现在的重中之重。如何能对现有的Kolla进行平滑的升级。包括 OpenStack 组件和基础服务组件(如 MariaDB 等)。</li>
-<li>diagnostics/logging: 主要是指 ELK。</li>
-<li>stability of deployment</li>
-<li>Security</li>
-<li>backwards compatibility</li>
-<li>selinux</li>
-<li>kolla-ansible split</li>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>2016年2月9日-10日，Kolla Team 举办了 Mitaka 的中期会议，对遇到的问题、解决的方法及接下来的工作内容做了深入讨论。</p>
+<h1 id="_1" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">讨论的优先级安排</h1>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>首先对本次讨论进行了优先级安排<sup id="fnref:1" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:1" rel="footnote" style="color:#4183C4; display:none">1</a></sup>。</p>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>Upgrades： 这是现在的重中之重。如何能对现有的Kolla进行平滑的升级。包括 OpenStack 组件和基础服务组件(如 MariaDB 等)。</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>diagnostics/logging: 主要是指 ELK。</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>stability of deployment</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>Security</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>backwards compatibility</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>selinux</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>kolla-ansible split</li>
 </ul>
-<h1 id="upgrade">Upgrade</h1>
-<p>升级主要涉及到两部分。相关的BP在这里<sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>。</p>
-<ol>
-<li>是OpenStack的各个组件</li>
-<li>是一些基础服务组件。</li>
+<h1 id="upgrade" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">Upgrade</h1>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>升级主要涉及到两部分。相关的BP在这里<sup id="fnref:3" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:3" rel="footnote" style="color:#4183C4; display:none">3</a></sup>。</p>
+<ol style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>是OpenStack的各个组件</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>是一些基础服务组件。</li>
 </ol>
-<h2 id="openstack">OpenStack 组件</h2>
-<p>由于 OpenStack 各个组件的结构基本相同，都是有DB, API, Scheduler等几个部分构成。所以这里的升级要简单一些，而且已经基本完成了编码工作，不过需要大量的测试来保证升级的可靠性<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>。</p>
-<h2 id="_2">基础服务组件</h2>
-<p>由于各个组件的升级方式并不同，同一个组件不同版本间，可能也不相同。所以这部分相比较来说要困难的多。讨论中对各个组件进行了逐一讨论。包括升级的方式，有可能造成的影响等。详细信息见<sup id="fnref:4"><a class="footnote-ref" href="#fn:4" rel="footnote">4</a></sup></p>
-<h1 id="diagnosticslogging">Diagnostics/Logging</h1>
-<h1 id="security">Security</h1>
-<p>安全也是很重要的事情，Team 两次讨论了这个问题<sup id="fnref:5"><a class="footnote-ref" href="#fn:5" rel="footnote">5</a></sup><sup id="fnref:8"><a class="footnote-ref" href="#fn:8" rel="footnote">8</a></sup></p>
-<p>在各个模块之前开启 SSL 功能<sup id="fnref2:5"><a class="footnote-ref" href="#fn:5" rel="footnote">5</a></sup>。当然默认是通过配置开启的。这样使 OpenStack 运行在一个更加安全的环境中。这个功能期望是在 Mitaka-3 中完成。</p>
-<p>容器中的安全</p>
-<ul>
-<li>使用非 root 用户运行服务</li>
-<li>Container 内，配置文件是否能被修改</li>
-<li>rootwrap 不应该能修改</li>
-<li>开启 SELinux </li>
+<h2 id="openstack" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">OpenStack 组件</h2>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>由于 OpenStack 各个组件的结构基本相同，都是有DB, API, Scheduler等几个部分构成。所以这里的升级要简单一些，而且已经基本完成了编码工作，不过需要大量的测试来保证升级的可靠性<sup id="fnref:2" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:2" rel="footnote" style="color:#4183C4; display:none">2</a></sup>。</p>
+<h2 id="_2" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">基础服务组件</h2>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>由于各个组件的升级方式并不同，同一个组件不同版本间，可能也不相同。所以这部分相比较来说要困难的多。讨论中对各个组件进行了逐一讨论。包括升级的方式，有可能造成的影响等。详细信息见<sup id="fnref:4" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:4" rel="footnote" style="color:#4183C4; display:none">4</a></sup></p>
+<h1 id="diagnosticslogging" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">Diagnostics/Logging</h1>
+<h1 id="security" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">Security</h1>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>安全也是很重要的事情，Team 两次讨论了这个问题<sup id="fnref:5" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:5" rel="footnote" style="color:#4183C4; display:none">5</a></sup><sup id="fnref:8" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:8" rel="footnote" style="color:#4183C4; display:none">8</a></sup></p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>在各个模块之前开启 SSL 功能<sup id="fnref2:5" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:5" rel="footnote" style="color:#4183C4; display:none">5</a></sup>。当然默认是通过配置开启的。这样使 OpenStack 运行在一个更加安全的环境中。这个功能期望是在 Mitaka-3 中完成。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>容器中的安全</p>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>使用非 root 用户运行服务</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>Container 内，配置文件是否能被修改</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>rootwrap 不应该能修改</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>开启 SELinux </li>
 </ul>
-<h1 id="backport">Backport</h1>
-<p>Liberty 是 Kolla Release 的第一个版本。而在现在的 Master 分支中，已经有了大量的新功能。Team 讨论了 Backport 的原因和意义<sup id="fnref:6"><a class="footnote-ref" href="#fn:6" rel="footnote">6</a></sup>。</p>
-<p>最主要的原因</p>
-<ul>
-<li>Ansible 的 docker 模块有bug, 导致 ansible 与 1.8.2 以上的 docker 版本不兼容</li>
-<li>docker 1.9 后的named volume 功能很好的解决了<ol>
-<li>可能出现在数据丢失。在使用 data container 时，如果 Base Image 发生改变，data container 也会被重新创建，从而造成数据丢失。</li>
-<li>可能造成短时间的网络不可用。原因也是 data container 里面创建的 namespace 会被删除。</li>
+<h1 id="backport" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">Backport</h1>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>Liberty 是 Kolla Release 的第一个版本。而在现在的 Master 分支中，已经有了大量的新功能。Team 讨论了 Backport 的原因和意义<sup id="fnref:6" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:6" rel="footnote" style="color:#4183C4; display:none">6</a></sup>。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>最主要的原因</p>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>Ansible 的 docker 模块有bug, 导致 ansible 与 1.8.2 以上的 docker 版本不兼容</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>docker 1.9 后的named volume 功能很好的解决了<ol style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px; margin-top:0'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>可能出现在数据丢失。在使用 data container 时，如果 Base Image 发生改变，data container 也会被重新创建，从而造成数据丢失。</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>可能造成短时间的网络不可用。原因也是 data container 里面创建的 namespace 会被删除。</li>
 </ol>
 </li>
 </ul>
-<p>解决方法有四种：</p>
-<ul>
-<li>直接把 stable/liberty 分支移动到 master 的位置。但是个人感觉不靠谱。</li>
-<li>把所有的 commmit squash 后提交到 stable/liberty 分支上</li>
-<li>stable/liberty 和 master 做一次 merge。</li>
-<li>只 backport kolla_docker module</li>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>解决方法有四种：</p>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>直接把 stable/liberty 分支移动到 master 的位置。但是个人感觉不靠谱。</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>把所有的 commmit squash 后提交到 stable/liberty 分支上</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>stable/liberty 和 master 做一次 merge。</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>只 backport kolla_docker module</li>
 </ul>
-<p>现在看来，应该会采取方法 4。</p>
-<h1 id="kolla-code-sharing">kolla code sharing</h1>
-<p>现在 Kolla 相关的项目有两个 https://github.com/openstack/kolla 和 https://github.com/openstack/kolla-mesos 。将来还会分拆出一个 kolla-ansible 项目来。现在， 单这两个项目下就有很多的重复代码，导致做了许多 copy, paster 的工作。这个 topic<sup id="fnref:9"><a class="footnote-ref" href="#fn:9" rel="footnote">9</a></sup> 就是来解决这个问题的。</p>
-<p>重复的东西</p>
-<ul>
-<li>extend_start.sh 在两个仓库中有很多重复的</li>
-<li>kolla_docker 等 ansible 模块</li>
-<li>很多 config 里面的定义</li>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>现在看来，应该会采取方法 4。</p>
+<h1 id="kolla-code-sharing" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">kolla code sharing</h1>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>现在 Kolla 相关的项目有两个 https://github.com/openstack/kolla 和 https://github.com/openstack/kolla-mesos 。将来还会分拆出一个 kolla-ansible 项目来。现在， 单这两个项目下就有很多的重复代码，导致做了许多 copy, paster 的工作。这个 topic<sup id="fnref:9" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:9" rel="footnote" style="color:#4183C4; display:none">9</a></sup> 就是来解决这个问题的。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>重复的东西</p>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>extend_start.sh 在两个仓库中有很多重复的</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>kolla_docker 等 ansible 模块</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>很多 config 里面的定义</li>
 </ul>
-<p>可能的解决方法包括:</p>
-<ul>
-<li>定期的把 <code>&lt;kolla&gt;/ansible</code> 下的模板复制到 kolla-mesos 中</li>
-<li>两连都存在副本，定期进行双向的同步。</li>
-<li>创新一个新的仓库包含一些共用的模板</li>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>可能的解决方法包括:</p>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>定期的把 <code style="margin-top:0; background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">&lt;kolla&gt;/ansible</code> 下的模板复制到 kolla-mesos 中</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>两连都存在副本，定期进行双向的同步。</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>创新一个新的仓库包含一些共用的模板</li>
 </ul>
-<h1 id="roadmap">Roadmap</h1>
-<p>Mitaka, Netron, Ocata， P版本的功路线图<sup id="fnref:7"><a class="footnote-ref" href="#fn:7" rel="footnote">7</a></sup>。你更期待什么功能呢?</p>
-<h2 id="mitaka-3-roadmap">Mitaka-3 Roadmap</h2>
-<p>Mitaka 进入最后的阶段，还有一些重要功能在开发中，现在主要还有以下几点。</p>
-<ul>
-<li>diagnostics</li>
-<li>reconfigure services on a redeploy</li>
-<li>infrastructure services upgrades such as mariadb</li>
-<li>migration path for data volumes</li>
-<li>functional tests in gate (boot a vm &amp; ping test)</li>
+<h1 id="roadmap" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">Roadmap</h1>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>Mitaka, Netron, Ocata， P版本的功路线图<sup id="fnref:7" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:7" rel="footnote" style="color:#4183C4; display:none">7</a></sup>。你更期待什么功能呢?</p>
+<h2 id="mitaka-3-roadmap" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">Mitaka-3 Roadmap</h2>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>Mitaka 进入最后的阶段，还有一些重要功能在开发中，现在主要还有以下几点。</p>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>diagnostics</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>reconfigure services on a redeploy</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>infrastructure services upgrades such as mariadb</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>migration path for data volumes</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>functional tests in gate (boot a vm &amp; ping test)</li>
 </ul>
-<h2 id="newton-roadmap">Newton Roadmap</h2>
-<ul>
-<li>voting gates</li>
-<li>jumbo frames MTU investigation</li>
-<li>kolla as replacement of devstack (bindmount sources etc)</li>
-<li>code dedupe between mesos/ansible (general templates)</li>
-<li>ansible 2.0+</li>
-<li>conditionalize docs</li>
-<li>selinux</li>
-<li>more functional tests in gates (mitaka will have boot an vm)</li>
-<li>documentation specifically operator guides</li>
-<li>network isolation documentation</li>
-<li>multinode gates</li>
-<li>mechanism to build/push stable images to dockerhub<ul>
-<li>push per tag</li>
-<li>nightly push</li>
+<h2 id="newton-roadmap" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">Newton Roadmap</h2>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>voting gates</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>jumbo frames MTU investigation</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>kolla as replacement of devstack (bindmount sources etc)</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>code dedupe between mesos/ansible (general templates)</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>ansible 2.0+</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>conditionalize docs</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>selinux</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>more functional tests in gates (mitaka will have boot an vm)</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>documentation specifically operator guides</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>network isolation documentation</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>multinode gates</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>mechanism to build/push stable images to dockerhub<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px; margin-top:0'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>push per tag</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>nightly push</li>
 </ul>
 </li>
-<li>kolla-ansible split right at start of newton split the repos</li>
-<li>hot-reload of running config for openstack service</li>
-<li>Python API with no running services for managing Kolla</li>
-<li>BiFrost documentation and investigation</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>kolla-ansible split right at start of newton split the repos</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>hot-reload of running config for openstack service</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>Python API with no running services for managing Kolla</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>BiFrost documentation and investigation</li>
 </ul>
-<h2 id="ocata-roadmap">Ocata Roadmap</h2>
-<ul>
-<li>deploy full big tent (or develop plugin mechanism to deploy whatever) / maybe we could do a skeleton service</li>
-<li>kolla-saltstack, kolla-puppet investigation - may not even be needed when moving to Ansible 2.0</li>
-<li>horizon, neutron, and nova plugin support - this exists already? would like to do in Newton but not have bandwidth</li>
-<li>Monitoring</li>
-<li>Backup and Restore of OpenStack data</li>
-<li>Data caching (e.g. redis)</li>
-<li>kolla-kubernetes</li>
-<li>runc investigation</li>
-<li>rkt investigation</li>
+<h2 id="ocata-roadmap" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">Ocata Roadmap</h2>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>deploy full big tent (or develop plugin mechanism to deploy whatever) / maybe we could do a skeleton service</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>kolla-saltstack, kolla-puppet investigation - may not even be needed when moving to Ansible 2.0</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>horizon, neutron, and nova plugin support - this exists already? would like to do in Newton but not have bandwidth</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>Monitoring</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>Backup and Restore of OpenStack data</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>Data caching (e.g. redis)</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>kolla-kubernetes</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>runc investigation</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>rkt investigation</li>
 </ul>
-<h2 id="p-roadmap">P Roadmap</h2>
-<ul>
-<li>rollback support from upgrade</li>
-<li>canary deployment</li>
-<li>make Kolla operate optionally without net=host for upcoming kolla-mesos and kolla-kubernetes repositories</li>
+<h2 id="p-roadmap" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">P Roadmap</h2>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>rollback support from upgrade</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>canary deployment</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>make Kolla operate optionally without net=host for upcoming kolla-mesos and kolla-kubernetes repositories</li>
 </ul>
-<h1 id="ref">REF</h1>
-<div class="footnote">
-<hr />
-<ol>
-<li id="fn:1">
-<p><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-priorities">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-priorities</a>&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+<h1 id="ref" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">REF</h1>
+<div class="footnote" style="font-size:12px">
+<hr style="border:0 none; color:#ccc; height:4px; padding:0; border-top:1px solid #8c8b8b" height="4">
+<ol style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li id="fn:1" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-priorities" style="color:#4183C4; margin-top:0">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-priorities</a> <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
-<li id="fn:2">
-<p><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-upgrades">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-upgrades</a>&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+<li id="fn:2" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-upgrades" style="color:#4183C4; margin-top:0">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-upgrades</a> <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
-<li id="fn:3">
-<p><a href="https://blueprints.launchpad.net/kolla?searchtext=upgrade">https://blueprints.launchpad.net/kolla?searchtext=upgrade</a>&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+<li id="fn:3" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://blueprints.launchpad.net/kolla?searchtext=upgrade" style="color:#4183C4; margin-top:0">https://blueprints.launchpad.net/kolla?searchtext=upgrade</a> <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
-<li id="fn:4">
-<p><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-infrastructure-upgrades">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-infrastructure-upgrades</a>&#160;<a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+<li id="fn:4" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-infrastructure-upgrades" style="color:#4183C4; margin-top:0">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-infrastructure-upgrades</a> <a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
-<li id="fn:5">
-<p><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl</a>&#160;<a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:5" rev="footnote" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+<li id="fn:5" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl" style="color:#4183C4; margin-top:0">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-ssl</a> <a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text" style="color:#4183C4; display:none">↩</a><a class="footnote-backref" href="#fnref2:5" rev="footnote" title="Jump back to footnote 5 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
-<li id="fn:6">
-<p><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-backport">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-backport</a>&#160;<a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+<li id="fn:6" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-backport" style="color:#4183C4; margin-top:0">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-backport</a> <a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 6 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
-<li id="fn:7">
-<p><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-roadmap">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-roadmap</a>&#160;<a class="footnote-backref" href="#fnref:7" rev="footnote" title="Jump back to footnote 7 in the text">&#8617;</a></p>
+<li id="fn:7" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-roadmap" style="color:#4183C4; margin-top:0">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-roadmap</a> <a class="footnote-backref" href="#fnref:7" rev="footnote" title="Jump back to footnote 7 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
-<li id="fn:8">
-<p><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-security">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-security</a>&#160;<a class="footnote-backref" href="#fnref:8" rev="footnote" title="Jump back to footnote 8 in the text">&#8617;</a></p>
+<li id="fn:8" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-security" style="color:#4183C4; margin-top:0">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-security</a> <a class="footnote-backref" href="#fnref:8" rev="footnote" title="Jump back to footnote 8 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
-<li id="fn:9">
-<p><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-kolla-code-sharing">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-kolla-code-sharing</a>&#160;<a class="footnote-backref" href="#fnref:9" rev="footnote" title="Jump back to footnote 9 in the text">&#8617;</a></p>
+<li id="fn:9" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'><a href="https://etherpad.openstack.org/p/kolla-mitaka-midcycle-kolla-code-sharing" style="color:#4183C4; margin-top:0">https://etherpad.openstack.org/p/kolla-mitaka-midcycle-kolla-code-sharing</a> <a class="footnote-backref" href="#fnref:9" rev="footnote" title="Jump back to footnote 9 in the text" style="color:#4183C4; display:none">↩</a></p>
 </li>
 </ol>
 </div>
-    <p> 点击「阅读原文」，能看到更好的排版。 </p>
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">
       <p>文档信息</p>

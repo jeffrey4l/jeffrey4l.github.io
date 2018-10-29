@@ -1,9 +1,9 @@
 import codecs
 import contextlib
 import os
-import subprocess
 
 import markdown
+import premailer
 from pelican import signals
 
 
@@ -21,7 +21,8 @@ MARKDOWN_EXT_CONFIG = {
     'markdown.extensions.codehilite': {
         'linenums': False,
         'guess_lang': False,
-        'use_pygments': False
+        'use_pygments': True,
+        'noclasses': True
     },
     'markdown.extensions.extra': {
         'BACKLINK_TEXT': ''
@@ -88,30 +89,15 @@ def wechat_output(content_object):
 
     html = tpl % html
 
+    wechat_css = [os.path.join(
+        content_object.settings['THEME'],
+        'static/css/wechat.css')]
+
     with safe_open(dest_fullpath, 'w') as f:
-        f.write(html)
-
-
-def markdown_css():
-    # run markdown-css
-    # markdown-css nova-inject-file-wechat.html \
-    #       --style=theme/css/wechat.css --out=a
-    wechat_folder = os.path.join(output, 'wechat')
-    ensure_folder(wechat_folder)
-    cmds = (
-        'markdown-css',
-        wechat_output_name,
-        '--style',
-        'theme/css/wechat.css',
-        '--out',
-        'wechat'
-    )
-
-    subprocess.call(cmds, cwd=output)
-
-    # move the file to output folder
-    os.rename(os.path.join(wechat_folder, wechat_output_name), dest_fullpath)
-
+        p = premailer.Premailer(
+            html,
+            external_styles=wechat_css)
+        f.write(p.transform())
 
 
 def register():

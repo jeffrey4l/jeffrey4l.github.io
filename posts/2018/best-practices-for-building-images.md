@@ -54,6 +54,10 @@ RUN BUILD_DEP_PKGS="
 ...
 ```
 
+###  关闭用户初始化 lastlog 和 faillog 数据库
+
+如果你要在镜像中创建新的用户，可以不初始化用户相关的 lastlog 和  faillog 数据库[1]。可以使用 `useradd -l` 或把 `/var/log/faillog` 和 `/var/log/lastlog` 文件删除掉，彻底关掉该功能。每个用户大概用占用掉 4k 左右的空间。
+
 
 
 ## Demo
@@ -176,3 +180,7 @@ RUN BUILD_DEP_PKGS="\
     && ln -sf /var/log/nginx /etc/nginx/logs \
     && ln -sf /var/www /etc/nginx/www
 ```
+
+## REF
+
+* [1] https://github.com/sagemathinc/cocalc/issues/2287#issue-249824529

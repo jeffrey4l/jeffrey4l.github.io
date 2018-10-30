@@ -160,3 +160,7 @@ a.footnote-ref:after {
 .copyright a {
     color: #5c5c5c;
 }
+
+li:target, sup:target {
+    background: #DEF;
+}

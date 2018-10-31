@@ -32,9 +32,11 @@
     </div>
   </header>
   <div class="entry-content">
+    <div class="nav navbar-nav" id='toc'>
     {% if article.toc %}
       {{ article.toc }}
     {% endif %}
+    </div>
     {{ article.content }}
     <div class="copyright">
       <p><span>原始链接:</span><a href="http://xcodest.me/{{ article.url }}" target="_blank">http://xcodest.me/{{ article.url }} </a></p>
@@ -59,6 +61,13 @@
     </nav>
   </div>
   {% endif %}
+  <script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+    $("#toc ul").addClass("nav flex-column");
+    $("#toc li").addClass("nav-item");
+    $("#toc a").addClass("nav-link");
+});
+  </script>
     {% if DISQUS_SITENAME and SITEURL and article.status != "draft" %}
     <div class="comments">
       <h2>Comments</h2>

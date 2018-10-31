@@ -4,6 +4,8 @@ category: OpenStack
 tags: Linux,OpenStack
 
 
+[TOC]
+
 ## Glance
 
 * 增加了和 cinder 一样多后端存储的支持。当需要配置多个后端存储时，不用像之前一样，只能配置多个 glance 服务了。

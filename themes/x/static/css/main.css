@@ -1,6 +1,7 @@
 body {
     color: #666;
     font-family: "Microsoft Yahei", Arial;
+    position: relative;
 }
 h1 {
     font-size: 28px;

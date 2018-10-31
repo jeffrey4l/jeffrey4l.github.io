@@ -88,10 +88,15 @@ DISPLAY_PAGES_ON_MENU = True
 
 MARKDOWN = {
         'extension_configs': {
+            'admonition': {},
+            'extra': {},
             'markdown.extensions.codehilite': {'css_class': 'highlight'},
             'markdown.extensions.extra': {},
             'markdown.extensions.toc': {},
             'markdown_newtab': {},
+            'nl2br': {},
+            'sane_lists': {},
+            'wikilinks': {},
             },
         'output_format': 'html5'
         }

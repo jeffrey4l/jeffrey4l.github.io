@@ -40,6 +40,9 @@
                   <li>
                     <a href="http://xcodest.me/pages/about.html">About</a>
                   </li>
+                  <li>
+                    <a href="http://xcodest.me/pages/opensource-books.html">Opensource books</a>
+                  </li>
                 </ul>
                 <form class="navbar-form navbar-right" action="https://google.com/search" target="_blank">
                   <div class="input-group">
@@ -121,9 +124,9 @@
     </div>
   </header>
   <div class="entry-content">
-    <p>Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定
+    <p>Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定<br>
 程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。</p>
-<p>因为是通过middleware来控制的，所以只要修改一下paster的配置就行。更简单的是指定
+<p>因为是通过middleware来控制的，所以只要修改一下paster的配置就行。更简单的是指定<br>
 glance-api加载的pipeline的名字。</p>
 <div class="highlight"><pre><span></span><span class="k">[deploy]</span>
 <span class="c1"># possible value: none, cachine, keystone, keystone+caching, </span>
@@ -159,7 +162,7 @@ glance-api加载的pipeline的名字。</p>
 </pre></div>
 
 
-<p>不同的pipeline用到了不同的middleware, 启作用的是cache 和 cachemanagement这两个
+<p>不同的pipeline用到了不同的middleware, 启作用的是cache 和 cachemanagement这两个<br>
 。</p>
 <h2 id="ref">REF</h2>
 <ol>

@@ -42,6 +42,9 @@
                   <li>
                     <a href="http://xcodest.me/pages/about.html">About</a>
                   </li>
+                  <li>
+                    <a href="http://xcodest.me/pages/opensource-books.html">Opensource books</a>
+                  </li>
                 </ul>
                 <form class="navbar-form navbar-right" action="https://google.com/search" target="_blank">
                   <div class="input-group">
@@ -133,28 +136,28 @@
 <p>使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个<a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results" target="_blank">邮件列表</a>中找到原因，如下：</p>
 <p>To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1</p>
 <p>THE LONG VERSION</p>
-<p>There is an issue with the way nova uses dnsmasq in VLAN mode. It starts up a
-single copy of dnsmasq for each vlan on the network host (or on every host in
-multi_host mode). The problem is in the way that dnsmasq binds to an ip address
-and port. Both copies can respond to broadcast packet, but unicast packets
+<p>There is an issue with the way nova uses dnsmasq in VLAN mode. It starts up a<br>
+single copy of dnsmasq for each vlan on the network host (or on every host in<br>
+multi_host mode). The problem is in the way that dnsmasq binds to an ip address<br>
+and port. Both copies can respond to broadcast packet, but unicast packets<br>
 can only be answered by one of the copies.</p>
-<p>In nova this means that guests from only one project will get responses to their
-unicast dhcp renew requests.  Unicast projects from guests in other projects get
-ignored. What happens next is different depending on the guest os.  Linux
-generally will send a broadcast packet out after the unicast fails, and so the
-only effect is a small (tens of ms) hiccup while interface is reconfigured.  It
-can be much worse than that, however. I have seen cases where Windows just gives
+<p>In nova this means that guests from only one project will get responses to their<br>
+unicast dhcp renew requests.  Unicast projects from guests in other projects get<br>
+ignored. What happens next is different depending on the guest os.  Linux<br>
+generally will send a broadcast packet out after the unicast fails, and so the<br>
+only effect is a small (tens of ms) hiccup while interface is reconfigured.  It<br>
+can be much worse than that, however. I have seen cases where Windows just gives<br>
 up and ends up with a non-configured interface.</p>
-<p>This bug was first noticed by some users of openstack who rolled their own fix.
-Basically, on linux, if you set the SO_BINDTODEVICE socket option, it will allow
-different daemons to share the port and respond to unicast packets, as long as
-they listen on different interfaces. I managed to communicate with Simon Kelley,
-the maintainer of dnsmasq and he has integrated a fix for the issue in the
+<p>This bug was first noticed by some users of openstack who rolled their own fix.<br>
+Basically, on linux, if you set the SO_BINDTODEVICE socket option, it will allow<br>
+different daemons to share the port and respond to unicast packets, as long as<br>
+they listen on different interfaces. I managed to communicate with Simon Kelley,<br>
+the maintainer of dnsmasq and he has integrated a fix for the issue in the<br>
 current version of dnsmaq.</p>
-<p>I don't know how may users out there are using vlan mode, but you should be able
-to deal with this issue by upgrading dnsmasq. It would be great if the various
-distributionss could upgrade as well, or at least try to patch in the fix. If
-upgrading dnsmasq is out of the question, a possible workaround is to minimize
+<p>I don't know how may users out there are using vlan mode, but you should be able<br>
+to deal with this issue by upgrading dnsmasq. It would be great if the various<br>
+distributionss could upgrade as well, or at least try to patch in the fix. If<br>
+upgrading dnsmasq is out of the question, a possible workaround is to minimize<br>
 lease renewals with something like the following combination of config options.</p>
 <div class="highlight"><pre><span></span># release leases immediately on terminate
 force_dhcp_release=true

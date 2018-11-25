@@ -40,6 +40,9 @@
                   <li>
                     <a href="http://xcodest.me/pages/about.html">About</a>
                   </li>
+                  <li>
+                    <a href="http://xcodest.me/pages/opensource-books.html">Opensource books</a>
+                  </li>
                 </ul>
                 <form class="navbar-form navbar-right" action="https://google.com/search" target="_blank">
                   <div class="input-group">
@@ -256,6 +259,7 @@ lrwxrwxrwx. <span class="m">1</span> root root  <span class="m">23</span> Apr  <
 <p>在 ceph bluestore 的情况下，wal 是 RocksDB 的 write-ahead log, 相当于之前的 journal 数据，db 是 RocksDB 的 metadata 信息。在磁盘选择原则是 block.wal &gt; block.db &gt; block。当然所有的数据也可以放到同一块盘上。</p>
 <p>默认情况下， wal 和 db 的大小分别是 512 MB 和 1GB, 包括 Sage Weil 的 PPT 里面也是这样标明的<sup id="fnref-1"><a class="footnote-ref" href="#fn-1">1</a></sup>。现在没有一个好的理论值，好像和 ceph 本身承载的数据类型有关系。更多讨论可以参看<sup id="fnref-2"><a class="footnote-ref" href="#fn-2">2</a></sup>。</p>
 <p>值得注意的是，如果所有的数据都在单块盘上，那是没有必要指定 wal &amp; db 的大小的。如果 wal &amp; db 是在不同的盘上，由于 wal/db 一般都会分的比较小，是有满的可能性的。如果满了，这些数据会迁移到下一个快的盘上(wal - db - main)。所以最少不会因为数据满了，而造成无法写入<sup id="fnref-3"><a class="footnote-ref" href="#fn-3">3</a></sup>。</p>
+<p>如果使用独立的 block.db 分区，这个分区的大小其实和 ceph 里面的数据对象个数有关系。社区现在推荐的是 block size * 4% 的值。也就是说如果你的 block 盘大小是 1TB，那 block.db 的大小最少是 40GB。<sup id="fnref-4"><a class="footnote-ref" href="#fn-4">4</a></sup><sup id="fnref-5"><a class="footnote-ref" href="#fn-5">5</a></sup></p>
 <h2 id="bluestore-osd">使用 bluestore 时的 osd 分区</h2>
 <p>如果是使用的 ceph-disk 管理磁盘，他会建立一个 100MB 的分区，来存放 keyring / whoami 这些信息，这和之前的逻辑是一样的。</p>
 <p>如果是使用 ceph-volume 管理磁盘，<code>/var/lib/ceph/osd/ceph-0</code> 分区会从 tmpfs 挂载过来(也就是内存)</p>
@@ -364,6 +368,21 @@ WantedBy=multi-user.target
 <li>https://ceph.com/community/new-luminous-bluestore/</li>
 <li>http://liyichao.github.io/posts/ceph-bluestore-%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86.html</li>
 </ul>
+<h2 id="history">history</h2>
+<table>
+<thead>
+<tr>
+<th>时间</th>
+<th>更新内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2018-11-25</td>
+<td>增加 block.db 推荐大小值</td>
+</tr>
+</tbody>
+</table>
 <div class="footnote">
 <hr>
 <ol>
@@ -375,6 +394,12 @@ WantedBy=multi-user.target
 </li>
 <li id="fn-3">
 <p>http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/021037.html&#160;<a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn-4">
+<p>http://docs.ceph.com/docs/master/rados/configuration/bluestore-config-ref/#sizing&#160;<a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn-5">
+<p>http://lists.ceph.com/pipermail/ceph-users-ceph.com/2018-September/029643.html&#160;<a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>

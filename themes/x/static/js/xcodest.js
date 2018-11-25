@@ -5,4 +5,7 @@ $(document).ready(function(){
     $(target).toggleClass('hidden-xs');
     $(target).toggleClass('hidden-sm');
   });
+
+  $('.entry-content>table').addClass('table');
 });
+

@@ -1,5 +1,6 @@
 title: Ceph bluestore 和 ceph-volume
 date: 2018-04-07
+modified: 2018-11-25
 slug: ceph-bluestore-and-ceph-volume
 tags: Ceph
 category: Ceph
@@ -142,6 +143,8 @@ KV 存储主要包括 LevelDB, MemDB 和新的 RocksDB。 RocksDB 是 Facebook �
 
 值得注意的是，如果所有的数据都在单块盘上，那是没有必要指定 wal & db 的大小的。如果 wal & db 是在不同的盘上，由于 wal/db 一般都会分的比较小，是有满的可能性的。如果满了，这些数据会迁移到下一个快的盘上(wal - db - main)。所以最少不会因为数据满了，而造成无法写入[^3]。
 
+如果使用独立的 block.db 分区，这个分区的大小其实和 ceph 里面的数据对象个数有关系。社区现在推荐的是 block size * 4% 的值。也就是说如果你的 block 盘大小是 1TB，那 block.db 的大小最少是 40GB。[^4][^5]
+
 ## 使用 bluestore 时的 osd 分区
 
 如果是使用的 ceph-disk 管理磁盘，他会建立一个 100MB 的分区，来存放 keyring / whoami 这些信息，这和之前的逻辑是一样的。
@@ -258,3 +261,11 @@ ceph-disk 应试不支持 lvm 的， 参见 http://tracker.ceph.com/issues/5461
 [^1]: https://www.slideshare.net/sageweil1/bluestore-a-new-storage-backend-for-ceph-one-year-in
 [^2]: http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/020822.html
 [^3]: http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/021037.html
+[^4]: http://docs.ceph.com/docs/master/rados/configuration/bluestore-config-ref/#sizing
+[^5]: http://lists.ceph.com/pipermail/ceph-users-ceph.com/2018-September/029643.html
+
+## history
+
+时间 | 更新内容 
+---- | --------
+2018-11-25 | 增加 block.db 推荐大小值

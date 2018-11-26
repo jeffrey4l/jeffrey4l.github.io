@@ -139,11 +139,10 @@ KV 存储主要包括 LevelDB, MemDB 和新的 RocksDB。 RocksDB 是 Facebook �
 
 在 ceph bluestore 的情况下，wal 是 RocksDB 的 write-ahead log, 相当于之前的 journal 数据，db 是 RocksDB 的 metadata 信息。在磁盘选择原则是 block.wal > block.db > block。当然所有的数据也可以放到同一块盘上。
 
-默认情况下， wal 和 db 的大小分别是 512 MB 和 1GB, 包括 Sage Weil 的 PPT 里面也是这样标明的[^1]。现在没有一个好的理论值，好像和 ceph 本身承载的数据类型有关系。更多讨论可以参看[^2]。
+默认情况下， wal 和 db 的大小分别是 512 MB 和 1GB, 包括 Sage Weil 的 PPT 里面也是这样标明的[^1]。现在没有一个太好的理论值，它和 ceph 里面的每个 OSD 里面的对象个数有关系。更多讨论可以参看[^2]。 现在社区推荐的是 block size * 4% 的值。也就是说如果你的 block 盘大小是 1TB，那 block.db 的大小最少是 40GB。[^4][^5]
 
 值得注意的是，如果所有的数据都在单块盘上，那是没有必要指定 wal & db 的大小的。如果 wal & db 是在不同的盘上，由于 wal/db 一般都会分的比较小，是有满的可能性的。如果满了，这些数据会迁移到下一个快的盘上(wal - db - main)。所以最少不会因为数据满了，而造成无法写入[^3]。
 
-如果使用独立的 block.db 分区，这个分区的大小其实和 ceph 里面的数据对象个数有关系。社区现在推荐的是 block size * 4% 的值。也就是说如果你的 block 盘大小是 1TB，那 block.db 的大小最少是 40GB。[^4][^5]
 
 ## 使用 bluestore 时的 osd 分区
 
@@ -252,20 +251,18 @@ ceph-disk 应试不支持 lvm 的， 参见 http://tracker.ceph.com/issues/5461
 
 不过 kolla 是否支持，可以验证下， 因为 kolla 的脚本里面不依赖 ceph-disk
 
-## REF
+## 版本
 
-- http://www.sysnote.org/2016/08/19/ceph-bluestore/
-- https://ceph.com/community/new-luminous-bluestore/
-- http://liyichao.github.io/posts/ceph-bluestore-%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86.html
-
-[^1]: https://www.slideshare.net/sageweil1/bluestore-a-new-storage-backend-for-ceph-one-year-in
-[^2]: http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/020822.html
-[^3]: http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/021037.html
-[^4]: http://docs.ceph.com/docs/master/rados/configuration/bluestore-config-ref/#sizing
-[^5]: http://lists.ceph.com/pipermail/ceph-users-ceph.com/2018-September/029643.html
-
-## history
-
-时间 | 更新内容 
----- | --------
+时间       | 更新内容 
+---------- | ------------------------
+2018-04-07 | 初版
 2018-11-25 | 增加 block.db 推荐大小值
+
+[^1]: <https://www.slideshare.net/sageweil1/bluestore-a-new-storage-backend-for-ceph-one-year-in>
+[^2]: <http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/020822.html>
+[^3]: <http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/021037.html>
+[^4]: <http://docs.ceph.com/docs/master/rados/configuration/bluestore-config-ref/#sizing>
+[^5]: <http://lists.ceph.com/pipermail/ceph-users-ceph.com/2018-September/029643.html>
+[^6]: [ceph存储引擎bluestore解析](http://www.sysnote.org/2016/08/19/ceph-bluestore/)
+[^7]: <https://ceph.com/community/new-luminous-bluestore/>
+[^8]: [ceph bluestore 基本原理](http://liyichao.github.io/posts/ceph-bluestore-%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86.html)

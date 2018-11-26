@@ -2,9 +2,11 @@ ghp-import
 fabric
 
 # Require by pelican
-pelican
+# rst do not support pelican>=4
+pelican<4
 webassets
-Markdown
+# markdown-newtab do not support Markdown>=3
+Markdown<3
 feedgenerator
 Jinja2
 docutils

@@ -6,6 +6,6 @@ $(document).ready(function(){
     $(target).toggleClass('hidden-sm');
   });
 
-  $('.entry-content>table').addClass('table');
+  $('.entry-content>table').addClass('table table-bordered table-striped');
 });
 

@@ -1,6 +1,7 @@
 title: 制作镜像的最佳实践
 date: 2018-10-03
 status: draft
+slug: best-practices-for-building-docker-images
 
 
 * 选择合适的基础镜像
@@ -59,6 +60,11 @@ RUN BUILD_DEP_PKGS="
 如果你要在镜像中创建新的用户，可以不初始化用户相关的 lastlog 和  faillog 数据库[1]。可以使用 `useradd -l` 或把 `/var/log/faillog` 和 `/var/log/lastlog` 文件删除掉，彻底关掉该功能。每个用户大概用占用掉 4k 左右的空间。
 
 
+## 使用 dive 分析镜像的空间占用
+
+[dive](https://github.com/wagoodman/dive) 是一个命令行工具，可以分析镜像里面每层的空间占用大小，有助于发现问题，以减少镜像大小。
+
+![dive example](images/2018/dive-demo.gif)
 
 ## Demo
 

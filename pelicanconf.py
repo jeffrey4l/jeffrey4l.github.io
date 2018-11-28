@@ -11,27 +11,18 @@ sys.path.append(os.path.join(ROOT, 'plugins'))
 AUTHOR = u'Jeffrey4l'
 SITENAME = u'代码杂货铺'
 SITESUBTITLE = u'关注云计算，容器和Linux'
-SITEURL = 'http://xcodest.me'
 RELATIVE_URLS = True
 
 TIMEZONE = 'Asia/Shanghai'
 
 DEFAULT_LANG = u'cn'
 
-# Feed generation is usually not desired when developing
-FEED_ATOM = None
+# Disable feed in local env
 FEED_ALL_ATOM = None
-AUTHOR_FEED_ATOM = None
-TAG_FEED_ATOM = None
 CATEGORY_FEED_ATOM = None
-
-FEED_RSS = 'feeds/rss.xml'
-FEED_ALL_RSS = 'feeds/all.rss.xml'
-AUTHOR_FEED_RSS = None
-TAG_FEED_RSS = None
-CATEGORY_FEED_RSS = None
-RSS_FEED_SUMMARY_ONLY = False
 TRANSLATION_FEED_ATOM = None
+AUTHOR_FEED_ATOM = None
+AUTHOR_FEED_RSS = None
 
 # Blogroll
 LINKS = (

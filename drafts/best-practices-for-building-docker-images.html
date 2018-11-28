@@ -167,6 +167,9 @@ RUN BUILD_DEP_PKGS=&quot;
 
 <h3 id="lastlog-faillog">关闭用户初始化 lastlog 和 faillog 数据库</h3>
 <p>如果你要在镜像中创建新的用户，可以不初始化用户相关的 lastlog 和  faillog 数据库[1]。可以使用 <code>useradd -l</code> 或把 <code>/var/log/faillog</code> 和 <code>/var/log/lastlog</code> 文件删除掉，彻底关掉该功能。每个用户大概用占用掉 4k 左右的空间。</p>
+<h2 id="dive">使用 dive 分析镜像的空间占用</h2>
+<p><a href="https://github.com/wagoodman/dive" target="_blank">dive</a> 是一个命令行工具，可以分析镜像里面每层的空间占用大小，有助于发现问题，以减少镜像大小。</p>
+<p><img alt="dive example" src="images/2018/dive-demo.gif"></p>
 <h2 id="demo">Demo</h2>
 <div class="highlight"><pre><span></span>FROM centos:7
 
@@ -292,7 +295,7 @@ RUN BUILD_DEP_PKGS=&quot;\
 <li>[1] https://github.com/sagemathinc/cocalc/issues/2287#issue-249824529</li>
 </ul>
     <div class="copyright">
-      <p><span>原始链接:</span><a href="http://xcodest.me/drafts/zhi-zuo-jing-xiang-de-zui-jia-shi-jian.html" target="_blank">http://xcodest.me/drafts/zhi-zuo-jing-xiang-de-zui-jia-shi-jian.html </a></p>
+      <p><span>原始链接:</span><a href="http://xcodest.me/drafts/best-practices-for-building-docker-images.html" target="_blank">http://xcodest.me/drafts/best-practices-for-building-docker-images.html </a></p>
       <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
     </div>
   </div><!-- /.entry-content -->

@@ -1,5 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>代码杂货铺</title><link>http://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Sun, 25 Nov 2018 00:00:00 +0800</lastBuildDate><item><title>使用 Ansible 管理 Kubernetes 资源</title><link>http://xcodest.me/use-ansible-manage-kubernetes-resources.html</link><description>&lt;p&gt;前两天，一篇&lt;a href="https://medium.com/virtuslab/think-twice-before-using-helm-25fbb18bc822" target="_blank"&gt;「Think twice before using Helm」&lt;/a&gt;(译文:&lt;a href="https://mp.weixin.qq.com/s/5iG9kZl7Qp5l3_BCXajrSA" target="_blank"&gt;「恕我直言，对Helm大家还是要三思而后用」&lt;/a&gt;) 引起了大家的关注。作者从认证，生命周期管理，错误处理等多个角度说明了 Helm 自身的问题。我基本赞同作者的观点。多数情况下我们只是把 helm 当做一个模板引擎在使用，把 charts 生成 Kubernetes 可以处理的格式。但是从使用角度来说，这个模板实现的太重了。有兴趣的可以去读读原文。&lt;/p&gt;
+<rss version="2.0"><channel><title>代码杂货铺</title><link>http://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Sun, 09 Dec 2018 00:00:00 +0800</lastBuildDate><item><title>记一次 ceilometer 性能分析</title><link>http://xcodest.me/ceilometer-performance-analysis.html</link><description>&lt;p&gt;近期在一个 OpenStack 环境中，由于虚拟机个数达到5000以上，发现 ceilometer-agent-notification 服务 CPU 占用很高, 每个 process worker 就可以占用满一颗 CPU。但是消息处理速度超级慢，造成了 RabbitMQ 消息的大量积压。增加 ceilometer-agent-notificaion 进程个数或 worker 个数基本没有什么效果。感觉上应该是 ceilometer 本身代码有问题，所以有了这次分析。&lt;/p&gt;
+&lt;p&gt;对于性能分析，可以有以下几种方法。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;静态分析： 对代码比较熟悉的话，可以通过直接翻代码的方式，猜可能的性能瓶颈点。去看代码逻辑。 辅助使用 timeit, cProfile 等模块，修改代码，增加检查点，打印单次的运行结果。看每个函数的的调用次数，来定位问题。&lt;/li&gt;
+&lt;li&gt;动态分析： 使用如 perf&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;, systemtap, 的动态性能分析工具，统计进程在一个时间段内的运行统计信息，再配和 FlagGraph 生成火焰图，来定位性能问题点。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;对于后者，笔者之前看过一些书籍和文章，所以正好实践一下。对于 python 代码的情况，可以使用 pyflame&lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;pyflame 是 Uber 公司开源的用于生成 Python 程序火焰图的工具。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id="ceilometer"&gt;ceilometer 架构&lt;/h2&gt;
+&lt;p&gt;ceilometer 架构经历过多次变化，已经简化成了如下图的结构。ceilometer 只有两个服务。ceilometer polling 服务负责从nova, swift, libvirt 等服务拉取相关数据，并发送到 MQ 里面的 notification.sample 队列。之后 ceilometer notification 从 MQ 中取到数据后，通过 &lt;code&gt;pipeline.yml&lt;/code&gt; 的定义，进行数据转化后，再发给后面的 gnocchi api 进行存储。 这次的问题是出现在 ceilometer notification 进程。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;   +--------------------+
+   | Ceilometer Polling |
+   +---------+----------+
+             |
+      +======v========+
+     / Message Queue /
+     +=======+=======+
+             |
+ +-----------v-------------+
+ | Ceilometer Notification |
+ +------------+------------+
+             |
+      +------v------+
+      | gnocchi api |
+      +-------------+
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id="_1"&gt;问题&lt;/h2&gt;
+&lt;p&gt;当开启 16 worker 的情况下，MQ 的处理速度如下图。前面部分是优化前的，基本消息处理速度在 10/s，平均每个 worker 每秒连一个请求都处理不完 。(后部分上升是因为有几个worker 做了优化)&lt;/p&gt;
+&lt;p&gt;&lt;img alt="rabbitmq noti" src="images/ceilometer-perf/rabbitmq.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;安装 pyflame 工具&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;yum install autoconf automake gcc-c++ git libtool python-devel make
+
+git clone https://github.com/uber/pyflame.git
+cd pyflame
+./autogen.sh
+./configure
+make
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;命令会生成在 &lt;code&gt;./src/pyflame&lt;/code&gt; 位置&lt;/p&gt;
+&lt;p&gt;安装 FlameGraph&lt;sup id="fnref-4"&gt;&lt;a class="footnote-ref" href="#fn-4"&gt;4&lt;/a&gt;&lt;/sup&gt; 工具 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/brendangregg/FlameGraph.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;使用如下命令抓取数据&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./src/pyflame -p &amp;lt;pid&amp;gt; -s 60 -r 0.01 &amp;gt; ceilometer-notification.pyflame
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;然后使用 FlameGraph 工具目录下的 &lt;code&gt;flamegraph.pl&lt;/code&gt; 工具把 pyflame 数据生成火焰图&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;flamegraph.pl ceilometer-notification.pyflame &amp;gt; ceilometer-notification.svg
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;第一次抓取的图如下, 完整 SVG 见 &lt;a href="images/ceilometer-perf/notification_perf_before.svg" target="_blank"&gt;notification_perf_before.svg&lt;/a&gt;：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ceilometer notification perf" src="images/ceilometer-perf/notification_perf_before.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;看图上蓝框部分，可以看到 ceilometer 在处里完数据后，向gnocchi api 发送数据时，居然花了近 20% 的 CPU 时间在向 keystone 请求 endpoint 的地址，这明显是有问题，对于 endpoint ，一般来说是不会发生变化的，完全可以把他缓存在本地，而不是每次都向 keystone 请求。而且对于 ceilometer 服务来说，每个消息都请求一次 keystone 的话，也会对其造成很大的压力。&lt;/p&gt;
+&lt;p&gt;通过查看代码，最后定位到了 keystoneauth 的代码位置上，具体见 &lt;a href="https://github.com/openstack/keystoneauth/blob/f2ad956f8256fb6fec888472b3364a5f1e8c8961/keystoneauth1/session.py#L699-L711" target="_blank"&gt;keystoneauth/keystoneauth1/session#L699-L711&lt;/a&gt;, 摘录如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;urllib&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;parse&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;urlparse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;netloc&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;base_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;endpoint_override&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;base_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;endpoint_override&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;_StringFormatter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;auth&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;endpoint_filter&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;base_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_endpoint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;auth&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;allow&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;allow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                                     &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;endpoint_filter&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;base_url&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="n"&gt;exceptions&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;EndpointNotFound&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;/&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;base_url&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rstrip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;lstrip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;当上层传过来的 url 不包含 netloc 时(如 &lt;code&gt;url=/v1/resource&lt;/code&gt;) ，而且没有配置 endpoint_override 就会从 keystone 里面重新拉取。而 ceilometer 里面的 gnocchi client 正好触发了 &lt;code&gt;base_url = self.get_endpoint&lt;/code&gt; 逻辑， 从而重新获取了一次 endpoint。&lt;/p&gt;
+&lt;p&gt;定位到代码位置就好解决了，可以修改ceilometer 里面的代码，在创建 gnocchi client 时，传到 &lt;code&gt;endpoint_override&lt;/code&gt; 参数, 相关修改已经提交社区，参见&lt;a href="https://review.openstack.org/623864" target="_blank"&gt;Pass gnocchi endpoint into adapter endpoint_override param&lt;/a&gt;&lt;sup id="fnref-3"&gt;&lt;a class="footnote-ref" href="#fn-3"&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;打完以上 patch 后，重新抓取火焰图如下, SVG文件见&lt;a href="images/ceilometer-perf/notification_perf_after.svg" target="_blank"&gt;notification_perf_after.svg&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="notification perf after" src="images/ceilometer-perf/notification_perf_after.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;对比优化前, 右部分的在于已经不在调用 get_endpoint 接口。也就有了本文一开始的图，每秒的消息处理速度由 10/s 上升到了 40/s &lt;/p&gt;
+&lt;h2 id="_2"&gt;后记&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;pyflame 生成火焰图的方式来定位性能或代码问题还是很方便的。&lt;/li&gt;
+&lt;li&gt;估计 OpenStack 里面其它地方的代码也会有类似的问题，感觉更好的修复方式，是在 keystoneauth 里面自动缓存当前所有的 endpoints, 有需要的时候再刷新。&lt;/li&gt;
+&lt;li&gt;优化后，ceilometer-notification 处理消息时，还是会占用100% 的CPU, 主要原因从火焰图上看是对 json 的解析花掉了大量时间，进一步优化的话，可能需要换性能更好的 json 解析库或使用其它序列化方式。 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="ref"&gt;REF&lt;/h2&gt;
+&lt;div class="footnote"&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id="fn-1"&gt;
+&lt;p&gt;http://www.brendangregg.com/perf.html&amp;#160;&lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn-2"&gt;
+&lt;p&gt;https://github.com/uber/pyflame&amp;#160;&lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn-3"&gt;
+&lt;p&gt;https://review.openstack.org/623864&amp;#160;&lt;a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn-4"&gt;
+&lt;p&gt;https://github.com/brendangregg/FlameGraph&amp;#160;&lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sun, 09 Dec 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-12-09:/ceilometer-performance-analysis.html</guid></item><item><title>使用 Ansible 管理 Kubernetes 资源</title><link>http://xcodest.me/use-ansible-manage-kubernetes-resources.html</link><description>&lt;p&gt;前两天，一篇&lt;a href="https://medium.com/virtuslab/think-twice-before-using-helm-25fbb18bc822" target="_blank"&gt;「Think twice before using Helm」&lt;/a&gt;(译文:&lt;a href="https://mp.weixin.qq.com/s/5iG9kZl7Qp5l3_BCXajrSA" target="_blank"&gt;「恕我直言，对Helm大家还是要三思而后用」&lt;/a&gt;) 引起了大家的关注。作者从认证，生命周期管理，错误处理等多个角度说明了 Helm 自身的问题。我基本赞同作者的观点。多数情况下我们只是把 helm 当做一个模板引擎在使用，把 charts 生成 Kubernetes 可以处理的格式。但是从使用角度来说，这个模板实现的太重了。有兴趣的可以去读读原文。&lt;/p&gt;
 &lt;p&gt;那如果 Helm 不轻量好用的话，我们有啥其他选择?&lt;/p&gt;
 &lt;p&gt;Ansible 做为部署管理的工具，正在受到越来越多的运维人员的追捧。他支持 Jinja2 的模板引擎，而且是无代理节点的架构，很方便来做一些模板工作。所以本文来介绍使用 Ansible 如何管理 Kubernetes 上面的资源。&lt;/p&gt;
 &lt;p&gt;首先使用 Ansible 避免不了使用其模块。与 Kubernetes 相关的模块可以从[1]找到。现在主要有&lt;code&gt;k8s&lt;/code&gt;, &lt;code&gt;k8s_facts&lt;/code&gt;, &lt;code&gt;k8s_scale&lt;/code&gt;, &lt;code&gt;kubernetes&lt;/code&gt;和&lt;code&gt;oc&lt;/code&gt; 5个模块。其中 &lt;code&gt;kubernetes&lt;/code&gt; 和 &lt;code&gt;oc&lt;/code&gt; 模块因为实现逻辑不好用，在 ansible 2.6 版本中已经废弃掉， 推荐使用前三个。其中，&lt;code&gt;k8s_scale&lt;/code&gt; 来自 ansible 2.5, &lt;code&gt;k8s&lt;/code&gt; 来自 ansible 2.6, &lt;code&gt;k8s_facts&lt;/code&gt; 来自 ansible 2.7。使用这三个模块的话，还需要安装 &lt;code&gt;openshift&lt;/code&gt; 的 Python 包。以下代码全部基于 ansible 2.7 版本。&lt;/p&gt;

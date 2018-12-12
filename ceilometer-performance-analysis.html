@@ -89,7 +89,7 @@
               <a class="list-group-item" href="http://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="http://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="http://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="http://xcodest.me/category/others.html">Others<span class="badge">4</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/others.html">Others<span class="badge">5</span></a>
               <a class="list-group-item" href="http://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="http://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -211,7 +211,7 @@ make
 <ul>
 <li>pyflame 生成火焰图的方式来定位性能或代码问题还是很方便的。</li>
 <li>估计 OpenStack 里面其它地方的代码也会有类似的问题，感觉更好的修复方式，是在 keystoneauth 里面自动缓存当前所有的 endpoints, 有需要的时候再刷新。</li>
-<li>优化后，ceilometer-notification 处理消息时，还是会占用100% 的CPU, 主要原因从火焰图上看是对 json 的解析花掉了大量时间，进一步优化的话，可能需要换性能更好的 json 解析库或使用其它序列化方式。 </li>
+<li><del>优化后，ceilometer-notification 处理消息时，还是会占用100% 的CPU, 主要原因从火焰图上看是对 json 的解析花掉了大量时间，进一步优化的话，可能需要换性能更好的 json 解析库或使用其它序列化方式。</del>， 这里观察错了，这里是 <code>re.py</code> 模块的问题，进一步的分析见 <a href="ceilometer-performance-analysis-ii.html" target="_blank">ceilometer 性能分析 II</a></li>
 </ul>
 <h2 id="ref">REF</h2>
 <div class="footnote">
@@ -240,7 +240,7 @@ make
     <nav>
       <ul class="pager">
         <li class="previous"><a href="use-ansible-manage-kubernetes-resources.html">&larr; Older</a></li>
-        <li class="next disabled"><span href="">Newer &rarr;</span></li>
+        <li class="next"><a href="ceilometer-performance-analysis-ii.html">Newer &rarr;</a></li>
       </ul>
     </nav>
   </div>

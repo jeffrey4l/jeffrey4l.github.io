@@ -17,70 +17,67 @@ a:first-child h5 {margin-top:0;padding-top:0}
 a:first-child h6 {margin-top:0;padding-top:0}
 table tr:nth-child(2n) {background-color:#f8f8f8}</style>
 </head>
-  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
-    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).</p>
+  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).</p>
 <h1 id="enable-the-v2-in-cinder" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">Enable the v2 in cinder</h1>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>Change the following config. The v1 and v2 is enabled in default.</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span><span style="color: #408080; font-style: italic"># DEPRECATED: Deploy v1 of the Cinder API. (boolean value)</span>
-<span style="color: #408080; font-style: italic">#enable_v1_api=true</span>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>Change the following config. The v1 and v2 is enabled in default.</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-ini" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden"># DEPRECATED: Deploy v1 of the Cinder API. (boolean value)
+#enable_v1_api=true
 
-<span style="color: #408080; font-style: italic"># Deploy v2 of the Cinder API. (boolean value)</span>
-<span style="color: #408080; font-style: italic">#enable_v2_api=true</span>
-</pre></div>
+# Deploy v2 of the Cinder API. (boolean value)
+#enable_v2_api=true</code></pre>
 
 
 <h1 id="enable-the-cinder-v2-api-in-nova" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">Enable the cinder v2 api in nova</h1>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>In current nova config ( juno ), the default config like below. Depend on <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">catalog_info</code> key, it use the v2 first. If v2 is not found, it will fall back to v1 version.</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span><span style="color: #008000; font-weight: bold">[cinder]</span>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>In current nova config ( juno ), the default config like below. Depend on <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">catalog_info</code> key, it use the v2 first. If v2 is not found, it will fall back to v1 version.</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-ini" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">[cinder]
 
-<span style="color: #408080; font-style: italic">#</span>
-<span style="color: #408080; font-style: italic"># Options defined in nova.volume.cinder</span>
-<span style="color: #408080; font-style: italic">#</span>
+#
+# Options defined in nova.volume.cinder
+#
 
-<span style="color: #408080; font-style: italic"># Info to match when looking for cinder in the service</span>
-<span style="color: #408080; font-style: italic"># catalog. Format is: separated values of the form:</span>
-<span style="color: #408080; font-style: italic"># &lt;service_type&gt;:&lt;service_name&gt;:&lt;endpoint_type&gt; (string value)</span>
-<span style="color: #408080; font-style: italic">#catalog_info=volumev2:cinderv2:publicURL</span>
+# Info to match when looking for cinder in the service
+# catalog. Format is: separated values of the form:
+# &lt;service_type&gt;:&lt;service_name&gt;:&lt;endpoint_type&gt; (string value)
+#catalog_info=volumev2:cinderv2:publicURL
 
-<span style="color: #408080; font-style: italic"># Override service catalog lookup with template for cinder</span>
-<span style="color: #408080; font-style: italic"># endpoint e.g. http://localhost:8776/v1/%(project_id)s</span>
-<span style="color: #408080; font-style: italic"># (string value)</span>
-<span style="color: #408080; font-style: italic">#endpoint_template=&lt;None&gt;</span>
+# Override service catalog lookup with template for cinder
+# endpoint e.g. http://localhost:8776/v1/%(project_id)s
+# (string value)
+#endpoint_template=&lt;None&gt;
 
-<span style="color: #408080; font-style: italic"># Region name of this node (string value)</span>
-<span style="color: #408080; font-style: italic">#os_region_name=&lt;None&gt;</span>
+# Region name of this node (string value)
+#os_region_name=&lt;None&gt;
 
-<span style="color: #408080; font-style: italic"># Number of cinderclient retries on failed http calls (integer</span>
-<span style="color: #408080; font-style: italic"># value)</span>
-<span style="color: #408080; font-style: italic">#http_retries=3</span>
+# Number of cinderclient retries on failed http calls (integer
+# value)
+#http_retries=3
 
-<span style="color: #408080; font-style: italic"># Allow attach between instance and volume in different</span>
-<span style="color: #408080; font-style: italic"># availability zones. (boolean value)</span>
-<span style="color: #408080; font-style: italic">#cross_az_attach=true</span>
-</pre></div>
+# Allow attach between instance and volume in different
+# availability zones. (boolean value)
+#cross_az_attach=true</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>You can just add the endpoint to the keystone to enable the cinder v2 api.</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>keystone service-create --name<span style="color: #666666">=</span>cinderv2 --type<span style="color: #666666">=</span>volumev2 <span style="color: #BB6622; font-weight: bold">\</span>
-  --description<span style="color: #666666">=</span><span style="color: #BA2121">"Cinder Volume Service V2"</span>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>You can just add the endpoint to the keystone to enable the cinder v2 api.</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-bash" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">keystone service-create --name=cinderv2 --type=volumev2 \
+  --description="Cinder Volume Service V2"
 
-keystone endpoint-create <span style="color: #BB6622; font-weight: bold">\</span>
-  --service-id<span style="color: #666666">=</span>the_service_id_above <span style="color: #BB6622; font-weight: bold">\</span>
-  --publicurl<span style="color: #666666">=</span>http://controller:8776/v2/%<span style="color: #BB6622; font-weight: bold">\(</span>tenant_id<span style="color: #BB6622; font-weight: bold">\)</span>s <span style="color: #BB6622; font-weight: bold">\</span>
-  --internalurl<span style="color: #666666">=</span>http://controller:8776/v2/%<span style="color: #BB6622; font-weight: bold">\(</span>tenant_id<span style="color: #BB6622; font-weight: bold">\)</span>s <span style="color: #BB6622; font-weight: bold">\</span>
-  --adminurl<span style="color: #666666">=</span>http://controller:8776/v2/%<span style="color: #BB6622; font-weight: bold">\(</span>tenant_id<span style="color: #BB6622; font-weight: bold">\)</span>s
+keystone endpoint-create \
+  --service-id=the_service_id_above \
+  --publicurl=http://controller:8776/v2/%\(tenant_id\)s \
+  --internalurl=http://controller:8776/v2/%\(tenant_id\)s \
+  --adminurl=http://controller:8776/v2/%\(tenant_id\)s
 
 service cinder-scheduler restart
-service cinder-api restart
-</pre></div>
+service cinder-api restart</code></pre>
 
 
 <h1 id="ref" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">REF</h1>
-<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
-<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>http://docs.openstack.org/havana/install-guide/install/apt/content/cinder-controller.html</li>
-<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em'>https://wiki.openstack.org/wiki/CinderAPIv2</li>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0'>http://docs.openstack.org/havana/install-guide/install/apt/content/cinder-controller.html</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em'>https://wiki.openstack.org/wiki/CinderAPIv2</li>
 </ul>
-    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">
       <p>文档信息</p>

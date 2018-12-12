@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+      <title> ceilometer 性能分析 II - 代码杂货铺</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="http://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="http://xcodest.me/theme/css/pygment.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="http://xcodest.me/theme/css/main.css" type="text/css" charset="utf-8">
+    <script src="http://xcodest.me/theme/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://xcodest.me/theme/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://xcodest.me/theme/js/xcodest.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="icon" type="image/png" href="http://xcodest.me/theme/img/favicon.ico">
+    <link href="http://xcodest.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="代码杂货铺 RSS Feed" />
+</head>
+
+<body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+          <div class="navbar navbar-default">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target="#sidebar">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://xcodest.me">
+                  代码杂货铺
+                </a>
+              </div>
+              <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                  <li><a href="/archives.html">Archives</a></li>
+                  <li><a href="/tags.html">Tags</a></li>
+                  <li>
+                    <a href="http://xcodest.me/pages/about.html">About</a>
+                  </li>
+                  <li>
+                    <a href="http://xcodest.me/pages/opensource-books.html">Opensource books</a>
+                  </li>
+                </ul>
+                <form class="navbar-form navbar-right" action="https://google.com/search" target="_blank">
+                  <div class="input-group">
+                    <input name="q" type="text" class="form-control" required placeholder="Search Xcodest.com..."/>
+                    <input type="hidden" name="sitesearch" value="xcodest.me"/>
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                      </button>
+                    </span>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-offset-1 col-md-2 col-xs-12 hidden-xs hidden-sm" id="sidebar">
+          <div class="panel panel-default">
+            <div class="panel-heading">欢迎订阅我的公众号</div>
+            <div class="list-group">
+               <img class="qrcode" src="http://xcodest.me/images/qrcode.jpg"/>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Social</div>
+            <div class="list-group">
+ 
+              <a class="list-group-item" href="http://github.com/jeffrey4l" target="_blank">Github</a>
+ 
+              <a class="list-group-item" href="https://twitter.com/Jeffrey4l" target="_blank">Twitter</a>
+ 
+              <a class="list-group-item" href="http://weibo.com/jeffrey4l" target="_blank">微博</a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Categories</div>
+            <div class="list-group">
+              <a class="list-group-item" href="http://xcodest.me/category/ceph.html">Ceph<span class="badge">1</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/cloud.html">Cloud<span class="badge">1</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/container.html">Container<span class="badge">2</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/database.html">Database<span class="badge">1</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/life.html">Life<span class="badge">3</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/others.html">Others<span class="badge">5</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
+              <a class="list-group-item" href="http://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">Blogroll</div>
+            <div class="list-group">
+              <a class="list-group-item" href="http://99cloud.net" target="_blank">99cloud(九州云)</a>
+              <a class="list-group-item" href="http://chenshake.com/" target="_blank">陈沙克日志</a>
+              <a class="list-group-item" href="http://coolshell.cn" target="_blank">酷壳 - CoolShell.Cn</a>
+              <a class="list-group-item" href="https://sdake.io/" target="_blank">Steven Dake</a>
+              <a class="list-group-item" href="https://sebastien-han.fr/" target="_blank">SÉBASTIEN HAN</a>
+              <a class="list-group-item" href="http://blog.csdn.net/quqi99" target="_blank">技术并艺术着</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 col-xs-12">
+<div class="row">
+  <div class="col-md-12 col-xs-12">
+  <section id="content" class="body">
+  <header>
+    <h1 class="entry-title">ceilometer 性能分析 II</h1>
+    <div class="entry-info">
+      <span class="glyphicon glyphicon-list-alt"></span>
+      <span class="post-date"> 2018-12-12 </span>
+      <!--
+      <a class="post-category label label-default" href="http://xcodest.me/category/others.html">Others</a>
+      -->
+      <span class="glyphicon glyphicon-tags"></span>
+    </div>
+  </header>
+  <div class="entry-content">
+    <p>在上一篇文章中， 「<a href="ceilometer-performance-analysis.html" target="_blank">记一次 ceilometer 性能分析</a>」中，我们分析了 ceilometer 的架构，及由于keystonauth 的问题，导致的大量 <code>get_endpoints</code> 的请求。文章的最后，成功的把这去掉了这部分无意义的请求。但是即使优化后，ceilometer notification 服务还是会吃掉大量CPU, 那 ceilometer 还有没有其它的优化空间呢?</p>
+<p>细心的伙伴也许会发现，在最后的火焰图下，还有大量的 <code>re.py</code> 模块的调用。大约占掉了总 CPU 的使用的 28%(下图蓝框部分)。这是值得怀疑的。正则处理不应该这么慢。SVG文件见 <a href="images/ceilometer-perf/notification_perf_after.svg" target="_blank">notification_perf_after.svg</a></p>
+<p><img alt="notification perf ii_before" src="images/ceilometer-perf/notification_perf_ii_before.jpg"></p>
+<h2 id="_1">分析</h2>
+<p>结合代码查下，定位到了如下部分</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">metric_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric_name</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;metrics&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">metric_name</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="bp">False</span>
+</pre></div>
+
+
+<p>对于每个 metric 都会调用一次 <code>fnmatch</code> 命令，所以有大量的请求。那为什么会那么慢呢? 再继续跟踪到 <code>oslo_util</code> 的 fnmatch 实现，看到如下代码 </p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">fnmatch</span> <span class="kn">as</span> <span class="nn">standard_fnmatch</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">):</span>
+    <span class="n">fnmatch</span> <span class="o">=</span> <span class="n">standard_fnmatch</span><span class="o">.</span><span class="n">fnmatch</span>
+    <span class="n">fnmatchcase</span> <span class="o">=</span> <span class="n">standard_fnmatch</span><span class="o">.</span><span class="n">fnmatchcase</span>
+    <span class="nb">filter</span> <span class="o">=</span> <span class="n">standard_fnmatch</span><span class="o">.</span><span class="n">filter</span>
+    <span class="n">translate</span> <span class="o">=</span> <span class="n">standard_fnmatch</span><span class="o">.</span><span class="n">translate</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">_MATCH_CACHE</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">_MATCH_CACHE_MAX</span> <span class="o">=</span> <span class="mi">100</span>
+
+    <span class="k">def</span> <span class="nf">_get_cached_pattern</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
+        <span class="n">cached_pattern</span> <span class="o">=</span> <span class="n">_MATCH_CACHE</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cached_pattern</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">translated_pattern</span> <span class="o">=</span> <span class="n">translate</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+            <span class="n">cached_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">translated_pattern</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_MATCH_CACHE</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">_MATCH_CACHE_MAX</span><span class="p">:</span>
+                <span class="n">_MATCH_CACHE</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">_MATCH_CACHE</span><span class="p">[</span><span class="n">pattern</span><span class="p">]</span> <span class="o">=</span> <span class="n">cached_pattern</span>
+        <span class="k">return</span> <span class="n">cached_pattern</span>
+
+    <span class="k">def</span> <span class="nf">fnmatch</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normcase</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normcase</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fnmatchcase</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+</pre></div>
+
+
+<p>我的环境里面使用的是 CentOS 自带的 Python 2.7.5, 所以用的 oslo_util 里面的实现。 如果使用的是 python &gt; 2.7.9 的版本，还是会使用系统的。原因主要是 2.7.9 以下的版本里面实现里面有问题，线程不安全。这点在当时的 commit message 找到<sup id="fnref-1"><a class="footnote-ref" href="#fn-1">1</a></sup></p>
+<blockquote>
+<p>fnmatch is not thread safe for versions &lt;= 2.7.9. We have used it in some projects without any lock for concurrency scenario. This patch re-implements a thread safe fnmatch which is very similar to standard nmatch.</p>
+</blockquote>
+<p>除此外，主要的逻辑实现是一样的<sup id="fnref-2"><a class="footnote-ref" href="#fn-2">2</a></sup>。</p>
+<p>看上面的代码逻辑，会发现，fnmatch 的实现是依赖了 re 模块，同时为了提升 <code>re.compile</code> 的性能，增加了一个全局的 <code>100</code> 大小的 <code>_MATCH_CACHE</code> 字典。然而会有这么一段逻辑, 当这个字典满了后，就直接清掉了。。。清掉了。。这样做很没有道理，哪怕你随机删掉一个，我觉得都比都清掉好。</p>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_MATCH_CACHE</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">_MATCH_CACHE_MAX</span><span class="p">:</span>
+    <span class="n">_MATCH_CACHE</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</pre></div>
+
+
+<p>全清掉后，所有的正则编译都需要重新跑一次。而 ceilometer 处理的 metric 又多，所以会频繁的触发这个问题。也就造成了<code>re.compile</code> 调用，进而吃掉了大量 CPU</p>
+<h2 id="_2">验证</h2>
+<p>既然定位了问题，就可以写段代码验证下。 代码逻辑如下：使用不同的 <code>size</code> 值来触发<code>_MATCH_CACHE.clear()</code> 的调用，测试调用时间。</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">fnmatch</span>
+
+<span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+            <span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+</pre></div>
+
+
+<h3 id="python2">python2 测试</h3>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@node1</span> <span class="o">~</span><span class="p">]</span><span class="c1"># python -m timeit  -v  -n 100 -r 3 -s &#39;from fnmatch_test import test&#39; -- &#39;test(100)&#39; </span>
+<span class="n">raw</span> <span class="n">times</span><span class="p">:</span> <span class="mf">0.124</span> <span class="mf">0.117</span> <span class="mf">0.116</span>
+<span class="mi">100</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">1.16</span> <span class="n">msec</span> <span class="n">per</span> <span class="n">loop</span>
+
+<span class="p">[</span><span class="n">root</span><span class="nd">@node1</span> <span class="o">~</span><span class="p">]</span><span class="c1"># python -m timeit  -v  -n 100 -r 3 -s &#39;from fnmatch_test import test&#39; -- &#39;test(101)&#39; </span>
+<span class="n">raw</span> <span class="n">times</span><span class="p">:</span> <span class="mf">3.19</span> <span class="mf">3.14</span> <span class="mf">3.24</span>
+<span class="mi">100</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">31.4</span> <span class="n">msec</span> <span class="n">per</span> <span class="n">loop</span>
+</pre></div>
+
+
+<p>可以看出， 当 size 为 101 比 100 只多一个对比数据，但是最后的运行时间从 0.116 秒上升到了 3.24 秒。 单次循环的时间花费从 1.16 msec 上升到了 31.4 msec，增加了27倍之多。</p>
+<h3 id="python3">python3 测试</h3>
+<p>同时测试了下 python3 的 fnmatch 实现。python3 里面使用了不同的实现。 废弃了 <code>DICT</code> 的 cache 机制，使用 <code>functools.lru_cache</code>, 同时也不是满了全清，而是使用 <code>lru</code> (Least recently used) 的机制。cache size 也从100 提升到了 256, 性能有很大提升<sup id="fnref-3"><a class="footnote-ref" href="#fn-3">3</a></sup><sup id="fnref-4"><a class="footnote-ref" href="#fn-4">4</a></sup>。</p>
+<div class="highlight"><pre><span></span><span class="c1"># python -m timeit -v -n 100 -r 3 -s &#39;from fnmatch_test import test&#39; -- &#39;test(256)&#39;</span>
+<span class="n">raw</span> <span class="n">times</span><span class="p">:</span> <span class="mi">321</span> <span class="n">msec</span><span class="p">,</span> <span class="mi">314</span> <span class="n">msec</span><span class="p">,</span> <span class="mi">312</span> <span class="n">msec</span>
+<span class="mi">100</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">3.12</span> <span class="n">msec</span> <span class="n">per</span> <span class="n">loop</span>
+
+<span class="c1"># python -m timeit -v -n 100 -r 3 -s &#39;from fnmatch_test import test&#39; -- &#39;test(257)&#39;</span>
+<span class="n">raw</span> <span class="n">times</span><span class="p">:</span> <span class="mi">944</span> <span class="n">msec</span><span class="p">,</span> <span class="mi">949</span> <span class="n">msec</span><span class="p">,</span> <span class="mi">985</span> <span class="n">msec</span>
+<span class="mi">100</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">9.44</span> <span class="n">msec</span> <span class="n">per</span> <span class="n">loop</span>
+</pre></div>
+
+
+<p>可以看出，在超出 cache size, 因为 python3 中不是全清，运行时间只增加了3倍，相比 python2 的情况要好很多了。</p>
+<h2 id="_3">问题解决</h2>
+<p>因为我使用的是 OpenStack pike 版本，先搜索了下最新的代码有没有解决这个问题，发现还真解决了。社区 patch 见<sup id="fnref-5"><a class="footnote-ref" href="#fn-5">5</a></sup>。解决的逻辑是因为 resource 里面的 metrics 个数并不多，没有必要使用 <code>fnmatch</code>，而是本地缓存一个 <code>(metric, resource)</code> 的字典，直接反查。不过这个只包含在了 Rocky 及之后的版本里面。我做了一个 backport， 代码见<sup id="fnref-6"><a class="footnote-ref" href="#fn-6">6</a></sup>。</p>
+<p>打上 patch 后，再看新的火焰图如下, SVG文件见 <a href="images/ceilometer-perf/notification_perf_ii_after.svg" target="_blank">notification_perf_ii_after.svg</a></p>
+<p><img alt="notification perf ii_after" src="images/ceilometer-perf/notification_perf_ii_after.jpg"></p>
+<p>同时 CPU 的消耗也降低了不少,从100% 降到了 10%-20% 的区间，效果还是很明显的。</p>
+<h2 id="_4">总结</h2>
+<p>对比下最早的火焰图，SVG文件见 <a href="images/ceilometer-perf/notification_perf_ii_finally.svg" target="_blank">notification_perf_ii_finally.svg</a>。 蓝色框内的请求都已经去掉了，优化掉了近 50%以上的 CPU 消耗。</p>
+<p><img alt="notification perf ii_finally" src="images/ceilometer-perf/notification_perf_ii_finally.jpg"></p>
+<ul>
+<li>数据还是要仔细分析，还是会有惊喜的</li>
+<li>fnmatch 适合用在数据量少的场景，数据量多最好自己处理 <code>re.compile</code> 或用其它思路</li>
+<li>ceilometer+gnocchi的方案还是使用人有点少，要不这问题不应该遗留这么久。</li>
+</ul>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn-1">
+<p><a href="https://review.openstack.org/250728" target="_blank">https://review.openstack.org/250728</a>&#160;<a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn-2">
+<p><a href="https://github.com/python/cpython/blob/ca079a3ea30098aff3197c559a0e32d42dda6d84/Lib/fnmatch.py#L54-L56" target="_blank">https://github.com/python/cpython/blob/ca079a3ea30098aff3197c559a0e32d42dda6d84/Lib/fnmatch.py#L54-L56</a>&#160;<a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn-3">
+<p><a href="https://github.com/python/cpython/commit/6fdb74f0aeb53b755a4573e00947ed16922adb65" target="_blank">https://github.com/python/cpython/commit/6fdb74f0aeb53b755a4573e00947ed16922adb65</a>&#160;<a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn-4">
+<p><a href="https://github.com/python/cpython/blob/master/Lib/fnmatch.py#L38-L46" target="_blank">https://github.com/python/cpython/blob/master/Lib/fnmatch.py#L38-L46</a>&#160;<a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn-5">
+<p><a href="https://review.openstack.org/522828" target="_blank">https://review.openstack.org/522828</a>&#160;<a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn-6">
+<p><a href="https://review.openstack.org/624746" target="_blank">https://review.openstack.org/624746</a>&#160;<a class="footnote-backref" href="#fnref-6" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+    <div class="copyright">
+      <p><span>原始链接:</span><a href="http://xcodest.me/ceilometer-performance-analysis-ii.html" target="_blank">http://xcodest.me/ceilometer-performance-analysis-ii.html </a></p>
+      <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
+    </div>
+  </div><!-- /.entry-content -->
+  <div>
+    <nav>
+      <ul class="pager">
+        <li class="previous"><a href="ceilometer-performance-analysis.html">&larr; Older</a></li>
+        <li class="next disabled"><span href="">Newer &rarr;</span></li>
+      </ul>
+    </nav>
+  </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'ceilometer-performance-analysis-ii.html';
+        var disqus_url = 'http://xcodest.me/ceilometer-performance-analysis-ii.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+</div>
+</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12 text-center footer">
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41808584-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1257099267'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1257099267' type='text/javascript'%3E%3C/script%3E"));</script>
+        </div>
+    </div>
+</body>
+</html>

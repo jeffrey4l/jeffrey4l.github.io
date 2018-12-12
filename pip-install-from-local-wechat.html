@@ -17,24 +17,21 @@ a:first-child h5 {margin-top:0;padding-top:0}
 a:first-child h6 {margin-top:0;padding-top:0}
 table tr:nth-child(2n) {background-color:#f8f8f8}</style>
 </head>
-  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
-    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>先在有网络的环境中下载下来所有需要的包：</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>pip install --download ${HOME}/.pip-packages -r requirement.txt
-</pre></div>
+  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>先在有网络的环境中下载下来所有需要的包：</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">pip install --download ${HOME}/.pip-packages -r requirement.txt</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>在把这些包拷贝到目标环境中去，使用下面的命令来安装：</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>pip install --no-index --find-links ${HOME}/.pip-packages -r requirement.txt
-</pre></div>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>在把这些包拷贝到目标环境中去，使用下面的命令来安装：</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">pip install --no-index --find-links ${HOME}/.pip-packages -r requirement.txt</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>所有需要的包就安装上了。</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>为了方便使用，还可以把这两个命令弄成alias来使用</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>alias pipcache='pip install --download ${HOME}/.pip-packages'
-alias pipinstall='pip install --no-index --find-links=file://${HOME}/.pip-packages/'
-</pre></div>
-    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>所有需要的包就安装上了。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>为了方便使用，还可以把这两个命令弄成alias来使用</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">alias pipcache='pip install --download ${HOME}/.pip-packages'
+alias pipinstall='pip install --no-index --find-links=file://${HOME}/.pip-packages/'</code></pre>
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">
       <p>文档信息</p>

@@ -17,24 +17,23 @@ a:first-child h5 {margin-top:0;padding-top:0}
 a:first-child h6 {margin-top:0;padding-top:0}
 table tr:nth-child(2n) {background-color:#f8f8f8}</style>
 </head>
-  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
-    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>前两天，一篇<a href="https://medium.com/virtuslab/think-twice-before-using-helm-25fbb18bc822" style="color:#4183C4">「Think twice before using Helm」</a>(译文:<a href="https://mp.weixin.qq.com/s/5iG9kZl7Qp5l3_BCXajrSA" style="color:#4183C4">「恕我直言，对Helm大家还是要三思而后用」</a>) 引起了大家的关注。作者从认证，生命周期管理，错误处理等多个角度说明了 Helm 自身的问题。我基本赞同作者的观点。多数情况下我们只是把 helm 当做一个模板引擎在使用，把 charts 生成 Kubernetes 可以处理的格式。但是从使用角度来说，这个模板实现的太重了。有兴趣的可以去读读原文。</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>那如果 Helm 不轻量好用的话，我们有啥其他选择?</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>Ansible 做为部署管理的工具，正在受到越来越多的运维人员的追捧。他支持 Jinja2 的模板引擎，而且是无代理节点的架构，很方便来做一些模板工作。所以本文来介绍使用 Ansible 如何管理 Kubernetes 上面的资源。</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>首先使用 Ansible 避免不了使用其模块。与 Kubernetes 相关的模块可以从[1]找到。现在主要有<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s</code>, <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s_facts</code>, <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s_scale</code>, <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">kubernetes</code>和<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">oc</code> 5个模块。其中 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">kubernetes</code> 和 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">oc</code> 模块因为实现逻辑不好用，在 ansible 2.6 版本中已经废弃掉， 推荐使用前三个。其中，<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s_scale</code> 来自 ansible 2.5, <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s</code> 来自 ansible 2.6, <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s_facts</code> 来自 ansible 2.7。使用这三个模块的话，还需要安装 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">openshift</code> 的 Python 包。以下代码全部基于 ansible 2.7 版本。</p>
+  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>前两天，一篇<a href="https://medium.com/virtuslab/think-twice-before-using-helm-25fbb18bc822" style="color:#4183C4">「Think twice before using Helm」</a>(译文:<a href="https://mp.weixin.qq.com/s/5iG9kZl7Qp5l3_BCXajrSA" style="color:#4183C4">「恕我直言，对Helm大家还是要三思而后用」</a>) 引起了大家的关注。作者从认证，生命周期管理，错误处理等多个角度说明了 Helm 自身的问题。我基本赞同作者的观点。多数情况下我们只是把 helm 当做一个模板引擎在使用，把 charts 生成 Kubernetes 可以处理的格式。但是从使用角度来说，这个模板实现的太重了。有兴趣的可以去读读原文。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>那如果 Helm 不轻量好用的话，我们有啥其他选择?</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>Ansible 做为部署管理的工具，正在受到越来越多的运维人员的追捧。他支持 Jinja2 的模板引擎，而且是无代理节点的架构，很方便来做一些模板工作。所以本文来介绍使用 Ansible 如何管理 Kubernetes 上面的资源。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>首先使用 Ansible 避免不了使用其模块。与 Kubernetes 相关的模块可以从[1]找到。现在主要有<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s</code>, <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s_facts</code>, <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s_scale</code>, <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">kubernetes</code>和<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">oc</code> 5个模块。其中 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">kubernetes</code> 和 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">oc</code> 模块因为实现逻辑不好用，在 ansible 2.6 版本中已经废弃掉， 推荐使用前三个。其中，<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s_scale</code> 来自 ansible 2.5, <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s</code> 来自 ansible 2.6, <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s_facts</code> 来自 ansible 2.7。使用这三个模块的话，还需要安装 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">openshift</code> 的 Python 包。以下代码全部基于 ansible 2.7 版本。</p>
 <h2 id="k8s" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">k8s 模块</h2>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>管理 kubernetes 各种资源的话，使用 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s</code> 模块就可以了，如下是创建 namespace 的写法</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>- name: Create a k8s namespace
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>管理 kubernetes 各种资源的话，使用 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s</code> 模块就可以了，如下是创建 namespace 的写法</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-yaml" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">- name: Create a k8s namespace
   k8s:
     name: testing
     api_version: v1
     kind: Namespace
-    state: present
-</pre></div>
+    state: present</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>如果要创建一个 Service, 也可以使用如下面的写法。</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>- name: Create a Service object from an inline definition
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>如果要创建一个 Service, 也可以使用如下面的写法。</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-YAML" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">- name: Create a Service object from an inline definition
   k8s:
     state: present
     definition:
@@ -54,23 +53,21 @@ table tr:nth-child(2n) {background-color:#f8f8f8}</style>
           - protocol: TCP
             targetPort: 8000
             name: port-8000-tcp
-            port: 8000
-</pre></div>
+            port: 8000</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>可以看到 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">definition</code> 里面就是原生的 Kubernetes 里面的写法，而 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s</code> 模块的参数也写少，所以上手会很快。</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>如果 k8s 模块和 ansible <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">lookup</code> 插件合用的话，可以写出更加简洁的代码，如下</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span># tasks.yml
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>可以看到 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">definition</code> 里面就是原生的 Kubernetes 里面的写法，而 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s</code> 模块的参数也写少，所以上手会很快。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>如果 k8s 模块和 ansible <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">lookup</code> 插件合用的话，可以写出更加简洁的代码，如下</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden"># tasks.yml
 - name: Create a Service object from an external file
   var:
     name: "web"
   k8s:
     state: present
-    definition: "{{ lookup('template', '/path/to/service.yml') | from_yaml }}"
-</pre></div>
+    definition: "{{ lookup('template', '/path/to/service.yml') | from_yaml }}"</code></pre>
 
 
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span># /path/to/service.yml
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden"># /path/to/service.yml
 ---
 apiVersion: v1
 kind: Service
@@ -88,17 +85,16 @@ ports:
   - protocol: TCP
     targetPort: 8000
     name: port-8000-tcp
-    port: 8000
-</pre></div>
+    port: 8000</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>可以看到 Kubernetes service 文件可以完全从 task 里面独立出来，独立后的写法就是原生的 kubernetes 的格式，基本就和 Charts 的结构差不多了。</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>基于此，完全可以使用这种方式替换掉 helm 的模板功能，而且没有引入任何额外的依赖，就是直接的 ansible 生成相关文件，丢给 kubernetes api 来处理。等部署完成后，我们也可以脱离 Ansible 继续通过 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">kubelet</code> 命令维护这些资源。也正是由于这么简洁的实现，<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s</code> 模块可以管理 Kubernetes 和 OpenShift, 也可以管理各种 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">CRD</code> 资源。</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>相比于 helm ， 这种方法的缺点在于 YAML 文件都要自己写，没有社区在维护的 Charts。不像 helm 那样，一个命令就可以把服务都安装上。前期的工作还是挺多的。但是从另外一个角度来说，社区维护的 Charts 做一些 Demo 还可以，真要生产上面使用，还是要做大量工作的。所以从这个角度上讲，使用 Ansible 也没有带来太大的工作量。</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>我更期待社区可以使用 Ansible 直接管理 Charts 资源，或可以有一个工具把 Charts 的 Go 模板转成 Ansible 可以接受的 Jinja2 格式。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>可以看到 Kubernetes service 文件可以完全从 task 里面独立出来，独立后的写法就是原生的 kubernetes 的格式，基本就和 Charts 的结构差不多了。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>基于此，完全可以使用这种方式替换掉 helm 的模板功能，而且没有引入任何额外的依赖，就是直接的 ansible 生成相关文件，丢给 kubernetes api 来处理。等部署完成后，我们也可以脱离 Ansible 继续通过 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">kubelet</code> 命令维护这些资源。也正是由于这么简洁的实现，<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s</code> 模块可以管理 Kubernetes 和 OpenShift, 也可以管理各种 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">CRD</code> 资源。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>相比于 helm ， 这种方法的缺点在于 YAML 文件都要自己写，没有社区在维护的 Charts。不像 helm 那样，一个命令就可以把服务都安装上。前期的工作还是挺多的。但是从另外一个角度来说，社区维护的 Charts 做一些 Demo 还可以，真要生产上面使用，还是要做大量工作的。所以从这个角度上讲，使用 Ansible 也没有带来太大的工作量。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>我更期待社区可以使用 Ansible 直接管理 Charts 资源，或可以有一个工具把 Charts 的 Go 模板转成 Ansible 可以接受的 Jinja2 格式。</p>
 <h2 id="k8s_scale-k8s_facts" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">k8s_scale 和  k8s_facts 模块</h2>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>这两个模块算辅助的功能，我觉得使用的机会可能并不会太多。<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s_scale</code> 的例子如下</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>- name: Scale deployment up, and extend timeout
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>这两个模块算辅助的功能，我觉得使用的机会可能并不会太多。<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s_scale</code> 的例子如下</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">- name: Scale deployment up, and extend timeout
   k8s_scale:
     api_version: v1
     kind: Deployment
@@ -114,39 +110,35 @@ ports:
     name: elastic
     namespace: myproject
     current_replicas: 3
-    replicas: 2
-</pre></div>
+    replicas: 2</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>它可以动态调整 Deployment 的 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">replicas</code> 个数，基本上等同于<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">kubectl scale</code> 命令，但是这个功能基本可以使用 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s</code> 模块通过改变 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">replicas</code> 参数来调整。</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'><code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s_facts</code>的例子如下</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>- name: Get an existing Service object
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>它可以动态调整 Deployment 的 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">replicas</code> 个数，基本上等同于<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">kubectl scale</code> 命令，但是这个功能基本可以使用 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s</code> 模块通过改变 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">replicas</code> 参数来调整。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'><code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">k8s_facts</code>的例子如下</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">- name: Get an existing Service object
   k8s_facts:
     api_version: v1
     kind: Service
     name: web
     namespace: testing
-  register: web_service
-</pre></div>
+  register: web_service</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>使用他，你可以检查某个资源是否存在，如果存在的话，还可以获得这个资源的yaml 文件描述，我觉得在 Ansible 流程控制中会有一些作用，可以根据当前 Kubernets 里面资源情况，有选择的做一些动作。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>使用他，你可以检查某个资源是否存在，如果存在的话，还可以获得这个资源的yaml 文件描述，我觉得在 Ansible 流程控制中会有一些作用，可以根据当前 Kubernets 里面资源情况，有选择的做一些动作。</p>
 <h2 id="_1" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">小技巧</h2>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>因为 Ansible 是 Python 编写的，在使用 pip 安装时容易破坏系统已经安装的 Python 包，推荐使用虚拟环境来安装。</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span># mkvirtualenv --system-site-packages ansible
-# pip install 'ansible&lt;2.7' openshift
-</pre></div>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>因为 Ansible 是 Python 编写的，在使用 pip 安装时容易破坏系统已经安装的 Python 包，推荐使用虚拟环境来安装。</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden"># mkvirtualenv --system-site-packages ansible
+# pip install 'ansible&lt;2.7' openshift</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>使用时，需要指定 Ansible 使用的 python interpreter 变量 </p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span># workon ansible
-# ansible-playbook -i localhost, -c local test.yml  -e ansible_python_interpreter=${VIRTUAL_ENV}/bin/python
-</pre></div>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>使用时，需要指定 Ansible 使用的 python interpreter 变量 </p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden"># workon ansible
+# ansible-playbook -i localhost, -c local test.yml  -e ansible_python_interpreter=${VIRTUAL_ENV}/bin/python</code></pre>
 
 
 <h2 id="demo" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">demo</h2>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>以下是使用 ansible 在 OpenShift 上面部署 echoserver 的一个完整例子</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>---
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>以下是使用 ansible 在 OpenShift 上面部署 echoserver 的一个完整例子</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">---
 - hosts: localhost
   connection: local
   gather_facts: false
@@ -212,15 +204,14 @@ ports:
               kind: Service
               name: echoserver
             port:
-              targetPort: http
-</pre></div>
+              targetPort: http</code></pre>
 
 
-<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em; padding-left:30px'>
-<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:0; min-height:1em; margin-top:0'>[1] <a href="https://docs.ansible.com/ansible/latest/modules/list_of_clustering_modules.html" style="color:#4183C4; margin-top:0">https://docs.ansible.com/ansible/latest/modules/list_of_clustering_modules.html</a>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0'>[1] <a href="https://docs.ansible.com/ansible/latest/modules/list_of_clustering_modules.html" style="color:#4183C4; margin-top:0">https://docs.ansible.com/ansible/latest/modules/list_of_clustering_modules.html</a>
 </li>
 </ul>
-    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">
       <p>文档信息</p>

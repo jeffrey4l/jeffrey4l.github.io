@@ -17,126 +17,123 @@ a:first-child h5 {margin-top:0;padding-top:0}
 a:first-child h6 {margin-top:0;padding-top:0}
 table tr:nth-child(2n) {background-color:#f8f8f8}</style>
 </head>
-  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
-    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'><img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg" style="max-width:100%"></p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>一直没有搞明白 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">Exception</code> 的 args 和 message 参数, 最近看了一下 CPython 源码，
+  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'><img alt="Talk is cheep" class="img-responsive" src="/images/talk_is_cheap.jpg" style="max-width:100%"></p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>一直没有搞明白 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">Exception</code> 的 args 和 message 参数, 最近看了一下 CPython 源码，
 终于搞明白了。</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>一开始(从2.5开始)的时候是有 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">args</code> 和 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">message</code> 两个参数的。2.6版本之后，把
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>一开始(从2.5开始)的时候是有 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">args</code> 和 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">message</code> 两个参数的。2.6版本之后，把
 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">message</code> 废弃掉了，只留下了一个任意长度的 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">args</code>。</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>以下是2.5以后的代码，可以看到，如果args 长度是1，就会把 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">self.message = args[0]</code></p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span><span style="color: #008000; font-weight: bold">static</span> PyObject <span style="color: #666666">*</span>
-<span style="color: #0000FF">BaseException_new</span>(PyTypeObject <span style="color: #666666">*</span>type, PyObject <span style="color: #666666">*</span>args, PyObject <span style="color: #666666">*</span>kwds)
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>以下是2.5以后的代码，可以看到，如果args 长度是1，就会把 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">self.message = args[0]</code></p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-c" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">static PyObject *
+BaseException_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
-    PyBaseExceptionObject <span style="color: #666666">*</span>self;
+    PyBaseExceptionObject *self;
 
-    self <span style="color: #666666">=</span> (PyBaseExceptionObject <span style="color: #666666">*</span>)type<span style="color: #666666">-&gt;</span>tp_alloc(type, <span style="color: #666666">0</span>);
-    <span style="color: #008000; font-weight: bold">if</span> (<span style="color: #666666">!</span>self)
-        <span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000">NULL</span>;
-    <span style="color: #408080; font-style: italic">/* the dict is created on the fly in PyObject_GenericSetAttr */</span>
-    self<span style="color: #666666">-&gt;</span>message <span style="color: #666666">=</span> self<span style="color: #666666">-&gt;</span>dict <span style="color: #666666">=</span> <span style="color: #008000">NULL</span>;
+    self = (PyBaseExceptionObject *)type-&gt;tp_alloc(type, 0);
+    if (!self)
+        return NULL;
+    /* the dict is created on the fly in PyObject_GenericSetAttr */
+    self-&gt;message = self-&gt;dict = NULL;
 
-    self<span style="color: #666666">-&gt;</span>args <span style="color: #666666">=</span> PyTuple_New(<span style="color: #666666">0</span>);
-    <span style="color: #008000; font-weight: bold">if</span> (<span style="color: #666666">!</span>self<span style="color: #666666">-&gt;</span>args) {
+    self-&gt;args = PyTuple_New(0);
+    if (!self-&gt;args) {
         Py_DECREF(self);
-        <span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000">NULL</span>;
+        return NULL;
     }
 
-    self<span style="color: #666666">-&gt;</span>message <span style="color: #666666">=</span> PyString_FromString(<span style="color: #BA2121">""</span>);
-    <span style="color: #008000; font-weight: bold">if</span> (<span style="color: #666666">!</span>self<span style="color: #666666">-&gt;</span>message) {
+    self-&gt;message = PyString_FromString("");
+    if (!self-&gt;message) {
         Py_DECREF(self);
-        <span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000">NULL</span>;
+        return NULL;
     }
 
-    <span style="color: #008000; font-weight: bold">return</span> (PyObject <span style="color: #666666">*</span>)self;
+    return (PyObject *)self;
 }
 
-<span style="color: #008000; font-weight: bold">static</span> <span style="color: #B00040">int</span>
-<span style="color: #0000FF">BaseException_init</span>(PyBaseExceptionObject <span style="color: #666666">*</span>self, PyObject <span style="color: #666666">*</span>args, PyObject <span style="color: #666666">*</span>kwds)
+static int
+BaseException_init(PyBaseExceptionObject *self, PyObject *args, PyObject *kwds)
 {
-    <span style="color: #008000; font-weight: bold">if</span> (<span style="color: #666666">!</span>_PyArg_NoKeywords(Py_TYPE(self)<span style="color: #666666">-&gt;</span>tp_name, kwds))
-        <span style="color: #008000; font-weight: bold">return</span> <span style="color: #666666">-1</span>;
+    if (!_PyArg_NoKeywords(Py_TYPE(self)-&gt;tp_name, kwds))
+        return -1;
 
-    Py_DECREF(self<span style="color: #666666">-&gt;</span>args);
-    self<span style="color: #666666">-&gt;</span>args <span style="color: #666666">=</span> args;
-    Py_INCREF(self<span style="color: #666666">-&gt;</span>args);
+    Py_DECREF(self-&gt;args);
+    self-&gt;args = args;
+    Py_INCREF(self-&gt;args);
 
-    <span style="color: #008000; font-weight: bold">if</span> (PyTuple_GET_SIZE(self<span style="color: #666666">-&gt;</span>args) <span style="color: #666666">==</span> <span style="color: #666666">1</span>) {
-        Py_CLEAR(self<span style="color: #666666">-&gt;</span>message);
-        self<span style="color: #666666">-&gt;</span>message <span style="color: #666666">=</span> PyTuple_GET_ITEM(self<span style="color: #666666">-&gt;</span>args, <span style="color: #666666">0</span>);
-        Py_INCREF(self<span style="color: #666666">-&gt;</span>message);
+    if (PyTuple_GET_SIZE(self-&gt;args) == 1) {
+        Py_CLEAR(self-&gt;message);
+        self-&gt;message = PyTuple_GET_ITEM(self-&gt;args, 0);
+        Py_INCREF(self-&gt;message);
     }
-    <span style="color: #008000; font-weight: bold">return</span> <span style="color: #666666">0</span>;
-}
-</pre></div>
+    return 0;
+}</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>本来 message 就是 Exception的一个属性，在2.6以后，把它变成了一个 descriptor, 当
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>本来 message 就是 Exception的一个属性，在2.6以后，把它变成了一个 descriptor, 当
 调用时，如果它在 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">self.__dict__</code> 里，就直接打印，否则就返回 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">self.message</code> 的信息
 并打印出一个 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">Warning</code>。如果已经赋过一个值的话<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">self.message = xxxx</code>, 它就会存在
 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">self.__dict__</code>里。</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span><span style="color: #008000; font-weight: bold">static</span> PyObject <span style="color: #666666">*</span>
-<span style="color: #0000FF">BaseException_get_message</span>(PyBaseExceptionObject <span style="color: #666666">*</span>self)
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-c" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">static PyObject *
+BaseException_get_message(PyBaseExceptionObject *self)
 {
-    PyObject <span style="color: #666666">*</span>msg;
+    PyObject *msg;
 
-    <span style="color: #408080; font-style: italic">/* if "message" is in self-&gt;dict, accessing a user-set message attribute */</span>
-    <span style="color: #008000; font-weight: bold">if</span> (self<span style="color: #666666">-&gt;</span>dict <span style="color: #666666">&amp;&amp;</span>
-        (msg <span style="color: #666666">=</span> PyDict_GetItemString(self<span style="color: #666666">-&gt;</span>dict, <span style="color: #BA2121">"message"</span>))) {
+    /* if "message" is in self-&gt;dict, accessing a user-set message attribute */
+    if (self-&gt;dict &amp;&amp;
+        (msg = PyDict_GetItemString(self-&gt;dict, "message"))) {
         Py_INCREF(msg);
-        <span style="color: #008000; font-weight: bold">return</span> msg;
+        return msg;
     }
 
-    <span style="color: #008000; font-weight: bold">if</span> (self<span style="color: #666666">-&gt;</span>message <span style="color: #666666">==</span> <span style="color: #008000">NULL</span>) {
-        PyErr_SetString(PyExc_AttributeError, <span style="color: #BA2121">"message attribute was deleted"</span>);
-        <span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000">NULL</span>;
+    if (self-&gt;message == NULL) {
+        PyErr_SetString(PyExc_AttributeError, "message attribute was deleted");
+        return NULL;
     }
 
-    <span style="color: #408080; font-style: italic">/* accessing the deprecated "builtin" message attribute of Exception */</span>
-    <span style="color: #008000; font-weight: bold">if</span> (PyErr_WarnEx(PyExc_DeprecationWarning,
-                     <span style="color: #BA2121">"BaseException.message has been deprecated as "</span>
-                     <span style="color: #BA2121">"of Python 2.6"</span>, <span style="color: #666666">1</span>) <span style="color: #666666">&lt;</span> <span style="color: #666666">0</span>)
-        <span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000">NULL</span>;
+    /* accessing the deprecated "builtin" message attribute of Exception */
+    if (PyErr_WarnEx(PyExc_DeprecationWarning,
+                     "BaseException.message has been deprecated as "
+                     "of Python 2.6", 1) &lt; 0)
+        return NULL;
 
-    Py_INCREF(self<span style="color: #666666">-&gt;</span>message);
-    <span style="color: #008000; font-weight: bold">return</span> self<span style="color: #666666">-&gt;</span>message;
+    Py_INCREF(self-&gt;message);
+    return self-&gt;message;
 }
 
 
-<span style="color: #008000; font-weight: bold">static</span> <span style="color: #B00040">int</span>
-<span style="color: #0000FF">BaseException_set_message</span>(PyBaseExceptionObject <span style="color: #666666">*</span>self, PyObject <span style="color: #666666">*</span>val)
+static int
+BaseException_set_message(PyBaseExceptionObject *self, PyObject *val)
 {
-    <span style="color: #408080; font-style: italic">/* if val is NULL, delete the message attribute */</span>
-    <span style="color: #008000; font-weight: bold">if</span> (val <span style="color: #666666">==</span> <span style="color: #008000">NULL</span>) {
-        <span style="color: #008000; font-weight: bold">if</span> (self<span style="color: #666666">-&gt;</span>dict <span style="color: #666666">&amp;&amp;</span> PyDict_GetItemString(self<span style="color: #666666">-&gt;</span>dict, <span style="color: #BA2121">"message"</span>)) {
-            <span style="color: #008000; font-weight: bold">if</span> (PyDict_DelItemString(self<span style="color: #666666">-&gt;</span>dict, <span style="color: #BA2121">"message"</span>) <span style="color: #666666">&lt;</span> <span style="color: #666666">0</span>)
-                <span style="color: #008000; font-weight: bold">return</span> <span style="color: #666666">-1</span>;
+    /* if val is NULL, delete the message attribute */
+    if (val == NULL) {
+        if (self-&gt;dict &amp;&amp; PyDict_GetItemString(self-&gt;dict, "message")) {
+            if (PyDict_DelItemString(self-&gt;dict, "message") &lt; 0)
+                return -1;
         }
-        Py_XDECREF(self<span style="color: #666666">-&gt;</span>message);
-        self<span style="color: #666666">-&gt;</span>message <span style="color: #666666">=</span> <span style="color: #008000">NULL</span>;
-        <span style="color: #008000; font-weight: bold">return</span> <span style="color: #666666">0</span>;
+        Py_XDECREF(self-&gt;message);
+        self-&gt;message = NULL;
+        return 0;
     }
 
-    <span style="color: #408080; font-style: italic">/* else set it in __dict__, but may need to create the dict first */</span>
-    <span style="color: #008000; font-weight: bold">if</span> (self<span style="color: #666666">-&gt;</span>dict <span style="color: #666666">==</span> <span style="color: #008000">NULL</span>) {
-        self<span style="color: #666666">-&gt;</span>dict <span style="color: #666666">=</span> PyDict_New();
-        <span style="color: #008000; font-weight: bold">if</span> (<span style="color: #666666">!</span>self<span style="color: #666666">-&gt;</span>dict)
-            <span style="color: #008000; font-weight: bold">return</span> <span style="color: #666666">-1</span>;
+    /* else set it in __dict__, but may need to create the dict first */
+    if (self-&gt;dict == NULL) {
+        self-&gt;dict = PyDict_New();
+        if (!self-&gt;dict)
+            return -1;
     }
-    <span style="color: #008000; font-weight: bold">return</span> PyDict_SetItemString(self<span style="color: #666666">-&gt;</span>dict, <span style="color: #BA2121">"message"</span>, val);
-}
-</pre></div>
+    return PyDict_SetItemString(self-&gt;dict, "message", val);
+}</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>在 python3 中，message 相关的信息已经完全删除掉了。</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>所以，一般使用 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">message</code> 属性的话，推荐这样使用</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>class MyException(Exception):
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>在 python3 中，message 相关的信息已经完全删除掉了。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>所以，一般使用 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">message</code> 属性的话，推荐这样使用</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">class MyException(Exception):
     def __init__(self, message):
         self.message = message
 
 class My2Exception(Exception):
-    message = 'this is a message'
-</pre></div>
-    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
+    message = 'this is a message'</code></pre>
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">
       <p>文档信息</p>

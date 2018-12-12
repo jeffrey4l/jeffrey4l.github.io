@@ -17,49 +17,47 @@ a:first-child h5 {margin-top:0;padding-top:0}
 a:first-child h6 {margin-top:0;padding-top:0}
 table tr:nth-child(2n) {background-color:#f8f8f8}</style>
 </head>
-  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
-    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>在使用<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span>PERSISTENT_DHCLIENT=1
-</pre></div>
+  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>在使用<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">PERSISTENT_DHCLIENT=1</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个<a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results" style="color:#4183C4">邮件列表</a>中找到原因，如下：</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>THE LONG VERSION</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>There is an issue with the way nova uses dnsmasq in VLAN mode. It starts up a
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>使得dhcp单次失败后，继续重试。但是仔细查看dhclient的日志后，发现它有大量的dhcp request失败/超时。在一个<a href="http://openstack.markmail.org/search/?q=Dhcp+lease+errors+in+vlan+mode#query:Dhcp%20lease%20errors%20in%20vlan%20mode+page:1+mid:7kjf4hljszpydsrx+state:results" style="color:#4183C4">邮件列表</a>中找到原因，如下：</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>To fix issues with failed dhcp leases in vlan mode, upgrade to dnsmasq 2.6.1</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>THE LONG VERSION</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>There is an issue with the way nova uses dnsmasq in VLAN mode. It starts up a
 single copy of dnsmasq for each vlan on the network host (or on every host in
 multi_host mode). The problem is in the way that dnsmasq binds to an ip address
 and port. Both copies can respond to broadcast packet, but unicast packets
 can only be answered by one of the copies.</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>In nova this means that guests from only one project will get responses to their
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>In nova this means that guests from only one project will get responses to their
 unicast dhcp renew requests.  Unicast projects from guests in other projects get
 ignored. What happens next is different depending on the guest os.  Linux
 generally will send a broadcast packet out after the unicast fails, and so the
 only effect is a small (tens of ms) hiccup while interface is reconfigured.  It
 can be much worse than that, however. I have seen cases where Windows just gives
 up and ends up with a non-configured interface.</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>This bug was first noticed by some users of openstack who rolled their own fix.
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>This bug was first noticed by some users of openstack who rolled their own fix.
 Basically, on linux, if you set the SO_BINDTODEVICE socket option, it will allow
 different daemons to share the port and respond to unicast packets, as long as
 they listen on different interfaces. I managed to communicate with Simon Kelley,
 the maintainer of dnsmasq and he has integrated a fix for the issue in the
 current version of dnsmaq.</p>
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>I don't know how may users out there are using vlan mode, but you should be able
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>I don't know how may users out there are using vlan mode, but you should be able
 to deal with this issue by upgrading dnsmasq. It would be great if the various
 distributionss could upgrade as well, or at least try to patch in the fix. If
 upgrading dnsmasq is out of the question, a possible workaround is to minimize
 lease renewals with something like the following combination of config options.</p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:125%; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><span></span># release leases immediately on terminate
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden"># release leases immediately on terminate
 force_dhcp_release=true
 # one week lease time
 dhcp_lease_time=604800
 # two week disassociate timeout
-fixed_ip_disassociate_timeout=1209600
-</pre></div>
+fixed_ip_disassociate_timeout=1209600</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'>This is also documented <a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues" style="color:#4183C4"> Known issue with failed DHCP leases in VLAN configuration</a></p>
-    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:18px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>This is also documented <a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-vlan-networking.html#vlan-known-issues" style="color:#4183C4"> Known issue with failed DHCP leases in VLAN configuration</a></p>
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">
       <p>文档信息</p>

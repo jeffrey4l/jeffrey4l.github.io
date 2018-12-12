@@ -1,0 +1,152 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+  <style type="text/css">h1:hover a.anchor {text-decoration:none}
+h2:hover a.anchor {text-decoration:none}
+h3:hover a.anchor {text-decoration:none}
+h4:hover a.anchor {text-decoration:none}
+h5:hover a.anchor {text-decoration:none}
+h6:hover a.anchor {text-decoration:none}
+body > h1:first-child + h2 {margin-top:0;padding-top:0}
+a:first-child h1 {margin-top:0;padding-top:0}
+a:first-child h2 {margin-top:0;padding-top:0}
+a:first-child h3 {margin-top:0;padding-top:0}
+a:first-child h4 {margin-top:0;padding-top:0}
+a:first-child h5 {margin-top:0;padding-top:0}
+a:first-child h6 {margin-top:0;padding-top:0}
+table tr:nth-child(2n) {background-color:#f8f8f8}</style>
+</head>
+  <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>在上一篇文章中， 「<a href="ceilometer-performance-analysis.html" style="color:#4183C4">记一次 ceilometer 性能分析</a>」中，我们分析了 ceilometer 的架构，及由于keystonauth 的问题，导致的大量 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">get_endpoints</code> 的请求。文章的最后，成功的把这去掉了这部分无意义的请求。但是即使优化后，ceilometer notification 服务还是会吃掉大量CPU, 那 ceilometer 还有没有其它的优化空间呢?</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>细心的伙伴也许会发现，在最后的火焰图下，还有大量的 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">re.py</code> 模块的调用。大约占掉了总 CPU 的使用的 28%(下图蓝框部分)。这是值得怀疑的。正则处理不应该这么慢。SVG文件见 <a href="images/ceilometer-perf/notification_perf_after.svg" style="color:#4183C4">notification_perf_after.svg</a></p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'><img alt="notification perf ii_before" src="images/ceilometer-perf/notification_perf_ii_before.jpg" style="max-width:100%"></p>
+<h2 id="_1" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">分析</h2>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>结合代码查下，定位到了如下部分</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-python" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">def metric_match(self, metric_name):
+    for t in self.cfg['metrics']:
+        if fnmatch.fnmatch(metric_name, t):
+            return True
+    return False</code></pre>
+
+
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>对于每个 metric 都会调用一次 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">fnmatch</code> 命令，所以有大量的请求。那为什么会那么慢呢? 再继续跟踪到 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">oslo_util</code> 的 fnmatch 实现，看到如下代码 </p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">import fnmatch as standard_fnmatch
+
+if sys.version_info &gt; (2, 7, 9):
+    fnmatch = standard_fnmatch.fnmatch
+    fnmatchcase = standard_fnmatch.fnmatchcase
+    filter = standard_fnmatch.filter
+    translate = standard_fnmatch.translate
+else:
+    _MATCH_CACHE = {}
+    _MATCH_CACHE_MAX = 100
+
+    def _get_cached_pattern(pattern):
+        cached_pattern = _MATCH_CACHE.get(pattern)
+        if cached_pattern is None:
+            translated_pattern = translate(pattern)
+            cached_pattern = re.compile(translated_pattern)
+            if len(_MATCH_CACHE) &gt;= _MATCH_CACHE_MAX:
+                _MATCH_CACHE.clear()
+            _MATCH_CACHE[pattern] = cached_pattern
+        return cached_pattern
+
+    def fnmatch(filename, pattern):
+        filename = os.path.normcase(filename)
+        pattern = os.path.normcase(pattern)
+        return fnmatchcase(filename, pattern)</code></pre>
+
+
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>我的环境里面使用的是 CentOS 自带的 Python 2.7.5, 所以用的 oslo_util 里面的实现。 如果使用的是 python &gt; 2.7.9 的版本，还是会使用系统的。原因主要是 2.7.9 以下的版本里面实现里面有问题，线程不安全。这点在当时的 commit message 找到<sup id="fnref:1" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:1" rel="footnote" style="color:#4183C4; display:none">1</a></sup></p>
+<blockquote style='color:#bbb; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em; border-left:4px solid #ddd; margin-left:17px; padding:0 15px'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0; margin-bottom:0'>fnmatch is not thread safe for versions &lt;= 2.7.9. We have used it in some projects without any lock for concurrency scenario. This patch re-implements a thread safe fnmatch which is very similar to standard nmatch.</p>
+</blockquote>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>除此外，主要的逻辑实现是一样的<sup id="fnref:2" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:2" rel="footnote" style="color:#4183C4; display:none">2</a></sup>。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>看上面的代码逻辑，会发现，fnmatch 的实现是依赖了 re 模块，同时为了提升 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">re.compile</code> 的性能，增加了一个全局的 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">100</code> 大小的 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">_MATCH_CACHE</code> 字典。然而会有这么一段逻辑, 当这个字典满了后，就直接清掉了。。。清掉了。。这样做很没有道理，哪怕你随机删掉一个，我觉得都比都清掉好。</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-python" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">if len(_MATCH_CACHE) &gt;= _MATCH_CACHE_MAX:
+    _MATCH_CACHE.clear()</code></pre>
+
+
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>全清掉后，所有的正则编译都需要重新跑一次。而 ceilometer 处理的 metric 又多，所以会频繁的触发这个问题。也就造成了<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">re.compile</code> 调用，进而吃掉了大量 CPU</p>
+<h2 id="_2" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">验证</h2>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>既然定位了问题，就可以写段代码验证下。 代码逻辑如下：使用不同的 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">size</code> 值来触发<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">_MATCH_CACHE.clear()</code> 的调用，测试调用时间。</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-python" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">import fnmatch
+
+def test(size):
+    for j in range(10):
+        for i in range(size):
+            fnmatch.fnmatch('test', str(i))</code></pre>
+
+
+<h3 id="python2" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #1A95A5; color:#26c6da; font-size:18px; line-height:1.6">python2 测试</h3>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">[root@node1 ~]# python -m timeit  -v  -n 100 -r 3 -s 'from fnmatch_test import test' -- 'test(100)' 
+raw times: 0.124 0.117 0.116
+100 loops, best of 3: 1.16 msec per loop
+
+[root@node1 ~]# python -m timeit  -v  -n 100 -r 3 -s 'from fnmatch_test import test' -- 'test(101)' 
+raw times: 3.19 3.14 3.24
+100 loops, best of 3: 31.4 msec per loop</code></pre>
+
+
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>可以看出， 当 size 为 101 比 100 只多一个对比数据，但是最后的运行时间从 0.116 秒上升到了 3.24 秒。 单次循环的时间花费从 1.16 msec 上升到了 31.4 msec，增加了27倍之多。</p>
+<h3 id="python3" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #1A95A5; color:#26c6da; font-size:18px; line-height:1.6">python3 测试</h3>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>同时测试了下 python3 的 fnmatch 实现。python3 里面使用了不同的实现。 废弃了 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">DICT</code> 的 cache 机制，使用 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">functools.lru_cache</code>, 同时也不是满了全清，而是使用 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">lru</code> (Least recently used) 的机制。cache size 也从100 提升到了 256, 性能有很大提升<sup id="fnref:3" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:3" rel="footnote" style="color:#4183C4; display:none">3</a></sup><sup id="fnref:4" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:4" rel="footnote" style="color:#4183C4; display:none">4</a></sup>。</p>
+<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden"># python -m timeit -v -n 100 -r 3 -s 'from fnmatch_test import test' -- 'test(256)'
+raw times: 321 msec, 314 msec, 312 msec
+100 loops, best of 3: 3.12 msec per loop
+
+# python -m timeit -v -n 100 -r 3 -s 'from fnmatch_test import test' -- 'test(257)'
+raw times: 944 msec, 949 msec, 985 msec
+100 loops, best of 3: 9.44 msec per loop</code></pre>
+
+
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>可以看出，在超出 cache size, 因为 python3 中不是全清，运行时间只增加了3倍，相比 python2 的情况要好很多了。</p>
+<h2 id="_3" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">问题解决</h2>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>因为我使用的是 OpenStack pike 版本，先搜索了下最新的代码有没有解决这个问题，发现还真解决了。社区 patch 见<sup id="fnref:5" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:5" rel="footnote" style="color:#4183C4; display:none">5</a></sup>。解决的逻辑是因为 resource 里面的 metrics 个数并不多，没有必要使用 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">fnmatch</code>，而是本地缓存一个 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">(metric, resource)</code> 的字典，直接反查。不过这个只包含在了 Rocky 及之后的版本里面。我做了一个 backport， 代码见<sup id="fnref:6" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:6" rel="footnote" style="color:#4183C4; display:none">6</a></sup>。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>打上 patch 后，再看新的火焰图如下, SVG文件见 <a href="images/ceilometer-perf/notification_perf_ii_after.svg" style="color:#4183C4">notification_perf_ii_after.svg</a></p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'><img alt="notification perf ii_after" src="images/ceilometer-perf/notification_perf_ii_after.jpg" style="max-width:100%"></p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>同时 CPU 的消耗也降低了不少,从100% 降到了 10%-20% 的区间，效果还是很明显的。</p>
+<h2 id="_4" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">总结</h2>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>对比下最早的火焰图，SVG文件见 <a href="images/ceilometer-perf/notification_perf_ii_finally.svg" style="color:#4183C4">notification_perf_ii_finally.svg</a>。 蓝色框内的请求都已经去掉了，优化掉了近 50%以上的 CPU 消耗。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'><img alt="notification perf ii_finally" src="images/ceilometer-perf/notification_perf_ii_finally.jpg" style="max-width:100%"></p>
+<ul style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0'>数据还是要仔细分析，还是会有惊喜的</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em'>fnmatch 适合用在数据量少的场景，数据量多最好自己处理 <code style="margin-top:0; background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">re.compile</code> 或用其它思路</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em'>ceilometer+gnocchi的方案还是使用人有点少，要不这问题不应该遗留这么久。</li>
+</ul>
+<div class="footnote" style="font-size:12px">
+<hr style="border:0 none; color:#ccc; height:4px; padding:0; border-top:1px solid #8c8b8b" height="4">
+<ol style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em; padding-left:30px'>
+<li id="fn:1" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0'><a href="https://review.openstack.org/250728" style="color:#4183C4; margin-top:0">https://review.openstack.org/250728</a> <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text" style="color:#4183C4; display:none">↩</a></p>
+</li>
+<li id="fn:2" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0'><a href="https://github.com/python/cpython/blob/ca079a3ea30098aff3197c559a0e32d42dda6d84/Lib/fnmatch.py#L54-L56" style="color:#4183C4; margin-top:0">https://github.com/python/cpython/blob/ca079a3ea30098aff3197c559a0e32d42dda6d84/Lib/fnmatch.py#L54-L56</a> <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text" style="color:#4183C4; display:none">↩</a></p>
+</li>
+<li id="fn:3" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0'><a href="https://github.com/python/cpython/commit/6fdb74f0aeb53b755a4573e00947ed16922adb65" style="color:#4183C4; margin-top:0">https://github.com/python/cpython/commit/6fdb74f0aeb53b755a4573e00947ed16922adb65</a> <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text" style="color:#4183C4; display:none">↩</a></p>
+</li>
+<li id="fn:4" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0'><a href="https://github.com/python/cpython/blob/master/Lib/fnmatch.py#L38-L46" style="color:#4183C4; margin-top:0">https://github.com/python/cpython/blob/master/Lib/fnmatch.py#L38-L46</a> <a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text" style="color:#4183C4; display:none">↩</a></p>
+</li>
+<li id="fn:5" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0'><a href="https://review.openstack.org/522828" style="color:#4183C4; margin-top:0">https://review.openstack.org/522828</a> <a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text" style="color:#4183C4; display:none">↩</a></p>
+</li>
+<li id="fn:6" style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em'>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0'><a href="https://review.openstack.org/624746" style="color:#4183C4; margin-top:0">https://review.openstack.org/624746</a> <a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 6 in the text" style="color:#4183C4; display:none">↩</a></p>
+</li>
+</ol>
+</div>
+    <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
+    <!--
+      <div class="copyleft">
+      <p>文档信息</p>
+      <ul>
+      <li> 版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）</li>
+      <li> 作者： Jeffrey4l </li>
+      <li> 发表日期： 2017年12月19日 </li>
+      </div>
+    -->
+  </body>
+</html>

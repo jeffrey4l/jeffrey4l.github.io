@@ -1,5 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>代码杂货铺</title><link>http://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Sun, 09 Dec 2018 00:00:00 +0800</lastBuildDate><item><title>记一次 ceilometer 性能分析</title><link>http://xcodest.me/ceilometer-performance-analysis.html</link><description>&lt;p&gt;近期在一个 OpenStack 环境中，由于虚拟机个数达到5000以上，发现 ceilometer-agent-notification 服务 CPU 占用很高, 每个 process worker 就可以占用满一颗 CPU。但是消息处理速度超级慢，造成了 RabbitMQ 消息的大量积压。增加 ceilometer-agent-notificaion 进程个数或 worker 个数基本没有什么效果。感觉上应该是 ceilometer 本身代码有问题，所以有了这次分析。&lt;/p&gt;
+<rss version="2.0"><channel><title>代码杂货铺</title><link>http://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Wed, 12 Dec 2018 00:00:00 +0800</lastBuildDate><item><title>ceilometer 性能分析 II</title><link>http://xcodest.me/ceilometer-performance-analysis-ii.html</link><description>&lt;p&gt;在上一篇文章中， 「&lt;a href="ceilometer-performance-analysis.html" target="_blank"&gt;记一次 ceilometer 性能分析&lt;/a&gt;」中，我们分析了 ceilometer 的架构，及由于keystonauth 的问题，导致的大量 &lt;code&gt;get_endpoints&lt;/code&gt; 的请求。文章的最后，成功的把这去掉了这部分无意义的请求。但是即使优化后，ceilometer notification 服务还是会吃掉大量CPU, 那 ceilometer 还有没有其它的优化空间呢?&lt;/p&gt;
+&lt;p&gt;细心的伙伴也许会发现，在最后的火焰图下，还有大量的 &lt;code&gt;re.py&lt;/code&gt; 模块的调用。大约占掉了总 CPU 的使用的 28%(下图蓝框部分)。这是值得怀疑的。正则处理不应该这么慢。SVG文件见 &lt;a href="images/ceilometer-perf/notification_perf_after.svg" target="_blank"&gt;notification_perf_after.svg&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="notification perf ii_before" src="images/ceilometer-perf/notification_perf_ii_before.jpg"&gt;&lt;/p&gt;
+&lt;h2 id="_1"&gt;分析&lt;/h2&gt;
+&lt;p&gt;结合代码查下，定位到了如下部分&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;metric_match&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;metric_name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cfg&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;metrics&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;fnmatch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fnmatch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;metric_name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;对于每个 metric 都会调用一次 &lt;code&gt;fnmatch&lt;/code&gt; 命令，所以有大量的请求。那为什么会那么慢呢? 再继续跟踪到 &lt;code&gt;oslo_util&lt;/code&gt; 的 fnmatch 实现，看到如下代码 &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;fnmatch&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;standard_fnmatch&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;version_info&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;fnmatch&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;standard_fnmatch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fnmatch&lt;/span&gt;
+    &lt;span class="n"&gt;fnmatchcase&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;standard_fnmatch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fnmatchcase&lt;/span&gt;
+    &lt;span class="nb"&gt;filter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;standard_fnmatch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;
+    &lt;span class="n"&gt;translate&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;standard_fnmatch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;translate&lt;/span&gt;
+&lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;_MATCH_CACHE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+    &lt;span class="n"&gt;_MATCH_CACHE_MAX&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;_get_cached_pattern&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pattern&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;cached_pattern&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;_MATCH_CACHE&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pattern&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;cached_pattern&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;translated_pattern&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;translate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pattern&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;cached_pattern&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;translated_pattern&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_MATCH_CACHE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="n"&gt;_MATCH_CACHE_MAX&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;_MATCH_CACHE&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;clear&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+            &lt;span class="n"&gt;_MATCH_CACHE&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;pattern&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cached_pattern&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;cached_pattern&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fnmatch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pattern&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;filename&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;normcase&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;pattern&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;normcase&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pattern&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;fnmatchcase&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pattern&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;我的环境里面使用的是 CentOS 自带的 Python 2.7.5, 所以用的 oslo_util 里面的实现。 如果使用的是 python &amp;gt; 2.7.9 的版本，还是会使用系统的。原因主要是 2.7.9 以下的版本里面实现里面有问题，线程不安全。这点在当时的 commit message 找到&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;fnmatch is not thread safe for versions &amp;lt;= 2.7.9. We have used it in some projects without any lock for concurrency scenario. This patch re-implements a thread safe fnmatch which is very similar to standard nmatch.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;除此外，主要的逻辑实现是一样的&lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+&lt;p&gt;看上面的代码逻辑，会发现，fnmatch 的实现是依赖了 re 模块，同时为了提升 &lt;code&gt;re.compile&lt;/code&gt; 的性能，增加了一个全局的 &lt;code&gt;100&lt;/code&gt; 大小的 &lt;code&gt;_MATCH_CACHE&lt;/code&gt; 字典。然而会有这么一段逻辑, 当这个字典满了后，就直接清掉了。。。清掉了。。这样做很没有道理，哪怕你随机删掉一个，我觉得都比都清掉好。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_MATCH_CACHE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="n"&gt;_MATCH_CACHE_MAX&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;_MATCH_CACHE&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;clear&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;全清掉后，所有的正则编译都需要重新跑一次。而 ceilometer 处理的 metric 又多，所以会频繁的触发这个问题。也就造成了&lt;code&gt;re.compile&lt;/code&gt; 调用，进而吃掉了大量 CPU&lt;/p&gt;
+&lt;h2 id="_2"&gt;验证&lt;/h2&gt;
+&lt;p&gt;既然定位了问题，就可以写段代码验证下。 代码逻辑如下：使用不同的 &lt;code&gt;size&lt;/code&gt; 值来触发&lt;code&gt;_MATCH_CACHE.clear()&lt;/code&gt; 的调用，测试调用时间。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;fnmatch&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="n"&gt;fnmatch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fnmatch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;test&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3 id="python2"&gt;python2 测试&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="nd"&gt;@node1&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt;# python -m timeit  -v  -n 100 -r 3 -s &amp;#39;from fnmatch_test import test&amp;#39; -- &amp;#39;test(100)&amp;#39; &lt;/span&gt;
+&lt;span class="n"&gt;raw&lt;/span&gt; &lt;span class="n"&gt;times&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.124&lt;/span&gt; &lt;span class="mf"&gt;0.117&lt;/span&gt; &lt;span class="mf"&gt;0.116&lt;/span&gt;
+&lt;span class="mi"&gt;100&lt;/span&gt; &lt;span class="n"&gt;loops&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.16&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt; &lt;span class="n"&gt;per&lt;/span&gt; &lt;span class="n"&gt;loop&lt;/span&gt;
+
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="nd"&gt;@node1&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt;# python -m timeit  -v  -n 100 -r 3 -s &amp;#39;from fnmatch_test import test&amp;#39; -- &amp;#39;test(101)&amp;#39; &lt;/span&gt;
+&lt;span class="n"&gt;raw&lt;/span&gt; &lt;span class="n"&gt;times&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.19&lt;/span&gt; &lt;span class="mf"&gt;3.14&lt;/span&gt; &lt;span class="mf"&gt;3.24&lt;/span&gt;
+&lt;span class="mi"&gt;100&lt;/span&gt; &lt;span class="n"&gt;loops&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;31.4&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt; &lt;span class="n"&gt;per&lt;/span&gt; &lt;span class="n"&gt;loop&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;可以看出， 当 size 为 101 比 100 只多一个对比数据，但是最后的运行时间从 0.116 秒上升到了 3.24 秒。 单次循环的时间花费从 1.16 msec 上升到了 31.4 msec，增加了27倍之多。&lt;/p&gt;
+&lt;h3 id="python3"&gt;python3 测试&lt;/h3&gt;
+&lt;p&gt;同时测试了下 python3 的 fnmatch 实现。python3 里面使用了不同的实现。 废弃了 &lt;code&gt;DICT&lt;/code&gt; 的 cache 机制，使用 &lt;code&gt;functools.lru_cache&lt;/code&gt;, 同时也不是满了全清，而是使用 &lt;code&gt;lru&lt;/code&gt; (Least recently used) 的机制。cache size 也从100 提升到了 256, 性能有很大提升&lt;sup id="fnref-3"&gt;&lt;a class="footnote-ref" href="#fn-3"&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref-4"&gt;&lt;a class="footnote-ref" href="#fn-4"&gt;4&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# python -m timeit -v -n 100 -r 3 -s &amp;#39;from fnmatch_test import test&amp;#39; -- &amp;#39;test(256)&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;raw&lt;/span&gt; &lt;span class="n"&gt;times&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;321&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;314&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;312&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt;
+&lt;span class="mi"&gt;100&lt;/span&gt; &lt;span class="n"&gt;loops&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.12&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt; &lt;span class="n"&gt;per&lt;/span&gt; &lt;span class="n"&gt;loop&lt;/span&gt;
+
+&lt;span class="c1"&gt;# python -m timeit -v -n 100 -r 3 -s &amp;#39;from fnmatch_test import test&amp;#39; -- &amp;#39;test(257)&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;raw&lt;/span&gt; &lt;span class="n"&gt;times&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;944&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;949&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;985&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt;
+&lt;span class="mi"&gt;100&lt;/span&gt; &lt;span class="n"&gt;loops&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;9.44&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt; &lt;span class="n"&gt;per&lt;/span&gt; &lt;span class="n"&gt;loop&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;可以看出，在超出 cache size, 因为 python3 中不是全清，运行时间只增加了3倍，相比 python2 的情况要好很多了。&lt;/p&gt;
+&lt;h2 id="_3"&gt;问题解决&lt;/h2&gt;
+&lt;p&gt;因为我使用的是 OpenStack pike 版本，先搜索了下最新的代码有没有解决这个问题，发现还真解决了。社区 patch 见&lt;sup id="fnref-5"&gt;&lt;a class="footnote-ref" href="#fn-5"&gt;5&lt;/a&gt;&lt;/sup&gt;。解决的逻辑是因为 resource 里面的 metrics 个数并不多，没有必要使用 &lt;code&gt;fnmatch&lt;/code&gt;，而是本地缓存一个 &lt;code&gt;(metric, resource)&lt;/code&gt; 的字典，直接反查。不过这个只包含在了 Rocky 及之后的版本里面。我做了一个 backport， 代码见&lt;sup id="fnref-6"&gt;&lt;a class="footnote-ref" href="#fn-6"&gt;6&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+&lt;p&gt;打上 patch 后，再看新的火焰图如下, SVG文件见 &lt;a href="images/ceilometer-perf/notification_perf_ii_after.svg" target="_blank"&gt;notification_perf_ii_after.svg&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="notification perf ii_after" src="images/ceilometer-perf/notification_perf_ii_after.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;同时 CPU 的消耗也降低了不少,从100% 降到了 10%-20% 的区间，效果还是很明显的。&lt;/p&gt;
+&lt;h2 id="_4"&gt;总结&lt;/h2&gt;
+&lt;p&gt;对比下最早的火焰图，SVG文件见 &lt;a href="images/ceilometer-perf/notification_perf_ii_finally.svg" target="_blank"&gt;notification_perf_ii_finally.svg&lt;/a&gt;。 蓝色框内的请求都已经去掉了，优化掉了近 50%以上的 CPU 消耗。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="notification perf ii_finally" src="images/ceilometer-perf/notification_perf_ii_finally.jpg"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;数据还是要仔细分析，还是会有惊喜的&lt;/li&gt;
+&lt;li&gt;fnmatch 适合用在数据量少的场景，数据量多最好自己处理 &lt;code&gt;re.compile&lt;/code&gt; 或用其它思路&lt;/li&gt;
+&lt;li&gt;ceilometer+gnocchi的方案还是使用人有点少，要不这问题不应该遗留这么久。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="footnote"&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id="fn-1"&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/250728" target="_blank"&gt;https://review.openstack.org/250728&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn-2"&gt;
+&lt;p&gt;&lt;a href="https://github.com/python/cpython/blob/ca079a3ea30098aff3197c559a0e32d42dda6d84/Lib/fnmatch.py#L54-L56" target="_blank"&gt;https://github.com/python/cpython/blob/ca079a3ea30098aff3197c559a0e32d42dda6d84/Lib/fnmatch.py#L54-L56&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn-3"&gt;
+&lt;p&gt;&lt;a href="https://github.com/python/cpython/commit/6fdb74f0aeb53b755a4573e00947ed16922adb65" target="_blank"&gt;https://github.com/python/cpython/commit/6fdb74f0aeb53b755a4573e00947ed16922adb65&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn-4"&gt;
+&lt;p&gt;&lt;a href="https://github.com/python/cpython/blob/master/Lib/fnmatch.py#L38-L46" target="_blank"&gt;https://github.com/python/cpython/blob/master/Lib/fnmatch.py#L38-L46&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn-5"&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/522828" target="_blank"&gt;https://review.openstack.org/522828&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn-6"&gt;
+&lt;p&gt;&lt;a href="https://review.openstack.org/624746" target="_blank"&gt;https://review.openstack.org/624746&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-6" title="Jump back to footnote 6 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 12 Dec 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-12-12:/ceilometer-performance-analysis-ii.html</guid></item><item><title>记一次 ceilometer 性能分析</title><link>http://xcodest.me/ceilometer-performance-analysis.html</link><description>&lt;p&gt;近期在一个 OpenStack 环境中，由于虚拟机个数达到5000以上，发现 ceilometer-agent-notification 服务 CPU 占用很高, 每个 process worker 就可以占用满一颗 CPU。但是消息处理速度超级慢，造成了 RabbitMQ 消息的大量积压。增加 ceilometer-agent-notificaion 进程个数或 worker 个数基本没有什么效果。感觉上应该是 ceilometer 本身代码有问题，所以有了这次分析。&lt;/p&gt;
 &lt;p&gt;对于性能分析，可以有以下几种方法。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;静态分析： 对代码比较熟悉的话，可以通过直接翻代码的方式，猜可能的性能瓶颈点。去看代码逻辑。 辅助使用 timeit, cProfile 等模块，修改代码，增加检查点，打印单次的运行结果。看每个函数的的调用次数，来定位问题。&lt;/li&gt;
@@ -88,7 +213,7 @@ make
 &lt;ul&gt;
 &lt;li&gt;pyflame 生成火焰图的方式来定位性能或代码问题还是很方便的。&lt;/li&gt;
 &lt;li&gt;估计 OpenStack 里面其它地方的代码也会有类似的问题，感觉更好的修复方式，是在 keystoneauth 里面自动缓存当前所有的 endpoints, 有需要的时候再刷新。&lt;/li&gt;
-&lt;li&gt;优化后，ceilometer-notification 处理消息时，还是会占用100% 的CPU, 主要原因从火焰图上看是对 json 的解析花掉了大量时间，进一步优化的话，可能需要换性能更好的 json 解析库或使用其它序列化方式。 &lt;/li&gt;
+&lt;li&gt;&lt;del&gt;优化后，ceilometer-notification 处理消息时，还是会占用100% 的CPU, 主要原因从火焰图上看是对 json 的解析花掉了大量时间，进一步优化的话，可能需要换性能更好的 json 解析库或使用其它序列化方式。&lt;/del&gt;， 这里观察错了，这里是 &lt;code&gt;re.py&lt;/code&gt; 模块的问题，进一步的分析见 &lt;a href="ceilometer-performance-analysis-ii.html" target="_blank"&gt;ceilometer 性能分析 II&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="ref"&gt;REF&lt;/h2&gt;
 &lt;div class="footnote"&gt;

@@ -105,7 +105,7 @@ if not urllib.parse.urlparse(url).netloc:
 
 - pyflame 生成火焰图的方式来定位性能或代码问题还是很方便的。
 - 估计 OpenStack 里面其它地方的代码也会有类似的问题，感觉更好的修复方式，是在 keystoneauth 里面自动缓存当前所有的 endpoints, 有需要的时候再刷新。
-- 优化后，ceilometer-notification 处理消息时，还是会占用100% 的CPU, 主要原因从火焰图上看是对 json 的解析花掉了大量时间，进一步优化的话，可能需要换性能更好的 json 解析库或使用其它序列化方式。 
+- <del>优化后，ceilometer-notification 处理消息时，还是会占用100% 的CPU, 主要原因从火焰图上看是对 json 的解析花掉了大量时间，进一步优化的话，可能需要换性能更好的 json 解析库或使用其它序列化方式。</del>， 这里观察错了，这里是 `re.py` 模块的问题，进一步的分析见 [ceilometer 性能分析 II](ceilometer-performance-analysis-ii.html)
 
 ## REF
 [^1]: http://www.brendangregg.com/perf.html

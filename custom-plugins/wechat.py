@@ -21,7 +21,7 @@ MARKDOWN_EXT_CONFIG = {
     'markdown.extensions.codehilite': {
         'linenums': False,
         'guess_lang': False,
-        'use_pygments': True,
+        'use_pygments': False,
         'noclasses': True
     },
     'markdown.extensions.extra': {

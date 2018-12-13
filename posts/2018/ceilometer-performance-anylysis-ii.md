@@ -59,8 +59,8 @@ else:
 看上面的代码逻辑，会发现，fnmatch 的实现是依赖了 re 模块，同时为了提升 `re.compile` 的性能，增加了一个全局的 `100` 大小的 `_MATCH_CACHE` 字典。然而会有这么一段逻辑, 当这个字典满了后，就直接清掉了。。。清掉了。。这样做很没有道理，哪怕你随机删掉一个，我觉得都比都清掉好。
 
 ```python
-            if len(_MATCH_CACHE) >= _MATCH_CACHE_MAX:
-                _MATCH_CACHE.clear()
+if len(_MATCH_CACHE) >= _MATCH_CACHE_MAX:
+    _MATCH_CACHE.clear()
 ```
 
 全清掉后，所有的正则编译都需要重新跑一次。而 ceilometer 处理的 metric 又多，所以会频繁的触发这个问题。也就造成了`re.compile` 调用，进而吃掉了大量 CPU
@@ -121,7 +121,7 @@ raw times: 944 msec, 949 msec, 985 msec
 
 ## 总结
 
-对比下最早的火焰图，SVG文件见 [notification_perf_ii_finally.svg](images/ceilometer-perf/notification_perf_ii_finally.svg)。 蓝色框内的请求都已经去掉了，优化掉了近 50%以上的 CPU 消耗。
+对比下最早的火焰图，SVG文件见 [notification_perf_before.svg](images/ceilometer-perf/notification_perf_before.svg)。 蓝色框内的请求都已经去掉了，优化掉了近 50%以上的 CPU 消耗。
 
 ![notification perf ii_finally](images/ceilometer-perf/notification_perf_ii_finally.jpg)
 

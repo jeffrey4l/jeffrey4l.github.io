@@ -9,7 +9,6 @@ from pelican import signals
 
 CUR_DIR = os.path.abspath(os.path.dirname(__file__))
 
-
 MARKDOWN_EXT = [
     'markdown.extensions.codehilite',
     'markdown.extensions.extra',
@@ -17,12 +16,15 @@ MARKDOWN_EXT = [
     'markdown.extensions.toc'
 ]
 
+WECHAT_ENABLE_HIGHLIGHT = False
+
 MARKDOWN_EXT_CONFIG = {
     'markdown.extensions.codehilite': {
         'linenums': False,
-        'guess_lang': False,
-        'use_pygments': False,
-        'noclasses': True
+        'guess_lang': WECHAT_ENABLE_HIGHLIGHT,
+        'use_pygments': WECHAT_ENABLE_HIGHLIGHT,
+        'noclasses': not WECHAT_ENABLE_HIGHLIGHT,
+        'css_class': 'highlight'
     },
     'markdown.extensions.extra': {
         'BACKLINK_TEXT': ''
@@ -91,7 +93,10 @@ def wechat_output(content_object):
 
     wechat_css = [os.path.join(
         content_object.settings['THEME'],
-        'static/css/wechat.css')]
+        'static/css/wechat.css'),
+        os.path.join(
+        content_object.settings['THEME'],
+        'static/css/pygment.css')]
 
     with safe_open(dest_fullpath, 'w') as f:
         p = premailer.Premailer(

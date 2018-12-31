@@ -10,7 +10,7 @@ Markdown<3
 feedgenerator
 Jinja2
 docutils
-pygments
+pygments>2.3.0
 Typogrify
 pelican-gist
 watchdog

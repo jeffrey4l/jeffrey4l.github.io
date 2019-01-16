@@ -1,9 +1,11 @@
+---
 title: Ceph bluestore 和 ceph-volume
 date: 2018-04-07
 modified: 2018-11-25
 slug: ceph-bluestore-and-ceph-volume
 tags: Ceph
 category: Ceph
+---
 
 ## 部署
 
@@ -50,7 +52,7 @@ category: Ceph
         mon: 1 daemons, quorum node1
         mgr: no daemons active
         osd: 0 osds: 0 up, 0 in
-
+    
       data:
         pools:   0 pools, 0 pgs
         objects: 0 objects, 0 bytes
@@ -76,7 +78,7 @@ category: Ceph
 
 接下来，就可以创建 OSD 了。
 
-    ceph-deploy  osd create \
+    ceph-deploy osd create \
         --data ceph-pool/osd0 \
         --block-db ceph-pool/osd0.db \
         --block-wal ceph-pool/osd0.wal \
@@ -88,18 +90,18 @@ category: Ceph
       cluster:
         id:     5b2f0020-fc24-44de-a6c9-a88efdc5074f
         health: HEALTH_OK
-
+    
       services:
         mon: 1 daemons, quorum node1
         mgr: node2(active)
         osd: 1 osds: 1 up, 1 in
-
+    
       data:
         pools:   0 pools, 0 pgs
         objects: 0 objects, 0 bytes
         usage:   2048 MB used, 37883 MB / 39931 MB avail
         pgs:
-
+    
     $ ls -alh /var/lib/ceph/osd/ceph-0/
     total 52K
     drwxrwxrwt. 2 ceph ceph 340 Apr  4 16:27 .
@@ -215,7 +217,7 @@ ceph 依赖 systemd 来管理挂载，不需要配置 `/etc/fstab` 文件。在�
     Description=Ceph Volume activation: %i
     After=local-fs.target
     Wants=local-fs.target
-
+    
     [Service]
     Type=oneshot
     KillMode=none

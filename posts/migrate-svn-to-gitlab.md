@@ -1,8 +1,10 @@
+---
 Title: Migrate SVN to GitLab
 Date: 2014-08-12
 Tags: Git
 Category: Linux
 Email: zhang.lei.fly@gmail.com
+---
 
 * 在GitLab上创建相对应的项目/项目组
 * 准备''users.txt''文件，来修正提交用户名。并手动修改users.txt的正确性 

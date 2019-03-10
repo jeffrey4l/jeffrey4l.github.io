@@ -1,6 +1,8 @@
+@import url(https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css);
+
 body {
     color: #666;
-    font-family: "Microsoft Yahei", Arial;
+    font-family: "Fira Code", "Microsoft Yahei", Arial;
 }
 h1 {
     font-size: 28px;
@@ -87,7 +89,7 @@ footer {
 }
 
 pre {
-    font-family: Consolas,Monaco,andale mono,ubuntu mono,monospace;
+    font-family: "Fira Code",Consolas,Monaco,andale mono,ubuntu mono,monospace;
     overflow-y: hidden;
     overflow-x: auto;
     white-space: pre;

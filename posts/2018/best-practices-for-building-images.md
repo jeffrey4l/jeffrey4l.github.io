@@ -204,7 +204,7 @@ N 使用构建次数，或使用时间戳。来标记 Dockerfile 的变化及构
 
 现在，除了 `Dockerfile` 这种构建方式，还有很多其它的镜像构建工具，有兴趣可以深入研究下
 
-* source to image: openshift 里面带的一个方便由源代码直接生成镜像的方案，可以单独使用。
+* [source to image](https://github.com/openshift/source-to-image): openshift 里面带的一个方便由源代码直接生成镜像的方案，可以单独使用。
 * [makisu](https://github.com/uber/makisu): 方便在  kubernetes 环境中使用的镜像构建方案，可以 unprivileged 的容器中使用
 * [buildash](https://github.com/containers/buildah): 构建 OCI 兼容格式镜像工具。
 
@@ -331,7 +331,7 @@ RUN BUILD_DEP_PKGS="\
 
 ## REF
 
-* [1] https://github.com/sagemathinc/cocalc/issues/2287#issue-249824529
-
+* [^1]: https://github.com/sagemathinc/cocalc/issues/2287#issue-249824529
 * [^2]: https://docs.docker.com/engine/reference/commandline/build/#squash-an-images-layers---squash-experimental
 * [^3]: <https://docs.docker.com/develop/develop-images/multistage-build/> 
+* [^4]: [10 tips for building and managing containers](https://www.weave.works/blog/10-tips-for-building-and-managing-containers)

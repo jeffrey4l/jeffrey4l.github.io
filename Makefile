@@ -65,6 +65,7 @@ serve:
 ifdef PORT
 	cd $(OUTPUTDIR) && $(PY) -m pelican.server $(PORT)
 else
+	echo http://127.0.0.1:8000 ...
 	cd $(OUTPUTDIR) && $(PY) -m pelican.server
 endif
 

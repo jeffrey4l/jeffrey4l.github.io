@@ -2,6 +2,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="theme/css/pygment.css" type="text/css" charset="utf-8">
   <style type="text/css">h1:hover a.anchor {text-decoration:none}
 h2:hover a.anchor {text-decoration:none}
 h3:hover a.anchor {text-decoration:none}
@@ -21,7 +22,7 @@ table tr:nth-child(2n) {background-color:#f8f8f8}</style>
     <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>OpenStack 的 Neutron 中会建立好多网卡设备。大体上这些网卡可以分为两类 tun 和 veth。</p>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'><img alt="OpenStack Neutron Network" class="img-responsive" src="/images/neutron-ovs-compute.png" style="max-width:100%"></p>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>用<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">ethtool</code>可以得到网卡所用的驱动，从而得到网上设备是哪一类。</p>
-<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">$ ethtool -i veth4NCTQ1 
+<pre class="highlight" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">$ ethtool -i veth4NCTQ1 
 driver: veth
 version: 1.0
 firmware-version: 
@@ -43,14 +44,14 @@ supports-priv-flags: no</code></pre>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>开源项目openvpn和Vtun都是利用tun/tap驱动实现的隧道封装</p>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>虽然是出自一个娘，但它们仍然有大的不同。tun是点对点的设备，而tap是一个普通的以太网卡设备。也就是说，tun设备其实完全不需要有物理地址的。它收到和发出的包不需要arp，也不需要有数据链路层的头。而tap设备则是有完整的物理地址和完整的以太网帧。</p>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>可以通过以下方法创建</p>
-<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">ip tuntap add mode tap 
+<pre class="highlight" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">ip tuntap add mode tap 
 ip tuntap add mode tun</code></pre>
 
 
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>在 OpenStack 中，主要用tap来做虚拟机的网卡。</p>
 <h1 id="veth" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">veth</h1>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>veth 从名字上来看是 Virtual ETHernet 的缩写，它的作用很简单，就是要把从一个 network namespace 发出的数据包转发到另一个 namespace。veth 设备是成对的，一个是 container 之中，另一个在 container 之外，即在真实机器上能看到的。 建立 veth 类型的设备可以用下面的命令：</p>
-<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">ip link add name veth0 type veth0 peer name veth1</code></pre>
+<pre class="highlight" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">ip link add name veth0 type veth0 peer name veth1</code></pre>
 
 
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>这里建立了一对veth设备，名字分别是 veth0 和 veth1。当向其中一个设备写入数据时，另一个设备就能拿到写入的数据。在 OpenStack 中的使用就是来穿透 namespace.</p>

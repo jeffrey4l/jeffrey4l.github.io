@@ -162,7 +162,7 @@ Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource Data
 <span class="go">-rw-r--r--. 1 root root 1.7K Mar 30 15:00 cloud-init-output.log</span>
 </pre></div>
 <p>又尝试修改了 <code>cloud.cfg</code> 的配置，把日志都都打印到特定文件，如下。但是结果还是一样，没有啥新日志信息。(其时后来才发现，这个配置默认就存在，在 <code>/etc/cloud/cloud.cfg.d/</code> 下面)</p>
-<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">output</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span><span class="nv">all</span><span class="p p-Indicator">:</span> <span class="s">'|</span><span class="nv"> </span><span class="s">tee</span><span class="nv"> </span><span class="s">-a</span><span class="nv"> </span><span class="s">/var/log/cloud-init-output.log'</span><span class="p p-Indicator">}</span>
+<div class="highlight"><pre><span></span><span class="nt">output</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt">all</span><span class="p">:</span> <span class="s">'|</span><span class="nv"> </span><span class="s">tee</span><span class="nv"> </span><span class="s">-a</span><span class="nv"> </span><span class="s">/var/log/cloud-init-output.log'</span><span class="p p-Indicator">}</span>
 </pre></div>
 <p>联想到 CentOS 7 用的 systemd 管理器，试图从 systemd 里找日志。先找到了所有的 cloud-init 相关的服务</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> systemctl list-units <span class="p">|</span> grep cloud
@@ -185,7 +185,7 @@ Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource Data
 <h2 id="_6">解决方法</h2>
 <p>尽量不要直接使用官方的源，而是自己制作，尤其是 cloud-init 的配置项。要手动修改掉其默认的数据源，以避免以上情况的发生。</p>
 <div class="highlight"><pre><span></span><span class="c1"># /etc/cloud/cloud.cfg</span>
-<span class="l l-Scalar l-Scalar-Plain">datasource_list</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">'ConfigDrive'</span><span class="p p-Indicator">,</span> <span class="s">'OpenStack'</span><span class="p p-Indicator">,</span> <span class="s">'Ec2'</span><span class="p p-Indicator">]</span>
+<span class="nt">datasource_list</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">'ConfigDrive'</span><span class="p p-Indicator">,</span> <span class="s">'OpenStack'</span><span class="p p-Indicator">,</span> <span class="s">'Ec2'</span><span class="p p-Indicator">]</span>
 </pre></div>
 <h2 id="_7">总结</h2>
 <ul>

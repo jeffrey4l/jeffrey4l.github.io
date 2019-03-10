@@ -128,37 +128,37 @@
 <p>首先使用 Ansible 避免不了使用其模块。与 Kubernetes 相关的模块可以从[1]找到。现在主要有<code>k8s</code>, <code>k8s_facts</code>, <code>k8s_scale</code>, <code>kubernetes</code>和<code>oc</code> 5个模块。其中 <code>kubernetes</code> 和 <code>oc</code> 模块因为实现逻辑不好用，在 ansible 2.6 版本中已经废弃掉， 推荐使用前三个。其中，<code>k8s_scale</code> 来自 ansible 2.5, <code>k8s</code> 来自 ansible 2.6, <code>k8s_facts</code> 来自 ansible 2.7。使用这三个模块的话，还需要安装 <code>openshift</code> 的 Python 包。以下代码全部基于 ansible 2.7 版本。</p>
 <h2 id="k8s">k8s 模块</h2>
 <p>管理 kubernetes 各种资源的话，使用 <code>k8s</code> 模块就可以了，如下是创建 namespace 的写法</p>
-<div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Create a k8s namespace</span>
-  <span class="l l-Scalar l-Scalar-Plain">k8s</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">testing</span>
-    <span class="l l-Scalar l-Scalar-Plain">api_version</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">v1</span>
-    <span class="l l-Scalar l-Scalar-Plain">kind</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Namespace</span>
-    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+<div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Create a k8s namespace</span>
+  <span class="nt">k8s</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">testing</span>
+    <span class="nt">api_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1</span>
+    <span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Namespace</span>
+    <span class="nt">state</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
 </pre></div>
 
 
 <p>如果要创建一个 Service, 也可以使用如下面的写法。</p>
-<div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Create a Service object from an inline definition</span>
-  <span class="l l-Scalar l-Scalar-Plain">k8s</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
-    <span class="l l-Scalar l-Scalar-Plain">definition</span><span class="p p-Indicator">:</span>
-      <span class="l l-Scalar l-Scalar-Plain">apiVersion</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">v1</span>
-      <span class="l l-Scalar l-Scalar-Plain">kind</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Service</span>
-      <span class="l l-Scalar l-Scalar-Plain">metadata</span><span class="p p-Indicator">:</span>
-        <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">web</span>
-        <span class="l l-Scalar l-Scalar-Plain">namespace</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">testing</span>
-        <span class="l l-Scalar l-Scalar-Plain">labels</span><span class="p p-Indicator">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">app</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">galaxy</span>
-          <span class="l l-Scalar l-Scalar-Plain">service</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">web</span>
-      <span class="l l-Scalar l-Scalar-Plain">spec</span><span class="p p-Indicator">:</span>
-        <span class="l l-Scalar l-Scalar-Plain">selector</span><span class="p p-Indicator">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">app</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">galaxy</span>
-          <span class="l l-Scalar l-Scalar-Plain">service</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">web</span>
-        <span class="l l-Scalar l-Scalar-Plain">ports</span><span class="p p-Indicator">:</span>
-          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">protocol</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">TCP</span>
-            <span class="l l-Scalar l-Scalar-Plain">targetPort</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">8000</span>
-            <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">port-8000-tcp</span>
-            <span class="l l-Scalar l-Scalar-Plain">port</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">8000</span>
+<div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Create a Service object from an inline definition</span>
+  <span class="nt">k8s</span><span class="p">:</span>
+    <span class="nt">state</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+    <span class="nt">definition</span><span class="p">:</span>
+      <span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1</span>
+      <span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Service</span>
+      <span class="nt">metadata</span><span class="p">:</span>
+        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">web</span>
+        <span class="nt">namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">testing</span>
+        <span class="nt">labels</span><span class="p">:</span>
+          <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">galaxy</span>
+          <span class="nt">service</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">web</span>
+      <span class="nt">spec</span><span class="p">:</span>
+        <span class="nt">selector</span><span class="p">:</span>
+          <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">galaxy</span>
+          <span class="nt">service</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">web</span>
+        <span class="nt">ports</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">protocol</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TCP</span>
+            <span class="nt">targetPort</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8000</span>
+            <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">port-8000-tcp</span>
+            <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8000</span>
 </pre></div>
 
 

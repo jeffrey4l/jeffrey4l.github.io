@@ -2,6 +2,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="theme/css/pygment.css" type="text/css" charset="utf-8">
   <style type="text/css">h1:hover a.anchor {text-decoration:none}
 h2:hover a.anchor {text-decoration:none}
 h3:hover a.anchor {text-decoration:none}
@@ -22,7 +23,7 @@ table tr:nth-child(2n) {background-color:#f8f8f8}</style>
 程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。</p>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>因为是通过middleware来控制的，所以只要修改一下paster的配置就行。更简单的是指定
 glance-api加载的pipeline的名字。</p>
-<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-ini" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">[deploy]
+<pre class="highlight" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-ini" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">[deploy]
 # possible value: none, cachine, keystone, keystone+caching, 
 # keystone+cachemanagement
 # This value can get from glance-api-paste.conf file
@@ -30,7 +31,7 @@ flavor=keystone+caching</code></pre>
 
 
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>具体看下<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">glance-api-paster.conf</code>文件就能明白。</p>
-<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-ini" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">[pipeline:glance-api]
+<pre class="highlight" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-ini" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">[pipeline:glance-api]
 pipeline = versionnegotiation unauthenticated-context rootapp
 
 # Use this pipeline for image caching and no auth
@@ -54,8 +55,7 @@ pipeline = versionnegotiation authtoken context cache rootapp
 pipeline = versionnegotiation authtoken context cache cachemanage rootapp</code></pre>
 
 
-<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>不同的pipeline用到了不同的middleware, 启作用的是cache 和 cachemanagement这两个
-。</p>
+<p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>不同的pipeline用到了不同的middleware, 启作用的是cache 和 cachemanagement这两个。</p>
 <h2 id="ref" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:2px 0 0 10px; position:relative; border-left:solid 8px #299480; color:#3AAA7D; font-size:22px; line-height:1.6">REF</h2>
 <ol style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em; padding-left:30px'>
 <li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0'><a href="http://docs.openstack.org/developer/glance/cache.html" style="color:#4183C4; margin-top:0">The Glance Image Cache</a></li>

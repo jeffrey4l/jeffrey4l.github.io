@@ -2,6 +2,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="theme/css/pygment.css" type="text/css" charset="utf-8">
   <style type="text/css">h1:hover a.anchor {text-decoration:none}
 h2:hover a.anchor {text-decoration:none}
 h3:hover a.anchor {text-decoration:none}
@@ -24,7 +25,7 @@ table tr:nth-child(2n) {background-color:#f8f8f8}</style>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>一开始(从2.5开始)的时候是有 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">args</code> 和 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">message</code> 两个参数的。2.6版本之后，把
 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">message</code> 废弃掉了，只留下了一个任意长度的 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">args</code>。</p>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>以下是2.5以后的代码，可以看到，如果args 长度是1，就会把 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">self.message = args[0]</code></p>
-<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-c" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">static PyObject *
+<pre class="highlight" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-c" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">static PyObject *
 BaseException_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
     PyBaseExceptionObject *self;
@@ -73,7 +74,7 @@ BaseException_init(PyBaseExceptionObject *self, PyObject *args, PyObject *kwds)
 调用时，如果它在 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">self.__dict__</code> 里，就直接打印，否则就返回 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">self.message</code> 的信息
 并打印出一个 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">Warning</code>。如果已经赋过一个值的话<code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">self.message = xxxx</code>, 它就会存在
 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">self.__dict__</code>里。</p>
-<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-c" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">static PyObject *
+<pre class="highlight" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-c" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">static PyObject *
 BaseException_get_message(PyBaseExceptionObject *self)
 {
     PyObject *msg;
@@ -127,7 +128,7 @@ BaseException_set_message(PyBaseExceptionObject *self, PyObject *val)
 
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>在 python3 中，message 相关的信息已经完全删除掉了。</p>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>所以，一般使用 <code style="background-color:#f8f8f8; border:1px solid #eaeaea; border-radius:4px; font-size:16px; margin:0 2px; padding:0 7px" bgcolor="#f8f8f8">message</code> 属性的话，推荐这样使用</p>
-<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">class MyException(Exception):
+<pre class="highlight" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">class MyException(Exception):
     def __init__(self, message):
         self.message = message
 

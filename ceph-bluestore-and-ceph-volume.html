@@ -200,7 +200,7 @@ $ lvcreate -n osd0 -l <span class="m">100</span>%FREE ceph-pool
 
 
 <p>接下来，就可以创建 OSD 了。</p>
-<div class="highlight"><pre><span></span>ceph-deploy  osd create \
+<div class="highlight"><pre><span></span>ceph-deploy osd create \
     --data ceph-pool/osd0 \
     --block-db ceph-pool/osd0.db \
     --block-wal ceph-pool/osd0.wal \

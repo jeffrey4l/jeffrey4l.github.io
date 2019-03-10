@@ -2,6 +2,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="theme/css/pygment.css" type="text/css" charset="utf-8">
   <style type="text/css">h1:hover a.anchor {text-decoration:none}
 h2:hover a.anchor {text-decoration:none}
 h3:hover a.anchor {text-decoration:none}
@@ -21,7 +22,7 @@ table tr:nth-child(2n) {background-color:#f8f8f8}</style>
     <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>OpenStack的源因为你我都知道的原因，一直不稳定，导致 devstack 时经常失败。特定写了个脚本，可以拿到所有的仓库地址，方便做本地的mirror。</p>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>脚本在 gist<sup id="fnref:1" style="font-size:0.83em; line-height:0; vertical-align:super" valign="super"><a class="footnote-ref" href="#fn:1" rel="footnote" style="color:#4183C4; display:none">1</a></sup> 上。</p>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>使用方法：</p>
-<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">pip install PyGithub
+<pre class="highlight" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">pip install PyGithub
 python openstack_repo.py -u &lt;github_username&gt; -p &lt;github_password&gt; \
     -o repos.txt</code></pre>
 

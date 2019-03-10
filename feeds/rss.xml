@@ -95,7 +95,7 @@
 &lt;p&gt;&lt;img alt="notification perf ii_after" src="images/ceilometer-perf/notification_perf_ii_after.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;同时 CPU 的消耗也降低了不少,从100% 降到了 10%-20% 的区间，效果还是很明显的。&lt;/p&gt;
 &lt;h2 id="_4"&gt;总结&lt;/h2&gt;
-&lt;p&gt;对比下最早的火焰图，SVG文件见 &lt;a href="images/ceilometer-perf/notification_perf_ii_finally.svg" target="_blank"&gt;notification_perf_ii_finally.svg&lt;/a&gt;。 蓝色框内的请求都已经去掉了，优化掉了近 50%以上的 CPU 消耗。&lt;/p&gt;
+&lt;p&gt;对比下最早的火焰图，SVG文件见 &lt;a href="images/ceilometer-perf/notification_perf_before.svg" target="_blank"&gt;notification_perf_before.svg&lt;/a&gt;。 蓝色框内的请求都已经去掉了，优化掉了近 50%以上的 CPU 消耗。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="notification perf ii_finally" src="images/ceilometer-perf/notification_perf_ii_finally.jpg"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;数据还是要仔细分析，还是会有惊喜的&lt;/li&gt;
@@ -142,11 +142,11 @@
              |
       +======v========+
      / Message Queue /
-     +=======+=======+
+    +========+======+
              |
  +-----------v-------------+
  | Ceilometer Notification |
- +------------+------------+
+ +-----------+-------------+
              |
       +------v------+
       | gnocchi api |
@@ -238,37 +238,37 @@ make
 &lt;p&gt;首先使用 Ansible 避免不了使用其模块。与 Kubernetes 相关的模块可以从[1]找到。现在主要有&lt;code&gt;k8s&lt;/code&gt;, &lt;code&gt;k8s_facts&lt;/code&gt;, &lt;code&gt;k8s_scale&lt;/code&gt;, &lt;code&gt;kubernetes&lt;/code&gt;和&lt;code&gt;oc&lt;/code&gt; 5个模块。其中 &lt;code&gt;kubernetes&lt;/code&gt; 和 &lt;code&gt;oc&lt;/code&gt; 模块因为实现逻辑不好用，在 ansible 2.6 版本中已经废弃掉， 推荐使用前三个。其中，&lt;code&gt;k8s_scale&lt;/code&gt; 来自 ansible 2.5, &lt;code&gt;k8s&lt;/code&gt; 来自 ansible 2.6, &lt;code&gt;k8s_facts&lt;/code&gt; 来自 ansible 2.7。使用这三个模块的话，还需要安装 &lt;code&gt;openshift&lt;/code&gt; 的 Python 包。以下代码全部基于 ansible 2.7 版本。&lt;/p&gt;
 &lt;h2 id="k8s"&gt;k8s 模块&lt;/h2&gt;
 &lt;p&gt;管理 kubernetes 各种资源的话，使用 &lt;code&gt;k8s&lt;/code&gt; 模块就可以了，如下是创建 namespace 的写法&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Create a k8s namespace&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;k8s&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;testing&lt;/span&gt;
-    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;api_version&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;v1&lt;/span&gt;
-    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;kind&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Namespace&lt;/span&gt;
-    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;state&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;present&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Create a k8s namespace&lt;/span&gt;
+  &lt;span class="nt"&gt;k8s&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;testing&lt;/span&gt;
+    &lt;span class="nt"&gt;api_version&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;v1&lt;/span&gt;
+    &lt;span class="nt"&gt;kind&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Namespace&lt;/span&gt;
+    &lt;span class="nt"&gt;state&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;present&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;如果要创建一个 Service, 也可以使用如下面的写法。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Create a Service object from an inline definition&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;k8s&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;state&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;present&lt;/span&gt;
-    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;definition&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-      &lt;span class="l l-Scalar l-Scalar-Plain"&gt;apiVersion&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;v1&lt;/span&gt;
-      &lt;span class="l l-Scalar l-Scalar-Plain"&gt;kind&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Service&lt;/span&gt;
-      &lt;span class="l l-Scalar l-Scalar-Plain"&gt;metadata&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-        &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;web&lt;/span&gt;
-        &lt;span class="l l-Scalar l-Scalar-Plain"&gt;namespace&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;testing&lt;/span&gt;
-        &lt;span class="l l-Scalar l-Scalar-Plain"&gt;labels&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-          &lt;span class="l l-Scalar l-Scalar-Plain"&gt;app&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;galaxy&lt;/span&gt;
-          &lt;span class="l l-Scalar l-Scalar-Plain"&gt;service&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;web&lt;/span&gt;
-      &lt;span class="l l-Scalar l-Scalar-Plain"&gt;spec&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-        &lt;span class="l l-Scalar l-Scalar-Plain"&gt;selector&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-          &lt;span class="l l-Scalar l-Scalar-Plain"&gt;app&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;galaxy&lt;/span&gt;
-          &lt;span class="l l-Scalar l-Scalar-Plain"&gt;service&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;web&lt;/span&gt;
-        &lt;span class="l l-Scalar l-Scalar-Plain"&gt;ports&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-          &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;protocol&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;TCP&lt;/span&gt;
-            &lt;span class="l l-Scalar l-Scalar-Plain"&gt;targetPort&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;8000&lt;/span&gt;
-            &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;port-8000-tcp&lt;/span&gt;
-            &lt;span class="l l-Scalar l-Scalar-Plain"&gt;port&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;8000&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Create a Service object from an inline definition&lt;/span&gt;
+  &lt;span class="nt"&gt;k8s&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="nt"&gt;state&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;present&lt;/span&gt;
+    &lt;span class="nt"&gt;definition&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+      &lt;span class="nt"&gt;apiVersion&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;v1&lt;/span&gt;
+      &lt;span class="nt"&gt;kind&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Service&lt;/span&gt;
+      &lt;span class="nt"&gt;metadata&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;web&lt;/span&gt;
+        &lt;span class="nt"&gt;namespace&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;testing&lt;/span&gt;
+        &lt;span class="nt"&gt;labels&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+          &lt;span class="nt"&gt;app&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;galaxy&lt;/span&gt;
+          &lt;span class="nt"&gt;service&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;web&lt;/span&gt;
+      &lt;span class="nt"&gt;spec&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="nt"&gt;selector&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+          &lt;span class="nt"&gt;app&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;galaxy&lt;/span&gt;
+          &lt;span class="nt"&gt;service&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;web&lt;/span&gt;
+        &lt;span class="nt"&gt;ports&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+          &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;protocol&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;TCP&lt;/span&gt;
+            &lt;span class="nt"&gt;targetPort&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;8000&lt;/span&gt;
+            &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;port-8000-tcp&lt;/span&gt;
+            &lt;span class="nt"&gt;port&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;8000&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -435,28 +435,28 @@ make
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 22 Oct 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-10-22:/use-ansible-manage-kubernetes-resources.html</guid></item><item><title>ansible set_stats</title><link>http://xcodest.me/ansible-set-stats.html</link><description>&lt;p&gt;&lt;code&gt;set_stats&lt;/code&gt; 支持用户设置任意数值，用以在 ansible 运行完后显示。&lt;/p&gt;
 &lt;p&gt;使用例子如下&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nn"&gt;---&lt;/span&gt;
-&lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;hosts&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;all&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;gather_facts&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;true&lt;/span&gt;
+&lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;hosts&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;all&lt;/span&gt;
+  &lt;span class="nt"&gt;gather_facts&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;true&lt;/span&gt;
 
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;pre_tasks&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-    &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;set ceph iscsi gateway install &amp;#39;In Progress&amp;#39;&lt;/span&gt;
-      &lt;span class="l l-Scalar l-Scalar-Plain"&gt;run_once&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;true&lt;/span&gt;
-      &lt;span class="l l-Scalar l-Scalar-Plain"&gt;set_stats&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-        &lt;span class="l l-Scalar l-Scalar-Plain"&gt;data&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-          &lt;span class="l l-Scalar l-Scalar-Plain"&gt;installer_phase_ceph_iscsi_gw&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-            &lt;span class="l l-Scalar l-Scalar-Plain"&gt;status&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;In&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;Progress&amp;quot;&lt;/span&gt;
-            &lt;span class="l l-Scalar l-Scalar-Plain"&gt;start&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;{{&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;lookup(&amp;#39;pipe&amp;#39;,&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#39;date&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;+%Y%m%d%H%M%SZ&amp;#39;)&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;}}&amp;quot;&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;tasks&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-    &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;debug&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-        &lt;span class="l l-Scalar l-Scalar-Plain"&gt;msg&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;hello&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;world&amp;#39;&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;post_tasks&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-    &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;set ceph iscsi gw install &amp;#39;Complete&amp;#39;&lt;/span&gt;
-      &lt;span class="l l-Scalar l-Scalar-Plain"&gt;run_once&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;true&lt;/span&gt;
-      &lt;span class="l l-Scalar l-Scalar-Plain"&gt;set_stats&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-        &lt;span class="l l-Scalar l-Scalar-Plain"&gt;data&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-          &lt;span class="l l-Scalar l-Scalar-Plain"&gt;installer_phase_ceph_iscsi_gw&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-            &lt;span class="l l-Scalar l-Scalar-Plain"&gt;status&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Complete&amp;quot;&lt;/span&gt;
-            &lt;span class="l l-Scalar l-Scalar-Plain"&gt;end&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;{{&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;lookup(&amp;#39;pipe&amp;#39;,&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#39;date&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;+%Y%m%d%H%M%SZ&amp;#39;)&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;}}&amp;quot;&lt;/span&gt;
+  &lt;span class="nt"&gt;pre_tasks&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;set ceph iscsi gateway install &amp;#39;In Progress&amp;#39;&lt;/span&gt;
+      &lt;span class="nt"&gt;run_once&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;true&lt;/span&gt;
+      &lt;span class="nt"&gt;set_stats&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="nt"&gt;data&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+          &lt;span class="nt"&gt;installer_phase_ceph_iscsi_gw&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="nt"&gt;status&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;In&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;Progress&amp;quot;&lt;/span&gt;
+            &lt;span class="nt"&gt;start&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;{{&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;lookup(&amp;#39;pipe&amp;#39;,&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#39;date&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;+%Y%m%d%H%M%SZ&amp;#39;)&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;}}&amp;quot;&lt;/span&gt;
+  &lt;span class="nt"&gt;tasks&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;debug&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="nt"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;hello&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;world&amp;#39;&lt;/span&gt;
+  &lt;span class="nt"&gt;post_tasks&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;set ceph iscsi gw install &amp;#39;Complete&amp;#39;&lt;/span&gt;
+      &lt;span class="nt"&gt;run_once&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;true&lt;/span&gt;
+      &lt;span class="nt"&gt;set_stats&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="nt"&gt;data&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+          &lt;span class="nt"&gt;installer_phase_ceph_iscsi_gw&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="nt"&gt;status&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Complete&amp;quot;&lt;/span&gt;
+            &lt;span class="nt"&gt;end&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;{{&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;lookup(&amp;#39;pipe&amp;#39;,&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#39;date&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;+%Y%m%d%H%M%SZ&amp;#39;)&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;}}&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -623,7 +623,7 @@ $ lvcreate -n osd0 -l &lt;span class="m"&gt;100&lt;/span&gt;%FREE ceph-pool
 
 
 &lt;p&gt;接下来，就可以创建 OSD 了。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ceph-deploy  osd create \
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ceph-deploy osd create \
     --data ceph-pool/osd0 \
     --block-db ceph-pool/osd0.db \
     --block-wal ceph-pool/osd0.wal \
@@ -2194,12 +2194,12 @@ pip install .
 &lt;p&gt;&lt;img alt="Gerrit HTTP Password" class="img-responsive" src="images/openstack_gerrit_http_password.png"/&gt;&lt;/p&gt;
 &lt;p&gt;如果使用源码安装，请把把源码里的 &lt;code&gt;examples/openstack-gertty.yaml&lt;/code&gt; 文件拷贝到 &lt;code&gt;~/.gertty.yml&lt;/code&gt;，修改该文件内容如下(主要是 servers 下面的内容)，其它部分不用修改：&lt;/p&gt;
 &lt;p&gt;如果使用 pip 安装的，在 &lt;code&gt;/usr/local/share/gertty/examples/openstack-gertty.yaml&lt;/code&gt; 这个位置可以找到所需要的文件。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;servers&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-  &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;name&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;openstack&lt;/span&gt;
-    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;url&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;https://review.openstack.org/&lt;/span&gt;
-    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;username&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Jeffrey4l&lt;/span&gt;
-    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;xxxx&lt;/span&gt;
-    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;git-root&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;~/&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;servers&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;openstack&lt;/span&gt;
+    &lt;span class="nt"&gt;url&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;https://review.openstack.org/&lt;/span&gt;
+    &lt;span class="nt"&gt;username&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Jeffrey4l&lt;/span&gt;
+    &lt;span class="nt"&gt;password&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;xxxx&lt;/span&gt;
+    &lt;span class="nt"&gt;git-root&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;~/&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;直接运行 &lt;code&gt;gertty&lt;/code&gt;, 看到如下欢迎界面。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Gertty Welcome" class="img-responsive" src="images/gertty_welcome.png"/&gt;&lt;/p&gt;
@@ -2258,7 +2258,7 @@ Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource Data
 &lt;span class="go"&gt;-rw-r--r--. 1 root root 1.7K Mar 30 15:00 cloud-init-output.log&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;又尝试修改了 &lt;code&gt;cloud.cfg&lt;/code&gt; 的配置，把日志都都打印到特定文件，如下。但是结果还是一样，没有啥新日志信息。(其时后来才发现，这个配置默认就存在，在 &lt;code&gt;/etc/cloud/cloud.cfg.d/&lt;/code&gt; 下面)&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;output&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;{&lt;/span&gt;&lt;span class="nv"&gt;all&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;'|&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;tee&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;-a&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;/var/log/cloud-init-output.log'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;}&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;output&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;{&lt;/span&gt;&lt;span class="nt"&gt;all&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;'|&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;tee&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;-a&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;/var/log/cloud-init-output.log'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;联想到 CentOS 7 用的 systemd 管理器，试图从 systemd 里找日志。先找到了所有的 cloud-init 相关的服务&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; systemctl list-units &lt;span class="p"&gt;|&lt;/span&gt; grep cloud
@@ -2281,7 +2281,7 @@ Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource Data
 &lt;h2 id="_6"&gt;解决方法&lt;/h2&gt;
 &lt;p&gt;尽量不要直接使用官方的源，而是自己制作，尤其是 cloud-init 的配置项。要手动修改掉其默认的数据源，以避免以上情况的发生。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# /etc/cloud/cloud.cfg&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;datasource_list&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'ConfigDrive'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'OpenStack'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'Ec2'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;]&lt;/span&gt;
+&lt;span class="nt"&gt;datasource_list&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'ConfigDrive'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'OpenStack'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'Ec2'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;h2 id="_7"&gt;总结&lt;/h2&gt;
 &lt;ul&gt;
@@ -2358,18 +2358,18 @@ cp -rv etc/kolla /etc/
 &lt;p&gt;如果 Build 完成之后，使用 &lt;code&gt;docker images&lt;/code&gt; 能看到所有已经 build 好的镜像。&lt;/p&gt;
 &lt;h1 id="deploy"&gt;Deploy&lt;/h1&gt;
 &lt;p&gt;依然是先修改配置文件，与 Deploy 相关的主要是两个配置文件 &lt;code&gt;/etc/kolla/passwords.yml&lt;/code&gt; 和 &lt;code&gt;/etc/kolla/globals.yml&lt;/code&gt;。他们为 ansible 提供一些变量的设定。主要需要修改的是 &lt;code&gt;globals.yml&lt;/code&gt; 文件。修改后，其主要内容为:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;config_strategy&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"COPY_ALWAYS"&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;config_strategy&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"COPY_ALWAYS"&lt;/span&gt;
 
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;kolla_base_distro&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"centos"&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;kolla_install_type&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"source"&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;kolla_internal_address&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"10.2.0.254"&lt;/span&gt;
+&lt;span class="nt"&gt;kolla_base_distro&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"centos"&lt;/span&gt;
+&lt;span class="nt"&gt;kolla_install_type&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"source"&lt;/span&gt;
+&lt;span class="nt"&gt;kolla_internal_address&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"10.2.0.254"&lt;/span&gt;
 
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;network_interface&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"eth0"&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;neutron_external_interface&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"eth1"&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;openstack_logging_debug&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"true"&lt;/span&gt;
+&lt;span class="nt"&gt;network_interface&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"eth0"&lt;/span&gt;
+&lt;span class="nt"&gt;neutron_external_interface&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"eth1"&lt;/span&gt;
+&lt;span class="nt"&gt;openstack_logging_debug&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"true"&lt;/span&gt;
 
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;enable_cinder&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"no"&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;enable_heat&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"no"&lt;/span&gt;
+&lt;span class="nt"&gt;enable_cinder&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"no"&lt;/span&gt;
+&lt;span class="nt"&gt;enable_heat&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"no"&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;kolla 使用一个名为 &lt;code&gt;kolla-ansible&lt;/code&gt; 的封装脚本， 并提供以下几个命令&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./tools/kolla-ansible -h
@@ -2859,12 +2859,12 @@ if __name__ == "__main__":
 cd ansible-tower-setup-2.4.3
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;这个安装包本质上是一个playbook。其中&lt;code&gt;configure&lt;/code&gt;是用来生成配置文件的脚本，运行它会有几个问题，让你回答，回答完后就开始自动安装了。也可把这些问答写到一个文件中，让其自动化。建立名为&lt;code&gt;tower_setup_conf.yml&lt;/code&gt; 的文件，其内容为:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;admin_password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;database&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;internal&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;munin_password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;pg_password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;primary_machine&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;localhost&lt;/span&gt;
-&lt;span class="l l-Scalar l-Scalar-Plain"&gt;redis_password&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;admin_password&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
+&lt;span class="nt"&gt;database&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;internal&lt;/span&gt;
+&lt;span class="nt"&gt;munin_password&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
+&lt;span class="nt"&gt;pg_password&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
+&lt;span class="nt"&gt;primary_machine&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;localhost&lt;/span&gt;
+&lt;span class="nt"&gt;redis_password&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;password&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;开始进行设置&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./configure --options-file tower_setup_conf.yml
@@ -3661,66 +3661,64 @@ ip tuntap add mode tun
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;另活动页面在 &lt;a href="http://creditcard.ecitic.com/youhui/120926/wanning.shtml" target="_blank"&gt;http://creditcard.ecitic.com/youhui/120926/wanning.shtml&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 05 Feb 2015 20:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-02-05:/ecitic9.html</guid></item><item><title>MySQL Errno 150</title><link>http://xcodest.me/mysql-errno-150.html</link><description>&lt;p&gt;做OpenStack icehouse 升级到 Juno过程中，升级Neutron数据库时遇到这个错误。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="n"&gt;neutron&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;migration&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;migrate_to_ml2&lt;/span&gt; &lt;span class="n"&gt;openvswitch&lt;/span&gt; &lt;span class="nl"&gt;mysql&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//USER:PASSWORD@10.251.1.8/neutron&lt;/span&gt;
-&lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/runpy.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;162&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_run_module_as_main&lt;/span&gt;
-    &lt;span class="s"&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fname&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pkg_name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/runpy.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;72&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_run_code&lt;/span&gt;
-    &lt;span class="n"&gt;exec&lt;/span&gt; &lt;span class="n"&gt;code&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;run_globals&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;462&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;module&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;458&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;
-    &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vxlan_udp_port&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;138&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;__call__&lt;/span&gt;
-    &lt;span class="n"&gt;metadata&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;engine&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/schema.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;2848&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;create_all&lt;/span&gt;
-    &lt;span class="n"&gt;tables&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;tables&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1479&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_run_visitor&lt;/span&gt;
-    &lt;span class="n"&gt;conn&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_run_visitor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;visitorcallable&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1122&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_run_visitor&lt;/span&gt;
-    &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="n"&gt;traverse_single&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;element&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/sql/visitors.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;122&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;traverse_single&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;meth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kw&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/ddl.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;70&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;visit_metadata&lt;/span&gt;
-    &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;traverse_single&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;table&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;create_ok&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/sql/visitors.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;122&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;traverse_single&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;meth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kw&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/ddl.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;89&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;visit_table&lt;/span&gt;
-    &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connection&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CreateTable&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;table&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;662&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;execute&lt;/span&gt;
-    &lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;720&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_execute_ddl&lt;/span&gt;
-    &lt;span class="n"&gt;compiled&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;874&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_execute_context&lt;/span&gt;
-    &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1024&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_handle_dbapi_exception&lt;/span&gt;
-    &lt;span class="n"&gt;exc_info&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/util/compat.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;196&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;raise_from_cause&lt;/span&gt;
-    &lt;span class="n"&gt;reraise&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exception&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;exception&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tb&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;exc_tb&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;867&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;_execute_context&lt;/span&gt;
-    &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/default.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;324&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;do_execute&lt;/span&gt;
-    &lt;span class="n"&gt;cursor&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statement&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;parameters&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/MySQLdb/cursors.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;174&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;execute&lt;/span&gt;
-    &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;errorhandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;/usr/lib/python2.7/dist-packages/MySQLdb/connections.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;36&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;defaulterrorhandler&lt;/span&gt;
-    &lt;span class="n"&gt;raise&lt;/span&gt; &lt;span class="n"&gt;errorclass&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;errorvalue&lt;/span&gt;
-&lt;span class="n"&gt;sqlalchemy&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nl"&gt;OperationalError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;OperationalError&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1005&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Can&amp;#39;t create table &amp;#39;neutron.ml2_network_segments&amp;#39; (errno: 150)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="err"&gt;&amp;#39;\&lt;/span&gt;&lt;span class="n"&gt;nCREATE&lt;/span&gt; &lt;span class="n"&gt;TABLE&lt;/span&gt; &lt;span class="n"&gt;ml2_network_segments&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tid&lt;/span&gt; &lt;span class="n"&gt;VARCHAR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;36&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;NOT&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tnetwork_id&lt;/span&gt; &lt;span class="n"&gt;VARCHAR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;36&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;NOT&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tnetwork_type&lt;/span&gt; &lt;span class="n"&gt;VARCHAR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;NOT&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tphysical_network&lt;/span&gt; &lt;span class="n"&gt;VARCHAR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;64&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tsegmentation_id&lt;/span&gt; &lt;span class="n"&gt;INTEGER&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tPRIMARY&lt;/span&gt; &lt;span class="n"&gt;KEY&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;id&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;tFOREIGN&lt;/span&gt; &lt;span class="n"&gt;KEY&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;network_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;REFERENCES&lt;/span&gt; &lt;span class="n"&gt;networks&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;ON&lt;/span&gt; &lt;span class="n"&gt;DELETE&lt;/span&gt; &lt;span class="n"&gt;CASCADE&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; python -m neutron.db.migration.migrate_to_ml2 openvswitch mysql://USER:PASSWORD@10.251.1.8/neutron
+&lt;span class="go"&gt;Traceback (most recent call last):&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/runpy.py&amp;quot;, line 162, in _run_module_as_main&lt;/span&gt;
+&lt;span class="go"&gt;    &amp;quot;__main__&amp;quot;, fname, loader, pkg_name)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/runpy.py&amp;quot;, line 72, in _run_code&lt;/span&gt;
+&lt;span class="go"&gt;    exec code in run_globals&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&amp;quot;, line 462, in &amp;lt;module&amp;gt;&lt;/span&gt;
+&lt;span class="go"&gt;    main()&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&amp;quot;, line 458, in main&lt;/span&gt;
+&lt;span class="go"&gt;    args.vxlan_udp_port)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/neutron/db/migration/migrate_to_ml2.py&amp;quot;, line 138, in __call__&lt;/span&gt;
+&lt;span class="go"&gt;    metadata.create_all(engine)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/schema.py&amp;quot;, line 2848, in create_all&lt;/span&gt;
+&lt;span class="go"&gt;    tables=tables)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;, line 1479, in _run_visitor&lt;/span&gt;
+&lt;span class="go"&gt;    conn._run_visitor(visitorcallable, element, **kwargs)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;, line 1122, in _run_visitor&lt;/span&gt;
+&lt;span class="go"&gt;    **kwargs).traverse_single(element)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/sql/visitors.py&amp;quot;, line 122, in traverse_single&lt;/span&gt;
+&lt;span class="go"&gt;    return meth(obj, **kw)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/ddl.py&amp;quot;, line 70, in visit_metadata&lt;/span&gt;
+&lt;span class="go"&gt;    self.traverse_single(table, create_ok=True)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/sql/visitors.py&amp;quot;, line 122, in traverse_single&lt;/span&gt;
+&lt;span class="go"&gt;    return meth(obj, **kw)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/ddl.py&amp;quot;, line 89, in visit_table&lt;/span&gt;
+&lt;span class="go"&gt;    self.connection.execute(schema.CreateTable(table))&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;, line 662, in execute&lt;/span&gt;
+&lt;span class="go"&gt;    params)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;, line 720, in _execute_ddl&lt;/span&gt;
+&lt;span class="go"&gt;    compiled&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;, line 874, in _execute_context&lt;/span&gt;
+&lt;span class="go"&gt;    context)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;, line 1024, in _handle_dbapi_exception&lt;/span&gt;
+&lt;span class="go"&gt;    exc_info&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/util/compat.py&amp;quot;, line 196, in raise_from_cause&lt;/span&gt;
+&lt;span class="go"&gt;    reraise(type(exception), exception, tb=exc_tb)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/base.py&amp;quot;, line 867, in _execute_context&lt;/span&gt;
+&lt;span class="go"&gt;    context)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/sqlalchemy/engine/default.py&amp;quot;, line 324, in do_execute&lt;/span&gt;
+&lt;span class="go"&gt;    cursor.execute(statement, parameters)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/MySQLdb/cursors.py&amp;quot;, line 174, in execute&lt;/span&gt;
+&lt;span class="go"&gt;    self.errorhandler(self, exc, value)&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;/usr/lib/python2.7/dist-packages/MySQLdb/connections.py&amp;quot;, line 36, in defaulterrorhandler&lt;/span&gt;
+&lt;span class="go"&gt;    raise errorclass, errorvalue&lt;/span&gt;
+&lt;span class="go"&gt;sqlalchemy.exc.OperationalError: (OperationalError) (1005, &amp;quot;Can&amp;#39;t create table &amp;#39;neutron.ml2_network_segments&amp;#39; (errno: 150)&amp;quot;) &amp;#39;\nCREATE TABLE ml2_network_segments (\n\tid VARCHAR(36) NOT NULL, \n\tnetwork_id VARCHAR(36) NOT NULL, \n\tnetwork_type VARCHAR(32) NOT NULL, \n\tphysical_network VARCHAR(64), \n\tsegmentation_id INTEGER, \n\tPRIMARY KEY (id), \n\tFOREIGN KEY(network_id) REFERENCES networks (id) ON DELETE CASCADE\n)\n\n&amp;#39; ()&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;原因是 Mysql 有对外键约束[1]，仔细查数据里发现 networks 表的 collcation 和新建上述表时的默认数据库 collcation 不一样。以下是Mysql对外键约束的描述[1]，我遇到的是第二条错误(加粗的部分)。&lt;/p&gt;
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;Foreign key relationships involve a parent table that holds the central data values, and a child table with identical values pointing back to its parent. The FOREIGN KEY clause is specified in the child table. The parent and child tables must use the same storage engine. They must not be TEMPORARY tables.&lt;/li&gt;
-&lt;li&gt;Corresponding columns in the foreign key and the referenced key must have similar data types. The size and sign of integer types must be the same. The length of string types need not be the same. For nonbinary (character) string columns, the character set and collation must be the same.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Corresponding columns in the foreign key and the referenced key must have similar data types. The size and sign of integer types must be the same. The length of string types need not be the same. For nonbinary (character) string columns, the character set and collation must be the same.&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;MySQL requires indexes on foreign keys and referenced keys so that*  foreign key checks can be fast and not require a table scan. In the referencing table, there must be an index where the foreign key columns are listed as the first columns in the same order. Such an index is created on the referencing table automatically if it does not exist. This index might be silently dropped later, if you create another index that can be used to enforce the foreign key constraint. index_name, if given, is used as described previously.&lt;/li&gt;
 &lt;li&gt;InnoDB permits a foreign key to reference any index column or group of columns. However, in the referenced table, there must be an index where the referenced columns are listed as the first columns in the same order.&lt;/li&gt;
 &lt;li&gt;Index prefixes on foreign key columns are not supported. One consequence of this is that BLOB and TEXT columns cannot be included in a foreign key because indexes on those columns must always include a prefix length.&lt;/li&gt;
 &lt;li&gt;If the CONSTRAINT symbol clause is given, the symbol value, if used, must be unique in the database. A duplicate symbol will result in an error similar to: ERROR 1005 (HY000): Can't create table 'test.#sql-211d_3' (errno: 121). If the clause is not given, or a symbol is not included following the CONSTRAINT keyword, a name for the constraint is created automatically.&lt;/li&gt;
 &lt;li&gt;InnoDB does not currently support foreign keys for tables with user-defined partitioning. This includes both parent and child tables.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;&lt;strong&gt;解决方法是&lt;/strong&gt;：将 database 及 table 的 character 和 collcation 改成一样的就行了。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;alter&lt;/span&gt; &lt;span class="k"&gt;database&lt;/span&gt; &lt;span class="n"&gt;neutron&lt;/span&gt; &lt;span class="k"&gt;DEFAULT&lt;/span&gt; &lt;span class="k"&gt;character&lt;/span&gt; &lt;span class="kt"&gt;set&lt;/span&gt; &lt;span class="n"&gt;utf8&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -3929,8 +3927,7 @@ glance-api加载的pipeline的名字。&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;不同的pipeline用到了不同的middleware, 启作用的是cache 和 cachemanagement这两个&lt;br&gt;
-。&lt;/p&gt;
+&lt;p&gt;不同的pipeline用到了不同的middleware, 启作用的是cache 和 cachemanagement这两个。&lt;/p&gt;
 &lt;h2 id="ref"&gt;REF&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://docs.openstack.org/developer/glance/cache.html" target="_blank"&gt;The Glance Image Cache&lt;/a&gt;&lt;/li&gt;
@@ -3941,24 +3938,24 @@ glance-api加载的pipeline的名字。&lt;/p&gt;
 &lt;li&gt;master的pillar&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;使用minion配置时，要直接修改minion的配置文件，在&lt;code&gt;/etc/salt/minion.d/mine.conf&lt;/code&gt; 加入如下内容&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;mine_functions&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;test.ping&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;[]&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;network.ip_addrs&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;interface&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;eth0&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;mine_functions&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="nt"&gt;test.ping&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;[]&lt;/span&gt;
+  &lt;span class="nt"&gt;network.ip_addrs&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="nt"&gt;interface&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;eth0&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;使用pillar时配置时，只需要修改master的pillar配置即可。如在&lt;code&gt;/srv/pillar/mine.conf&lt;/code&gt; 中加入如下内容&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;mine_functions&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;test.ping&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;[]&lt;/span&gt;
-  &lt;span class="l l-Scalar l-Scalar-Plain"&gt;network.ip_addrs&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-    &lt;span class="l l-Scalar l-Scalar-Plain"&gt;interface&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;eth0&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;mine_functions&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="nt"&gt;test.ping&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;[]&lt;/span&gt;
+  &lt;span class="nt"&gt;network.ip_addrs&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="nt"&gt;interface&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;eth0&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;然后把&lt;code&gt;mine.conf&lt;/code&gt;加入到&lt;code&gt;/srv/pillar/top.sls&lt;/code&gt;, 这时可以指定哪些minion来配置mine_functions。相比较而言，这种方式更加灵活一些。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;base&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
-  &lt;span class="s"&gt;&amp;#39;controller*&amp;#39;&lt;/span&gt;&lt;span class="p p-Indicator"&gt;:&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;base&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;#39;controller*&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;mine&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -3996,8 +3993,8 @@ jeffrey-thinkpad:
 
 &lt;p&gt;机器的连接方式如上图，经检查发现，问题简化成两边的 br1 是不通的，现像是ping时，接收方收不到包，包只走到bond0就给丢弃了。原因在于内核上有问题。在网络上查到以下两个连接 &lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302 &lt;/li&gt;
-&lt;li&gt;https://bugzilla.redhat.com/show_bug.cgi?id=487763&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302" target="_blank"&gt;https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://bugzilla.redhat.com/show_bug.cgi?id=487763" target="_blank"&gt;https://bugzilla.redhat.com/show_bug.cgi?id=487763&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;把内核升级到3.8之后就可以了。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install linux-image-generic-lts-raring

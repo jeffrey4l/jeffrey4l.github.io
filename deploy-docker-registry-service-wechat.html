@@ -2,6 +2,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="theme/css/pygment.css" type="text/css" charset="utf-8">
   <style type="text/css">h1:hover a.anchor {text-decoration:none}
 h2:hover a.anchor {text-decoration:none}
 h3:hover a.anchor {text-decoration:none}
@@ -19,13 +20,13 @@ table tr:nth-child(2n) {background-color:#f8f8f8}</style>
 </head>
   <body style='background-color:white; color:#333; font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; line-height:1.6; margin:0 auto; padding:30px; padding-bottom:10px; padding-top:10px; width:854px' bgcolor="white" width="854">
     <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>使用 Docker 时，很多情况下需要搭建自己的 registry 服务。把一些私有的 Image 放到上面用。官方有一个 registry 的<a href="https://hub.docker.com/_/registry/" style="color:#4183C4">镜像</a>可以拉下来，直接用。如下：</p>
-<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">docker run -p 5000:5000 -v &lt;HOST_DIR&gt;:/tmp/registry-dev registry</code></pre>
+<pre class="highlight" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">docker run -p 5000:5000 -v &lt;HOST_DIR&gt;:/tmp/registry-dev registry</code></pre>
 
 
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>但是默认没有加上 ssl(如果没有，只能给本机提供服务)， proxy也没有开启。</p>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>我自己写了一个 docker compose, 默认开启了以上两个功能，代码见<a href="https://github.com/jeffrey4l/docker-registry" style="color:#4183C4">这里</a>。默认使用了 host 的 /data/docker-registry/data 目录做数据 volume, 所以请保证这个目录存在。</p>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>使用自己建立的 registry 服务时，要修改 docker 的服务启动脚本，加上如下参数：</p>
-<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">--insecure-registry your.domain.com:5000 --registry-mirror=https://your.domain.com:5000</code></pre>
+<pre class="highlight" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">--insecure-registry your.domain.com:5000 --registry-mirror=https://your.domain.com:5000</code></pre>
 
 
 <h1 id="ref" style="cursor:text; font-weight:bold; margin:20px 0 10px; padding:0; position:relative; color:black; font-size:28px">REF</h1>

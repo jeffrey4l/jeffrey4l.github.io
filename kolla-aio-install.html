@@ -207,18 +207,18 @@ cp -rv etc/kolla /etc/
 <p>如果 Build 完成之后，使用 <code>docker images</code> 能看到所有已经 build 好的镜像。</p>
 <h1 id="deploy">Deploy</h1>
 <p>依然是先修改配置文件，与 Deploy 相关的主要是两个配置文件 <code>/etc/kolla/passwords.yml</code> 和 <code>/etc/kolla/globals.yml</code>。他们为 ansible 提供一些变量的设定。主要需要修改的是 <code>globals.yml</code> 文件。修改后，其主要内容为:</p>
-<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">config_strategy</span><span class="p p-Indicator">:</span> <span class="s">"COPY_ALWAYS"</span>
+<div class="highlight"><pre><span></span><span class="nt">config_strategy</span><span class="p">:</span> <span class="s">"COPY_ALWAYS"</span>
 
-<span class="l l-Scalar l-Scalar-Plain">kolla_base_distro</span><span class="p p-Indicator">:</span> <span class="s">"centos"</span>
-<span class="l l-Scalar l-Scalar-Plain">kolla_install_type</span><span class="p p-Indicator">:</span> <span class="s">"source"</span>
-<span class="l l-Scalar l-Scalar-Plain">kolla_internal_address</span><span class="p p-Indicator">:</span> <span class="s">"10.2.0.254"</span>
+<span class="nt">kolla_base_distro</span><span class="p">:</span> <span class="s">"centos"</span>
+<span class="nt">kolla_install_type</span><span class="p">:</span> <span class="s">"source"</span>
+<span class="nt">kolla_internal_address</span><span class="p">:</span> <span class="s">"10.2.0.254"</span>
 
-<span class="l l-Scalar l-Scalar-Plain">network_interface</span><span class="p p-Indicator">:</span> <span class="s">"eth0"</span>
-<span class="l l-Scalar l-Scalar-Plain">neutron_external_interface</span><span class="p p-Indicator">:</span> <span class="s">"eth1"</span>
-<span class="l l-Scalar l-Scalar-Plain">openstack_logging_debug</span><span class="p p-Indicator">:</span> <span class="s">"true"</span>
+<span class="nt">network_interface</span><span class="p">:</span> <span class="s">"eth0"</span>
+<span class="nt">neutron_external_interface</span><span class="p">:</span> <span class="s">"eth1"</span>
+<span class="nt">openstack_logging_debug</span><span class="p">:</span> <span class="s">"true"</span>
 
-<span class="l l-Scalar l-Scalar-Plain">enable_cinder</span><span class="p p-Indicator">:</span> <span class="s">"no"</span>
-<span class="l l-Scalar l-Scalar-Plain">enable_heat</span><span class="p p-Indicator">:</span> <span class="s">"no"</span>
+<span class="nt">enable_cinder</span><span class="p">:</span> <span class="s">"no"</span>
+<span class="nt">enable_heat</span><span class="p">:</span> <span class="s">"no"</span>
 </pre></div>
 <p>kolla 使用一个名为 <code>kolla-ansible</code> 的封装脚本， 并提供以下几个命令</p>
 <div class="highlight"><pre><span></span>./tools/kolla-ansible -h

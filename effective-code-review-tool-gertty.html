@@ -157,12 +157,12 @@ pip install .
 <p><img alt="Gerrit HTTP Password" class="img-responsive" src="images/openstack_gerrit_http_password.png"/></p>
 <p>如果使用源码安装，请把把源码里的 <code>examples/openstack-gertty.yaml</code> 文件拷贝到 <code>~/.gertty.yml</code>，修改该文件内容如下(主要是 servers 下面的内容)，其它部分不用修改：</p>
 <p>如果使用 pip 安装的，在 <code>/usr/local/share/gertty/examples/openstack-gertty.yaml</code> 这个位置可以找到所需要的文件。</p>
-<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">servers</span><span class="p p-Indicator">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">openstack</span>
-    <span class="l l-Scalar l-Scalar-Plain">url</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">https://review.openstack.org/</span>
-    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Jeffrey4l</span>
-    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">xxxx</span>
-    <span class="l l-Scalar l-Scalar-Plain">git-root</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">~/</span>
+<div class="highlight"><pre><span></span><span class="nt">servers</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">openstack</span>
+    <span class="nt">url</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://review.openstack.org/</span>
+    <span class="nt">username</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Jeffrey4l</span>
+    <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xxxx</span>
+    <span class="nt">git-root</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">~/</span>
 </pre></div>
 <p>直接运行 <code>gertty</code>, 看到如下欢迎界面。</p>
 <p><img alt="Gertty Welcome" class="img-responsive" src="images/gertty_welcome.png"/></p>

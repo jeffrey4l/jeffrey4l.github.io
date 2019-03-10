@@ -2,6 +2,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" href="theme/css/wechat.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="theme/css/pygment.css" type="text/css" charset="utf-8">
   <style type="text/css">h1:hover a.anchor {text-decoration:none}
 h2:hover a.anchor {text-decoration:none}
 h3:hover a.anchor {text-decoration:none}
@@ -21,7 +22,7 @@ table tr:nth-child(2n) {background-color:#f8f8f8}</style>
     <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>操作系统： ubuntu 12.04.1
 内核 linux 3.2</p>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>今天发现一个网络上的问题，如果 Openstack Fixed IP 走 mode 6 绑定的网卡，不同物理机上的虚拟机是相互访问不了的。</p>
-<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-text" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">    +---- host1 -------+         +---- host2 ----+
+<pre class="highlight" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; padding:6px 10px" bgcolor="#f8f8f8"><code class="language-text" style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">    +---- host1 -------+         +---- host2 ----+
                      eth0 ---- eth0 
                    /                \
     br1 ---- bond0                   bond0 ---- br1 
@@ -31,11 +32,11 @@ table tr:nth-child(2n) {background-color:#f8f8f8}</style>
 
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>机器的连接方式如上图，经检查发现，问题简化成两边的 br1 是不通的，现像是ping时，接收方收不到包，包只走到bond0就给丢弃了。原因在于内核上有问题。在网络上查到以下两个连接 </p>
 <ol style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em; padding-left:30px'>
-<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0'>https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302 </li>
-<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em'>https://bugzilla.redhat.com/show_bug.cgi?id=487763</li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em; margin-top:0'><a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302" style="color:#4183C4; margin-top:0">https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1098302</a></li>
+<li style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:0; min-height:1em'><a href="https://bugzilla.redhat.com/show_bug.cgi?id=487763" style="color:#4183C4; margin-top:0">https://bugzilla.redhat.com/show_bug.cgi?id=487763</a></li>
 </ol>
 <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'>把内核升级到3.8之后就可以了。</p>
-<pre class="codehilite" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; overflow-y:hidden; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">apt-get install linux-image-generic-lts-raring</code></pre>
+<pre class="highlight" style="color:rgb(33, 33, 33); font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; font-size:16px; margin:15px 0; min-height:1em; background-color:#f8f8f8; border:1px solid #ccc; border-radius:3px; line-height:19px; overflow:auto; padding:6px 10px" bgcolor="#f8f8f8"><code style="background-color:transparent; border:none; border-radius:4px; font-size:16px; margin:0; padding:0; background:transparent; font-family:Consolas, Monaco, andale mono, ubuntu mono, monospace; overflow-y:hidden">apt-get install linux-image-generic-lts-raring</code></pre>
     <p style='color:rgb(33, 33, 33); font-family:"Helvetica Neue", Helvetica, sans-serif; font-size:16px; margin:15px 0; min-height:1em'> 点击「阅读原文」，能看到更好的排版。 </p>
     <!--
       <div class="copyleft">

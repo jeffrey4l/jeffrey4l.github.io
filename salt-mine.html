@@ -131,24 +131,24 @@
 <li>master的pillar</li>
 </ol>
 <p>使用minion配置时，要直接修改minion的配置文件，在<code>/etc/salt/minion.d/mine.conf</code> 加入如下内容</p>
-<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">mine_functions</span><span class="p p-Indicator">:</span>
-  <span class="l l-Scalar l-Scalar-Plain">test.ping</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[]</span>
-  <span class="l l-Scalar l-Scalar-Plain">network.ip_addrs</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">interface</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">eth0</span>
+<div class="highlight"><pre><span></span><span class="nt">mine_functions</span><span class="p">:</span>
+  <span class="nt">test.ping</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
+  <span class="nt">network.ip_addrs</span><span class="p">:</span>
+    <span class="nt">interface</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">eth0</span>
 </pre></div>
 
 
 <p>使用pillar时配置时，只需要修改master的pillar配置即可。如在<code>/srv/pillar/mine.conf</code> 中加入如下内容</p>
-<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">mine_functions</span><span class="p p-Indicator">:</span>
-  <span class="l l-Scalar l-Scalar-Plain">test.ping</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[]</span>
-  <span class="l l-Scalar l-Scalar-Plain">network.ip_addrs</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">interface</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">eth0</span>
+<div class="highlight"><pre><span></span><span class="nt">mine_functions</span><span class="p">:</span>
+  <span class="nt">test.ping</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
+  <span class="nt">network.ip_addrs</span><span class="p">:</span>
+    <span class="nt">interface</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">eth0</span>
 </pre></div>
 
 
 <p>然后把<code>mine.conf</code>加入到<code>/srv/pillar/top.sls</code>, 这时可以指定哪些minion来配置mine_functions。相比较而言，这种方式更加灵活一些。</p>
-<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">base</span><span class="p p-Indicator">:</span>
-  <span class="s">&#39;controller*&#39;</span><span class="p p-Indicator">:</span>
+<div class="highlight"><pre><span></span><span class="nt">base</span><span class="p">:</span>
+  <span class="nt">&#39;controller*&#39;</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mine</span>
 </pre></div>
 

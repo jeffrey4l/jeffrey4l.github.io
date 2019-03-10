@@ -122,11 +122,7 @@
     </div>
   </header>
   <div class="entry-content">
-    <ul>
-<li>选择合适的基础镜像</li>
-<li></li>
-</ul>
-<h2 id="_1">构建体积更小的镜像</h2>
+    <h2 id="_1">构建体积更小的镜像</h2>
 <p>构建体积更小的镜像，有利于镜像本身的传输，尤其在 Kubernetes 的环境中，镜像的传输会更加频繁，更小的体积意味着更快的调度时间和更小的空间占用。那如何构建更加小的镜像呢?</p>
 <h3 id="_2">使用更小的基础镜像</h3>
 <p>不同的基础镜像构建相同的应用会有不同的大小。使用更小基础镜像会有利于减小最终镜像的大小。建议非特殊情况下，使用 alpine 镜像。他的基础镜像只有不到 5MB, 而且还自带包管理工具。一般需求都可以满足。</p>
@@ -165,11 +161,135 @@ RUN BUILD_DEP_PKGS=&quot;
 </pre></div>
 
 
+<h3 id="_4">只安装必要依赖包的</h3>
+<p><code>apt</code> 和 <code>yum/dnf</code> 在安装包的过程中，默认会自动安装一些弱依赖包。一般情况下是使用不到的。可以显示的关闭弱依赖。</p>
+<div class="highlight"><pre><span></span><span class="x"># apt-get for Debian family</span>
+<span class="x">apt-get -y install --no-install-recommends </span><span class="cp">{{</span> <span class="nv">package</span> <span class="cp">}}</span><span class="x"> </span>
+
+<span class="x"># yum from RHEL family</span>
+<span class="x">yum -y --setopt=install_weak_deps=false \</span>
+<span class="x">    --setopt=tsflags=nodocs \</span>
+<span class="x">    --setopt=override_install_langs=en_US.utf8 \</span>
+<span class="x">    install vim</span>
+</pre></div>
+
+
+<ul>
+<li><code>--no-install-recommends</code> : 不安装推荐依赖</li>
+<li><code>--setopt=install_weak_deps=false</code>: 不安装弱依赖包</li>
+<li><code>--setopt=tsflags=nodocs</code>: 不安装文档包</li>
+<li><code>--setopt=override_install_langs=en_US.utf8</code>: 设置默认语言为 <code>en_US.utf8</code></li>
+</ul>
 <h3 id="lastlog-faillog">关闭用户初始化 lastlog 和 faillog 数据库</h3>
 <p>如果你要在镜像中创建新的用户，可以不初始化用户相关的 lastlog 和  faillog 数据库[1]。可以使用 <code>useradd -l</code> 或把 <code>/var/log/faillog</code> 和 <code>/var/log/lastlog</code> 文件删除掉，彻底关掉该功能。每个用户大概用占用掉 4k 左右的空间。</p>
-<h2 id="dive">使用 dive 分析镜像的空间占用</h2>
+<h3 id="multi-stage">使用 multi stage 构建</h3>
+<p>对于很多需要编译运行的程序，如 Java, C, Golang 等，其编译环境和运行环境是不一样的，为了减小最终镜像的大小，我们可以使用上面提到的合并 <code>RUN</code> 命令的方式，但是看着会比较乱，比较难以维护。docker daemon &gt;= 17.05 [^3]版本的时候支持 multi stage 构建，解决了此类问题，他使用两个镜像来构建，通过 <code>COPY --from</code> 语法，在两个镜像之间传递构建好的文件。使用方法如下：</p>
+<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> golang:1.7.3 as builder</span>
+<span class="k">WORKDIR</span><span class="s"> /go/src/github.com/alexellis/href-counter/</span>
+<span class="k">RUN</span> go get -d -v golang.org/x/net/html  
+<span class="k">COPY</span> app.go    .
+<span class="k">RUN</span> <span class="nv">CGO_ENABLED</span><span class="o">=</span><span class="m">0</span> <span class="nv">GOOS</span><span class="o">=</span>linux go build -a -installsuffix cgo -o app .
+
+<span class="k">FROM</span><span class="s"> alpine:latest  </span>
+<span class="k">RUN</span> apk --no-cache add ca-certificates
+<span class="k">WORKDIR</span><span class="s"> /root/</span>
+<span class="k">COPY</span> --from<span class="o">=</span>builder /go/src/github.com/alexellis/href-counter/app .
+<span class="k">CMD</span> <span class="p">[</span><span class="s2">&quot;./app&quot;</span><span class="p">]</span>  
+</pre></div>
+
+
+<p>它使用 <code>golang:1.7.3</code> 做为构建镜像，来构建出名为 <code>app</code> 的应用，然后把  <code>app</code> 再拷贝到以 <code>alpine:latest</code> 为基础的镜像里面，这样做出来的镜像肯定会很小。</p>
+<h2 id="_5">缩小镜</h2>
+<h2 id="_6">像体积</h2>
+<h3 id="dive">使用 dive 分析镜像的空间占用</h3>
 <p><a href="https://github.com/wagoodman/dive" target="_blank">dive</a> 是一个命令行工具，可以分析镜像里面每层的空间占用大小，有助于发现问题，以减少镜像大小。</p>
 <p><img alt="dive example" src="images/2018/dive-demo.gif"></p>
+<h3 id="_7">合并镜像的多个层</h3>
+<p>docker 自从 1.13 版本增加了一个 squash 的 <code>experimental</code>特性 [^2]。他可以把把当前 Dockerfile 文件里面的多个层在构建的时候自动合并成一个。但是不支持合并其父镜像。使用前，需要打开 docker daemon 的 experiment 特性。使用方法如下</p>
+<div class="highlight"><pre><span></span>$ docker build --squash .
+</pre></div>
+
+
+<p>除了这个方法，还有一个工具叫 <a href="https://github.com/goldmann/docker-squash" target="_blank">docker squash</a> ， 他支持合并镜像的任意层。使用方法如下</p>
+<div class="highlight"><pre><span></span>$ pip install docker-squash
+$ docker-squash -t kolla/centos-source-base:new <span class="se">\</span>
+      kolla/centos-source-base:master
+Old image has <span class="m">40</span> layers
+Attempting to squash last <span class="m">40</span> layers...
+...
+Original image size: <span class="m">388</span>.51 MB
+Squashed image size: <span class="m">281</span>.43 MB
+Image size decreased by <span class="m">27</span>.56 %
+Image registered in Docker daemon as kolla/centos-source-base:new
+</pre></div>
+
+
+<p>可以看到，通过 <code>squash</code> 镜像大小从 <code>388.51MB</code> 缩小到了 <code>281.43MB</code> ，缩小了 <code>27.56%</code> 。</p>
+<blockquote>
+<p>注意：在使用 squash 的时候，会消耗大量的硬盘 IO，如果硬盘性能不好，速度会比较慢。</p>
+</blockquote>
+<h2 id="_8">镜像安全</h2>
+<h3 id="init">init 进程</h3>
+<p>重启容器的时候，经常会很慢，而且docker daemon 日志中经常会抛出以下错误</p>
+<div class="highlight"><pre><span></span>dockerd[559]: msg=&quot;Container 5054f failed to exit within 10 seconds of signal 15 - using the force&quot;
+</pre></div>
+
+
+<p>默认的的 signal 15 根本就没有使其退出，最后还是 10 秒超时后强制退出(kill)的。而且有时还会出现大量僵尸进程。</p>
+<p>容器化后，由于单容器单进程，已经没有传统意义上的 init 进程。应用进程直接占用了 pid 1 的进程号，应用默认是不会处理<code>SIGTERM</code> 信号的，所以会导致 signal 15 不能使进程正常退出，只能使用 <code>SIGKILL</code> 直接杀死进程。而这可能导致某些资源不能正常回收。另外 pid 1 进程还需要负责其子进程的回收工作，但是一般应用也不会对此进行处理。所以会导致僵尸进程的出现。更多解释，请参看我写的另外一篇文章：<a href="docker-init-process" target="_blank">Docker init 进程</a></p>
+<p>解决方案是使用 <a href="https://github.com/krallin/tini" target="_blank">tini</a> , 或 <a href="ttps://github.com/Yelp/dumb-init" target="_blank">dumb-init</a> 等轻量级 init 进程。所以在制作镜像的时候最好安装上其中一个。</p>
+<div class="highlight"><pre><span></span><span class="c"># install dumb-init</span>
+<span class="k">RUN</span> wget -O /usr/local/bin/dumb-init <span class="se">\</span>
+    https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64
+<span class="k">RUN</span> chmod +x /usr/local/bin/dumb-init
+
+<span class="c"># Runs &quot;/usr/bin/dumb-init -- /my/script --with --args&quot;</span>
+<span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&quot;/usr/bin/dumb-init&quot;</span><span class="p">,</span> <span class="s2">&quot;--&quot;</span><span class="p">]</span>
+<span class="k">CMD</span> <span class="p">[</span><span class="s2">&quot;/my/script&quot;</span><span class="p">,</span> <span class="s2">&quot;--with&quot;</span><span class="p">,</span> <span class="s2">&quot;--args&quot;</span><span class="p">]</span>
+</pre></div>
+
+
+<p>如果是使用 docker 的情况下，docker 自 1.13 之后已经自带一个 init 进程，其实就是  tini, 使用方法如下</p>
+<div class="highlight"><pre><span></span>$ docker run --init centos:7 ps auxf
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         <span class="m">1</span>  <span class="m">0</span>.0  <span class="m">0</span>.0   <span class="m">1000</span>     <span class="m">4</span> ?        Ss   <span class="m">03</span>:45   <span class="m">0</span>:00 /dev/init -- ps auxf
+root         <span class="m">6</span>  <span class="m">0</span>.0  <span class="m">0</span>.0  <span class="m">51748</span>  <span class="m">3444</span> ?        R    <span class="m">03</span>:45   <span class="m">0</span>:00 ps auxf
+</pre></div>
+
+
+<h3 id="drop-root">Drop root</h3>
+<p>虽然 container 在运行的时候 ，是与系统隔离开的，但是如果你使用 root 运行容器的话，他在系统层面上看，也是 root 账号，权限是比较大的，<a href="https://security.stackexchange.com/questions/176206/docker-runs-container-processes-as-root-should-i-be-worried" target="_blank">会有一定的风险</a>。更安全的做法是使用非root 账号运行。这点在 openshift 上面体现的比较明显，他默认是使用一个很大的 uid 来运行，来限制容器内的进程权限。</p>
+<p>在使用非 root 账号运行，尤其是在 kubernetes/openshift 这种环境中，uid 是不能事先确认的，需要对读写目录标记上<code>0777</code> 的权限。包括某些可能通过  volume 挂载的目录。</p>
+<blockquote>
+<p>注意，对于 volume 挂载的目录，在 kubernetes/openshift 环境中，并不是必要的，volume 目录的 uid / gid 会由 kubelet 自动配置好。</p>
+</blockquote>
+<p>例子如下</p>
+<div class="highlight"><pre><span></span><span class="k">RUN</span> ... <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> rm -rf /etc/nginx/*.default <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> chmod -R a+rwx <span class="si">${</span><span class="nv">NGINX_HOME_TMP</span><span class="si">}</span> <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> chmod -R a+rwx /etc/nginx <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> chmod -R a+rwx /var/log/nginx <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> chmod -R a+rwx /var/run/nginx
+</pre></div>
+
+
+<p>把需要  nginx 读写的地方配置上  <code>rwx</code> 权限，这样不管 nginx 进程的 <code>uid</code>  是多少，都可以正常运行。</p>
+<h2 id="tag">镜像 tag 管理</h2>
+<p>理论上讲，docker 的镜像内容是不可变的，其 tag 应该是和 git 的 tag 是一样的，应该是一个只读值不应该变化。但是平时大家在使用的时候，习惯的使用 <code>:latest</code> ， 这样在生产环境中是比较危险的，很容易搞错镜像。我建议使用如下风格的 tag 命令方式来管理 image.</p>
+<div class="highlight"><pre><span></span>X.Y.Z-N
+
+X.Y.Z 跟随镜像里面关联代码的版本号
+N 使用构建次数，或使用时间戳。来标记 Dockerfile 的变化及构建时间
+</pre></div>
+
+
+<h2 id="_9">其它镜像构建方式</h2>
+<p>现在，除了 <code>Dockerfile</code> 这种构建方式，还有很多其它的镜像构建工具，有兴趣可以深入研究下</p>
+<ul>
+<li><a href="https://github.com/openshift/source-to-image" target="_blank">source to image</a>: openshift 里面带的一个方便由源代码直接生成镜像的方案，可以单独使用。</li>
+<li><a href="https://github.com/uber/makisu" target="_blank">makisu</a>: 方便在  kubernetes 环境中使用的镜像构建方案，可以 unprivileged 的容器中使用</li>
+<li><a href="https://github.com/containers/buildah" target="_blank">buildash</a>: 构建 OCI 兼容格式镜像工具。</li>
+</ul>
 <h2 id="demo">Demo</h2>
 <div class="highlight"><pre><span></span>FROM centos:7
 
@@ -292,7 +412,10 @@ RUN BUILD_DEP_PKGS=&quot;\
 
 <h2 id="ref">REF</h2>
 <ul>
-<li>[1] https://github.com/sagemathinc/cocalc/issues/2287#issue-249824529</li>
+<li>[^1]: https://github.com/sagemathinc/cocalc/issues/2287#issue-249824529</li>
+<li>[^2]: https://docs.docker.com/engine/reference/commandline/build/#squash-an-images-layers---squash-experimental</li>
+<li>[^3]: <a href="https://docs.docker.com/develop/develop-images/multistage-build/" target="_blank">https://docs.docker.com/develop/develop-images/multistage-build/</a> </li>
+<li>[^4]: <a href="https://www.weave.works/blog/10-tips-for-building-and-managing-containers" target="_blank">10 tips for building and managing containers</a></li>
 </ul>
     <div class="copyright">
       <p><span>原始链接:</span><a href="http://xcodest.me/drafts/best-practices-for-building-docker-images.html" target="_blank">http://xcodest.me/drafts/best-practices-for-building-docker-images.html </a></p>

@@ -125,28 +125,28 @@
     <p><code>set_stats</code> 支持用户设置任意数值，用以在 ansible 运行完后显示。</p>
 <p>使用例子如下</p>
 <div class="highlight"><pre><span></span><span class="nn">---</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">all</span>
-  <span class="l l-Scalar l-Scalar-Plain">gather_facts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="p p-Indicator">-</span> <span class="nt">hosts</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">all</span>
+  <span class="nt">gather_facts</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 
-  <span class="l l-Scalar l-Scalar-Plain">pre_tasks</span><span class="p p-Indicator">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">set ceph iscsi gateway install &#39;In Progress&#39;</span>
-      <span class="l l-Scalar l-Scalar-Plain">run_once</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-      <span class="l l-Scalar l-Scalar-Plain">set_stats</span><span class="p p-Indicator">:</span>
-        <span class="l l-Scalar l-Scalar-Plain">data</span><span class="p p-Indicator">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">installer_phase_ceph_iscsi_gw</span><span class="p p-Indicator">:</span>
-            <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="s">&quot;In</span><span class="nv"> </span><span class="s">Progress&quot;</span>
-            <span class="l l-Scalar l-Scalar-Plain">start</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">lookup(&#39;pipe&#39;,</span><span class="nv"> </span><span class="s">&#39;date</span><span class="nv"> </span><span class="s">+%Y%m%d%H%M%SZ&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
-  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">debug</span><span class="p p-Indicator">:</span>
-        <span class="l l-Scalar l-Scalar-Plain">msg</span><span class="p p-Indicator">:</span> <span class="s">&#39;hello</span><span class="nv"> </span><span class="s">world&#39;</span>
-  <span class="l l-Scalar l-Scalar-Plain">post_tasks</span><span class="p p-Indicator">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">set ceph iscsi gw install &#39;Complete&#39;</span>
-      <span class="l l-Scalar l-Scalar-Plain">run_once</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-      <span class="l l-Scalar l-Scalar-Plain">set_stats</span><span class="p p-Indicator">:</span>
-        <span class="l l-Scalar l-Scalar-Plain">data</span><span class="p p-Indicator">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">installer_phase_ceph_iscsi_gw</span><span class="p p-Indicator">:</span>
-            <span class="l l-Scalar l-Scalar-Plain">status</span><span class="p p-Indicator">:</span> <span class="s">&quot;Complete&quot;</span>
-            <span class="l l-Scalar l-Scalar-Plain">end</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">lookup(&#39;pipe&#39;,</span><span class="nv"> </span><span class="s">&#39;date</span><span class="nv"> </span><span class="s">+%Y%m%d%H%M%SZ&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
+  <span class="nt">pre_tasks</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">set ceph iscsi gateway install &#39;In Progress&#39;</span>
+      <span class="nt">run_once</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+      <span class="nt">set_stats</span><span class="p">:</span>
+        <span class="nt">data</span><span class="p">:</span>
+          <span class="nt">installer_phase_ceph_iscsi_gw</span><span class="p">:</span>
+            <span class="nt">status</span><span class="p">:</span> <span class="s">&quot;In</span><span class="nv"> </span><span class="s">Progress&quot;</span>
+            <span class="nt">start</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">lookup(&#39;pipe&#39;,</span><span class="nv"> </span><span class="s">&#39;date</span><span class="nv"> </span><span class="s">+%Y%m%d%H%M%SZ&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
+  <span class="nt">tasks</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">debug</span><span class="p">:</span>
+        <span class="nt">msg</span><span class="p">:</span> <span class="s">&#39;hello</span><span class="nv"> </span><span class="s">world&#39;</span>
+  <span class="nt">post_tasks</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">set ceph iscsi gw install &#39;Complete&#39;</span>
+      <span class="nt">run_once</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+      <span class="nt">set_stats</span><span class="p">:</span>
+        <span class="nt">data</span><span class="p">:</span>
+          <span class="nt">installer_phase_ceph_iscsi_gw</span><span class="p">:</span>
+            <span class="nt">status</span><span class="p">:</span> <span class="s">&quot;Complete&quot;</span>
+            <span class="nt">end</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">lookup(&#39;pipe&#39;,</span><span class="nv"> </span><span class="s">&#39;date</span><span class="nv"> </span><span class="s">+%Y%m%d%H%M%SZ&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </pre></div>
 
 

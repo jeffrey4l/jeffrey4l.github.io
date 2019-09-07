@@ -88,6 +88,10 @@ MARKDOWN = {
             'nl2br': {},
             'sane_lists': {},
             'wikilinks': {},
+            'toc': {
+                'permalink': True,
+                'anchorlink': True
+                },
             },
         'output_format': 'html5'
         }

@@ -136,11 +136,11 @@ signal 15 - using the force&quot;
 <p>默认的的 signal 15 根本就没有使其退出，最后还是 10 秒超时后强制退出(kill)的。而<br>
 且有时还会出现大量僵尸进程</p>
 <p>这可不是一个好现象。本文解释其原因及解决方法。</p>
-<h2 id="_1">背景知识</h2>
-<h3 id="_2">信号</h3>
+<h2 id="_1"><a class="toclink" href="#_1">背景知识</a><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h3 id="_2"><a class="toclink" href="#_2">信号</a><a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
 <p>这个是 Linux 最常见一个概念，一般杀死进程时都会用到 <code>kill &lt;pid&gt;</code> 。 不同的信<br>
 号有不同的默认行为。用户可以注册自己的信号处理函数，来覆盖掉默认行为。</p>
-<h3 id="_3">僵尸进程</h3>
+<h3 id="_3"><a class="toclink" href="#_3">僵尸进程</a><a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
 <p>僵尸进程是终止运行的进程，为什么它们是有害的? </p>
 <p>虽然应用申请的内存已经释放了，但是你依然能通过 <code>ps</code> 看到它。这是因为有一些内<br>
 核资源没有释放。下面是 Linux <code>waitpid</code> 的 man page:</p>
@@ -150,10 +150,10 @@ will not be possible to create further processes.&quot;
 </pre></div>
 
 
-<h2 id="_4">容器化后的问题</h2>
+<h2 id="_4"><a class="toclink" href="#_4">容器化后的问题</a><a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <p>容器化后，由于单容器单进程，已经没有传统意义上的 init 进程了。应用进程直接占用<br>
 了 pid 1 的进程号。从而导致以下两个问题。</p>
-<h3 id="_5">进程不能正常终止</h3>
+<h3 id="_5"><a class="toclink" href="#_5">进程不能正常终止</a><a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
 <p>Linux 内核中会对 pid 1 进程发送特殊的信号量。</p>
 <p>一般情况下，当给一个进程发送信号时，内核会先检查是否有用户定义的处理函数，如果<br>
 没有，就会回退到默认行为。例如使用 SIGTERM 直接杀死进程。然而，如果进程的 PID<br>
@@ -162,7 +162,7 @@ will not be possible to create further processes.&quot;
 点效果也没有。</p>
 <p>常见的使用是 docker run my-container script. 给 <code>docker run</code> 进程发送<br>
 <code>SIGTERM</code> 信号会杀掉 <code>docker run</code> 进程，但是容器还在后台运行。</p>
-<h3 id="_6">孤儿僵尸进程不能正常回收</h3>
+<h3 id="_6"><a class="toclink" href="#_6">孤儿僵尸进程不能正常回收</a><a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
 <p>当进程退出时，它会变成僵尸进程，直到它的父进程调用 <code>wait()</code> ( 或其变种 ) 的系<br>
 统调用。process table 里面会把它的标记为 <code>defunct</code> 状态。一般情况下，父进程应<br>
 该立即调用 <code>wait()</code>, 以防僵尸进程时间过长。</p>
@@ -170,7 +170,7 @@ will not be possible to create further processes.&quot;
 ，init 进程就要对这些进程负责，并在适当的时候调用 <code>wait()</code> 方法。</p>
 <p>但是，通常情况下，大部分进程不会处理偶然依附在自己进程上的随机子进程，所以在容器<br>
 中，会出现许多僵尸进程。</p>
-<h2 id="_7">解决方案</h2>
+<h2 id="_7"><a class="toclink" href="#_7">解决方案</a><a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
 <hr>
 <p>让所有的应用能正确的处理以上的情况，不太现实。好在现在有很多解决方案，例如<br>
 dumb-init [0] 。他像是一个小型 init 服务，他启动一个子进程并转发所有接收到的信<br>
@@ -190,7 +190,7 @@ CMD [&quot;/my/script&quot;, &quot;--with&quot;, &quot;--args&quot;]
 
 
 <p>类似的方案 tini [1], pidunu[3]</p>
-<h2 id="_8">参考资料</h2>
+<h2 id="_8"><a class="toclink" href="#_8">参考资料</a><a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
 <hr>
 <p>[0] https://github.com/Yelp/dumb-init<br>
 [1] https://github.com/krallin/tini<br>

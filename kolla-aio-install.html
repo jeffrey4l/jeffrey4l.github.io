@@ -154,9 +154,9 @@
 <li>Kolla master 分支上使用的是 RDO master 上的源，打包极不稳定，时常会有 Bug 出现。所以本文使用的是 CentOS + 源码的安装方式</li>
 <li>由于国内网络原因，一些国外的源(这些源还没有国内镜像)会相当慢，所以 build docker image 时会很慢，推荐使用 VPN</li>
 </ul>
-<h1 id="_1">安装</h1>
+<h1 id="_1"><a class="toclink" href="#_1">安装</a><a class="headerlink" href="#_1" title="Permanent link">¶</a></h1>
 <p>安装好操作系统后，依次进行如下配置</p>
-<h2 id="_2">源</h2>
+<h2 id="_2"><a class="toclink" href="#_2">源</a><a class="headerlink" href="#_2" title="Permanent link">¶</a></h2>
 <p>加入 Docker 的源</p>
 <div class="highlight"><pre><span></span>sudo tee /etc/yum.repos.d/docker.repo &lt;&lt; 'EOF'
 [dockerrepo]
@@ -170,7 +170,7 @@ EOF
 <p>加入 EPEL 源</p>
 <div class="highlight"><pre><span></span>yum install -y epel-release
 </pre></div>
-<h2 id="kolla">安装 Kolla 所需依赖</h2>
+<h2 id="kolla"><a class="toclink" href="#kolla">安装 Kolla 所需依赖</a><a class="headerlink" href="#kolla" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span>yum install -y ansible docker-engine git gcc python-setuptools
 easy_install -U pip
 </pre></div>
@@ -182,12 +182,12 @@ easy_install -U pip
 systemctl enable docker
 systemctl start docker
 </pre></div>
-<h2 id="kolla_1">下载 Kolla 代码并安装依赖</h2>
+<h2 id="kolla_1"><a class="toclink" href="#kolla_1">下载 Kolla 代码并安装依赖</a><a class="headerlink" href="#kolla_1" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span>git clone https://github.com/openstack/kolla.git
 cd kolla
 pip install -r requirements.txt -r test-requirements.txt tox
 </pre></div>
-<h1 id="build-docker-image">Build Docker Image</h1>
+<h1 id="build-docker-image"><a class="toclink" href="#build-docker-image">Build Docker Image</a><a class="headerlink" href="#build-docker-image" title="Permanent link">¶</a></h1>
 <p>以下如果没有特别说明，所有的操作都是在 Kolla 项目的目录里进行</p>
 <p>首先要先生成并修改配置文件</p>
 <div class="highlight"><pre><span></span>tox -e genconfig
@@ -205,7 +205,7 @@ cp -rv etc/kolla /etc/
 </pre></div>
 <p>参数中的 <code>-p default</code> 是指定了只 build 主要的 image, 包括: mariadb, rabbitmq, cinder, ceilometer, glance, heat, horizon, keystone, neutron, nova, swift等 . 这些可以只生成的 <code>kolla-build.conf</code> 里找到。</p>
 <p>如果 Build 完成之后，使用 <code>docker images</code> 能看到所有已经 build 好的镜像。</p>
-<h1 id="deploy">Deploy</h1>
+<h1 id="deploy"><a class="toclink" href="#deploy">Deploy</a><a class="headerlink" href="#deploy" title="Permanent link">¶</a></h1>
 <p>依然是先修改配置文件，与 Deploy 相关的主要是两个配置文件 <code>/etc/kolla/passwords.yml</code> 和 <code>/etc/kolla/globals.yml</code>。他们为 ansible 提供一些变量的设定。主要需要修改的是 <code>globals.yml</code> 文件。修改后，其主要内容为:</p>
 <div class="highlight"><pre><span></span><span class="nt">config_strategy</span><span class="p">:</span> <span class="s">"COPY_ALWAYS"</span>
 
@@ -240,7 +240,7 @@ Commands:
 <p>可以使用 <code>./tools/kolla-ansible prechecks</code> 来检查一个机器是否满足安装条件。</p>
 <p>使用 <code>./tools/kolla-ansible deploy</code> 来开始正式安装。安装会很快，我机器上，几分钟就安装完成了。</p>
 <p>最后，使用<code>./tools/kolla-ansible post-deploy</code> 来生成 <code>/etc/kolla/admin-openrc.sh</code> 文件用来加载认证变量。</p>
-<h1 id="_3">查看安装后的状态</h1>
+<h1 id="_3"><a class="toclink" href="#_3">查看安装后的状态</a><a class="headerlink" href="#_3" title="Permanent link">¶</a></h1>
 <div class="highlight"><pre><span></span>IMAGE                                                  COMMAND                 NAMES
 lokolla/centos-source-keystone:2.0.0                   "kolla_start"           keystone
 lokolla/centos-source-horizon:2.0.0                    "kolla_start"           horizon

@@ -127,7 +127,7 @@
   </header>
   <div class="entry-content">
     <p>cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).</p>
-<h1 id="enable-the-v2-in-cinder">Enable the v2 in cinder</h1>
+<h1 id="enable-the-v2-in-cinder"><a class="toclink" href="#enable-the-v2-in-cinder">Enable the v2 in cinder</a><a class="headerlink" href="#enable-the-v2-in-cinder" title="Permanent link">&para;</a></h1>
 <p>Change the following config. The v1 and v2 is enabled in default.</p>
 <div class="highlight"><pre><span></span><span class="c1"># DEPRECATED: Deploy v1 of the Cinder API. (boolean value)</span>
 <span class="c1">#enable_v1_api=true</span>
@@ -137,7 +137,7 @@
 </pre></div>
 
 
-<h1 id="enable-the-cinder-v2-api-in-nova">Enable the cinder v2 api in nova</h1>
+<h1 id="enable-the-cinder-v2-api-in-nova"><a class="toclink" href="#enable-the-cinder-v2-api-in-nova">Enable the cinder v2 api in nova</a><a class="headerlink" href="#enable-the-cinder-v2-api-in-nova" title="Permanent link">&para;</a></h1>
 <p>In current nova config ( juno ), the default config like below. Depend on <code>catalog_info</code> key, it use the v2 first. If v2 is not found, it will fall back to v1 version.</p>
 <div class="highlight"><pre><span></span><span class="k">[cinder]</span>
 
@@ -183,7 +183,7 @@ service cinder-api restart
 </pre></div>
 
 
-<h1 id="ref">REF</h1>
+<h1 id="ref"><a class="toclink" href="#ref">REF</a><a class="headerlink" href="#ref" title="Permanent link">&para;</a></h1>
 <ul>
 <li>http://docs.openstack.org/havana/install-guide/install/apt/content/cinder-controller.html</li>
 <li>https://wiki.openstack.org/wiki/CinderAPIv2</li>

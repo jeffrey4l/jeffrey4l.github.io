@@ -2,7 +2,7 @@
 <rss version="2.0"><channel><title>代码杂货铺</title><link>https://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Wed, 12 Dec 2018 00:00:00 +0800</lastBuildDate><item><title>ceilometer 性能分析 II</title><link>https://xcodest.me/ceilometer-performance-analysis-ii.html</link><description>&lt;p&gt;在上一篇文章中， 「&lt;a href="ceilometer-performance-analysis.html" target="_blank"&gt;记一次 ceilometer 性能分析&lt;/a&gt;」中，我们分析了 ceilometer 的架构，及由于keystonauth 的问题，导致的大量 &lt;code&gt;get_endpoints&lt;/code&gt; 的请求。文章的最后，成功的把这去掉了这部分无意义的请求。但是即使优化后，ceilometer notification 服务还是会吃掉大量CPU, 那 ceilometer 还有没有其它的优化空间呢?&lt;/p&gt;
 &lt;p&gt;细心的伙伴也许会发现，在最后的火焰图下，还有大量的 &lt;code&gt;re.py&lt;/code&gt; 模块的调用。大约占掉了总 CPU 的使用的 28%(下图蓝框部分)。这是值得怀疑的。正则处理不应该这么慢。SVG文件见 &lt;a href="images/ceilometer-perf/notification_perf_after.svg" target="_blank"&gt;notification_perf_after.svg&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="notification perf ii_before" src="images/ceilometer-perf/notification_perf_ii_before.jpg"&gt;&lt;/p&gt;
-&lt;h2 id="_1"&gt;分析&lt;/h2&gt;
+&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;分析&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;结合代码查下，定位到了如下部分&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;metric_match&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;metric_name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cfg&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;metrics&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
@@ -53,7 +53,7 @@
 
 
 &lt;p&gt;全清掉后，所有的正则编译都需要重新跑一次。而 ceilometer 处理的 metric 又多，所以会频繁的触发这个问题。也就造成了&lt;code&gt;re.compile&lt;/code&gt; 调用，进而吃掉了大量 CPU&lt;/p&gt;
-&lt;h2 id="_2"&gt;验证&lt;/h2&gt;
+&lt;h2 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;验证&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;既然定位了问题，就可以写段代码验证下。 代码逻辑如下：使用不同的 &lt;code&gt;size&lt;/code&gt; 值来触发&lt;code&gt;_MATCH_CACHE.clear()&lt;/code&gt; 的调用，测试调用时间。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;fnmatch&lt;/span&gt;
 
@@ -64,7 +64,7 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3 id="python2"&gt;python2 测试&lt;/h3&gt;
+&lt;h3 id="python2"&gt;&lt;a class="toclink" href="#python2"&gt;python2 测试&lt;/a&gt;&lt;a class="headerlink" href="#python2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="nd"&gt;@node1&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="c1"&gt;# python -m timeit  -v  -n 100 -r 3 -s &amp;#39;from fnmatch_test import test&amp;#39; -- &amp;#39;test(100)&amp;#39; &lt;/span&gt;
 &lt;span class="n"&gt;raw&lt;/span&gt; &lt;span class="n"&gt;times&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.124&lt;/span&gt; &lt;span class="mf"&gt;0.117&lt;/span&gt; &lt;span class="mf"&gt;0.116&lt;/span&gt;
 &lt;span class="mi"&gt;100&lt;/span&gt; &lt;span class="n"&gt;loops&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.16&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt; &lt;span class="n"&gt;per&lt;/span&gt; &lt;span class="n"&gt;loop&lt;/span&gt;
@@ -76,7 +76,7 @@
 
 
 &lt;p&gt;可以看出， 当 size 为 101 比 100 只多一个对比数据，但是最后的运行时间从 0.116 秒上升到了 3.24 秒。 单次循环的时间花费从 1.16 msec 上升到了 31.4 msec，增加了27倍之多。&lt;/p&gt;
-&lt;h3 id="python3"&gt;python3 测试&lt;/h3&gt;
+&lt;h3 id="python3"&gt;&lt;a class="toclink" href="#python3"&gt;python3 测试&lt;/a&gt;&lt;a class="headerlink" href="#python3" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;同时测试了下 python3 的 fnmatch 实现。python3 里面使用了不同的实现。 废弃了 &lt;code&gt;DICT&lt;/code&gt; 的 cache 机制，使用 &lt;code&gt;functools.lru_cache&lt;/code&gt;, 同时也不是满了全清，而是使用 &lt;code&gt;lru&lt;/code&gt; (Least recently used) 的机制。cache size 也从100 提升到了 256, 性能有很大提升&lt;sup id="fnref-3"&gt;&lt;a class="footnote-ref" href="#fn-3"&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref-4"&gt;&lt;a class="footnote-ref" href="#fn-4"&gt;4&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# python -m timeit -v -n 100 -r 3 -s &amp;#39;from fnmatch_test import test&amp;#39; -- &amp;#39;test(256)&amp;#39;&lt;/span&gt;
 &lt;span class="n"&gt;raw&lt;/span&gt; &lt;span class="n"&gt;times&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;321&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;314&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;312&lt;/span&gt; &lt;span class="n"&gt;msec&lt;/span&gt;
@@ -89,12 +89,12 @@
 
 
 &lt;p&gt;可以看出，在超出 cache size, 因为 python3 中不是全清，运行时间只增加了3倍，相比 python2 的情况要好很多了。&lt;/p&gt;
-&lt;h2 id="_3"&gt;问题解决&lt;/h2&gt;
+&lt;h2 id="_3"&gt;&lt;a class="toclink" href="#_3"&gt;问题解决&lt;/a&gt;&lt;a class="headerlink" href="#_3" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;因为我使用的是 OpenStack pike 版本，先搜索了下最新的代码有没有解决这个问题，发现还真解决了。社区 patch 见&lt;sup id="fnref-5"&gt;&lt;a class="footnote-ref" href="#fn-5"&gt;5&lt;/a&gt;&lt;/sup&gt;。解决的逻辑是因为 resource 里面的 metrics 个数并不多，没有必要使用 &lt;code&gt;fnmatch&lt;/code&gt;，而是本地缓存一个 &lt;code&gt;(metric, resource)&lt;/code&gt; 的字典，直接反查。不过这个只包含在了 Rocky 及之后的版本里面。我做了一个 backport， 代码见&lt;sup id="fnref-6"&gt;&lt;a class="footnote-ref" href="#fn-6"&gt;6&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
 &lt;p&gt;打上 patch 后，再看新的火焰图如下, SVG文件见 &lt;a href="images/ceilometer-perf/notification_perf_ii_after.svg" target="_blank"&gt;notification_perf_ii_after.svg&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="notification perf ii_after" src="images/ceilometer-perf/notification_perf_ii_after.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;同时 CPU 的消耗也降低了不少,从100% 降到了 10%-20% 的区间，效果还是很明显的。&lt;/p&gt;
-&lt;h2 id="_4"&gt;总结&lt;/h2&gt;
+&lt;h2 id="_4"&gt;&lt;a class="toclink" href="#_4"&gt;总结&lt;/a&gt;&lt;a class="headerlink" href="#_4" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;对比下最早的火焰图，SVG文件见 &lt;a href="images/ceilometer-perf/notification_perf_before.svg" target="_blank"&gt;notification_perf_before.svg&lt;/a&gt;。 蓝色框内的请求都已经去掉了，优化掉了近 50%以上的 CPU 消耗。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="notification perf ii_finally" src="images/ceilometer-perf/notification_perf_ii_finally.jpg"&gt;&lt;/p&gt;
 &lt;ul&gt;
@@ -134,7 +134,7 @@
 &lt;blockquote&gt;
 &lt;p&gt;pyflame 是 Uber 公司开源的用于生成 Python 程序火焰图的工具。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h2 id="ceilometer"&gt;ceilometer 架构&lt;/h2&gt;
+&lt;h2 id="ceilometer"&gt;&lt;a class="toclink" href="#ceilometer"&gt;ceilometer 架构&lt;/a&gt;&lt;a class="headerlink" href="#ceilometer" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;ceilometer 架构经历过多次变化，已经简化成了如下图的结构。ceilometer 只有两个服务。ceilometer polling 服务负责从nova, swift, libvirt 等服务拉取相关数据，并发送到 MQ 里面的 notification.sample 队列。之后 ceilometer notification 从 MQ 中取到数据后，通过 &lt;code&gt;pipeline.yml&lt;/code&gt; 的定义，进行数据转化后，再发给后面的 gnocchi api 进行存储。 这次的问题是出现在 ceilometer notification 进程。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;   +--------------------+
    | Ceilometer Polling |
@@ -154,7 +154,7 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id="_1"&gt;问题&lt;/h2&gt;
+&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;问题&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;当开启 16 worker 的情况下，MQ 的处理速度如下图。前面部分是优化前的，基本消息处理速度在 10/s，平均每个 worker 每秒连一个请求都处理不完 。(后部分上升是因为有几个worker 做了优化)&lt;/p&gt;
 &lt;p&gt;&lt;img alt="rabbitmq noti" src="images/ceilometer-perf/rabbitmq.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;安装 pyflame 工具&lt;/p&gt;
@@ -209,13 +209,13 @@ make
 &lt;p&gt;打完以上 patch 后，重新抓取火焰图如下, SVG文件见&lt;a href="images/ceilometer-perf/notification_perf_after.svg" target="_blank"&gt;notification_perf_after.svg&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="notification perf after" src="images/ceilometer-perf/notification_perf_after.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;对比优化前, 右部分的在于已经不在调用 get_endpoint 接口。也就有了本文一开始的图，每秒的消息处理速度由 10/s 上升到了 40/s &lt;/p&gt;
-&lt;h2 id="_2"&gt;后记&lt;/h2&gt;
+&lt;h2 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;后记&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;pyflame 生成火焰图的方式来定位性能或代码问题还是很方便的。&lt;/li&gt;
 &lt;li&gt;估计 OpenStack 里面其它地方的代码也会有类似的问题，感觉更好的修复方式，是在 keystoneauth 里面自动缓存当前所有的 endpoints, 有需要的时候再刷新。&lt;/li&gt;
 &lt;li&gt;&lt;del&gt;优化后，ceilometer-notification 处理消息时，还是会占用100% 的CPU, 主要原因从火焰图上看是对 json 的解析花掉了大量时间，进一步优化的话，可能需要换性能更好的 json 解析库或使用其它序列化方式。&lt;/del&gt;， 这里观察错了，这里是 &lt;code&gt;re.py&lt;/code&gt; 模块的问题，进一步的分析见 &lt;a href="ceilometer-performance-analysis-ii.html" target="_blank"&gt;ceilometer 性能分析 II&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="ref"&gt;REF&lt;/h2&gt;
+&lt;h2 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;div class="footnote"&gt;
 &lt;hr&gt;
 &lt;ol&gt;
@@ -236,7 +236,7 @@ make
 &lt;p&gt;那如果 Helm 不轻量好用的话，我们有啥其他选择?&lt;/p&gt;
 &lt;p&gt;Ansible 做为部署管理的工具，正在受到越来越多的运维人员的追捧。他支持 Jinja2 的模板引擎，而且是无代理节点的架构，很方便来做一些模板工作。所以本文来介绍使用 Ansible 如何管理 Kubernetes 上面的资源。&lt;/p&gt;
 &lt;p&gt;首先使用 Ansible 避免不了使用其模块。与 Kubernetes 相关的模块可以从[1]找到。现在主要有&lt;code&gt;k8s&lt;/code&gt;, &lt;code&gt;k8s_facts&lt;/code&gt;, &lt;code&gt;k8s_scale&lt;/code&gt;, &lt;code&gt;kubernetes&lt;/code&gt;和&lt;code&gt;oc&lt;/code&gt; 5个模块。其中 &lt;code&gt;kubernetes&lt;/code&gt; 和 &lt;code&gt;oc&lt;/code&gt; 模块因为实现逻辑不好用，在 ansible 2.6 版本中已经废弃掉， 推荐使用前三个。其中，&lt;code&gt;k8s_scale&lt;/code&gt; 来自 ansible 2.5, &lt;code&gt;k8s&lt;/code&gt; 来自 ansible 2.6, &lt;code&gt;k8s_facts&lt;/code&gt; 来自 ansible 2.7。使用这三个模块的话，还需要安装 &lt;code&gt;openshift&lt;/code&gt; 的 Python 包。以下代码全部基于 ansible 2.7 版本。&lt;/p&gt;
-&lt;h2 id="k8s"&gt;k8s 模块&lt;/h2&gt;
+&lt;h2 id="k8s"&gt;&lt;a class="toclink" href="#k8s"&gt;k8s 模块&lt;/a&gt;&lt;a class="headerlink" href="#k8s" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;管理 kubernetes 各种资源的话，使用 &lt;code&gt;k8s&lt;/code&gt; 模块就可以了，如下是创建 namespace 的写法&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;Create a k8s namespace&lt;/span&gt;
   &lt;span class="nt"&gt;k8s&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -310,7 +310,7 @@ make
 &lt;p&gt;基于此，完全可以使用这种方式替换掉 helm 的模板功能，而且没有引入任何额外的依赖，就是直接的 ansible 生成相关文件，丢给 kubernetes api 来处理。等部署完成后，我们也可以脱离 Ansible 继续通过 &lt;code&gt;kubelet&lt;/code&gt; 命令维护这些资源。也正是由于这么简洁的实现，&lt;code&gt;k8s&lt;/code&gt; 模块可以管理 Kubernetes 和 OpenShift, 也可以管理各种 &lt;code&gt;CRD&lt;/code&gt; 资源。&lt;/p&gt;
 &lt;p&gt;相比于 helm ， 这种方法的缺点在于 YAML 文件都要自己写，没有社区在维护的 Charts。不像 helm 那样，一个命令就可以把服务都安装上。前期的工作还是挺多的。但是从另外一个角度来说，社区维护的 Charts 做一些 Demo 还可以，真要生产上面使用，还是要做大量工作的。所以从这个角度上讲，使用 Ansible 也没有带来太大的工作量。&lt;/p&gt;
 &lt;p&gt;我更期待社区可以使用 Ansible 直接管理 Charts 资源，或可以有一个工具把 Charts 的 Go 模板转成 Ansible 可以接受的 Jinja2 格式。&lt;/p&gt;
-&lt;h2 id="k8s_scale-k8s_facts"&gt;k8s_scale 和  k8s_facts 模块&lt;/h2&gt;
+&lt;h2 id="k8s_scale-k8s_facts"&gt;&lt;a class="toclink" href="#k8s_scale-k8s_facts"&gt;k8s_scale 和  k8s_facts 模块&lt;/a&gt;&lt;a class="headerlink" href="#k8s_scale-k8s_facts" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;这两个模块算辅助的功能，我觉得使用的机会可能并不会太多。&lt;code&gt;k8s_scale&lt;/code&gt; 的例子如下&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;- name: Scale deployment up, and extend timeout
   k8s_scale:
@@ -345,7 +345,7 @@ make
 
 
 &lt;p&gt;使用他，你可以检查某个资源是否存在，如果存在的话，还可以获得这个资源的yaml 文件描述，我觉得在 Ansible 流程控制中会有一些作用，可以根据当前 Kubernets 里面资源情况，有选择的做一些动作。&lt;/p&gt;
-&lt;h2 id="_1"&gt;小技巧&lt;/h2&gt;
+&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;小技巧&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;因为 Ansible 是 Python 编写的，在使用 pip 安装时容易破坏系统已经安装的 Python 包，推荐使用虚拟环境来安装。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# mkvirtualenv --system-site-packages ansible
 # pip install &amp;#39;ansible&amp;lt;2.7&amp;#39; openshift
@@ -358,7 +358,7 @@ make
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id="demo"&gt;demo&lt;/h2&gt;
+&lt;h2 id="demo"&gt;&lt;a class="toclink" href="#demo"&gt;demo&lt;/a&gt;&lt;a class="headerlink" href="#demo" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;以下是使用 ansible 在 OpenShift 上面部署 echoserver 的一个完整例子&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;---&lt;/span&gt;
 &lt;span class="x"&gt;- hosts: localhost&lt;/span&gt;
@@ -490,16 +490,16 @@ make
 
 &lt;p&gt;可以看到，结果上已经把 custom stats 的值打印出来了。这样就可以把运行过程中的一些状态或统计信息输出出来，方便 playbooks 运行完成后，查看其运行状态。&lt;/p&gt;
 &lt;p&gt;以外，这个模块也适用于 windows&lt;/p&gt;
-&lt;h2 id="_1"&gt;相关链接&lt;/h2&gt;
+&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;相关链接&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;[1] &lt;a href="https://docs.ansible.com/ansible/2.6/modules/set_stats_module.html" target="_blank"&gt;https://docs.ansible.com/ansible/2.6/modules/set_stats_module.html&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sun, 14 Oct 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-10-14:/ansible-set-stats.html</guid></item><item><title>OpenStack Rocky Release</title><link>https://xcodest.me/openstack-rocky-release.html</link><description>&lt;h2 id="glance"&gt;Glance&lt;/h2&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sun, 14 Oct 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-10-14:/ansible-set-stats.html</guid></item><item><title>OpenStack Rocky Release</title><link>https://xcodest.me/openstack-rocky-release.html</link><description>&lt;h2 id="glance"&gt;&lt;a class="toclink" href="#glance"&gt;Glance&lt;/a&gt;&lt;a class="headerlink" href="#glance" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;增加了和 cinder 一样多后端存储的支持。当需要配置多个后端存储时，不用像之前一样，只能配置多个 glance 服务了。&lt;/li&gt;
 &lt;li&gt;支持了镜像格式的自动转换。之前 glance 有一套 tasks API, 可以创建一个后台任务，可以用来做镜像自动转化，但是使用起来比较复杂&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;。需要管理员修改配置文件，而且需要使用单独的 Task Create 接口。现在如果打开这个功能后，当用户使用 image import 接口时，会自动的做镜像的格式转换&lt;sup id="fnref2-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/li&gt;
 &lt;li&gt;Glance 一直使用 md5 做为 checksum 字段的算法，用于数据效验和防篡改。但是 md5 已经被证明是不安全的算法。新版本可以通过修改配置文件的方式，使用更加安全的算法&lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref-3"&gt;&lt;a class="footnote-ref" href="#fn-3"&gt;3&lt;/a&gt;&lt;/sup&gt;。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="nova"&gt;Nova&lt;/h2&gt;
+&lt;h2 id="nova"&gt;&lt;a class="toclink" href="#nova"&gt;Nova&lt;/a&gt;&lt;a class="headerlink" href="#nova" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;增加了对 AArch64 处理的支持&lt;/li&gt;
 &lt;li&gt;支持动态的开启或关闭某个 cell&lt;/li&gt;
@@ -513,7 +513,7 @@ make
 &lt;li&gt;支持配置 neutron 网络的 NUMA 亲和性&lt;/li&gt;
 &lt;li&gt;PowerVM driver 支持热插拔网卡，虚拟机快照， vSCSI FC。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="kolla"&gt;kolla&lt;/h2&gt;
+&lt;h2 id="kolla"&gt;&lt;a class="toclink" href="#kolla"&gt;kolla&lt;/a&gt;&lt;a class="headerlink" href="#kolla" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;增加 Apache Storm, Logstash 5.x, Monasca Thresh, radvd, prometheus, cadvisor 等镜像&lt;/li&gt;
 &lt;li&gt;horizon 镜像增加了 blazar, congress, octavia 界面的支持&lt;/li&gt;
@@ -547,7 +547,7 @@ make
 &lt;p&gt;&lt;a href="https://docs.openstack.org/releasenotes/kolla-ansible/rocky.html" target="_blank"&gt;https://docs.openstack.org/releasenotes/kolla-ansible/rocky.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-6" title="Jump back to footnote 6 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 20 Sep 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-09-20:/openstack-rocky-release.html</guid><category>Linux</category><category>OpenStack</category></item><item><title>Ceph bluestore 和 ceph-volume</title><link>https://xcodest.me/ceph-bluestore-and-ceph-volume.html</link><description>&lt;h2 id="_1"&gt;部署&lt;/h2&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 20 Sep 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-09-20:/openstack-rocky-release.html</guid><category>Linux</category><category>OpenStack</category></item><item><title>Ceph bluestore 和 ceph-volume</title><link>https://xcodest.me/ceph-bluestore-and-ceph-volume.html</link><description>&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;部署&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;使用环境&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;单节点&lt;/li&gt;
@@ -671,18 +671,18 @@ lrwxrwxrwx. &lt;span class="m"&gt;1&lt;/span&gt; root root  &lt;span class="m"&g
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id="bluestore-rocksdb-ceph-volume"&gt;bluestore &amp;amp; rocksdb &amp;amp; ceph-volume&lt;/h2&gt;
+&lt;h2 id="bluestore-rocksdb-ceph-volume"&gt;&lt;a class="toclink" href="#bluestore-rocksdb-ceph-volume"&gt;bluestore &amp;amp; rocksdb &amp;amp; ceph-volume&lt;/a&gt;&lt;a class="headerlink" href="#bluestore-rocksdb-ceph-volume" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;ceph 的组件多采用插件的机制，包括后端存储，KV 数据库，磁盘管理等。各组件之间可以灵活的组合。&lt;/p&gt;
 &lt;p&gt;基于后端存储包括 filestore, kvstore，memstore 和新的 bluestore。 Ceph Luminous 引用了 bluestore 的存储类型，不依赖文件系统，直接管理物理磁盘，相比filestore, 在 io 写入的时候路径更短，也避免了二次写入的问题，性能会更加好。&lt;/p&gt;
 &lt;p&gt;KV 存储主要包括 LevelDB, MemDB 和新的 RocksDB。 RocksDB 是 Facebook 基于 LevelDB 开发的 key-value 数据，并对闪存(flash)有更友好的优化。&lt;/p&gt;
 &lt;p&gt;磁盘管理之前只有个 ceph-disk, 现在新引入了 ceph-volume。基于 lvm 来管理磁盘，并会逐渐废弃掉 ceph-disk。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="ceph-bluestore.png" src="images/2018/ceph-bluestore.png"&gt;&lt;/p&gt;
 &lt;p&gt;基中比较有意思的是 RocksDB 的实现，RocksDB 原本只基于文件系统的。但是得益于它本身的灵活性，bluestore 实现了一套 RocksDB 的 Env 接口，还在 BlueStore 上面实现了一套 BlueFS 的接口与 BluestoreEnv 对接。使得 RocksDB 可以存储在 BlueStore 上面。&lt;/p&gt;
-&lt;h2 id="wal-db"&gt;wal &amp;amp; db 的大小问题&lt;/h2&gt;
+&lt;h2 id="wal-db"&gt;&lt;a class="toclink" href="#wal-db"&gt;wal &amp;amp; db 的大小问题&lt;/a&gt;&lt;a class="headerlink" href="#wal-db" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;在 ceph bluestore 的情况下，wal 是 RocksDB 的 write-ahead log, 相当于之前的 journal 数据，db 是 RocksDB 的 metadata 信息。在磁盘选择原则是 block.wal &amp;gt; block.db &amp;gt; block。当然所有的数据也可以放到同一块盘上。&lt;/p&gt;
 &lt;p&gt;默认情况下， wal 和 db 的大小分别是 512 MB 和 1GB, 包括 Sage Weil 的 PPT 里面也是这样标明的&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;。现在没有一个太好的理论值，它和 ceph 里面的每个 OSD 里面的对象个数有关系。更多讨论可以参看&lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;。 现在社区推荐的是 block size * 4% 的值。也就是说如果你的 block 盘大小是 1TB，那 block.db 的大小最少是 40GB。&lt;sup id="fnref-4"&gt;&lt;a class="footnote-ref" href="#fn-4"&gt;4&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref-5"&gt;&lt;a class="footnote-ref" href="#fn-5"&gt;5&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 &lt;p&gt;值得注意的是，如果所有的数据都在单块盘上，那是没有必要指定 wal &amp;amp; db 的大小的。如果 wal &amp;amp; db 是在不同的盘上，由于 wal/db 一般都会分的比较小，是有满的可能性的。如果满了，这些数据会迁移到下一个快的盘上(wal - db - main)。所以最少不会因为数据满了，而造成无法写入&lt;sup id="fnref-3"&gt;&lt;a class="footnote-ref" href="#fn-3"&gt;3&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
-&lt;h2 id="bluestore-osd"&gt;使用 bluestore 时的 osd 分区&lt;/h2&gt;
+&lt;h2 id="bluestore-osd"&gt;&lt;a class="toclink" href="#bluestore-osd"&gt;使用 bluestore 时的 osd 分区&lt;/a&gt;&lt;a class="headerlink" href="#bluestore-osd" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;如果是使用的 ceph-disk 管理磁盘，他会建立一个 100MB 的分区，来存放 keyring / whoami 这些信息，这和之前的逻辑是一样的。&lt;/p&gt;
 &lt;p&gt;如果是使用 ceph-volume 管理磁盘，&lt;code&gt;/var/lib/ceph/osd/ceph-0&lt;/code&gt; 分区会从 tmpfs 挂载过来(也就是内存)&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mount &lt;span class="p"&gt;|&lt;/span&gt; grep osd
@@ -742,7 +742,7 @@ ceph.type=block
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id="osd"&gt;osd 的盘是如何挂载的&lt;/h2&gt;
+&lt;h2 id="osd"&gt;&lt;a class="toclink" href="#osd"&gt;osd 的盘是如何挂载的&lt;/a&gt;&lt;a class="headerlink" href="#osd" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;ceph 依赖 systemd 来管理挂载，不需要配置 &lt;code&gt;/etc/fstab&lt;/code&gt; 文件。在初始化 osd 的时候, ceph 会 enable 一个 ceph-volume@x.service 服务，其中 x 的格式如 &lt;code&gt;{lvm|simple}-{osd id}-{osd uuid}&lt;/code&gt;, 这个服务会在系统的&lt;code&gt;local-fs.target&lt;/code&gt; 组里面，当系统挂载本地盘的时候，会自动挂载上。&lt;/p&gt;
 &lt;p&gt;这个 ceph-volume@.service 定义如下&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$systemctl cat ceph-volume@lvm-0-b7b4fa98-d36e-430b-9789-a432a078292c
@@ -773,18 +773,18 @@ WantedBy=multi-user.target
 &lt;/blockquote&gt;
 &lt;p&gt;这个 &lt;code&gt;trigger&lt;/code&gt; 会调用 &lt;code&gt;ceph-volume lvm activate&lt;/code&gt; 命令，去准备相对应挂载及里面的数据初始化。&lt;/p&gt;
 &lt;p&gt;最后， &lt;code&gt;ceph-volume lvm activate&lt;/code&gt; 会调用 &lt;code&gt;ceph-bluestore-tool pirme-osd-dir&lt;/code&gt; 命令来初始化里面的数据。&lt;/p&gt;
-&lt;h2 id="_2"&gt;其它&lt;/h2&gt;
-&lt;h3 id="ceph-osd-purge"&gt;ceph osd purge&lt;/h3&gt;
+&lt;h2 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;其它&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;h3 id="ceph-osd-purge"&gt;&lt;a class="toclink" href="#ceph-osd-purge"&gt;ceph osd purge&lt;/a&gt;&lt;a class="headerlink" href="#ceph-osd-purge" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;ceph Limunous 新加了一个 &lt;code&gt;ceph osd purge&lt;/code&gt; 命令，很好用，可以一个命令，把某个 osd 相关的信息都清除掉。包括&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;osd&lt;/li&gt;
 &lt;li&gt;crush rule&lt;/li&gt;
 &lt;li&gt;auth key&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id="ceph-disk-lvm"&gt;ceph-disk lvm&lt;/h3&gt;
+&lt;h3 id="ceph-disk-lvm"&gt;&lt;a class="toclink" href="#ceph-disk-lvm"&gt;ceph-disk lvm&lt;/a&gt;&lt;a class="headerlink" href="#ceph-disk-lvm" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;ceph-disk 应试不支持 lvm 的， 参见 http://tracker.ceph.com/issues/5461&lt;/p&gt;
 &lt;p&gt;不过 kolla 是否支持，可以验证下， 因为 kolla 的脚本里面不依赖 ceph-disk&lt;/p&gt;
-&lt;h2 id="_3"&gt;版本&lt;/h2&gt;
+&lt;h2 id="_3"&gt;&lt;a class="toclink" href="#_3"&gt;版本&lt;/a&gt;&lt;a class="headerlink" href="#_3" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -831,7 +831,7 @@ WantedBy=multi-user.target
 &lt;p&gt;&lt;a href="http://liyichao.github.io/posts/ceph-bluestore-%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86.html" target="_blank"&gt;ceph bluestore 基本原理&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-8" title="Jump back to footnote 8 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 07 Apr 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-04-07:/ceph-bluestore-and-ceph-volume.html</guid><category>Ceph</category></item><item><title>Kolla 从升级到零宕机升级</title><link>https://xcodest.me/kolla-queens-and-rocky.html</link><description>&lt;h2 id="done-in-queens"&gt;Done in Queens&lt;/h2&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 07 Apr 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-04-07:/ceph-bluestore-and-ceph-volume.html</guid><category>Ceph</category></item><item><title>Kolla 从升级到零宕机升级</title><link>https://xcodest.me/kolla-queens-and-rocky.html</link><description>&lt;h2 id="done-in-queens"&gt;&lt;a class="toclink" href="#done-in-queens"&gt;Done in Queens&lt;/a&gt;&lt;a class="headerlink" href="#done-in-queens" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;镜像构建支持 squash layer, 可以把多个 docker 镜像存储层合并成一层。从而有效的降低镜像存储和传输过程中的资源消耗。&lt;/li&gt;
 &lt;li&gt;Ceph 版本从 Jewel 升级到 Luminous， 同时支持了 cephfs 服务及 ceph nfs 服务。Luminous 是 Ceph 最新的长期版本，从去年8月份发布以来，经历了几个小版本的发布，相对来说更加稳定。相比 Jewel， Luminous 在性能上有了彻底性的优化,性能更好。默认使用了异步的消息机制，资源消耗更低。支持多主的 MDS 服务，cephfs 的可用性更高。&lt;/li&gt;
@@ -841,7 +841,7 @@ WantedBy=multi-user.target
 &lt;li&gt;支持外部的 DB 服务。在某些使用环境中，数据库可能有专门的机器提供，也有专门的DBA来管理维护。这种情况下，Kolla 就没有必要建立自己的数据库了。通过这个功能，你可以很方便的使用已经存在的数据库实例。&lt;/li&gt;
 &lt;li&gt;支持开发模式。这个对 OpenStack 的开发者很是方便。以住，开发者可能要通过 devstack 搭建完整的 OpenStack 来开发，但是部署复杂，难度高。现在 kolla-ansible 已经支持了开发模式。 通过配置要开发环境的 &lt;code&gt;dev_mode&lt;/code&gt;, 如 &lt;code&gt;horizon_dev_mode: true&lt;/code&gt;, 那么 horizon 容器内的代码会从物理机上挂载进去，开发者对代码修改后，就可以直接看到修改后的效果。十分方便。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="plan-in-rocky"&gt;Plan in Rocky&lt;/h2&gt;
+&lt;h2 id="plan-in-rocky"&gt;&lt;a class="toclink" href="#plan-in-rocky"&gt;Plan in Rocky&lt;/a&gt;&lt;a class="headerlink" href="#plan-in-rocky" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;支持 Prometheus 监控。对于复杂的 OpenStack 平台来主产，监控报警必不可少，否则平台难于维护。之前 Kolla 尝试过很多监控平台方案，但是都不是很理想。随着 prometheus 的成熟，Kolla 将其做为自己的默认监控报警方案。整体架构会是 prometheus + alertmanager + gnocchi 的方案，prometheus 用来做数据采集，alertmanager 做通知报警，gnocchi 做数据存储。&lt;/li&gt;
 &lt;li&gt;ceph bluestore 支持。在上一个版本中，kolla 中的 ceph 版本已经升级到了 Luminous。但是并没有支持 bluestore 的存储机制，这个版本会把这个功能加上。&lt;/li&gt;
@@ -849,15 +849,15 @@ WantedBy=multi-user.target
 &lt;li&gt;数据备份及恢复。尽管所有的组件都做了高可用，但是一些关键数据的备份还是需要的，防止极端情况的出现。这个周期 Kolla 会提供一个数据库备份及恢复的机制，更好帮助用户做好数据安全。&lt;/li&gt;
 &lt;li&gt;服务的滚动升级。所谓的滚动升级，就是在最小宕机甚至零宕机的情况下进行 OpenStack 平台的升级。这个周期会实现 OpenStack 主要模块的滚动升级。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="_1"&gt;更多信息可以参看&lt;/h2&gt;
+&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;更多信息可以参看&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://docs.openstack.org/releasenotes/kolla/queens.html" target="_blank"&gt;https://docs.openstack.org/releasenotes/kolla/queens.html&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://docs.openstack.org/releasenotes/kolla-ansible/queens.html" target="_blank"&gt;https://docs.openstack.org/releasenotes/kolla-ansible/queens.html&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://lists.openstack.org/pipermail/openstack-dev/2018-March/128044.html" target="_blank"&gt;http://lists.openstack.org/pipermail/openstack-dev/2018-March/128044.html&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 20 Mar 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-03-20:/kolla-queens-and-rocky.html</guid><category>OpenStack</category><category>Kolla</category></item><item><title>关于虚拟机密码你所有需要知道的一切</title><link>https://xcodest.me/everything-about-vm-password.html</link><description>&lt;p&gt;虽然各种云的虚拟机都推荐使用 SSH 密钥登录，但是还是有很多人喜欢使用密码登录，而且有的时候需要通过 console 来登录系统。那么如何更好的设置、修改虚拟机的密码呢?本文以 OpenStack 为例，介绍如何设置及修改虚拟机密码。&lt;/p&gt;
-&lt;h2 id="_1"&gt;内置密码&lt;/h2&gt;
+&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;内置密码&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;这是最简单的，制作镜像的时候，直接给 root 账号配置一个密码。但是问题也不言而喻。所有的示例都有相同的默认密码，如果用户忘记改的话，其它人很容易的就能扫到你的机器，从而登录你的机器。&lt;/p&gt;
-&lt;h2 id="libvirt"&gt;启动的时候通过 libvirt 进行密码注入&lt;/h2&gt;
+&lt;h2 id="libvirt"&gt;&lt;a class="toclink" href="#libvirt"&gt;启动的时候通过 libvirt 进行密码注入&lt;/a&gt;&lt;a class="headerlink" href="#libvirt" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;方法是在 &lt;code&gt;nova.conf&lt;/code&gt; 里面开始如下配置&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[libvirt]&lt;/span&gt;
 &lt;span class="na"&gt;inject_password&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;true&lt;/span&gt;
@@ -874,11 +874,11 @@ WantedBy=multi-user.target
 &lt;li&gt;密码并没有持久化(存入数据库)，也不应该做持久化，在 &lt;code&gt;evacuate&lt;/code&gt; 或 &lt;code&gt;unshelve&lt;/code&gt; 的时候，这些密码信息会被丢掉。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;所以这个方法也不是推荐使用，更详细的信息，可能参看我另一篇文章「&lt;a href="http://xcodest.me/inject-file-in-rbd.html" target="_blank"&gt;rbd 是否支持注入&lt;/a&gt;」。&lt;/p&gt;
-&lt;h2 id="metadata-api"&gt;通过 metadata api 注入&lt;/h2&gt;
+&lt;h2 id="metadata-api"&gt;&lt;a class="toclink" href="#metadata-api"&gt;通过 metadata api 注入&lt;/a&gt;&lt;a class="headerlink" href="#metadata-api" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;cloud-init 这个服务是从 AWS 学来的。它安装在虚拟机中，在启动虚拟机时，做一些初始化工作。如：硬盘分区自动扩展，SSH Public Key 注入，用户创建等。用户甚至可以注入一些 shell 脚本到虚拟机中运行。在自动化方面启了很大的作用。Heat 的实现就依赖于 cloud-init 服务。&lt;/p&gt;
 &lt;p&gt;在 OpenStack 上，cloud-init 应该从 http://169.254.169.254 去拿到所需要的信息。而这个服务是通过 iptables 转到了 neutron-metadata-agent 服务上&lt;/p&gt;
 &lt;p&gt;通过 cloud-init 注入也有几种方式，下面分别来说明。&lt;/p&gt;
-&lt;h3 id="_2"&gt;脚本&lt;/h3&gt;
+&lt;h3 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;脚本&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;因为在虚拟机启动的时候，是可以传入 shell 脚本的 user_data，所以可以在这个 shell 脚本里面修改 root 密码。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat &amp;lt;&amp;lt;EOF &amp;gt; user_data.sh
 #!/bin/sh
@@ -891,7 +891,7 @@ nova boot --user-data ./user_data.sh --image ...
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3 id="cloud-init-configuration"&gt;cloud init configuration&lt;/h3&gt;
+&lt;h3 id="cloud-init-configuration"&gt;&lt;a class="toclink" href="#cloud-init-configuration"&gt;cloud init configuration&lt;/a&gt;&lt;a class="headerlink" href="#cloud-init-configuration" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;user data 也可以是 cloud-init 支持的一个 yaml 结构文件，所以还可以通过如下方式改密码&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#cloud-config
 password: password
@@ -901,7 +901,7 @@ chpasswd:
 
 
 &lt;p&gt;这种方式要比「脚本」的方法优雅一些，推荐使用。而且cloud-init 本身功能很强大，值得深入挖掘下。&lt;/p&gt;
-&lt;h3 id="config-drive"&gt;config drive&lt;/h3&gt;
+&lt;h3 id="config-drive"&gt;&lt;a class="toclink" href="#config-drive"&gt;config drive&lt;/a&gt;&lt;a class="headerlink" href="#config-drive" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;默认情况下，metadata api 是通过 &lt;code&gt;http://169.254.169.254&lt;/code&gt; 这个地址获取元数据信息。此外，nova 也支持使用 disk 的方式传入元数据。方便在网络环境不允许 metadata api 的情况下使用。性能也比 metadata api 好的多。&lt;/p&gt;
 &lt;p&gt;config drive 的开启方法是在 &lt;code&gt;nova.conf&lt;/code&gt; 中配置：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[DEFAULT]&lt;/span&gt;
@@ -915,7 +915,7 @@ chpasswd:
 
 
 &lt;p&gt;开启 config drive 后，除了上面提到的「脚本」和「cloud init configuration」方式，还可以使用 nova 的 &lt;code&gt;--admin-pass&lt;/code&gt; 参数。虽然这时密码是注入到了虚拟中，但是 cloud init 并不支持读取这里的密码，所以会失败。不过可以修改下 cloud init 支持这种方式。具体更多信息参看[1]。&lt;/p&gt;
-&lt;h2 id="nova-set-password"&gt;通过 nova set-password&lt;/h2&gt;
+&lt;h2 id="nova-set-password"&gt;&lt;a class="toclink" href="#nova-set-password"&gt;通过 nova set-password&lt;/a&gt;&lt;a class="headerlink" href="#nova-set-password" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;nova 还支持通过 libvirt 的 set-user-password 接口来修改正在运行的虚拟的密码。这个接口本质上是通过 qemu-guest-agent 的 &lt;code&gt;guest-set-user-password&lt;/code&gt; 接口来修改密码。所以对 libvirt 及 qemu-guest-agent 的版本都有要求。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;libvirt &amp;gt; 1.2.16           # host
 qemu-guest-agent[2] &amp;gt; 2.3  # linux guest
@@ -937,7 +937,7 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;li&gt;做镜像的时候，安装 qemu-gest-agent 到虚拟机，并且开启随机启动。&lt;/li&gt;
 &lt;li&gt;上传镜像的时候，加上相关的 metadata 信息： &lt;code&gt;glance image-create --property hw_qemu_guest_agent=yes&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="_3"&gt;虚拟机自动生成加密密码&lt;/h2&gt;
+&lt;h2 id="_3"&gt;&lt;a class="toclink" href="#_3"&gt;虚拟机自动生成加密密码&lt;/a&gt;&lt;a class="headerlink" href="#_3" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;很早之前，nova 还支持了虚拟机生成密码，然后加密后传回 nova 的功能[4]。其原理如下：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;虚拟机动态生成 root 的密码&lt;/li&gt;
@@ -948,7 +948,7 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;/ol&gt;
 &lt;p&gt;因为密钥对等加密原因，除了「1」「5」可以看到明文密码外，其它步骤里面都是加密的。所以这种方式可以说是最安全的方案。连云平台提供商都不能看到真正的密码。&lt;/p&gt;
 &lt;p&gt;不过这种方式只在 Windows 的 cloud init 版本 cloudbase-init 里面有实现[5]。Linux 版本的 cloud-init 并不支持。不过 Github 上面找到一个类似的实现[6]，虽然只支持 RHEL 7, 但是有需要的话，可以参考修改下。&lt;/p&gt;
-&lt;h2 id="_4"&gt;如果我忘记了虚拟机密码怎么办&lt;/h2&gt;
+&lt;h2 id="_4"&gt;&lt;a class="toclink" href="#_4"&gt;如果我忘记了虚拟机密码怎么办&lt;/a&gt;&lt;a class="headerlink" href="#_4" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;如果你还有虚拟机的 ssh private key，可能通过 ssh 登录机器修改密码&lt;/li&gt;
 &lt;li&gt;如果你的虚拟机平台支持 &lt;code&gt;nova set-password&lt;/code&gt;, 可以在线改&lt;/li&gt;
@@ -963,7 +963,7 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;li&gt;这时你应试就可以直接登录到系统里面，通过 &lt;code&gt;passwd&lt;/code&gt; 命令直接修改密码&lt;/li&gt;
 &lt;li&gt;硬重启操作系统 &lt;code&gt;nova reboot --hard&lt;/code&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2 id="ref"&gt;REF&lt;/h2&gt;
+&lt;h2 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;[1] &lt;a href="http://niusmallnan.com/_build/html/_templates/openstack/inject_passwd.html#cloud-init" target="_blank"&gt;http://niusmallnan.com/_build/html/_templates/openstack/inject_passwd.html#cloud-init&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;[2] &lt;a href="https://github.com/qemu/qemu/commit/215a2771a7b6b29037ee8deba484815d816b6fdd" target="_blank"&gt;https://github.com/qemu/qemu/commit/215a2771a7b6b29037ee8deba484815d816b6fdd&lt;/a&gt;&lt;/li&gt;
@@ -972,7 +972,7 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;li&gt;[5] &lt;a href="https://github.com/openstack/cloudbase-init/blob/master/cloudbaseinit/metadata/services/httpservice.py" target="_blank"&gt;https://github.com/openstack/cloudbase-init/blob/master/cloudbaseinit/metadata/services/httpservice.py&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;[6] &lt;a href="https://github.com/vvaldez/openstack-password-reset" target="_blank"&gt;https://github.com/vvaldez/openstack-password-reset&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;[0] &lt;a href="https://zhangchenchen.github.io/2017/01/19/openstack-reset-instance-password" target="_blank"&gt;https://zhangchenchen.github.io/2017/01/19/openstack-reset-instance-password&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 20 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-20:/everything-about-vm-password.html</guid><category>Linux</category><category>OpenStack</category></item><item><title>Source to Image 工具介绍</title><link>https://xcodest.me/s2i.html</link><description>&lt;h2 id="_1"&gt;介绍&lt;/h2&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 20 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-20:/everything-about-vm-password.html</guid><category>Linux</category><category>OpenStack</category></item><item><title>Source to Image 工具介绍</title><link>https://xcodest.me/s2i.html</link><description>&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;介绍&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Source to Image(S2I) 是一个创建 Docker 镜像的工具。也是 openshift 上面的主要构建镜像的方式之一。他的优点包括：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;速度&lt;/strong&gt;，S2I 可以实现很复杂的操作逻辑，而不会创建新的镜像层，所以运行起来很快。&lt;/li&gt;
@@ -980,7 +980,7 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;li&gt;&lt;strong&gt;高效&lt;/strong&gt;, 在构建过程中，S2I不允许运行任意的 yum install 命令，以防止降低开发迭代速度 &lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;生态&lt;/strong&gt;，S2I 鼓励一个共享镜像生态。从而你的应用可以实现最佳实践。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2 id="s2i"&gt;S2I 工作原理&lt;/h2&gt;
+&lt;h2 id="s2i"&gt;&lt;a class="toclink" href="#s2i"&gt;S2I 工作原理&lt;/a&gt;&lt;a class="headerlink" href="#s2i" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;S2I 的实现哲学是：所谓的镜像，就是一个运行环境 + 源代码。如是你是某一个类型的源代码，如果 Python, Ruby, HTML 等，那运行环境基本就是固定的。因此针对某类代码，只要提供好一个标准运行环境的基础镜像。使用的时候，先把用户的代码放到这个镜像中，生成一个新的镜像就可以。S2I 很适合给特定语言使用。&lt;/p&gt;
 &lt;p&gt;S2I 会依赖一个特殊的 base 镜像，这个镜像主要包括基础的运行环境，如 Python, PHP，Nginx等。以及几个特殊的 S2I 脚本， 如&lt;/p&gt;
 &lt;ul&gt;
@@ -989,7 +989,7 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;li&gt;&lt;code&gt;usage&lt;/code&gt; 打印使用说明&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;redhat 官方有一些已经编写好的镜像例子&lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;，可以从找到。像 &lt;a href="https://github.com/sclorg/s2i-python-container" target="_blank"&gt;Python&lt;/a&gt;, &lt;a href="https://github.com/sclorg/s2i-ruby-container" target="_blank"&gt;Ruby&lt;/a&gt;。利用这些镜像，再加上你的源代码，可以快速构建出应用镜像。&lt;/p&gt;
-&lt;h2 id="s2i_1"&gt;安装 S2I 工具&lt;/h2&gt;
+&lt;h2 id="s2i_1"&gt;&lt;a class="toclink" href="#s2i_1"&gt;安装 S2I 工具&lt;/a&gt;&lt;a class="headerlink" href="#s2i_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;S2I 是一个 Go 编写的程序，你可以从 Github 上面下载已经编译的二进制文件&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;，也可以自己编译。下面是手动编译的方法。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nv"&gt;S2I_URL&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;github.com/openshift/source-to-image
 &lt;span class="gp"&gt;$&lt;/span&gt; go get &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;S2I_URL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
@@ -999,7 +999,7 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id="s2i_2"&gt;使用 S2I 构建镜像&lt;/h2&gt;
+&lt;h2 id="s2i_2"&gt;&lt;a class="toclink" href="#s2i_2"&gt;使用 S2I 构建镜像&lt;/a&gt;&lt;a class="headerlink" href="#s2i_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;下面我们来使用 S2I 的功能，快速构建一个 Python 应用。&lt;/p&gt;
 &lt;p&gt;首先，先构建一个通用的 Python 2.7 基础镜像&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; git clone https://github.com/sclorg/s2i-python-container.git
@@ -1100,7 +1100,7 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;p&gt;本文翻译自：http://www.mustbegeek.com/difference-between-vsphere-esxi-and-vcenter/&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;最近对 VMware 虚拟化解决方案有很多的疑惑。毫无疑问，VMware是虚拟化解决方案的老大。但是第一次接触 Vmware 虚拟化平台的人面对 VMware vSphere 和他的组件经常感觉到疑惑。所以今天我将解释下 vSphere 和他的组件。能弄清楚 vSphere，EXSi 和 vCenter 的区别是很重要的。为了更深入了解和体验 vSphere, 你还可以&lt;a href="http://www.mustbegeek.com/installing-vsphere-in-vmware-workstation/" target="_blank"&gt;在 VMware Workstation 中安装 vSphere&lt;/a&gt;。&lt;/p&gt;
-&lt;h2 id="vsphereesxi-vcenter"&gt;vSphere，ESXi 和 vCenter 的区别&lt;/h2&gt;
+&lt;h2 id="vsphereesxi-vcenter"&gt;&lt;a class="toclink" href="#vsphereesxi-vcenter"&gt;vSphere，ESXi 和 vCenter 的区别&lt;/a&gt;&lt;a class="headerlink" href="#vsphereesxi-vcenter" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;VMware Inc.&lt;/strong&gt; 是一家软件公司。它开发了许多&lt;a href="http://www.vmware.com/products/" target="_blank"&gt;产品&lt;/a&gt;，尤其是各种云解决方案 。他的云解决方案包括&lt;a href="https://www.vmware.com/products/vcloud-suite.html" target="_blank"&gt;云产品&lt;/a&gt;，&lt;a href="https://www.vmware.com/products/datacenter-virtualization.html" target="_blank"&gt;数据中心产品&lt;/a&gt;和&lt;a href="https://www.vmware.com/products/desktop-virtualization.html" target="_blank"&gt;桌面产品&lt;/a&gt;等。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;vSphere&lt;/strong&gt; 是在数据中心产品下的一套软件。vSphere 类似微软的 Office 办公套件，Office 办公套件包含了许多软件如Word, Excel, Access 等。和 Office 一样，vSphere 也是一个软件的集合。他包括了 vCenter, ESXi 和 vSphere 等。所以，这些软件联合起来就是 vSphere。vSphere 不是一个你可以安装使用的软件。它只是一个包含其它组件的集合。&lt;/p&gt;
 &lt;p&gt;ESXi, vSphere client 和 vCeneter 都是 vSphere 的组件。&lt;strong&gt;ESXi&lt;/strong&gt;是 vSphere 中最重要的一个组件。ESXi 是虚拟化服务。所有的虚拟机都是运行在 ESXi 服务上面。为了安装，管理和访问这些虚拟机，你需要另外的 vSphere 套件，也就是 vSphere client 或 vCenter。&lt;strong&gt;vSphere client&lt;/strong&gt;允许管理员访问 ESXi 服务并管理虚拟机。vSphere client 是安装在客户机(也就是管理员的笔记本)上面。vSphere client 被用来连接 ESXi 服务器和管理任务。那么什么是 vCenter?为什么虚拟它?尝试下在没有 vCenter server 的时候，只用 vSphere client 来&lt;a href="http://www.mustbegeek.com/create-copy-of-existing-virtual-machine-in-esxi-server/" target="_blank"&gt;克隆存在的虚拟机&lt;/a&gt;。&lt;/p&gt;
@@ -1110,11 +1110,11 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;p&gt;你可以在你的电脑中&lt;a href="http://www.mustbegeek.com/virtualization/installing-vsphere-in-vmware-workstation/" target="_blank"&gt;安装 vSphere&lt;/a&gt;来体验这些技术。更多信息，请参看&lt;a href="http://www.vmware.com/" target="_blank"&gt;VMware 官网&lt;/a&gt;。&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 08 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-08:/difference-between-vsphere-esxi-and-vcenter.html</guid><category>vmware</category></item><item><title>Intel CPU 漏洞是什么，又如何应对</title><link>https://xcodest.me/meltdown-and-spectre.html</link><description>&lt;p&gt;新年刚过，一个 Intel CPU 的漏洞消息如晴天霹雳，掀起了一波讨论浪潮。Intel 的股价也应声而且倒。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="intel-stock" src="images/2018/intel-stock.png"&gt;&lt;/p&gt;
 &lt;p&gt;这个漏洞几乎影响了现在所有正在使用的 CPU 型号，囊括了包含Intel, AMD, ARM在内的所有主流 CPU 厂商。影响之大，前所未有。究竟这是怎么一个问题，又如何避免?&lt;/p&gt;
-&lt;h2 id="_1"&gt;时间线&lt;/h2&gt;
+&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;时间线&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;这个问题最早在2017年6月1日就已经被 Google Project Zero 团队报到了各大 CPU 厂商。&lt;/p&gt;
 &lt;p&gt;11月份左右自个操作系统厂商开始意识到这个问题，并开始了修补工作。&lt;/p&gt;
 &lt;p&gt;之所以今天才引起轰动，是因为 Project Zero 团队于1月3日把漏洞信息发布到了自己的博客上面 &lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
-&lt;h2 id="_2"&gt;漏洞描述&lt;/h2&gt;
+&lt;h2 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;漏洞描述&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;关于这个漏洞，有三个变种的问题，分别是&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;bounds check bypass (CVE-2017-5753)&lt;/li&gt;
@@ -1126,30 +1126,30 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;li&gt;&lt;a href="https://spectreattack.com/spectre.pdf" target="_blank"&gt;Spectre&lt;/a&gt; (幽灵)，基于变种 1 和变种 2&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://meltdownattack.com/meltdown.pdf" target="_blank"&gt;Meltdown&lt;/a&gt; (熔断)，基于变种 3&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2 id="meltdown"&gt;Meltdown&lt;/h2&gt;
+&lt;h2 id="meltdown"&gt;&lt;a class="toclink" href="#meltdown"&gt;Meltdown&lt;/a&gt;&lt;a class="headerlink" href="#meltdown" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Meltdown 允许没有授权的进程访问系统级的内存数据。这个漏洞主影响 Intel 系统的 CPU, AMD 并不受影响。所有实现了&lt;a href="https://en.wikipedia.org/wiki/Out-of-order_execution" target="_blank"&gt;out-of-order execution&lt;/a&gt;的Intel CPU 都可能受影响。这几乎包括了 1995 年后 Intel 生产的所有 CPU(除了 2013 年之前生产的 Intel Itanium and Intel Atom)。&lt;/p&gt;
-&lt;h3 id="_3"&gt;影响&lt;/h3&gt;
+&lt;h3 id="_3"&gt;&lt;a class="toclink" href="#_3"&gt;影响&lt;/a&gt;&lt;a class="headerlink" href="#_3" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;这个问题，最大的影响是各大公有云厂商， 像 Google Cloud Platform, AWS, 阿里云等。&lt;/p&gt;
 &lt;p&gt;这个问题的发现者称，Xen(半虚拟化) 和 containers (docker, lxc, OpenVZ) 都受到影响。对于全虚拟化，当攻击客户机时，只能读取到客户机的内核内存，并不能读到宿主机的内核内存。&lt;/p&gt;
 &lt;p&gt;现在多数去平台都是使用的 KVM 全虚拟化，所以影响稍微小一些。但是也不容小觑。&lt;/p&gt;
-&lt;h3 id="_4"&gt;修复情况&lt;/h3&gt;
+&lt;h3 id="_4"&gt;&lt;a class="toclink" href="#_4"&gt;修复情况&lt;/a&gt;&lt;a class="headerlink" href="#_4" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;修复情况： 各大系统实现了一套叫 Kernel page-table isolation(KPTI) 的技术，来避免这个漏洞。该漏洞已经包含在了 Linux kernel 4.15 中。也 backport 到了 linux kernel 4.14.11 中。 macOS 在  10.13.2 中也修复了这个问题。window 10 在1月3号也放出了相关补丁。&lt;/p&gt;
 &lt;p&gt;还有报告声称：KPTI 降低了 CPU 多达 30% 的性能。但是也有报告称：自从 Skylake 架构后，在 KPTI 下，性能损失比之前几代的要低的多。&lt;/p&gt;
 &lt;p&gt;KPTI 是大家吐槽最多的点之一，现在看来，性能影响并不是太大。&lt;/p&gt;
-&lt;h3 id="_5"&gt;操作系统修复方法&lt;/h3&gt;
+&lt;h3 id="_5"&gt;&lt;a class="toclink" href="#_5"&gt;操作系统修复方法&lt;/a&gt;&lt;a class="headerlink" href="#_5" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Redhat&lt;/strong&gt; 相关修复已经于1月3日推送到了主仓库中，通过更新系统，并重启操作系统可避免这个问题。更多信息能看&lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Ubuntu&lt;/strong&gt; 操作系统貌似补丁还没有放出，进展参看&lt;sup id="fnref-3"&gt;&lt;a class="footnote-ref" href="#fn-3"&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="spectre"&gt;Spectre&lt;/h2&gt;
+&lt;h2 id="spectre"&gt;&lt;a class="toclink" href="#spectre"&gt;Spectre&lt;/a&gt;&lt;a class="headerlink" href="#spectre" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Spectre 允许其它&lt;strong&gt;用户进程&lt;/strong&gt;访问&lt;strong&gt;另一用户进程&lt;/strong&gt;的任何内存地址。根本原因是预测执行技术( speculative execution )的技术缺陷。报告的实验中破译数据的速度可达 503 KB/s，错误率低至万分之二。实验中已经可以读取 Firefox 56 的内存，并从中找到网页请求的头数据和浏览器储存的密码。&lt;/p&gt;
 &lt;p&gt;Meltdown 可以视为特别简单的一个 Spectre 特例情况。&lt;/p&gt;
-&lt;h3 id="_6"&gt;影响&lt;/h3&gt;
+&lt;h3 id="_6"&gt;&lt;a class="toclink" href="#_6"&gt;影响&lt;/a&gt;&lt;a class="headerlink" href="#_6" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;几乎所有的电子系统都会受 Spectre 影响，包括台式电脑，笔记本和移动终端设备。而且 Spectre 影响 Intel, AMD 和 ARM 的处理器。&lt;/p&gt;
 &lt;p&gt;当前，Spectre 只影响到了用户级的进程。但是将来可能会有更加严重的影响。他不像 Meltdown, Spectre 要靠处理器架构上面的改变才可以消除。而且将来，Spectre 对云提供商的影响可能大过 Meltdown。Meltdown 只是允许未授权的应用去读取同台机器上的系统级内存里面的敏感数据。而 Spectre 能够诱骗虚拟化层向其运行的客户机传输数据。&lt;/p&gt;
-&lt;h3 id="_7"&gt;修复&lt;/h3&gt;
+&lt;h3 id="_7"&gt;&lt;a class="toclink" href="#_7"&gt;修复&lt;/a&gt;&lt;a class="headerlink" href="#_7" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;一部分 Spectre 特例情况的修复工作在进行中。但是这个问题很难修复，会存在很长一段时间。&lt;/p&gt;
-&lt;h2 id="_8"&gt;我们能做什么&lt;/h2&gt;
+&lt;h2 id="_8"&gt;&lt;a class="toclink" href="#_8"&gt;我们能做什么&lt;/a&gt;&lt;a class="headerlink" href="#_8" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;见于这个漏洞破坏很大，并且影响极其深远。我们应该立刻行动起来, 应对该问题。&lt;/p&gt;
 &lt;p&gt;对于各个战线(尤其是公有云)的运维同志，请及时升级自己的操作系统，打上相关的补丁。&lt;/p&gt;
 &lt;p&gt;对于大部分普通人来说，想避免这个问题，可以从以下几个方面做起。&lt;/p&gt;
@@ -1159,7 +1159,7 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;li&gt;不要安装运行未知来源的软件。&lt;/li&gt;
 &lt;li&gt;不要用盗版软件。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="more-info"&gt;More Info&lt;/h2&gt;
+&lt;h2 id="more-info"&gt;&lt;a class="toclink" href="#more-info"&gt;More Info&lt;/a&gt;&lt;a class="headerlink" href="#more-info" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Following is copied from ttx post&lt;sup id="fnref-11"&gt;&lt;a class="footnote-ref" href="#fn-11"&gt;11&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Where can I learn more ?&lt;/p&gt;
@@ -1204,7 +1204,7 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;p&gt;&lt;a href="https://ttx.re/openstack-spectre-meltdown-faq.html" target="_blank"&gt;https://ttx.re/openstack-spectre-meltdown-faq.html&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-11" title="Jump back to footnote 11 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 04 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-04:/meltdown-and-spectre.html</guid><category>Linux</category><category>OS</category></item><item><title>rbd 是否支持注入</title><link>https://xcodest.me/inject-file-in-rbd.html</link><description>&lt;h2 id="_1"&gt;引子&lt;/h2&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 04 Jan 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2018-01-04:/meltdown-and-spectre.html</guid><category>Linux</category><category>OS</category></item><item><title>rbd 是否支持注入</title><link>https://xcodest.me/inject-file-in-rbd.html</link><description>&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;引子&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;很多 OpenStack 与 Ceph 部署集成的文档都会告诉你，libivrt 的文件和密码注入是在 Ceph 上面是不支持的。需要使用下面的配置文件关闭。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[libvirt]&lt;/span&gt;
 &lt;span class="na"&gt;inject_password&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;false&lt;/span&gt;
@@ -1214,20 +1214,20 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 
 
 &lt;p&gt;但是真的只是不支持这么简单么? 首先看 nova 的注入是如何工作的。&lt;/p&gt;
-&lt;h2 id="nova"&gt;nova 是怎么注入的文件的&lt;/h2&gt;
+&lt;h2 id="nova"&gt;&lt;a class="toclink" href="#nova"&gt;nova 是怎么注入的文件的&lt;/a&gt;&lt;a class="headerlink" href="#nova" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;nova 使用 libguestfs 来文件密码的注入&lt;/p&gt;
 &lt;p&gt;libguestfs主要有三个大的部分：&lt;code&gt;guestfsd&lt;/code&gt;, &lt;code&gt;guestfs-lib&lt;/code&gt; ,&lt;code&gt;guestfish&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;guestfsd是一个daemon&lt;/strong&gt;，但是它不是运行在 host 上的 daemon，它运行在 guest 上，libguestfs 首先用&lt;code&gt;febootstrap&lt;/code&gt;和&lt;code&gt;febootstrap-supermin-helper&lt;/code&gt;两个工具将 host 中的 kernel，用得到的一些 modules，配置文件和一些工具重新组合到一起，接着在后台启动一个 qemu 进程启动这个由&lt;code&gt;febootstrap&lt;/code&gt;生成的 image。在用 qemu 启动的这个 guest 里运行&lt;code&gt;guestfsd&lt;/code&gt;。&lt;code&gt;guestfsd&lt;/code&gt;通过 socket 和 host 进行通信，之间建立了一个通信的协议，它可以通过 socket 接受来自host端&lt;code&gt;guestfs-lib&lt;/code&gt;写到 socket 的数据。guestfsd 通过分析接受到的数据，进而执行相应的操作。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;guestfs-lib是一个库&lt;/strong&gt;，它实现了一些 libguestfs 的库函数 &lt;code&gt;guestfs_*&lt;/code&gt;。这些库函数向 socket 发送相应的数据，数据就会被 guest 端的 guestfsd 接收到，进而分析所要执行的操作。 &lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;guestfish是对 guestfs-lib 接口函数的一些应用&lt;/strong&gt;，guestfish 的命令都是通过调用&lt;code&gt;guestfs-lib&lt;/code&gt;的库函数来实现的。&lt;/p&gt;
 &lt;p&gt;如果在 nova 中开启了 inject 功能，nova 会调用 libguestfs 的接口，把文件或密码注入到镜像中去，然后再去真正的启动用户的虚拟机。那支持 ceph 里面的镜像么?&lt;/p&gt;
-&lt;h2 id="libguestfs-rbd"&gt;libguestfs 对 rbd 的支持&lt;/h2&gt;
+&lt;h2 id="libguestfs-rbd"&gt;&lt;a class="toclink" href="#libguestfs-rbd"&gt;libguestfs 对 rbd 的支持&lt;/a&gt;&lt;a class="headerlink" href="#libguestfs-rbd" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;libguestfs 对 rbd 的支持是从 1.21.21 这个版本开始的&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;，并且测试并不充分&lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;, 这个版本也是13年5月份才发布的。到现在 CentOS6 上面的 libguestfs 版本还是 1.20.11。所以早期时候，文档中建议关掉 inject 功能，是确实 libguestfs 不支持RBD上面的镜像。&lt;/p&gt;
 &lt;p&gt;但是 CentOS7 上面，libguestfs 已经支持这个功能，所以是可以打开 nova 的注入功能的。那我们是不是就可以把这个功能打开了?&lt;/p&gt;
-&lt;h2 id="libvirt"&gt;libvirt 注入的问题&lt;/h2&gt;
+&lt;h2 id="libvirt"&gt;&lt;a class="toclink" href="#libvirt"&gt;libvirt 注入的问题&lt;/a&gt;&lt;a class="headerlink" href="#libvirt" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;不支持 Boot from volume&lt;/strong&gt;&lt;sup id="fnref-3"&gt;&lt;a class="footnote-ref" href="#fn-3"&gt;3&lt;/a&gt;&lt;/sup&gt;, 当从 Volume 启动的时候，并不支持文件注入。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;社区也准备废弃这个功能&lt;/strong&gt;，有几个原因。1是代码层面上，如果注入失败了，没有任何错误信息报出来。2是文件注入并不安全。3是这些注入的文件并没有持久化(存入数据库)，在 &lt;code&gt;evacuate&lt;/code&gt; 或 &lt;code&gt;unshelve&lt;/code&gt; 的时候，这些文件会被丢掉。 4是可以通过 metadata-api 或 config-drive 更方便的实现文件注入功能。有兴趣可以读下相关信息&lt;sup id="fnref-4"&gt;&lt;a class="footnote-ref" href="#fn-4"&gt;4&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref-5"&gt;&lt;a class="footnote-ref" href="#fn-5"&gt;5&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref-6"&gt;&lt;a class="footnote-ref" href="#fn-6"&gt;6&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref-7"&gt;&lt;a class="footnote-ref" href="#fn-7"&gt;7&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-&lt;h2 id="_2"&gt;结论&lt;/h2&gt;
+&lt;h2 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;结论&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;通过 nova inject 注入的方式并不被社区推荐，应该采用 metadata-api 或 config drive 方式才是更加可取。&lt;/p&gt;
 &lt;div class="footnote"&gt;
 &lt;hr&gt;
@@ -1257,12 +1257,12 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 &lt;p&gt;&lt;a href="https://blueprints.launchpad.net/nova/+spec/disable-file-injection-by-default" target="_blank"&gt;https://blueprints.launchpad.net/nova/+spec/disable-file-injection-by-default&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-8" title="Jump back to footnote 8 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 25 Dec 2017 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2017-12-25:/inject-file-in-rbd.html</guid></item><item><title>如何在 OpenStack 中隐藏 Glance 镜像</title><link>https://xcodest.me/hide-glance-image.html</link><description>&lt;h2 id="_1"&gt;问题&lt;/h2&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 25 Dec 2017 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2017-12-25:/inject-file-in-rbd.html</guid></item><item><title>如何在 OpenStack 中隐藏 Glance 镜像</title><link>https://xcodest.me/hide-glance-image.html</link><description>&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;问题&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;如果你的 OpenStack 环境中使用了 Ceph，而且开启了 Copy-on-Write Clone 功能。会发现如果 Glance 镜像启动了虚拟机，这个镜像是删除不掉的。包括 Boot from Volume 的镜像也会有类似的问题。但是用户会有这样的需求，既然删除不掉，我如何才能防止用户继续使用这个镜像。&lt;/p&gt;
-&lt;h2 id="1"&gt;方法 1&lt;/h2&gt;
+&lt;h2 id="1"&gt;&lt;a class="toclink" href="#1"&gt;方法 1&lt;/a&gt;&lt;a class="headerlink" href="#1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;这时，有一种方式是把公共镜像变为私有镜像。这样用户再建机器时，就看不到这个镜像了。但是这样会带来另外一个问题，已经启动虚拟机也会看不到镜像的信息。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="instance-without-image-info" src="images/glance-deactivate/instance-without-image-info.png"&gt;&lt;/p&gt;
-&lt;h2 id="2"&gt;方法 2&lt;/h2&gt;
+&lt;h2 id="2"&gt;&lt;a class="toclink" href="#2"&gt;方法 2&lt;/a&gt;&lt;a class="headerlink" href="#2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;这时还有更好的一个办法，Glance API 支持把镜像属性变为非可用状态。使用方法如下&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; openstack image &lt;span class="nb"&gt;set&lt;/span&gt; --deactivate &amp;lt;image&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -1278,7 +1278,7 @@ qemu-guest-agent[3] &amp;gt; 2.5  # window guest
 
 
 &lt;p&gt;现在这个功能只能通过 API 来使用，界面上还不支持。&lt;/p&gt;
-&lt;h2 id="_2"&gt;参考信息&lt;/h2&gt;
+&lt;h2 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;参考信息&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;https://wiki.openstack.org/wiki/Glance-deactivate-image&lt;/li&gt;
 &lt;li&gt;https://blueprints.launchpad.net/glance/+spec/deactivate-image&lt;/li&gt;
@@ -2052,11 +2052,11 @@ signal 15 - using the force&amp;quot;
 &lt;p&gt;默认的的 signal 15 根本就没有使其退出，最后还是 10 秒超时后强制退出(kill)的。而&lt;br&gt;
 且有时还会出现大量僵尸进程&lt;/p&gt;
 &lt;p&gt;这可不是一个好现象。本文解释其原因及解决方法。&lt;/p&gt;
-&lt;h2 id="_1"&gt;背景知识&lt;/h2&gt;
-&lt;h3 id="_2"&gt;信号&lt;/h3&gt;
+&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;背景知识&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;h3 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;信号&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;这个是 Linux 最常见一个概念，一般杀死进程时都会用到 &lt;code&gt;kill &amp;lt;pid&amp;gt;&lt;/code&gt; 。 不同的信&lt;br&gt;
 号有不同的默认行为。用户可以注册自己的信号处理函数，来覆盖掉默认行为。&lt;/p&gt;
-&lt;h3 id="_3"&gt;僵尸进程&lt;/h3&gt;
+&lt;h3 id="_3"&gt;&lt;a class="toclink" href="#_3"&gt;僵尸进程&lt;/a&gt;&lt;a class="headerlink" href="#_3" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;僵尸进程是终止运行的进程，为什么它们是有害的? &lt;/p&gt;
 &lt;p&gt;虽然应用申请的内存已经释放了，但是你依然能通过 &lt;code&gt;ps&lt;/code&gt; 看到它。这是因为有一些内&lt;br&gt;
 核资源没有释放。下面是 Linux &lt;code&gt;waitpid&lt;/code&gt; 的 man page:&lt;/p&gt;
@@ -2066,10 +2066,10 @@ will not be possible to create further processes.&amp;quot;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id="_4"&gt;容器化后的问题&lt;/h2&gt;
+&lt;h2 id="_4"&gt;&lt;a class="toclink" href="#_4"&gt;容器化后的问题&lt;/a&gt;&lt;a class="headerlink" href="#_4" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;容器化后，由于单容器单进程，已经没有传统意义上的 init 进程了。应用进程直接占用&lt;br&gt;
 了 pid 1 的进程号。从而导致以下两个问题。&lt;/p&gt;
-&lt;h3 id="_5"&gt;进程不能正常终止&lt;/h3&gt;
+&lt;h3 id="_5"&gt;&lt;a class="toclink" href="#_5"&gt;进程不能正常终止&lt;/a&gt;&lt;a class="headerlink" href="#_5" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;Linux 内核中会对 pid 1 进程发送特殊的信号量。&lt;/p&gt;
 &lt;p&gt;一般情况下，当给一个进程发送信号时，内核会先检查是否有用户定义的处理函数，如果&lt;br&gt;
 没有，就会回退到默认行为。例如使用 SIGTERM 直接杀死进程。然而，如果进程的 PID&lt;br&gt;
@@ -2078,7 +2078,7 @@ will not be possible to create further processes.&amp;quot;
 点效果也没有。&lt;/p&gt;
 &lt;p&gt;常见的使用是 docker run my-container script. 给 &lt;code&gt;docker run&lt;/code&gt; 进程发送&lt;br&gt;
 &lt;code&gt;SIGTERM&lt;/code&gt; 信号会杀掉 &lt;code&gt;docker run&lt;/code&gt; 进程，但是容器还在后台运行。&lt;/p&gt;
-&lt;h3 id="_6"&gt;孤儿僵尸进程不能正常回收&lt;/h3&gt;
+&lt;h3 id="_6"&gt;&lt;a class="toclink" href="#_6"&gt;孤儿僵尸进程不能正常回收&lt;/a&gt;&lt;a class="headerlink" href="#_6" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;当进程退出时，它会变成僵尸进程，直到它的父进程调用 &lt;code&gt;wait()&lt;/code&gt; ( 或其变种 ) 的系&lt;br&gt;
 统调用。process table 里面会把它的标记为 &lt;code&gt;defunct&lt;/code&gt; 状态。一般情况下，父进程应&lt;br&gt;
 该立即调用 &lt;code&gt;wait()&lt;/code&gt;, 以防僵尸进程时间过长。&lt;/p&gt;
@@ -2086,7 +2086,7 @@ will not be possible to create further processes.&amp;quot;
 ，init 进程就要对这些进程负责，并在适当的时候调用 &lt;code&gt;wait()&lt;/code&gt; 方法。&lt;/p&gt;
 &lt;p&gt;但是，通常情况下，大部分进程不会处理偶然依附在自己进程上的随机子进程，所以在容器&lt;br&gt;
 中，会出现许多僵尸进程。&lt;/p&gt;
-&lt;h2 id="_7"&gt;解决方案&lt;/h2&gt;
+&lt;h2 id="_7"&gt;&lt;a class="toclink" href="#_7"&gt;解决方案&lt;/a&gt;&lt;a class="headerlink" href="#_7" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;hr&gt;
 &lt;p&gt;让所有的应用能正确的处理以上的情况，不太现实。好在现在有很多解决方案，例如&lt;br&gt;
 dumb-init [0] 。他像是一个小型 init 服务，他启动一个子进程并转发所有接收到的信&lt;br&gt;
@@ -2106,7 +2106,7 @@ CMD [&amp;quot;/my/script&amp;quot;, &amp;quot;--with&amp;quot;, &amp;quot;--arg
 
 
 &lt;p&gt;类似的方案 tini [1], pidunu[3]&lt;/p&gt;
-&lt;h2 id="_8"&gt;参考资料&lt;/h2&gt;
+&lt;h2 id="_8"&gt;&lt;a class="toclink" href="#_8"&gt;参考资料&lt;/a&gt;&lt;a class="headerlink" href="#_8" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;hr&gt;
 &lt;p&gt;[0] https://github.com/Yelp/dumb-init&lt;br&gt;
 [1] https://github.com/krallin/tini&lt;br&gt;
@@ -2179,7 +2179,7 @@ WantedBy=sysinit.target
 &lt;li&gt;速度 - 因为 Gertty 会把数据都同步到本地，你的操作也会存放到本地，之后在统一同步到服务器，所以速度是很快的。&lt;/li&gt;
 &lt;li&gt;方便 - Gertty 把所有的 Changes 都同步到了本地，你可以很方便的 checkout 到正在 Review 的代码&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="_1"&gt;安装&lt;/h1&gt;
+&lt;h1 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;安装&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;gertty 就是一个 Python 写的应用，所以安装很方便。可以从 pypi 安装，也可以从直接从源码安装。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install gertty
 &lt;/pre&gt;&lt;/div&gt;
@@ -2188,7 +2188,7 @@ WantedBy=sysinit.target
 cd gertty
 pip install .
 &lt;/pre&gt;&lt;/div&gt;
-&lt;h1 id="_2"&gt;配置&lt;/h1&gt;
+&lt;h1 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;配置&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Gertty 使用一个 YAML 格式的配置文件。可以从源码里找到一些例子&lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;。我们以 OpenStack 为例。&lt;/p&gt;
 &lt;p&gt;首先要选配置在 Gerrit 上面配置自己的 HTTP Passowrd。打开 https://review.openstack.org/#/settings/http-password , 去修改里面的 Password&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Gerrit HTTP Password" class="img-responsive" src="images/openstack_gerrit_http_password.png"/&gt;&lt;/p&gt;
@@ -2215,12 +2215,12 @@ pip install .
 &lt;p&gt;再按 &lt;code&gt;d&lt;/code&gt;， 可以查看修改的 diff&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Gerrty Code Diff" class="img-responsive" src="images/gertty_code_diff.png"/&gt;&lt;/p&gt;
 &lt;p&gt;在任何界面都可以按 &lt;code&gt;F1&lt;/code&gt; 或 &lt;code&gt;?&lt;/code&gt; 打开帮助，查看该界面下有哪些按键可以用。&lt;/p&gt;
-&lt;h1 id="_3"&gt;总结&lt;/h1&gt;
+&lt;h1 id="_3"&gt;&lt;a class="toclink" href="#_3"&gt;总结&lt;/a&gt;&lt;a class="headerlink" href="#_3" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;由于 gertty 把所有数据都同步下来了，做 review 确实很快。&lt;/li&gt;
 &lt;li&gt;gertty.yaml 配置文件里支持修改按键功能，如果觉得默认键位不舒服，可以进行修改，可定制性很高。更多的配置项信息可以看 &lt;code&gt;examples/reference-gertty.yml&lt;/code&gt; 文件里的内容&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;div class="footnote"&gt;
 &lt;hr/&gt;
 &lt;ol&gt;
@@ -2232,14 +2232,14 @@ pip install .
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 11 Apr 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-04-11:/effective-code-review-tool-gertty.html</guid><category>CodeReview</category></item><item><title>cloud-init 导致虚拟机启动太慢</title><link>https://xcodest.me/cloud-init-cause-vm-boot-slow.html</link><description>
-&lt;h2 id="_1"&gt;问题&lt;/h2&gt;
+&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;问题&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;在一个准生产环境中，一直发现虚拟机启动太慢的问题，现像是虚拟机很早就能 ping 到，但是就是 ssh 不进去。要么报端口没有开启，要么就 Public Key 不对。整个过程大概要2分多钟才能直接 ssh 进去。&lt;/p&gt;
-&lt;h2 id="_2"&gt;背景知识&lt;/h2&gt;
+&lt;h2 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;背景知识&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;cloud-init 这个服务是从 AWS 学来的。它安装在虚拟机中，在启动虚拟机时，做一些初始化工作。如：硬盘分区自动扩展，SSH Public Key 注入，用户创建等。用户甚至可以注入一些 shell 脚本到虚拟机中运行。在自动化方便启了很大的作用。Heat 的实现就依赖于 cloud-init 服务。&lt;/p&gt;
 &lt;p&gt;在 OpenStack 上，cloud-init 应该从 &lt;code&gt;http://169.254.169.254&lt;/code&gt; 去拿到所需要的信息。而这个服务是通过 iptables 转到了 neutron-metadata-agent 服务上&lt;/p&gt;
-&lt;h2 id="_3"&gt;环境&lt;/h2&gt;
+&lt;h2 id="_3"&gt;&lt;a class="toclink" href="#_3"&gt;环境&lt;/a&gt;&lt;a class="headerlink" href="#_3" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;使用 Kolla 安装的 OpenStack Mitaka 版本的多机环境，镜像使用的是 CentOS 7 和 Ubuntu 14.04, 均是从官方下载的。由于一些安全限制，虚拟机不能访问外网。&lt;/p&gt;
-&lt;h2 id="_4"&gt;调试&lt;/h2&gt;
+&lt;h2 id="_4"&gt;&lt;a class="toclink" href="#_4"&gt;调试&lt;/a&gt;&lt;a class="headerlink" href="#_4" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;测试虚拟机用的 CentOS 7 系统，&lt;/p&gt;
 &lt;p&gt;首先看虚拟机的 console log, 发现如下信息&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Starting kdump:[  OK  ]
@@ -2276,14 +2276,14 @@ Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource Data
 &lt;span class="go"&gt;...&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;注意前面的时间点，这两行日志间差了60多秒，而且后面是一个错误，明显是在等一个超时，时间是花在这的。至此原因找到了。&lt;/p&gt;
-&lt;h2 id="_5"&gt;原因分析&lt;/h2&gt;
+&lt;h2 id="_5"&gt;&lt;a class="toclink" href="#_5"&gt;原因分析&lt;/a&gt;&lt;a class="headerlink" href="#_5" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;cloud-init 是一个通用程序，能兼容多个云环境。他会从多个数据源里去读 Metadata 数据。其默认的顺序中，GoogleGCE 在 OpenStack 之前，而 GoogleGCE 的源里面，会访问一个 http://metadata.google.internal. 的网址，加上虚拟机不能访问外网，程序会卡在这里，直到超时。才会继续测试 OpenStack 的源是否可用。&lt;/p&gt;
-&lt;h2 id="_6"&gt;解决方法&lt;/h2&gt;
+&lt;h2 id="_6"&gt;&lt;a class="toclink" href="#_6"&gt;解决方法&lt;/a&gt;&lt;a class="headerlink" href="#_6" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;尽量不要直接使用官方的源，而是自己制作，尤其是 cloud-init 的配置项。要手动修改掉其默认的数据源，以避免以上情况的发生。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# /etc/cloud/cloud.cfg&lt;/span&gt;
 &lt;span class="nt"&gt;datasource_list&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p p-Indicator"&gt;[&lt;/span&gt;&lt;span class="s"&gt;'ConfigDrive'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'OpenStack'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;,&lt;/span&gt; &lt;span class="s"&gt;'Ec2'&lt;/span&gt;&lt;span class="p p-Indicator"&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id="_7"&gt;总结&lt;/h2&gt;
+&lt;h2 id="_7"&gt;&lt;a class="toclink" href="#_7"&gt;总结&lt;/a&gt;&lt;a class="headerlink" href="#_7" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;cloud-init 的配置是通用配置，默认情况下适用于多种云环境。如 OpenStack， GoogleGCE 等&lt;/li&gt;
 &lt;li&gt;日志很重要，很方便进行程序分析&lt;/li&gt;
@@ -2305,9 +2305,9 @@ Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource Data
 &lt;li&gt;Kolla master 分支上使用的是 RDO master 上的源，打包极不稳定，时常会有 Bug 出现。所以本文使用的是 CentOS + 源码的安装方式&lt;/li&gt;
 &lt;li&gt;由于国内网络原因，一些国外的源(这些源还没有国内镜像)会相当慢，所以 build docker image 时会很慢，推荐使用 VPN&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="_1"&gt;安装&lt;/h1&gt;
+&lt;h1 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;安装&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;安装好操作系统后，依次进行如下配置&lt;/p&gt;
-&lt;h2 id="_2"&gt;源&lt;/h2&gt;
+&lt;h2 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;源&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;加入 Docker 的源&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo tee /etc/yum.repos.d/docker.repo &amp;lt;&amp;lt; 'EOF'
 [dockerrepo]
@@ -2321,7 +2321,7 @@ EOF
 &lt;p&gt;加入 EPEL 源&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;yum install -y epel-release
 &lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id="kolla"&gt;安装 Kolla 所需依赖&lt;/h2&gt;
+&lt;h2 id="kolla"&gt;&lt;a class="toclink" href="#kolla"&gt;安装 Kolla 所需依赖&lt;/a&gt;&lt;a class="headerlink" href="#kolla" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;yum install -y ansible docker-engine git gcc python-setuptools
 easy_install -U pip
 &lt;/pre&gt;&lt;/div&gt;
@@ -2333,12 +2333,12 @@ easy_install -U pip
 systemctl enable docker
 systemctl start docker
 &lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id="kolla_1"&gt;下载 Kolla 代码并安装依赖&lt;/h2&gt;
+&lt;h2 id="kolla_1"&gt;&lt;a class="toclink" href="#kolla_1"&gt;下载 Kolla 代码并安装依赖&lt;/a&gt;&lt;a class="headerlink" href="#kolla_1" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/openstack/kolla.git
 cd kolla
 pip install -r requirements.txt -r test-requirements.txt tox
 &lt;/pre&gt;&lt;/div&gt;
-&lt;h1 id="build-docker-image"&gt;Build Docker Image&lt;/h1&gt;
+&lt;h1 id="build-docker-image"&gt;&lt;a class="toclink" href="#build-docker-image"&gt;Build Docker Image&lt;/a&gt;&lt;a class="headerlink" href="#build-docker-image" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;以下如果没有特别说明，所有的操作都是在 Kolla 项目的目录里进行&lt;/p&gt;
 &lt;p&gt;首先要先生成并修改配置文件&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tox -e genconfig
@@ -2356,7 +2356,7 @@ cp -rv etc/kolla /etc/
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;参数中的 &lt;code&gt;-p default&lt;/code&gt; 是指定了只 build 主要的 image, 包括: mariadb, rabbitmq, cinder, ceilometer, glance, heat, horizon, keystone, neutron, nova, swift等 . 这些可以只生成的 &lt;code&gt;kolla-build.conf&lt;/code&gt; 里找到。&lt;/p&gt;
 &lt;p&gt;如果 Build 完成之后，使用 &lt;code&gt;docker images&lt;/code&gt; 能看到所有已经 build 好的镜像。&lt;/p&gt;
-&lt;h1 id="deploy"&gt;Deploy&lt;/h1&gt;
+&lt;h1 id="deploy"&gt;&lt;a class="toclink" href="#deploy"&gt;Deploy&lt;/a&gt;&lt;a class="headerlink" href="#deploy" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;依然是先修改配置文件，与 Deploy 相关的主要是两个配置文件 &lt;code&gt;/etc/kolla/passwords.yml&lt;/code&gt; 和 &lt;code&gt;/etc/kolla/globals.yml&lt;/code&gt;。他们为 ansible 提供一些变量的设定。主要需要修改的是 &lt;code&gt;globals.yml&lt;/code&gt; 文件。修改后，其主要内容为:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;config_strategy&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"COPY_ALWAYS"&lt;/span&gt;
 
@@ -2391,7 +2391,7 @@ Commands:
 &lt;p&gt;可以使用 &lt;code&gt;./tools/kolla-ansible prechecks&lt;/code&gt; 来检查一个机器是否满足安装条件。&lt;/p&gt;
 &lt;p&gt;使用 &lt;code&gt;./tools/kolla-ansible deploy&lt;/code&gt; 来开始正式安装。安装会很快，我机器上，几分钟就安装完成了。&lt;/p&gt;
 &lt;p&gt;最后，使用&lt;code&gt;./tools/kolla-ansible post-deploy&lt;/code&gt; 来生成 &lt;code&gt;/etc/kolla/admin-openrc.sh&lt;/code&gt; 文件用来加载认证变量。&lt;/p&gt;
-&lt;h1 id="_3"&gt;查看安装后的状态&lt;/h1&gt;
+&lt;h1 id="_3"&gt;&lt;a class="toclink" href="#_3"&gt;查看安装后的状态&lt;/a&gt;&lt;a class="headerlink" href="#_3" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;IMAGE                                                  COMMAND                 NAMES
 lokolla/centos-source-keystone:2.0.0                   "kolla_start"           keystone
 lokolla/centos-source-horizon:2.0.0                    "kolla_start"           horizon
@@ -2427,7 +2427,7 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;li&gt;每个模块拆分成了多个container, 如 nova 被拆分成了nova_api, nova_libvirt, nova_conductor, nova_novncproxy, nova_compute等多个 container。很好的遵守了一个容器一个进程的原则。&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 24 Feb 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-02-24:/kolla-aio-install.html</guid><category>Kolla</category><category>OpenStack</category></item><item><title>Kolla Mitaka Midcycle Discuss</title><link>https://xcodest.me/kolla-mitaka-midcycle-discuss.html</link><description>
 &lt;p&gt;2016年2月9日-10日，Kolla Team 举办了 Mitaka 的中期会议，对遇到的问题、解决的方法及接下来的工作内容做了深入讨论。&lt;/p&gt;
-&lt;h1 id="_1"&gt;讨论的优先级安排&lt;/h1&gt;
+&lt;h1 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;讨论的优先级安排&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;首先对本次讨论进行了优先级安排&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Upgrades： 这是现在的重中之重。如何能对现有的Kolla进行平滑的升级。包括 OpenStack 组件和基础服务组件(如 MariaDB 等)。&lt;/li&gt;
@@ -2438,18 +2438,18 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;li&gt;selinux&lt;/li&gt;
 &lt;li&gt;kolla-ansible split&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="upgrade"&gt;Upgrade&lt;/h1&gt;
+&lt;h1 id="upgrade"&gt;&lt;a class="toclink" href="#upgrade"&gt;Upgrade&lt;/a&gt;&lt;a class="headerlink" href="#upgrade" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;升级主要涉及到两部分。相关的BP在这里&lt;sup id="fnref-3"&gt;&lt;a class="footnote-ref" href="#fn-3"&gt;3&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;是OpenStack的各个组件&lt;/li&gt;
 &lt;li&gt;是一些基础服务组件。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2 id="openstack"&gt;OpenStack 组件&lt;/h2&gt;
+&lt;h2 id="openstack"&gt;&lt;a class="toclink" href="#openstack"&gt;OpenStack 组件&lt;/a&gt;&lt;a class="headerlink" href="#openstack" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;由于 OpenStack 各个组件的结构基本相同，都是有DB, API, Scheduler等几个部分构成。所以这里的升级要简单一些，而且已经基本完成了编码工作，不过需要大量的测试来保证升级的可靠性&lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
-&lt;h2 id="_2"&gt;基础服务组件&lt;/h2&gt;
+&lt;h2 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;基础服务组件&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;由于各个组件的升级方式并不同，同一个组件不同版本间，可能也不相同。所以这部分相比较来说要困难的多。讨论中对各个组件进行了逐一讨论。包括升级的方式，有可能造成的影响等。详细信息见&lt;sup id="fnref-4"&gt;&lt;a class="footnote-ref" href="#fn-4"&gt;4&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-&lt;h1 id="diagnosticslogging"&gt;Diagnostics/Logging&lt;/h1&gt;
-&lt;h1 id="security"&gt;Security&lt;/h1&gt;
+&lt;h1 id="diagnosticslogging"&gt;&lt;a class="toclink" href="#diagnosticslogging"&gt;Diagnostics/Logging&lt;/a&gt;&lt;a class="headerlink" href="#diagnosticslogging" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
+&lt;h1 id="security"&gt;&lt;a class="toclink" href="#security"&gt;Security&lt;/a&gt;&lt;a class="headerlink" href="#security" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;安全也是很重要的事情，Team 两次讨论了这个问题&lt;sup id="fnref-5"&gt;&lt;a class="footnote-ref" href="#fn-5"&gt;5&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref-8"&gt;&lt;a class="footnote-ref" href="#fn-8"&gt;8&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 &lt;p&gt;在各个模块之前开启 SSL 功能&lt;sup id="fnref2-5"&gt;&lt;a class="footnote-ref" href="#fn-5"&gt;5&lt;/a&gt;&lt;/sup&gt;。当然默认是通过配置开启的。这样使 OpenStack 运行在一个更加安全的环境中。这个功能期望是在 Mitaka-3 中完成。&lt;/p&gt;
 &lt;p&gt;容器中的安全&lt;/p&gt;
@@ -2459,7 +2459,7 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;li&gt;rootwrap 不应该能修改&lt;/li&gt;
 &lt;li&gt;开启 SELinux &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="backport"&gt;Backport&lt;/h1&gt;
+&lt;h1 id="backport"&gt;&lt;a class="toclink" href="#backport"&gt;Backport&lt;/a&gt;&lt;a class="headerlink" href="#backport" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Liberty 是 Kolla Release 的第一个版本。而在现在的 Master 分支中，已经有了大量的新功能。Team 讨论了 Backport 的原因和意义&lt;sup id="fnref-6"&gt;&lt;a class="footnote-ref" href="#fn-6"&gt;6&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
 &lt;p&gt;最主要的原因&lt;/p&gt;
 &lt;ul&gt;
@@ -2478,7 +2478,7 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;li&gt;只 backport kolla_docker module&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;现在看来，应该会采取方法 4。&lt;/p&gt;
-&lt;h1 id="kolla-code-sharing"&gt;kolla code sharing&lt;/h1&gt;
+&lt;h1 id="kolla-code-sharing"&gt;&lt;a class="toclink" href="#kolla-code-sharing"&gt;kolla code sharing&lt;/a&gt;&lt;a class="headerlink" href="#kolla-code-sharing" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;现在 Kolla 相关的项目有两个 https://github.com/openstack/kolla 和 https://github.com/openstack/kolla-mesos 。将来还会分拆出一个 kolla-ansible 项目来。现在， 单这两个项目下就有很多的重复代码，导致做了许多 copy, paster 的工作。这个 topic&lt;sup id="fnref-9"&gt;&lt;a class="footnote-ref" href="#fn-9"&gt;9&lt;/a&gt;&lt;/sup&gt; 就是来解决这个问题的。&lt;/p&gt;
 &lt;p&gt;重复的东西&lt;/p&gt;
 &lt;ul&gt;
@@ -2492,9 +2492,9 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;li&gt;两连都存在副本，定期进行双向的同步。&lt;/li&gt;
 &lt;li&gt;创新一个新的仓库包含一些共用的模板&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="roadmap"&gt;Roadmap&lt;/h1&gt;
+&lt;h1 id="roadmap"&gt;&lt;a class="toclink" href="#roadmap"&gt;Roadmap&lt;/a&gt;&lt;a class="headerlink" href="#roadmap" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Mitaka, Netron, Ocata， P版本的功路线图&lt;sup id="fnref-7"&gt;&lt;a class="footnote-ref" href="#fn-7"&gt;7&lt;/a&gt;&lt;/sup&gt;。你更期待什么功能呢?&lt;/p&gt;
-&lt;h2 id="mitaka-3-roadmap"&gt;Mitaka-3 Roadmap&lt;/h2&gt;
+&lt;h2 id="mitaka-3-roadmap"&gt;&lt;a class="toclink" href="#mitaka-3-roadmap"&gt;Mitaka-3 Roadmap&lt;/a&gt;&lt;a class="headerlink" href="#mitaka-3-roadmap" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Mitaka 进入最后的阶段，还有一些重要功能在开发中，现在主要还有以下几点。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;diagnostics&lt;/li&gt;
@@ -2503,7 +2503,7 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;li&gt;migration path for data volumes&lt;/li&gt;
 &lt;li&gt;functional tests in gate (boot a vm &amp;amp; ping test)&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="newton-roadmap"&gt;Newton Roadmap&lt;/h2&gt;
+&lt;h2 id="newton-roadmap"&gt;&lt;a class="toclink" href="#newton-roadmap"&gt;Newton Roadmap&lt;/a&gt;&lt;a class="headerlink" href="#newton-roadmap" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;voting gates&lt;/li&gt;
 &lt;li&gt;jumbo frames MTU investigation&lt;/li&gt;
@@ -2526,7 +2526,7 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;li&gt;Python API with no running services for managing Kolla&lt;/li&gt;
 &lt;li&gt;BiFrost documentation and investigation&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="ocata-roadmap"&gt;Ocata Roadmap&lt;/h2&gt;
+&lt;h2 id="ocata-roadmap"&gt;&lt;a class="toclink" href="#ocata-roadmap"&gt;Ocata Roadmap&lt;/a&gt;&lt;a class="headerlink" href="#ocata-roadmap" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;deploy full big tent (or develop plugin mechanism to deploy whatever) / maybe we could do a skeleton service&lt;/li&gt;
 &lt;li&gt;kolla-saltstack, kolla-puppet investigation - may not even be needed when moving to Ansible 2.0&lt;/li&gt;
@@ -2538,13 +2538,13 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;li&gt;runc investigation&lt;/li&gt;
 &lt;li&gt;rkt investigation&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="p-roadmap"&gt;P Roadmap&lt;/h2&gt;
+&lt;h2 id="p-roadmap"&gt;&lt;a class="toclink" href="#p-roadmap"&gt;P Roadmap&lt;/a&gt;&lt;a class="headerlink" href="#p-roadmap" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;rollback support from upgrade&lt;/li&gt;
 &lt;li&gt;canary deployment&lt;/li&gt;
 &lt;li&gt;make Kolla operate optionally without net=host for upcoming kolla-mesos and kolla-kubernetes repositories&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;div class="footnote"&gt;
 &lt;hr/&gt;
 &lt;ol&gt;
@@ -2578,14 +2578,14 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;/ol&gt;
 &lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 16 Feb 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-02-16:/kolla-mitaka-midcycle-discuss.html</guid><category>Kolla</category></item><item><title>iptables forward the vrrp packets issue</title><link>https://xcodest.me/iptables-forward-the-vrrp-packets-issue.html</link><description>&lt;p&gt;&lt;img alt="功夫熊猫" src="images/kungfupanda.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;最近在整 Kolla 的多机部署，没有物理环境还是在虚拟机上搞。不过今天被一个 keepalived 的问题卡了将近一天的时间。倒也不是啥大问题，还是栽到了自己挖的坑里。&lt;/p&gt;
-&lt;h2 id="_1"&gt;问题&lt;/h2&gt;
+&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;问题&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;先说一下自己的环境，我使用了三台 kvm 虚拟机，每台两张网卡，一个用于上外网(eth0 &lt;code&gt;10.2.0.0/24&lt;/code&gt;)，一个用于 neutron 的 tenant 网络使用(eth1)。问题就出在 eth0 上面。eth0 是桥在了我手动创建的一个桥上 (br0), 为了上外网，我打开了 &lt;code&gt;ip_forward&lt;/code&gt;， 并加了一条 iptables 转发规则：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;iptables -t nat -A POSTROUTING -s 10.2.0.0/24 ! -d 10.2.0.0/24 -j MASQUERAE
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;一般情况下是没有问题的，但是加了 &lt;code&gt;keepalived&lt;/code&gt; 就完了。vip 跑到了所有的机器上，感觉就是没有通讯上，或是选举有问题。重新核对了半天配置没有发现问题。由于 Kolla 里是用 docker 跑的 keepalived ，为了排除是 Docker 本身有问题，我还在虚拟机的系统上部署了 keepalived 的，还是同样的问题。&lt;/p&gt;
-&lt;h2 id="_2"&gt;原因&lt;/h2&gt;
+&lt;h2 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;原因&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;最后在一次偶然的抓包中发现，所有机器上抓到的 vrrp 的包源地址居然都是网关(&lt;code&gt;10.2.0.1&lt;/code&gt;)发出来的，这还能不出问题? &lt;/p&gt;
 &lt;p&gt;查了查 vrrp 包，原来是在四层协议上，和 tcp/udp 是并列的。再看一眼自己的 iptables ， 就知道是怎么回事了。后来把 iptables 改的明确了一些, 只 SNAT tcp,udp及icmp的协议，问题终于解决了。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;-A POSTROUTING -s 10.2.0.0/24 ! -d 10.2.0.0/24 -p tcp -j MASQUERADE
@@ -2594,12 +2594,12 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id="_3"&gt;教训&lt;/h2&gt;
+&lt;h2 id="_3"&gt;&lt;a class="toclink" href="#_3"&gt;教训&lt;/a&gt;&lt;a class="headerlink" href="#_3" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;tcpdump 还是很有用的东西&lt;/li&gt;
 &lt;li&gt;四层上的协议除了 tcp/udp 还是有很多的 &lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="ref"&gt;REF&lt;/h2&gt;
+&lt;h2 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;div class="footnote"&gt;
 &lt;hr&gt;
 &lt;ol&gt;
@@ -2608,10 +2608,10 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 02 Feb 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-02-02:/iptables-forward-the-vrrp-packets-issue.html</guid><category>iptables</category><category>vrrp</category></item><item><title>OpenStack Kolla 项目介绍</title><link>https://xcodest.me/kolla-introduce.html</link><description>
-&lt;h1 id="_1"&gt;项目目标&lt;/h1&gt;
+&lt;h1 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;项目目标&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Kolla 提供了生产级别的 OpenStack Service Containers。基于社区的最佳实践，提供了&lt;br/&gt;
 更好，更快，更可靠的, 操作 OpenStack 的部署工具。&lt;/p&gt;
-&lt;h1 id="_2"&gt;解决的问题&lt;/h1&gt;
+&lt;h1 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;解决的问题&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;平滑的升级/回滚 OpenStack&lt;/li&gt;
 &lt;li&gt;隔离 OpenStack 的不同组件的依赖环境。尤其是那些使用同一模块不同版本的情况。&lt;/li&gt;
@@ -2619,27 +2619,27 @@ lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           r
 &lt;li&gt;支持多种安装源：源代码安装，CentOS binary 安装等。可以替代掉 devstack。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;其实这些问题只要是由 Docker 来解决的。这也是 Kolla 使用 Docker 的原因。&lt;/p&gt;
-&lt;h1 id="_3"&gt;架构&lt;/h1&gt;
+&lt;h1 id="_3"&gt;&lt;a class="toclink" href="#_3"&gt;架构&lt;/a&gt;&lt;a class="headerlink" href="#_3" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;kolla 代码在&lt;a href="https://github.com/openstack/kolla" target="_blank"&gt;https://github.com/openstack/kolla&lt;/a&gt;。现在 Kolla 主要分成两个部分。&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Docker Images Build &lt;/li&gt;
 &lt;li&gt;Ansible 部署(这部分将来会迁移到 kolla-ansible 项目)&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2 id="docker-image-build"&gt;Docker Image Build&lt;/h2&gt;
+&lt;h2 id="docker-image-build"&gt;&lt;a class="toclink" href="#docker-image-build"&gt;Docker Image Build&lt;/a&gt;&lt;a class="headerlink" href="#docker-image-build" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;主要使用 Jinja2 模板生成 Dockerfile 文件。如果是源代码安装，还会把代码下载好。之后会通过 Docker-py 驱动 Docker 进行镜像构建。构建完成，还可以根据配置将镜像推送的指定的 Registry 服务器。&lt;/p&gt;
 &lt;p&gt;现在支持的不同的 Linux 发行版本(Redhat系和Debian系)和不同的OpenStack安装包(源代码和二进制包)&lt;/p&gt;
 &lt;p&gt;下图是现在所有镜像的依赖关系。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Kolla Image Dependency Tree" class="img-responsive" src="images/kolla/image-dependency-201512.png"/&gt;&lt;/p&gt;
-&lt;h2 id="ansible"&gt;Ansible 部署&lt;/h2&gt;
+&lt;h2 id="ansible"&gt;&lt;a class="toclink" href="#ansible"&gt;Ansible 部署&lt;/a&gt;&lt;a class="headerlink" href="#ansible" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;提供一个完整的 Ansible Playbook，来部署Docker的镜像。并提供 all-in-one 和&lt;br/&gt;
 multihost 的环境&lt;/p&gt;
-&lt;h1 id="_4"&gt;开发人员情况&lt;/h1&gt;
+&lt;h1 id="_4"&gt;&lt;a class="toclink" href="#_4"&gt;开发人员情况&lt;/a&gt;&lt;a class="headerlink" href="#_4" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;以下是 Kolla 项目截至到 2016-01-20 日的 review, commit 情况&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Kolla Review 20160120" class="img-responsive" src="images/kolla/kolla_review_stackalytics_20160120.png"/&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Kolla Commit 20160120" class="img-responsive" src="images/kolla/kolla_commit_stackalytics_20160120.png"/&gt;&lt;/p&gt;
 &lt;p&gt;可以看出，主流的几大 OpenStack 厂商均贡献的大部分的代码。包括 Mirantis, RedHat, Oracle, Intel, 99Cloud, Cisco, Rakespace。&lt;/p&gt;
-&lt;h1 id="_5"&gt;近况&lt;/h1&gt;
-&lt;h2 id="201512"&gt;201512&lt;/h2&gt;
+&lt;h1 id="_5"&gt;&lt;a class="toclink" href="#_5"&gt;近况&lt;/a&gt;&lt;a class="headerlink" href="#_5" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
+&lt;h2 id="201512"&gt;&lt;a class="toclink" href="#201512"&gt;201512&lt;/a&gt;&lt;a class="headerlink" href="#201512" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;废弃使用 Ansible 自带的 Docker module。使用自己实现的 docker 模块&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;, 并已经完成了所有 ansible roles 的改造。主要原因是：&lt;ol&gt;
 &lt;li&gt;官方 Docker module 有bug&lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;, 在docker 1.8.3 及以上的版本工作不正常, 而且进展缓慢。而 Kolla 使用的 Docker 版本只能锁定在 1.8.2，不能进行升级。&lt;/li&gt;
@@ -2655,7 +2655,7 @@ multihost 的环境&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;升级的 playbook 基本完成来&lt;sup id="fnref-8"&gt;&lt;a class="footnote-ref" href="#fn-8"&gt;8&lt;/a&gt;&lt;/sup&gt;。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="_6"&gt;使用到的技术&lt;/h1&gt;
+&lt;h1 id="_6"&gt;&lt;a class="toclink" href="#_6"&gt;使用到的技术&lt;/a&gt;&lt;a class="headerlink" href="#_6" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;Docker/LXC&lt;/li&gt;
 &lt;li&gt;Ansible&lt;/li&gt;
@@ -2665,7 +2665,7 @@ multihost 的环境&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="_7"&gt;近期规划&lt;/h1&gt;
+&lt;h1 id="_7"&gt;&lt;a class="toclink" href="#_7"&gt;近期规划&lt;/a&gt;&lt;a class="headerlink" href="#_7" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;拆分 ansible 部分到新的项目 kolla-ansible。kolla 项目只用来做 docker images build. 部署工作由 kolla-ansible, kolla-mesos&lt;sup id="fnref-9"&gt;&lt;a class="footnote-ref" href="#fn-9"&gt;9&lt;/a&gt;&lt;/sup&gt;等工具来实现。&lt;/li&gt;
 &lt;li&gt;如何进行平滑的 OpenStack 升级&lt;/li&gt;
@@ -2673,7 +2673,7 @@ multihost 的环境&lt;/p&gt;
 &lt;li&gt;Swift 自动化&lt;/li&gt;
 &lt;li&gt;Ceilometer Container&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://wiki.openstack.org/wiki/Kolla" target="_blank"&gt;Kolla Wiki Page&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -2812,7 +2812,7 @@ if __name__ == "__main__":
 &lt;/div&gt;
 &lt;p&gt;从上面看，主要有 Projects, Inventories, Job Templates, Jobs 几个功能点。&lt;br/&gt;
 还有一个主要的是后面的 Setup。我们一个一个来介绍下都是做什么用的。并建立起一个简单的例子&lt;/p&gt;
-&lt;h1 id="projects"&gt;Projects&lt;/h1&gt;
+&lt;h1 id="projects"&gt;&lt;a class="toclink" href="#projects"&gt;Projects&lt;/a&gt;&lt;a class="headerlink" href="#projects" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Projects 里的主要内容是一个 Playbook 的代码地址，可选项为Manual(手动指定位置)，Git, Mercutail, Subversion。&lt;/p&gt;
 &lt;p&gt;我在Github上建立了一个简单的 PlayBook。我们来创建一个新的 Project。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;project_demo&lt;/span&gt;
@@ -2826,13 +2826,13 @@ if __name__ == "__main__":
 &lt;div class="text-center" markdown="1"&gt; &lt;strong&gt;图2&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;在(图2)中，可以看到刚刚创建的 Project (project_demo)。后面是有4个操作按钮，分别是更新代码，定时更新，修改和删除。&lt;/p&gt;
 &lt;p&gt;基中更新代码的其实就是启了一个ansible playbook去update你在创建Project时填入的项目地址。&lt;/p&gt;
-&lt;h1 id="inventories"&gt;Inventories&lt;/h1&gt;
+&lt;h1 id="inventories"&gt;&lt;a class="toclink" href="#inventories"&gt;Inventories&lt;/a&gt;&lt;a class="headerlink" href="#inventories" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;这里的 Inventories 和在 Ansible里的概念是一样的。在这可以创建一个若干 Inventories。每个里面可以像在 Ansible 里一样，创建机器和群组。&lt;/p&gt;
 &lt;p&gt;我们来创建一个 localhost 的机器。点击 + 号，在弹出的对话框里输入 localhost 就可以了。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Tower add host" class="img-responsive" src="images/ansible/tower_add_host.png"/&gt;&lt;br/&gt;
 &lt;div class="text-center" markdown="1"&gt; &lt;strong&gt;图3&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;在里面，还可以增加 Host 对应的变量。Group 里还可以嵌套 Group, 这和Ansible是一样的。&lt;/p&gt;
-&lt;h1 id="job-templates"&gt;Job Templates&lt;/h1&gt;
+&lt;h1 id="job-templates"&gt;&lt;a class="toclink" href="#job-templates"&gt;Job Templates&lt;/a&gt;&lt;a class="headerlink" href="#job-templates" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;这里是来定义 Job 的模板。定义好后，就可以手动或自动的跑 Job 了。这之前，我们还可创建一个认证信息，用来登录机器用。&lt;/p&gt;
 &lt;p&gt;在 setup -&amp;gt; Credentials 里可以看到所有的认证信息。我们来创建一个基于 SSH Key的认证，用来登录 localhost, 跑我们的 project demo 项目。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Name&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;
@@ -2845,14 +2845,14 @@ if __name__ == "__main__":
 &lt;p&gt;接下来，创建我们的 Job Template&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Tower add job template" class="img-responsive" src="images/ansible/tower_add_job_template.png"/&gt;&lt;br/&gt;
 &lt;div class="text-center" markdown="1"&gt; &lt;strong&gt;图4&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;
-&lt;h1 id="job"&gt;Job&lt;/h1&gt;
+&lt;h1 id="job"&gt;&lt;a class="toclink" href="#job"&gt;Job&lt;/a&gt;&lt;a class="headerlink" href="#job" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;创建好模板后，直接在 template 界面里点 start 就可以运行了。点击后，会跳转到 Job 运行界面。稍等一会，就可以看到运行结果了。&lt;/p&gt;
-&lt;h1 id="portal"&gt;Portal&lt;/h1&gt;
+&lt;h1 id="portal"&gt;&lt;a class="toclink" href="#portal"&gt;Portal&lt;/a&gt;&lt;a class="headerlink" href="#portal" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Tower 还有一个 Portal 模式。很方便非开发运维人员使用。左面是Job Template, 点击直接运行, 右面是运行结果。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Tower Portal Mode" class="img-responsive" src="images/ansible/tower_portal.png"/&gt;&lt;br/&gt;
 &lt;div class="text-center" markdown="1"&gt; &lt;strong&gt;图5&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 02 Jan 2016 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2016-01-02:/ansible-tower-usage.html</guid><category>Ansible Tower</category></item><item><title>Install Ansible Tower</title><link>https://xcodest.me/install-ansible-tower.html</link><description>
-&lt;h1 id="_1"&gt;手动安装&lt;/h1&gt;
-&lt;h2 id="_2"&gt;下载安装包&lt;/h2&gt;
+&lt;h1 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;手动安装&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
+&lt;h2 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;下载安装包&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;从 http://www.ansible.com/tower-trial 下载，需要填个人信息，提交后会自动下载。&lt;/p&gt;
 &lt;p&gt;把安装包复制到要安装的机器中去，解压准备安装&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tar xvf ansible-tower-setup-latest.tar.gz
@@ -2888,27 +2888,27 @@ sudo ./setup.sh
 &lt;/ol&gt;
 &lt;p&gt;安装好后，终端会提示给你访问的地址，用浏览器打开就可以了。输入上面设置的admin账号密码登录。&lt;/p&gt;
 &lt;p&gt;之后会出现设置 Tower License 的界面。可以从 http://www.ansible.com/license 申请到一个10个节点的免费 license。最后把 License 复制进去提交就可以了。&lt;/p&gt;
-&lt;h1 id="vagrant"&gt;使用 Vagrant 进行安装&lt;/h1&gt;
+&lt;h1 id="vagrant"&gt;&lt;a class="toclink" href="#vagrant"&gt;使用 Vagrant 进行安装&lt;/a&gt;&lt;a class="headerlink" href="#vagrant" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;官方提供 Vagrant Images, 方便进行安装测试。使用方法&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vagrant init tower http://vms.ansible.com/ansible-tower-2.4.3-virtualbox.box
 vagrant up
 vagrant ssh
 &lt;/pre&gt;&lt;/div&gt;
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;http://docs.ansible.com/ansible-tower/latest/html/installandreference/tower_installer.html&lt;/li&gt;
 &lt;li&gt;http://docs.ansible.com/ansible-tower/latest/html/installandreference/tower_install_wizard.html&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 31 Dec 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-12-31:/install-ansible-tower.html</guid><category>Ansible Tower</category></item><item><title>Ansible安装</title><link>https://xcodest.me/ansible-install.html</link><description>&lt;p&gt;由于 Ansible 是通过 SSH 进行通讯的，所以只用安装 master 端就可以了。并不像 puppet/SaltStack 那样在 slave/minion 端进行安装。&lt;/p&gt;
 &lt;p&gt;由于是用 Python 编写的，安装起来和普通 Python 应用没有太大区别。可以通过源码，pypi, 操作系统的包管理进行安装。&lt;/p&gt;
-&lt;h1 id="_1"&gt;系统包管理&lt;/h1&gt;
-&lt;h2 id="rpm"&gt;RPM 系&lt;/h2&gt;
+&lt;h1 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;系统包管理&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;h2 id="rpm"&gt;&lt;a class="toclink" href="#rpm"&gt;RPM 系&lt;/a&gt;&lt;a class="headerlink" href="#rpm" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# install epel source
 yum install -y epel-release
 yum install ansible
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id="apt"&gt;Apt 系&lt;/h2&gt;
+&lt;h2 id="apt"&gt;&lt;a class="toclink" href="#apt"&gt;Apt 系&lt;/a&gt;&lt;a class="headerlink" href="#apt" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install -y software-properties-common
 apt-add-repository -y ppa:ansible/ansible
 apt-get update
@@ -2916,13 +2916,13 @@ apt-get install -y ansible
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="pypi"&gt;pypi安装&lt;/h1&gt;
+&lt;h1 id="pypi"&gt;&lt;a class="toclink" href="#pypi"&gt;pypi安装&lt;/a&gt;&lt;a class="headerlink" href="#pypi" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;通过pypi相当简单，直接用pip就可安装&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install ansible
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="_2"&gt;源码安装&lt;/h1&gt;
+&lt;h1 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;源码安装&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# download the source from github&lt;/span&gt;
 &lt;span class="c1"&gt;# ansible has two git submodules, so the --recursive is required.&lt;/span&gt;
 git clone git://github.com/ansible/ansible.git --recursive
@@ -2942,7 +2942,7 @@ pip install .
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;https://github.com/jeffrey4l/docker-registry&lt;/li&gt;
 &lt;li&gt;https://github.com/docker/distribution/blob/master/docs/mirror.md&lt;/li&gt;
@@ -3155,7 +3155,7 @@ or similar.
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://bugs.python.org/issue8296" target="_blank"&gt;Python Bug&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://unix.stackexchange.com/a/149756" target="_blank"&gt;How Ctrl+c works&lt;/a&gt;&lt;/li&gt;
@@ -3177,7 +3177,7 @@ glance image-create --id &lt;span class="nv"&gt;$uuid&lt;/span&gt; --name ubuntu
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;[0] &lt;a href="https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179" target="_blank"&gt;https://github.com/openstack/nova/blob/4a02d9415f64e8d579d1b674d6d2efda902b01fa/nova/virt/libvirt/rbd_utils.py#L179&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;[1] &lt;a href="http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf" target="_blank"&gt;http://www.sebastien-han.fr/down/OpenStack%20_%20Ceph%20-%20Liberty.pdf&lt;/a&gt;&lt;/li&gt;
@@ -3296,7 +3296,7 @@ SubClass2().foo({"version": "2.0"})
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 18 May 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-05-18:/python-metaclass-magic.html</guid><category>Python</category></item><item><title>Oz Templates</title><link>https://xcodest.me/oz-templates.html</link><description>&lt;p&gt;最近利用&lt;a href="https://github.com/clalancette/oz" target="_blank"&gt;OZ&lt;/a&gt;做了几个常用镜像的自动化制作。回头有用到的会再加进去。说明如下&lt;/p&gt;
 &lt;p&gt;项目地址: &lt;a href="https://github.com/jeffrey4l/oz-templates" target="_blank"&gt;https://github.com/jeffrey4l/oz-templates&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;以下是README里的内容。&lt;/p&gt;
-&lt;h2 id="usage"&gt;Usage&lt;/h2&gt;
+&lt;h2 id="usage"&gt;&lt;a class="toclink" href="#usage"&gt;Usage&lt;/a&gt;&lt;a class="headerlink" href="#usage" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;The isos are located in &lt;code&gt;/data/isos/&lt;/code&gt;. The isos' name are conversionally.&lt;br&gt;
 Including&lt;/p&gt;
 &lt;ul&gt;
@@ -3312,7 +3312,7 @@ make all
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id="detail"&gt;Detail&lt;/h2&gt;
+&lt;h2 id="detail"&gt;&lt;a class="toclink" href="#detail"&gt;Detail&lt;/a&gt;&lt;a class="headerlink" href="#detail" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;The image are configured as following&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;without lvm, which will helpful for partion auto extend.&lt;/li&gt;
@@ -3368,7 +3368,7 @@ make all
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html" target="_blank"&gt;Re-raising Exceptions&lt;/a&gt; - by Ian Bicking&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 06 May 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-05-06:/How_to_raise_python_exception.html</guid><category>Python</category><category>Exception</category></item><item><title>Logstash Debug</title><link>https://xcodest.me/logstash_debug.html</link><description>&lt;p&gt;Logstash 能使用 rubydebug 这个 codec 进行 debug。&lt;/p&gt;
@@ -3403,11 +3403,11 @@ Pipeline started {:level=&amp;gt;:info}
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/codecs/rubydebug" target="_blank"&gt;http://logstash.net/docs/1.4.2/codecs/rubydebug&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://logstash.net/docs/1.4.2/flags" target="_blank"&gt;http://logstash.net/docs/1.4.2/flags&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 23 Mar 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-03-23:/logstash_debug.html</guid></item><item><title>Nova Security Group相关配置</title><link>https://xcodest.me/nova-security-groupxiang-guan-pei-zhi.html</link><description>&lt;h1 id="_1"&gt;相关配置&lt;/h1&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 23 Mar 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-03-23:/logstash_debug.html</guid></item><item><title>Nova Security Group相关配置</title><link>https://xcodest.me/nova-security-groupxiang-guan-pei-zhi.html</link><description>&lt;h1 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;相关配置&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;network_api_class - 设置 network 模块所用的api&lt;ul&gt;
 &lt;li&gt;&lt;code&gt;nova.network.api.API&lt;/code&gt; - 通过rpc与nova-network交互&lt;/li&gt;
@@ -3431,7 +3431,7 @@ Pipeline started {:level=&amp;gt;:info}
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="_2"&gt;使用组合：&lt;/h1&gt;
+&lt;h1 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;使用组合：&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;nova-network + libvirt&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nova_api_class=nova.network.api.API
 security_group_ap=nova
@@ -3456,7 +3456,7 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://kennethjiang.blogspot.jp/2012/02/ebtables-in-openstack-nova-and.html" target="_blank"&gt;ebtables in Openstack Nova&lt;/a&gt; - nwfilter explaination&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://blueprints.launchpad.net/neutron/+spec/arp-spoof-patch-ebtables" target="_blank"&gt;Preventing ARP spoofing via ebtables&lt;/a&gt; - Neutron BP for preventing arp snoofing. Expected in Kilo&lt;ol&gt;
@@ -3492,11 +3492,11 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 &lt;/li&gt;
 &lt;li&gt;对于不爱运动的人来说，生活说小的改变，能让热量消耗有很大的不同。如多走几步路等。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://open.163.com/movie/2013/5/E/1/M8TBLASMF_M8TBLJSE1.html" target="_blank"&gt;BBC：关于减肥你应该知道的十件事&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 12 Mar 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-03-12:/ten-things-you-need-know-abount-loss-weight.html</guid></item><item><title>Cinder V2 API</title><link>https://xcodest.me/cinder-v2-api.html</link><description>&lt;p&gt;cinder v2 api add more feature than v1, Like QoS. And the v1 is marked deprecated in juno and will be removed soon. ( may be in kilo).&lt;/p&gt;
-&lt;h1 id="enable-the-v2-in-cinder"&gt;Enable the v2 in cinder&lt;/h1&gt;
+&lt;h1 id="enable-the-v2-in-cinder"&gt;&lt;a class="toclink" href="#enable-the-v2-in-cinder"&gt;Enable the v2 in cinder&lt;/a&gt;&lt;a class="headerlink" href="#enable-the-v2-in-cinder" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Change the following config. The v1 and v2 is enabled in default.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# DEPRECATED: Deploy v1 of the Cinder API. (boolean value)&lt;/span&gt;
 &lt;span class="c1"&gt;#enable_v1_api=true&lt;/span&gt;
@@ -3506,7 +3506,7 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="enable-the-cinder-v2-api-in-nova"&gt;Enable the cinder v2 api in nova&lt;/h1&gt;
+&lt;h1 id="enable-the-cinder-v2-api-in-nova"&gt;&lt;a class="toclink" href="#enable-the-cinder-v2-api-in-nova"&gt;Enable the cinder v2 api in nova&lt;/a&gt;&lt;a class="headerlink" href="#enable-the-cinder-v2-api-in-nova" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;In current nova config ( juno ), the default config like below. Depend on &lt;code&gt;catalog_info&lt;/code&gt; key, it use the v2 first. If v2 is not found, it will fall back to v1 version.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[cinder]&lt;/span&gt;
 
@@ -3552,7 +3552,7 @@ service cinder-api restart
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;http://docs.openstack.org/havana/install-guide/install/apt/content/cinder-controller.html&lt;/li&gt;
 &lt;li&gt;https://wiki.openstack.org/wiki/CinderAPIv2&lt;/li&gt;
@@ -3587,7 +3587,7 @@ $ virsh capabilities | grep uuid
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://libvirt.org/guide/html/Application_Development_Guide-Connections-Capability_Info.html" target="_blank"&gt;Libvirt Capability Information&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 10 Feb 2015 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2015-02-10:/libvirt-uuid.html</guid><category>Libvirt</category></item><item><title>tun &amp; veth设备</title><link>https://xcodest.me/tun-vethshe-bei.html</link><description>&lt;p&gt;OpenStack 的 Neutron 中会建立好多网卡设备。大体上这些网卡可以分为两类 tun 和 veth。&lt;/p&gt;
@@ -3607,7 +3607,7 @@ supports-priv-flags: no
 
 
 &lt;p&gt;下面就这两种设备分别做一下介绍。&lt;/p&gt;
-&lt;h1 id="tun-tap"&gt;tun &amp;amp; tap&lt;/h1&gt;
+&lt;h1 id="tun-tap"&gt;&lt;a class="toclink" href="#tun-tap"&gt;tun &amp;amp; tap&lt;/a&gt;&lt;a class="headerlink" href="#tun-tap" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;TUN与TAP是操作系统内核中的虚拟网络设备。不同于普通靠硬件网路板卡实现的设备，这些虚拟的网络设备全部用软件实现，并向运行于操作系统上的软件提供与硬件的网络设备完全相同的功能。&lt;/p&gt;
 &lt;p&gt;TAP 等同于一个以太网设备，它操作第二层数据包如以太网数据帧。TUN模拟了网络层设备，操作第三层数据包比如IP数据封包。&lt;/p&gt;
 &lt;p&gt;操作系统通过TUN/TAP设备向绑定该设备的用户空间的程序发送数据，反之，用户空间的程序也可以像操作硬件网络设备那样，通过TUN/TAP设备发送数据。在后种情况下，TUN/TAP设备向操作系统的网络栈投递（或“注入”）数据包，从而模拟从外部接受数据的过程。&lt;/p&gt;
@@ -3622,14 +3622,14 @@ ip tuntap add mode tun
 
 
 &lt;p&gt;在 OpenStack 中，主要用tap来做虚拟机的网卡。&lt;/p&gt;
-&lt;h1 id="veth"&gt;veth&lt;/h1&gt;
+&lt;h1 id="veth"&gt;&lt;a class="toclink" href="#veth"&gt;veth&lt;/a&gt;&lt;a class="headerlink" href="#veth" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;veth 从名字上来看是 Virtual ETHernet 的缩写，它的作用很简单，就是要把从一个 network namespace 发出的数据包转发到另一个 namespace。veth 设备是成对的，一个是 container 之中，另一个在 container 之外，即在真实机器上能看到的。 建立 veth 类型的设备可以用下面的命令：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ip link add name veth0 type veth0 peer name veth1
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;这里建立了一对veth设备，名字分别是 veth0 和 veth1。当向其中一个设备写入数据时，另一个设备就能拿到写入的数据。在 OpenStack 中的使用就是来穿透 namespace.&lt;/p&gt;
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://wangcong.org/2011/06/19/-e5-85-b3-e4-ba-8e-tuntap/" target="_blank"&gt;关于 tun/tap 设备&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://wangcong.org/2011/07/03/-e4-bb-80-e4-b9-88-e6-98-af-veth/" target="_blank"&gt;什么是veth&lt;/a&gt;&lt;/li&gt;
@@ -3724,7 +3724,7 @@ ip tuntap add mode tun
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1 id="ref"&gt;REF&lt;/h1&gt;
+&lt;h1 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="https://bugs.launchpad.net/neutron/+bug/1332564" target="_blank"&gt;https://bugs.launchpad.net/neutron/+bug/1332564&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html" target="_blank"&gt;http://dev.mysql.com/doc/refman/5.1/en/create-table-foreign-keys.html&lt;/a&gt;&lt;/li&gt;
@@ -3825,8 +3825,8 @@ git push origin --tags
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id="_1"&gt;参考&lt;/h2&gt;
-&lt;p&gt;&lt;a href="http://git-scm.com/book/en/Git-and-Other-Systems-Migrating-to-Git" target="_blank"&gt;Git and Other Systems - Migrating to Git&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 12 Aug 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-08-12:/migrate-svn-to-gitlab.html</guid><category>Git</category></item><item><title>硬派健身-减肥篇 阅读笔记</title><link>https://xcodest.me/hard-gym-reading-note.html</link><description>&lt;h2 id="_1"&gt;战肥肉有氧不敌，强塑身无氧超神&lt;/h2&gt;
+&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;参考&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://git-scm.com/book/en/Git-and-Other-Systems-Migrating-to-Git" target="_blank"&gt;Git and Other Systems - Migrating to Git&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Tue, 12 Aug 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-08-12:/migrate-svn-to-gitlab.html</guid><category>Git</category></item><item><title>硬派健身-减肥篇 阅读笔记</title><link>https://xcodest.me/hard-gym-reading-note.html</link><description>&lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;战肥肉有氧不敌，强塑身无氧超神&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;长时间有氧运动——似是而非的减肥妙计&lt;ol&gt;
 &lt;li&gt;当我们的身体状态稳定，身体素质、生活习惯变化不大时，我们的体重和体脂含量都是只能加，不能减，只能胖，不能瘦。这就是我们序章介绍过的体重设定点理论。&lt;/li&gt;
@@ -3857,16 +3857,16 @@ git push origin --tags
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2 id="_2"&gt;巧减重高强间歇，好身材双剑合璧&lt;/h2&gt;
+&lt;h2 id="_2"&gt;&lt;a class="toclink" href="#_2"&gt;巧减重高强间歇，好身材双剑合璧&lt;/a&gt;&lt;a class="headerlink" href="#_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;无敌天下的两项力量训练入门神功。一项是深蹲，一项是平板支撑。&lt;/p&gt;
-&lt;h3 id="_3"&gt;深蹲&lt;/h3&gt;
+&lt;h3 id="_3"&gt;&lt;a class="toclink" href="#_3"&gt;深蹲&lt;/a&gt;&lt;a class="headerlink" href="#_3" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;深蹲在运动时能训练到三分之一的肌肉（骨骼肌）。训练肌肉体积可占全身四分之三以上。主训的是人体最强两肌，股四头肌和臀大肌。辅助的是人体次强两肌，腓肠肌和股二头肌。深蹲号称无氧运动之王。练好深蹲，不仅能增强各种运动表现，而且由于训练肌群多、大，消耗的能量也非常可观。&lt;/li&gt;
 &lt;li&gt;杜鲁门州立大学的科学家们测试卡路里燃烧的数量，最后发现，深蹲类运动比普通固定器械运动能多消耗50%的热量！并认为这是因为深蹲涉及了更多的稳定性肌肉。需求稳定性的大重量多关节训练是最佳力量燃脂训练之一。&lt;/li&gt;
 &lt;li&gt;另外，因为深蹲涉及如此多的肌肉纤维，使得它成为所有训练中最好的推动生长荷尔蒙水平的一种训练。正如日本研究者在2006年的一项研究中发现的那样，更多的生长荷尔蒙意味着更多的肌肉增长。&lt;/li&gt;
 &lt;li&gt;臀大肌是人体体积最大的肌肉之一，&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id="_4"&gt;如何做好深蹲&lt;/h3&gt;
+&lt;h3 id="_4"&gt;&lt;a class="toclink" href="#_4"&gt;如何做好深蹲&lt;/a&gt;&lt;a class="headerlink" href="#_4" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;ol&gt;
 &lt;li&gt;首先，找一个高40公分左右的小平凳（茶几沙发均可，只要是这个高度），要结实稳定哦（测试，当你照下文做时，你的大腿角度平行略低于水平，换句话说，小腿和大腿的角略小于90°）。&lt;/li&gt;
 &lt;li&gt;手抱头，眼看前方。背挺直、反弓，屁股向后面的板凳坐下（向后坐，不是蹲马扎的向下坐，是接近蹲马桶的向后坐），想象自己有根儿尾巴（赛亚人、变身！），尾巴要冲着天。&lt;/li&gt;
@@ -3874,10 +3874,10 @@ git push origin --tags
 &lt;li&gt;屁股一碰到板凳茶几立即弹起，此时就能感觉是屁股发力了，臀大肌从拉伸状态变成收缩。大腿也跟着发力，整个脚踏实地面，整个人站起。&lt;/li&gt;
 &lt;li&gt;如果你觉得上述动作轻松做上20个不是事儿，请把最后动作环节改成发全身之力跳起！唤作板凳深蹲跳！在回落过程中应以前脚掌着地，膝关节角度为140到150。关节角度尽量不变。保证肌腱等弹性成分受到的刺激强度。膝盖不好和体重过大者，慎用此动作。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h3 id="_5"&gt;如何做平板支撑&lt;/h3&gt;
+&lt;h3 id="_5"&gt;&lt;a class="toclink" href="#_5"&gt;如何做平板支撑&lt;/a&gt;&lt;a class="headerlink" href="#_5" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;动作是身体俯卧，双肘弯曲支撑在地面上，肩膀和肘关节垂直于地面，双脚踩地，身体离开地面，躯干伸直，头部、肩部、胯部和踝部保持在同一平面，腹肌收紧，腰不可以向下掉，腹部要紧张，另外臀也要夹紧，别掉下去！&lt;br&gt;
 ，摆出普通的平板支撑动作，然后双手稍微向前移至躯干前方，同时缩短双肘之间的距离，从而延长力臂，减小支撑面的宽&lt;/p&gt;
-&lt;h3 id="hiit"&gt;HIIT——最强燃脂，最强塑身&lt;/h3&gt;
+&lt;h3 id="hiit"&gt;&lt;a class="toclink" href="#hiit"&gt;HIIT——最强燃脂，最强塑身&lt;/a&gt;&lt;a class="headerlink" href="#hiit" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;而HIIT由于在某种程度上是无氧肌肉训练和有氧训练的结合，实际上是从根本上改变了体质。把体重的设定点往下调整。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;日常跑步计划：学校操场，半圈快跑（有能力冲刺）半圈慢跑（也别走着）。&lt;/li&gt;
@@ -3887,7 +3887,7 @@ git push origin --tags
 家里的计划：&lt;/li&gt;
 &lt;li&gt;我觉得比较靠谱的是直接上HIIT的操课，这个问题有人也问过我。我后来看了看大家推荐的比较多的郑多燕和insanity。我觉得insanity比较，郑多燕的强度恐怕低了点。其中insanity的第八套强度不错，我觉得适合单跳，其他的适合搭配后面推荐的无氧运动双璧来一起做。当然也要看个人实际情况&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id="hiit_1"&gt;HIIT训练的重点：&lt;/h4&gt;
+&lt;h4 id="hiit_1"&gt;&lt;a class="toclink" href="#hiit_1"&gt;HIIT训练的重点：&lt;/a&gt;&lt;a class="headerlink" href="#hiit_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
 &lt;p&gt;HIIT运动实际上就是间歇性地提高与降低运动强度，某种程度上自己可以排列组合。只要是大肌群训练（臀腿主要发力），高低强度交替，持续10-20分钟，就能够达到HIIT的健身目的。&lt;br&gt;
 至于高低强度交替的规律，我建议变化间隔要短，不要5分钟高强度，5分钟低强度。因为高强度时间太长，无法保证强度忠实完成。最后还是成为中等或低强度的训练。另外，变化的间隔越短，对于脂肪的供能比提升越多。据猜测这可能与身体的预适应有关。有很多人提到了HIIT的强度过大，无法完成。我的建议是，循序渐进。你如果做不了一个insanity的全程，可以找个强度低一点的、二三十分钟的先练，慢慢来。如果你做不到十五分钟的冲刺交替跑，你可以只是快慢跑交替，慢慢进阶。锻炼的成果，更看重的是坚持。人的适应性是很强的，已经有很多朋友联系我说，他们做了我推荐的运动，第一次很难，第二次还可以，现在已经相对轻松了。HIIT训练也是一样的。如果坚持，身体就能不断进步。最后达到希望的效果。&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 19 Jul 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-07-19:/hard-gym-reading-note.html</guid><category>Book</category></item><item><title>Glance Image Cache</title><link>https://xcodest.me/glance-image-cache.html</link><description>&lt;p&gt;Glance 增加了一层cache的Middleware，用来缓存从file store后端取过来的镜像。一定&lt;br&gt;
 程度上可以加快取镜像的速度。这个功能默认情况下是没开启的。&lt;/p&gt;
@@ -3928,7 +3928,7 @@ glance-api加载的pipeline的名字。&lt;/p&gt;
 
 
 &lt;p&gt;不同的pipeline用到了不同的middleware, 启作用的是cache 和 cachemanagement这两个。&lt;/p&gt;
-&lt;h2 id="ref"&gt;REF&lt;/h2&gt;
+&lt;h2 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://docs.openstack.org/developer/glance/cache.html" target="_blank"&gt;The Glance Image Cache&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Thu, 17 Jul 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-07-17:/glance-image-cache.html</guid><category>Glance</category></item><item><title>Salt Mine</title><link>https://xcodest.me/salt-mine.html</link><description>&lt;p&gt;Salt mine 可以在一定的控制内让minion拿到其它minion的信息。实现原理是：通过配置，让minion定期(最短为1分钟)的向master发送数据，而其它minion可以从master拿到这些数据。一定程度上实现的minion之间的通迅。在搭建cluster时，十分有用。&lt;/p&gt;
@@ -3976,7 +3976,7 @@ jeffrey-thinkpad:
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id="ref"&gt;REF&lt;/h2&gt;
+&lt;h2 id="ref"&gt;&lt;a class="toclink" href="#ref"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#ref" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="http://docs.saltstack.com/en/latest/topics/mine/" target="_blank"&gt;Salt Mine&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Wed, 16 Jul 2014 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2014-07-16:/salt-mine.html</guid><category>SaltStack</category></item><item><title>linux bonding mode 6 break the vms</title><link>https://xcodest.me/linux-bonding-mode-6-break-the-vms.html</link><description>&lt;p&gt;操作系统： ubuntu 12.04.1&lt;br&gt;
@@ -4049,7 +4049,7 @@ fixed_ip_disassociate_timeout=1209600
 &lt;li&gt;Ceilometer&lt;/li&gt;
 &lt;li&gt;Baremetal&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id="keystone"&gt;Keystone&lt;/h1&gt;
+&lt;h1 id="keystone"&gt;&lt;a class="toclink" href="#keystone"&gt;Keystone&lt;/a&gt;&lt;a class="headerlink" href="#keystone" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;keystone是Openstack的认证和服务注册模块。其结构比较简单。其功能包括:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;认证&lt;/strong&gt; 主要功能是管理用户和用户组的信息，后端可以绑定ldap, mysql等认证方式。&lt;/li&gt;
@@ -4057,7 +4057,7 @@ fixed_ip_disassociate_timeout=1209600
 &lt;li&gt;&lt;strong&gt;Token&lt;/strong&gt; 管理。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;相对于其它子项目来说，keystone最近的变化并不是太大。将来一个比较大的变化就是基于domain的权限控制，届时Tenant里也可以细经出管理员和使用者的角色，并有详细的权限功能控制。&lt;/p&gt;
-&lt;h1 id="nova"&gt;Nova&lt;/h1&gt;
+&lt;h1 id="nova"&gt;&lt;a class="toclink" href="#nova"&gt;Nova&lt;/a&gt;&lt;a class="headerlink" href="#nova" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Nova是Openstack最早的子项目。现在其它项目如cinder, quantum(Openstack Network)都是来自于该项目。可以说这是Openstack中最复杂，最主要的部分。它负责&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;用户接口(nova-api)。处理来自于用户的请求，并做出合理的响应。&lt;/li&gt;
@@ -4065,11 +4065,11 @@ fixed_ip_disassociate_timeout=1209600
 &lt;li&gt;虚拟化的管理(nova-compute)。管理虚拟机的适配接口。通过它可以管理真实的虚拟技术驱动的机器，如KVM, XEN, Hypervisor V等。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;当然还有一些功能如nova-network, nova-volume已经从nova项目中迁移出来，成为独立的子项目。将来一段时间的变化，主要集中在nova-network的废弃，nova-conductor的更加完善，新的api(v3)的支持，对于祼机的支持。&lt;/p&gt;
-&lt;h1 id="cinder"&gt;Cinder&lt;/h1&gt;
+&lt;h1 id="cinder"&gt;&lt;a class="toclink" href="#cinder"&gt;Cinder&lt;/a&gt;&lt;a class="headerlink" href="#cinder" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Cinder是由nova-volume分化而来，用于管理虚拟机的块存储(block storage), 类似AWS的EBS。其功能主要是创建，维护，删除块存储。后端可以使用LVM, glusterFs, Ceph, NFS等软件技术的存储，也可以使用NetApp, Huawei，IBM等商用解决方案。当然也可以自己编写自己存储的Driver来支持更多的存储类型。&lt;/p&gt;
-&lt;h1 id="glance"&gt;Glance&lt;/h1&gt;
+&lt;h1 id="glance"&gt;&lt;a class="toclink" href="#glance"&gt;Glance&lt;/a&gt;&lt;a class="headerlink" href="#glance" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Glance用于管理各种系统的镜像。他后端也可以配置各种存储方案。包括本地，swift, ceph等。&lt;/p&gt;
-&lt;h1 id="openstack-network"&gt;Openstack Network.&lt;/h1&gt;
+&lt;h1 id="openstack-network"&gt;&lt;a class="toclink" href="#openstack-network"&gt;Openstack Network.&lt;/a&gt;&lt;a class="headerlink" href="#openstack-network" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;(Quantum名称因为商标问题停用）。&lt;/p&gt;
 &lt;p&gt;网络基本是Openstack最复杂的模块，涉及到的技术和协议相当多，也最容易出问题。也正因为此，很有必要将网络模块从越来越笨重的nova的拿出来。&lt;/p&gt;
 &lt;p&gt;Openstack Network提示了强大的网络服务（Network-as-a-service),用来实现L2, L3层的网络。在原有的nova-network的基础之上，增加了相当多的功能&lt;/p&gt;
@@ -4079,10 +4079,10 @@ fixed_ip_disassociate_timeout=1209600
 &lt;li&gt;为Qos, 流量监控等提供支持。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;现在Quantum还有一些问题，如HA方案不成熟，不太适用于Production。不过根据社区的计划，下一个版本(H)将会把nova-network废弃掉。所以Quantum才是真正的趋势。现在很有必要将其吃透。&lt;/p&gt;
-&lt;h1 id="lbaas"&gt;LBaaS&lt;/h1&gt;
+&lt;h1 id="lbaas"&gt;&lt;a class="toclink" href="#lbaas"&gt;LBaaS&lt;/a&gt;&lt;a class="headerlink" href="#lbaas" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Load-Balancer-as-a-service.在Quantum基础上实现的负载均衡。后端既可以使用haproxy,也可以使用cisco, f5等硬件。（不过我还没有功能搭建过这个服务。&lt;/p&gt;
-&lt;h1 id="ceilometer"&gt;Ceilometer&lt;/h1&gt;
+&lt;h1 id="ceilometer"&gt;&lt;a class="toclink" href="#ceilometer"&gt;Ceilometer&lt;/a&gt;&lt;a class="headerlink" href="#ceilometer" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Openstack的计量，计费模块。可以统计Cpu, IO, Network使用的详细情况。对公有云和私有云都有极大的好处。现在也有一个Horizon的插件，可以直接在dashboard里显示使用情况（将来，该插件会合并到horizon中）&lt;/p&gt;
-&lt;h1 id="baremetal"&gt;Baremetal&lt;/h1&gt;
+&lt;h1 id="baremetal"&gt;&lt;a class="toclink" href="#baremetal"&gt;Baremetal&lt;/a&gt;&lt;a class="headerlink" href="#baremetal" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;增加Openstack对裸机的管理功能。可以实现直接对裸机进行系统安装，配置。模糊了虚拟化和物理机之间的界线。现在所有模块包括nova, glance, cinder都在努力增强这方面的功能。&lt;br&gt;
 这个模块，我更期望是可以建立Nested-Openstack。同一个Openstack环境，既管理物理机，又自动在物理机上安装Openstack的模块来成为Openstack的一部分。&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Mon, 17 Jun 2013 23:08:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2013-06-17:/openstack-brief.html</guid></item></channel></rss>

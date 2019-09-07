@@ -148,7 +148,7 @@
 </div>
     
 <p>2016年2月9日-10日，Kolla Team 举办了 Mitaka 的中期会议，对遇到的问题、解决的方法及接下来的工作内容做了深入讨论。</p>
-<h1 id="_1">讨论的优先级安排</h1>
+<h1 id="_1"><a class="toclink" href="#_1">讨论的优先级安排</a><a class="headerlink" href="#_1" title="Permanent link">¶</a></h1>
 <p>首先对本次讨论进行了优先级安排<sup id="fnref-1"><a class="footnote-ref" href="#fn-1">1</a></sup>。</p>
 <ul>
 <li>Upgrades： 这是现在的重中之重。如何能对现有的Kolla进行平滑的升级。包括 OpenStack 组件和基础服务组件(如 MariaDB 等)。</li>
@@ -159,18 +159,18 @@
 <li>selinux</li>
 <li>kolla-ansible split</li>
 </ul>
-<h1 id="upgrade">Upgrade</h1>
+<h1 id="upgrade"><a class="toclink" href="#upgrade">Upgrade</a><a class="headerlink" href="#upgrade" title="Permanent link">¶</a></h1>
 <p>升级主要涉及到两部分。相关的BP在这里<sup id="fnref-3"><a class="footnote-ref" href="#fn-3">3</a></sup>。</p>
 <ol>
 <li>是OpenStack的各个组件</li>
 <li>是一些基础服务组件。</li>
 </ol>
-<h2 id="openstack">OpenStack 组件</h2>
+<h2 id="openstack"><a class="toclink" href="#openstack">OpenStack 组件</a><a class="headerlink" href="#openstack" title="Permanent link">¶</a></h2>
 <p>由于 OpenStack 各个组件的结构基本相同，都是有DB, API, Scheduler等几个部分构成。所以这里的升级要简单一些，而且已经基本完成了编码工作，不过需要大量的测试来保证升级的可靠性<sup id="fnref-2"><a class="footnote-ref" href="#fn-2">2</a></sup>。</p>
-<h2 id="_2">基础服务组件</h2>
+<h2 id="_2"><a class="toclink" href="#_2">基础服务组件</a><a class="headerlink" href="#_2" title="Permanent link">¶</a></h2>
 <p>由于各个组件的升级方式并不同，同一个组件不同版本间，可能也不相同。所以这部分相比较来说要困难的多。讨论中对各个组件进行了逐一讨论。包括升级的方式，有可能造成的影响等。详细信息见<sup id="fnref-4"><a class="footnote-ref" href="#fn-4">4</a></sup></p>
-<h1 id="diagnosticslogging">Diagnostics/Logging</h1>
-<h1 id="security">Security</h1>
+<h1 id="diagnosticslogging"><a class="toclink" href="#diagnosticslogging">Diagnostics/Logging</a><a class="headerlink" href="#diagnosticslogging" title="Permanent link">¶</a></h1>
+<h1 id="security"><a class="toclink" href="#security">Security</a><a class="headerlink" href="#security" title="Permanent link">¶</a></h1>
 <p>安全也是很重要的事情，Team 两次讨论了这个问题<sup id="fnref-5"><a class="footnote-ref" href="#fn-5">5</a></sup><sup id="fnref-8"><a class="footnote-ref" href="#fn-8">8</a></sup></p>
 <p>在各个模块之前开启 SSL 功能<sup id="fnref2-5"><a class="footnote-ref" href="#fn-5">5</a></sup>。当然默认是通过配置开启的。这样使 OpenStack 运行在一个更加安全的环境中。这个功能期望是在 Mitaka-3 中完成。</p>
 <p>容器中的安全</p>
@@ -180,7 +180,7 @@
 <li>rootwrap 不应该能修改</li>
 <li>开启 SELinux </li>
 </ul>
-<h1 id="backport">Backport</h1>
+<h1 id="backport"><a class="toclink" href="#backport">Backport</a><a class="headerlink" href="#backport" title="Permanent link">¶</a></h1>
 <p>Liberty 是 Kolla Release 的第一个版本。而在现在的 Master 分支中，已经有了大量的新功能。Team 讨论了 Backport 的原因和意义<sup id="fnref-6"><a class="footnote-ref" href="#fn-6">6</a></sup>。</p>
 <p>最主要的原因</p>
 <ul>
@@ -199,7 +199,7 @@
 <li>只 backport kolla_docker module</li>
 </ul>
 <p>现在看来，应该会采取方法 4。</p>
-<h1 id="kolla-code-sharing">kolla code sharing</h1>
+<h1 id="kolla-code-sharing"><a class="toclink" href="#kolla-code-sharing">kolla code sharing</a><a class="headerlink" href="#kolla-code-sharing" title="Permanent link">¶</a></h1>
 <p>现在 Kolla 相关的项目有两个 https://github.com/openstack/kolla 和 https://github.com/openstack/kolla-mesos 。将来还会分拆出一个 kolla-ansible 项目来。现在， 单这两个项目下就有很多的重复代码，导致做了许多 copy, paster 的工作。这个 topic<sup id="fnref-9"><a class="footnote-ref" href="#fn-9">9</a></sup> 就是来解决这个问题的。</p>
 <p>重复的东西</p>
 <ul>
@@ -213,9 +213,9 @@
 <li>两连都存在副本，定期进行双向的同步。</li>
 <li>创新一个新的仓库包含一些共用的模板</li>
 </ul>
-<h1 id="roadmap">Roadmap</h1>
+<h1 id="roadmap"><a class="toclink" href="#roadmap">Roadmap</a><a class="headerlink" href="#roadmap" title="Permanent link">¶</a></h1>
 <p>Mitaka, Netron, Ocata， P版本的功路线图<sup id="fnref-7"><a class="footnote-ref" href="#fn-7">7</a></sup>。你更期待什么功能呢?</p>
-<h2 id="mitaka-3-roadmap">Mitaka-3 Roadmap</h2>
+<h2 id="mitaka-3-roadmap"><a class="toclink" href="#mitaka-3-roadmap">Mitaka-3 Roadmap</a><a class="headerlink" href="#mitaka-3-roadmap" title="Permanent link">¶</a></h2>
 <p>Mitaka 进入最后的阶段，还有一些重要功能在开发中，现在主要还有以下几点。</p>
 <ul>
 <li>diagnostics</li>
@@ -224,7 +224,7 @@
 <li>migration path for data volumes</li>
 <li>functional tests in gate (boot a vm &amp; ping test)</li>
 </ul>
-<h2 id="newton-roadmap">Newton Roadmap</h2>
+<h2 id="newton-roadmap"><a class="toclink" href="#newton-roadmap">Newton Roadmap</a><a class="headerlink" href="#newton-roadmap" title="Permanent link">¶</a></h2>
 <ul>
 <li>voting gates</li>
 <li>jumbo frames MTU investigation</li>
@@ -247,7 +247,7 @@
 <li>Python API with no running services for managing Kolla</li>
 <li>BiFrost documentation and investigation</li>
 </ul>
-<h2 id="ocata-roadmap">Ocata Roadmap</h2>
+<h2 id="ocata-roadmap"><a class="toclink" href="#ocata-roadmap">Ocata Roadmap</a><a class="headerlink" href="#ocata-roadmap" title="Permanent link">¶</a></h2>
 <ul>
 <li>deploy full big tent (or develop plugin mechanism to deploy whatever) / maybe we could do a skeleton service</li>
 <li>kolla-saltstack, kolla-puppet investigation - may not even be needed when moving to Ansible 2.0</li>
@@ -259,13 +259,13 @@
 <li>runc investigation</li>
 <li>rkt investigation</li>
 </ul>
-<h2 id="p-roadmap">P Roadmap</h2>
+<h2 id="p-roadmap"><a class="toclink" href="#p-roadmap">P Roadmap</a><a class="headerlink" href="#p-roadmap" title="Permanent link">¶</a></h2>
 <ul>
 <li>rollback support from upgrade</li>
 <li>canary deployment</li>
 <li>make Kolla operate optionally without net=host for upcoming kolla-mesos and kolla-kubernetes repositories</li>
 </ul>
-<h1 id="ref">REF</h1>
+<h1 id="ref"><a class="toclink" href="#ref">REF</a><a class="headerlink" href="#ref" title="Permanent link">¶</a></h1>
 <div class="footnote">
 <hr/>
 <ol>

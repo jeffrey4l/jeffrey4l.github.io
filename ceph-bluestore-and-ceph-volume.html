@@ -124,7 +124,7 @@
     </div>
   </header>
   <div class="entry-content">
-    <h2 id="_1">部署</h2>
+    <h2 id="_1"><a class="toclink" href="#_1">部署</a><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <p>使用环境</p>
 <ul>
 <li>单节点</li>
@@ -248,18 +248,18 @@ lrwxrwxrwx. <span class="m">1</span> root root  <span class="m">23</span> Apr  <
 </pre></div>
 
 
-<h2 id="bluestore-rocksdb-ceph-volume">bluestore &amp; rocksdb &amp; ceph-volume</h2>
+<h2 id="bluestore-rocksdb-ceph-volume"><a class="toclink" href="#bluestore-rocksdb-ceph-volume">bluestore &amp; rocksdb &amp; ceph-volume</a><a class="headerlink" href="#bluestore-rocksdb-ceph-volume" title="Permanent link">&para;</a></h2>
 <p>ceph 的组件多采用插件的机制，包括后端存储，KV 数据库，磁盘管理等。各组件之间可以灵活的组合。</p>
 <p>基于后端存储包括 filestore, kvstore，memstore 和新的 bluestore。 Ceph Luminous 引用了 bluestore 的存储类型，不依赖文件系统，直接管理物理磁盘，相比filestore, 在 io 写入的时候路径更短，也避免了二次写入的问题，性能会更加好。</p>
 <p>KV 存储主要包括 LevelDB, MemDB 和新的 RocksDB。 RocksDB 是 Facebook 基于 LevelDB 开发的 key-value 数据，并对闪存(flash)有更友好的优化。</p>
 <p>磁盘管理之前只有个 ceph-disk, 现在新引入了 ceph-volume。基于 lvm 来管理磁盘，并会逐渐废弃掉 ceph-disk。</p>
 <p><img alt="ceph-bluestore.png" src="images/2018/ceph-bluestore.png"></p>
 <p>基中比较有意思的是 RocksDB 的实现，RocksDB 原本只基于文件系统的。但是得益于它本身的灵活性，bluestore 实现了一套 RocksDB 的 Env 接口，还在 BlueStore 上面实现了一套 BlueFS 的接口与 BluestoreEnv 对接。使得 RocksDB 可以存储在 BlueStore 上面。</p>
-<h2 id="wal-db">wal &amp; db 的大小问题</h2>
+<h2 id="wal-db"><a class="toclink" href="#wal-db">wal &amp; db 的大小问题</a><a class="headerlink" href="#wal-db" title="Permanent link">&para;</a></h2>
 <p>在 ceph bluestore 的情况下，wal 是 RocksDB 的 write-ahead log, 相当于之前的 journal 数据，db 是 RocksDB 的 metadata 信息。在磁盘选择原则是 block.wal &gt; block.db &gt; block。当然所有的数据也可以放到同一块盘上。</p>
 <p>默认情况下， wal 和 db 的大小分别是 512 MB 和 1GB, 包括 Sage Weil 的 PPT 里面也是这样标明的<sup id="fnref-1"><a class="footnote-ref" href="#fn-1">1</a></sup>。现在没有一个太好的理论值，它和 ceph 里面的每个 OSD 里面的对象个数有关系。更多讨论可以参看<sup id="fnref-2"><a class="footnote-ref" href="#fn-2">2</a></sup>。 现在社区推荐的是 block size * 4% 的值。也就是说如果你的 block 盘大小是 1TB，那 block.db 的大小最少是 40GB。<sup id="fnref-4"><a class="footnote-ref" href="#fn-4">4</a></sup><sup id="fnref-5"><a class="footnote-ref" href="#fn-5">5</a></sup></p>
 <p>值得注意的是，如果所有的数据都在单块盘上，那是没有必要指定 wal &amp; db 的大小的。如果 wal &amp; db 是在不同的盘上，由于 wal/db 一般都会分的比较小，是有满的可能性的。如果满了，这些数据会迁移到下一个快的盘上(wal - db - main)。所以最少不会因为数据满了，而造成无法写入<sup id="fnref-3"><a class="footnote-ref" href="#fn-3">3</a></sup>。</p>
-<h2 id="bluestore-osd">使用 bluestore 时的 osd 分区</h2>
+<h2 id="bluestore-osd"><a class="toclink" href="#bluestore-osd">使用 bluestore 时的 osd 分区</a><a class="headerlink" href="#bluestore-osd" title="Permanent link">&para;</a></h2>
 <p>如果是使用的 ceph-disk 管理磁盘，他会建立一个 100MB 的分区，来存放 keyring / whoami 这些信息，这和之前的逻辑是一样的。</p>
 <p>如果是使用 ceph-volume 管理磁盘，<code>/var/lib/ceph/osd/ceph-0</code> 分区会从 tmpfs 挂载过来(也就是内存)</p>
 <div class="highlight"><pre><span></span>$ mount <span class="p">|</span> grep osd
@@ -319,7 +319,7 @@ ceph.type=block
 </pre></div>
 
 
-<h2 id="osd">osd 的盘是如何挂载的</h2>
+<h2 id="osd"><a class="toclink" href="#osd">osd 的盘是如何挂载的</a><a class="headerlink" href="#osd" title="Permanent link">&para;</a></h2>
 <p>ceph 依赖 systemd 来管理挂载，不需要配置 <code>/etc/fstab</code> 文件。在初始化 osd 的时候, ceph 会 enable 一个 ceph-volume@x.service 服务，其中 x 的格式如 <code>{lvm|simple}-{osd id}-{osd uuid}</code>, 这个服务会在系统的<code>local-fs.target</code> 组里面，当系统挂载本地盘的时候，会自动挂载上。</p>
 <p>这个 ceph-volume@.service 定义如下</p>
 <div class="highlight"><pre><span></span>$systemctl cat ceph-volume@lvm-0-b7b4fa98-d36e-430b-9789-a432a078292c
@@ -350,18 +350,18 @@ WantedBy=multi-user.target
 </blockquote>
 <p>这个 <code>trigger</code> 会调用 <code>ceph-volume lvm activate</code> 命令，去准备相对应挂载及里面的数据初始化。</p>
 <p>最后， <code>ceph-volume lvm activate</code> 会调用 <code>ceph-bluestore-tool pirme-osd-dir</code> 命令来初始化里面的数据。</p>
-<h2 id="_2">其它</h2>
-<h3 id="ceph-osd-purge">ceph osd purge</h3>
+<h2 id="_2"><a class="toclink" href="#_2">其它</a><a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h3 id="ceph-osd-purge"><a class="toclink" href="#ceph-osd-purge">ceph osd purge</a><a class="headerlink" href="#ceph-osd-purge" title="Permanent link">&para;</a></h3>
 <p>ceph Limunous 新加了一个 <code>ceph osd purge</code> 命令，很好用，可以一个命令，把某个 osd 相关的信息都清除掉。包括</p>
 <ul>
 <li>osd</li>
 <li>crush rule</li>
 <li>auth key</li>
 </ul>
-<h3 id="ceph-disk-lvm">ceph-disk lvm</h3>
+<h3 id="ceph-disk-lvm"><a class="toclink" href="#ceph-disk-lvm">ceph-disk lvm</a><a class="headerlink" href="#ceph-disk-lvm" title="Permanent link">&para;</a></h3>
 <p>ceph-disk 应试不支持 lvm 的， 参见 http://tracker.ceph.com/issues/5461</p>
 <p>不过 kolla 是否支持，可以验证下， 因为 kolla 的脚本里面不依赖 ceph-disk</p>
-<h2 id="_3">版本</h2>
+<h2 id="_3"><a class="toclink" href="#_3">版本</a><a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>

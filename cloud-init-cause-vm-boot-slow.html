@@ -136,14 +136,14 @@
 </ul>
 </div>
     
-<h2 id="_1">问题</h2>
+<h2 id="_1"><a class="toclink" href="#_1">问题</a><a class="headerlink" href="#_1" title="Permanent link">¶</a></h2>
 <p>在一个准生产环境中，一直发现虚拟机启动太慢的问题，现像是虚拟机很早就能 ping 到，但是就是 ssh 不进去。要么报端口没有开启，要么就 Public Key 不对。整个过程大概要2分多钟才能直接 ssh 进去。</p>
-<h2 id="_2">背景知识</h2>
+<h2 id="_2"><a class="toclink" href="#_2">背景知识</a><a class="headerlink" href="#_2" title="Permanent link">¶</a></h2>
 <p>cloud-init 这个服务是从 AWS 学来的。它安装在虚拟机中，在启动虚拟机时，做一些初始化工作。如：硬盘分区自动扩展，SSH Public Key 注入，用户创建等。用户甚至可以注入一些 shell 脚本到虚拟机中运行。在自动化方便启了很大的作用。Heat 的实现就依赖于 cloud-init 服务。</p>
 <p>在 OpenStack 上，cloud-init 应该从 <code>http://169.254.169.254</code> 去拿到所需要的信息。而这个服务是通过 iptables 转到了 neutron-metadata-agent 服务上</p>
-<h2 id="_3">环境</h2>
+<h2 id="_3"><a class="toclink" href="#_3">环境</a><a class="headerlink" href="#_3" title="Permanent link">¶</a></h2>
 <p>使用 Kolla 安装的 OpenStack Mitaka 版本的多机环境，镜像使用的是 CentOS 7 和 Ubuntu 14.04, 均是从官方下载的。由于一些安全限制，虚拟机不能访问外网。</p>
-<h2 id="_4">调试</h2>
+<h2 id="_4"><a class="toclink" href="#_4">调试</a><a class="headerlink" href="#_4" title="Permanent link">¶</a></h2>
 <p>测试虚拟机用的 CentOS 7 系统，</p>
 <p>首先看虚拟机的 console log, 发现如下信息</p>
 <div class="highlight"><pre><span></span>Starting kdump:[  OK  ]
@@ -180,14 +180,14 @@ Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource Data
 <span class="go">...</span>
 </pre></div>
 <p>注意前面的时间点，这两行日志间差了60多秒，而且后面是一个错误，明显是在等一个超时，时间是花在这的。至此原因找到了。</p>
-<h2 id="_5">原因分析</h2>
+<h2 id="_5"><a class="toclink" href="#_5">原因分析</a><a class="headerlink" href="#_5" title="Permanent link">¶</a></h2>
 <p>cloud-init 是一个通用程序，能兼容多个云环境。他会从多个数据源里去读 Metadata 数据。其默认的顺序中，GoogleGCE 在 OpenStack 之前，而 GoogleGCE 的源里面，会访问一个 http://metadata.google.internal. 的网址，加上虚拟机不能访问外网，程序会卡在这里，直到超时。才会继续测试 OpenStack 的源是否可用。</p>
-<h2 id="_6">解决方法</h2>
+<h2 id="_6"><a class="toclink" href="#_6">解决方法</a><a class="headerlink" href="#_6" title="Permanent link">¶</a></h2>
 <p>尽量不要直接使用官方的源，而是自己制作，尤其是 cloud-init 的配置项。要手动修改掉其默认的数据源，以避免以上情况的发生。</p>
 <div class="highlight"><pre><span></span><span class="c1"># /etc/cloud/cloud.cfg</span>
 <span class="nt">datasource_list</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">'ConfigDrive'</span><span class="p p-Indicator">,</span> <span class="s">'OpenStack'</span><span class="p p-Indicator">,</span> <span class="s">'Ec2'</span><span class="p p-Indicator">]</span>
 </pre></div>
-<h2 id="_7">总结</h2>
+<h2 id="_7"><a class="toclink" href="#_7">总结</a><a class="headerlink" href="#_7" title="Permanent link">¶</a></h2>
 <ul>
 <li>cloud-init 的配置是通用配置，默认情况下适用于多种云环境。如 OpenStack， GoogleGCE 等</li>
 <li>日志很重要，很方便进行程序分析</li>

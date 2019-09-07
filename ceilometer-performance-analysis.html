@@ -132,7 +132,7 @@
 <blockquote>
 <p>pyflame 是 Uber 公司开源的用于生成 Python 程序火焰图的工具。</p>
 </blockquote>
-<h2 id="ceilometer">ceilometer 架构</h2>
+<h2 id="ceilometer"><a class="toclink" href="#ceilometer">ceilometer 架构</a><a class="headerlink" href="#ceilometer" title="Permanent link">&para;</a></h2>
 <p>ceilometer 架构经历过多次变化，已经简化成了如下图的结构。ceilometer 只有两个服务。ceilometer polling 服务负责从nova, swift, libvirt 等服务拉取相关数据，并发送到 MQ 里面的 notification.sample 队列。之后 ceilometer notification 从 MQ 中取到数据后，通过 <code>pipeline.yml</code> 的定义，进行数据转化后，再发给后面的 gnocchi api 进行存储。 这次的问题是出现在 ceilometer notification 进程。</p>
 <div class="highlight"><pre><span></span>   +--------------------+
    | Ceilometer Polling |
@@ -152,7 +152,7 @@
 </pre></div>
 
 
-<h2 id="_1">问题</h2>
+<h2 id="_1"><a class="toclink" href="#_1">问题</a><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <p>当开启 16 worker 的情况下，MQ 的处理速度如下图。前面部分是优化前的，基本消息处理速度在 10/s，平均每个 worker 每秒连一个请求都处理不完 。(后部分上升是因为有几个worker 做了优化)</p>
 <p><img alt="rabbitmq noti" src="images/ceilometer-perf/rabbitmq.jpg"></p>
 <p>安装 pyflame 工具</p>
@@ -207,13 +207,13 @@ make
 <p>打完以上 patch 后，重新抓取火焰图如下, SVG文件见<a href="images/ceilometer-perf/notification_perf_after.svg" target="_blank">notification_perf_after.svg</a></p>
 <p><img alt="notification perf after" src="images/ceilometer-perf/notification_perf_after.jpg"></p>
 <p>对比优化前, 右部分的在于已经不在调用 get_endpoint 接口。也就有了本文一开始的图，每秒的消息处理速度由 10/s 上升到了 40/s </p>
-<h2 id="_2">后记</h2>
+<h2 id="_2"><a class="toclink" href="#_2">后记</a><a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <ul>
 <li>pyflame 生成火焰图的方式来定位性能或代码问题还是很方便的。</li>
 <li>估计 OpenStack 里面其它地方的代码也会有类似的问题，感觉更好的修复方式，是在 keystoneauth 里面自动缓存当前所有的 endpoints, 有需要的时候再刷新。</li>
 <li><del>优化后，ceilometer-notification 处理消息时，还是会占用100% 的CPU, 主要原因从火焰图上看是对 json 的解析花掉了大量时间，进一步优化的话，可能需要换性能更好的 json 解析库或使用其它序列化方式。</del>， 这里观察错了，这里是 <code>re.py</code> 模块的问题，进一步的分析见 <a href="ceilometer-performance-analysis-ii.html" target="_blank">ceilometer 性能分析 II</a></li>
 </ul>
-<h2 id="ref">REF</h2>
+<h2 id="ref"><a class="toclink" href="#ref">REF</a><a class="headerlink" href="#ref" title="Permanent link">&para;</a></h2>
 <div class="footnote">
 <hr>
 <ol>

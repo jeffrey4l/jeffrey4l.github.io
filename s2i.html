@@ -126,7 +126,7 @@
     </div>
   </header>
   <div class="entry-content">
-    <h2 id="_1">介绍</h2>
+    <h2 id="_1"><a class="toclink" href="#_1">介绍</a><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <p>Source to Image(S2I) 是一个创建 Docker 镜像的工具。也是 openshift 上面的主要构建镜像的方式之一。他的优点包括：</p>
 <ol>
 <li><strong>速度</strong>，S2I 可以实现很复杂的操作逻辑，而不会创建新的镜像层，所以运行起来很快。</li>
@@ -134,7 +134,7 @@
 <li><strong>高效</strong>, 在构建过程中，S2I不允许运行任意的 yum install 命令，以防止降低开发迭代速度 </li>
 <li><strong>生态</strong>，S2I 鼓励一个共享镜像生态。从而你的应用可以实现最佳实践。</li>
 </ol>
-<h2 id="s2i">S2I 工作原理</h2>
+<h2 id="s2i"><a class="toclink" href="#s2i">S2I 工作原理</a><a class="headerlink" href="#s2i" title="Permanent link">&para;</a></h2>
 <p>S2I 的实现哲学是：所谓的镜像，就是一个运行环境 + 源代码。如是你是某一个类型的源代码，如果 Python, Ruby, HTML 等，那运行环境基本就是固定的。因此针对某类代码，只要提供好一个标准运行环境的基础镜像。使用的时候，先把用户的代码放到这个镜像中，生成一个新的镜像就可以。S2I 很适合给特定语言使用。</p>
 <p>S2I 会依赖一个特殊的 base 镜像，这个镜像主要包括基础的运行环境，如 Python, PHP，Nginx等。以及几个特殊的 S2I 脚本， 如</p>
 <ul>
@@ -143,7 +143,7 @@
 <li><code>usage</code> 打印使用说明</li>
 </ul>
 <p>redhat 官方有一些已经编写好的镜像例子<sup id="fnref-2"><a class="footnote-ref" href="#fn-2">2</a></sup>，可以从找到。像 <a href="https://github.com/sclorg/s2i-python-container" target="_blank">Python</a>, <a href="https://github.com/sclorg/s2i-ruby-container" target="_blank">Ruby</a>。利用这些镜像，再加上你的源代码，可以快速构建出应用镜像。</p>
-<h2 id="s2i_1">安装 S2I 工具</h2>
+<h2 id="s2i_1"><a class="toclink" href="#s2i_1">安装 S2I 工具</a><a class="headerlink" href="#s2i_1" title="Permanent link">&para;</a></h2>
 <p>S2I 是一个 Go 编写的程序，你可以从 Github 上面下载已经编译的二进制文件<sup id="fnref-1"><a class="footnote-ref" href="#fn-1">1</a></sup>，也可以自己编译。下面是手动编译的方法。</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nv">S2I_URL</span><span class="o">=</span>github.com/openshift/source-to-image
 <span class="gp">$</span> go get <span class="si">${</span><span class="nv">S2I_URL</span><span class="si">}</span>
@@ -153,7 +153,7 @@
 </pre></div>
 
 
-<h2 id="s2i_2">使用 S2I 构建镜像</h2>
+<h2 id="s2i_2"><a class="toclink" href="#s2i_2">使用 S2I 构建镜像</a><a class="headerlink" href="#s2i_2" title="Permanent link">&para;</a></h2>
 <p>下面我们来使用 S2I 的功能，快速构建一个 Python 应用。</p>
 <p>首先，先构建一个通用的 Python 2.7 基础镜像</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> git clone https://github.com/sclorg/s2i-python-container.git

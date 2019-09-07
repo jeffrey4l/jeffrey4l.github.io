@@ -126,12 +126,12 @@
     </div>
   </header>
   <div class="entry-content">
-    <h2 id="_1">问题</h2>
+    <h2 id="_1"><a class="toclink" href="#_1">问题</a><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <p>如果你的 OpenStack 环境中使用了 Ceph，而且开启了 Copy-on-Write Clone 功能。会发现如果 Glance 镜像启动了虚拟机，这个镜像是删除不掉的。包括 Boot from Volume 的镜像也会有类似的问题。但是用户会有这样的需求，既然删除不掉，我如何才能防止用户继续使用这个镜像。</p>
-<h2 id="1">方法 1</h2>
+<h2 id="1"><a class="toclink" href="#1">方法 1</a><a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
 <p>这时，有一种方式是把公共镜像变为私有镜像。这样用户再建机器时，就看不到这个镜像了。但是这样会带来另外一个问题，已经启动虚拟机也会看不到镜像的信息。</p>
 <p><img alt="instance-without-image-info" src="images/glance-deactivate/instance-without-image-info.png"></p>
-<h2 id="2">方法 2</h2>
+<h2 id="2"><a class="toclink" href="#2">方法 2</a><a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
 <p>这时还有更好的一个办法，Glance API 支持把镜像属性变为非可用状态。使用方法如下</p>
 <div class="highlight"><pre><span></span><span class="gp">$</span> openstack image <span class="nb">set</span> --deactivate &lt;image&gt;
 </pre></div>
@@ -147,7 +147,7 @@
 
 
 <p>现在这个功能只能通过 API 来使用，界面上还不支持。</p>
-<h2 id="_2">参考信息</h2>
+<h2 id="_2"><a class="toclink" href="#_2">参考信息</a><a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <ul>
 <li>https://wiki.openstack.org/wiki/Glance-deactivate-image</li>
 <li>https://blueprints.launchpad.net/glance/+spec/deactivate-image</li>

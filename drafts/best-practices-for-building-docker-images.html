@@ -122,9 +122,9 @@
     </div>
   </header>
   <div class="entry-content">
-    <h2 id="_1">构建体积更小的镜像</h2>
+    <h2 id="_1"><a class="toclink" href="#_1">构建体积更小的镜像</a><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <p>构建体积更小的镜像，有利于镜像本身的传输，尤其在 Kubernetes 的环境中，镜像的传输会更加频繁，更小的体积意味着更快的调度时间和更小的空间占用。那如何构建更加小的镜像呢?</p>
-<h3 id="_2">使用更小的基础镜像</h3>
+<h3 id="_2"><a class="toclink" href="#_2">使用更小的基础镜像</a><a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
 <p>不同的基础镜像构建相同的应用会有不同的大小。使用更小基础镜像会有利于减小最终镜像的大小。建议非特殊情况下，使用 alpine 镜像。他的基础镜像只有不到 5MB, 而且还自带包管理工具。一般需求都可以满足。</p>
 <div class="highlight"><pre><span></span>FROM alpine
 RUN apk add nginx
@@ -138,7 +138,7 @@ CMD [ &quot;/mybinary&quot; ]
 </pre></div>
 
 
-<h3 id="run">合并 RUN 命令</h3>
+<h3 id="run"><a class="toclink" href="#run">合并 RUN 命令</a><a class="headerlink" href="#run" title="Permanent link">&para;</a></h3>
 <p>不同的 RUN 命令如果先后做了文件的增加和删除，因为镜像分层文件系统的原因，还是会增加镜像体积的。如果两个 RUN 命令合并后，才会达到所想的效果。</p>
 <div class="highlight"><pre><span></span>...
 RUN curl http://xyz.abc -o abc.tar.gz \
@@ -148,7 +148,7 @@ RUN curl http://xyz.abc -o abc.tar.gz \
 </pre></div>
 
 
-<h3 id="_3">去除掉不用的软件包</h3>
+<h3 id="_3"><a class="toclink" href="#_3">去除掉不用的软件包</a><a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
 <p>在安装包的过程中，尽量只安装需要用到的包。尤其是在编译过程中，难免会安装一些运行过程中不需要的软件包，如 glibc-devel 等。那在最后，最好把这些包去掉，来节省镜像空间。又因为镜像分层系统的原因，这些安装和卸载的语法还应该处理同一个 RUN 命令下</p>
 <div class="highlight"><pre><span></span>...
 RUN BUILD_DEP_PKGS=&quot;
@@ -161,7 +161,7 @@ RUN BUILD_DEP_PKGS=&quot;
 </pre></div>
 
 
-<h3 id="_4">只安装必要依赖包的</h3>
+<h3 id="_4"><a class="toclink" href="#_4">只安装必要依赖包的</a><a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
 <p><code>apt</code> 和 <code>yum/dnf</code> 在安装包的过程中，默认会自动安装一些弱依赖包。一般情况下是使用不到的。可以显示的关闭弱依赖。</p>
 <div class="highlight"><pre><span></span><span class="x"># apt-get for Debian family</span>
 <span class="x">apt-get -y install --no-install-recommends </span><span class="cp">{{</span> <span class="nv">package</span> <span class="cp">}}</span><span class="x"> </span>
@@ -180,9 +180,9 @@ RUN BUILD_DEP_PKGS=&quot;
 <li><code>--setopt=tsflags=nodocs</code>: 不安装文档包</li>
 <li><code>--setopt=override_install_langs=en_US.utf8</code>: 设置默认语言为 <code>en_US.utf8</code></li>
 </ul>
-<h3 id="lastlog-faillog">关闭用户初始化 lastlog 和 faillog 数据库</h3>
+<h3 id="lastlog-faillog"><a class="toclink" href="#lastlog-faillog">关闭用户初始化 lastlog 和 faillog 数据库</a><a class="headerlink" href="#lastlog-faillog" title="Permanent link">&para;</a></h3>
 <p>如果你要在镜像中创建新的用户，可以不初始化用户相关的 lastlog 和  faillog 数据库[1]。可以使用 <code>useradd -l</code> 或把 <code>/var/log/faillog</code> 和 <code>/var/log/lastlog</code> 文件删除掉，彻底关掉该功能。每个用户大概用占用掉 4k 左右的空间。</p>
-<h3 id="multi-stage">使用 multi stage 构建</h3>
+<h3 id="multi-stage"><a class="toclink" href="#multi-stage">使用 multi stage 构建</a><a class="headerlink" href="#multi-stage" title="Permanent link">&para;</a></h3>
 <p>对于很多需要编译运行的程序，如 Java, C, Golang 等，其编译环境和运行环境是不一样的，为了减小最终镜像的大小，我们可以使用上面提到的合并 <code>RUN</code> 命令的方式，但是看着会比较乱，比较难以维护。docker daemon &gt;= 17.05 [^3]版本的时候支持 multi stage 构建，解决了此类问题，他使用两个镜像来构建，通过 <code>COPY --from</code> 语法，在两个镜像之间传递构建好的文件。使用方法如下：</p>
 <div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> golang:1.7.3 as builder</span>
 <span class="k">WORKDIR</span><span class="s"> /go/src/github.com/alexellis/href-counter/</span>
@@ -199,12 +199,12 @@ RUN BUILD_DEP_PKGS=&quot;
 
 
 <p>它使用 <code>golang:1.7.3</code> 做为构建镜像，来构建出名为 <code>app</code> 的应用，然后把  <code>app</code> 再拷贝到以 <code>alpine:latest</code> 为基础的镜像里面，这样做出来的镜像肯定会很小。</p>
-<h2 id="_5">缩小镜</h2>
-<h2 id="_6">像体积</h2>
-<h3 id="dive">使用 dive 分析镜像的空间占用</h3>
+<h2 id="_5"><a class="toclink" href="#_5">缩小镜</a><a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="_6"><a class="toclink" href="#_6">像体积</a><a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<h3 id="dive"><a class="toclink" href="#dive">使用 dive 分析镜像的空间占用</a><a class="headerlink" href="#dive" title="Permanent link">&para;</a></h3>
 <p><a href="https://github.com/wagoodman/dive" target="_blank">dive</a> 是一个命令行工具，可以分析镜像里面每层的空间占用大小，有助于发现问题，以减少镜像大小。</p>
 <p><img alt="dive example" src="images/2018/dive-demo.gif"></p>
-<h3 id="_7">合并镜像的多个层</h3>
+<h3 id="_7"><a class="toclink" href="#_7">合并镜像的多个层</a><a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
 <p>docker 自从 1.13 版本增加了一个 squash 的 <code>experimental</code>特性 [^2]。他可以把把当前 Dockerfile 文件里面的多个层在构建的时候自动合并成一个。但是不支持合并其父镜像。使用前，需要打开 docker daemon 的 experiment 特性。使用方法如下</p>
 <div class="highlight"><pre><span></span>$ docker build --squash .
 </pre></div>
@@ -228,8 +228,8 @@ Image registered in Docker daemon as kolla/centos-source-base:new
 <blockquote>
 <p>注意：在使用 squash 的时候，会消耗大量的硬盘 IO，如果硬盘性能不好，速度会比较慢。</p>
 </blockquote>
-<h2 id="_8">镜像安全</h2>
-<h3 id="init">init 进程</h3>
+<h2 id="_8"><a class="toclink" href="#_8">镜像安全</a><a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<h3 id="init"><a class="toclink" href="#init">init 进程</a><a class="headerlink" href="#init" title="Permanent link">&para;</a></h3>
 <p>重启容器的时候，经常会很慢，而且docker daemon 日志中经常会抛出以下错误</p>
 <div class="highlight"><pre><span></span>dockerd[559]: msg=&quot;Container 5054f failed to exit within 10 seconds of signal 15 - using the force&quot;
 </pre></div>
@@ -257,7 +257,7 @@ root         <span class="m">6</span>  <span class="m">0</span>.0  <span class="
 </pre></div>
 
 
-<h3 id="drop-root">Drop root</h3>
+<h3 id="drop-root"><a class="toclink" href="#drop-root">Drop root</a><a class="headerlink" href="#drop-root" title="Permanent link">&para;</a></h3>
 <p>虽然 container 在运行的时候 ，是与系统隔离开的，但是如果你使用 root 运行容器的话，他在系统层面上看，也是 root 账号，权限是比较大的，<a href="https://security.stackexchange.com/questions/176206/docker-runs-container-processes-as-root-should-i-be-worried" target="_blank">会有一定的风险</a>。更安全的做法是使用非root 账号运行。这点在 openshift 上面体现的比较明显，他默认是使用一个很大的 uid 来运行，来限制容器内的进程权限。</p>
 <p>在使用非 root 账号运行，尤其是在 kubernetes/openshift 这种环境中，uid 是不能事先确认的，需要对读写目录标记上<code>0777</code> 的权限。包括某些可能通过  volume 挂载的目录。</p>
 <blockquote>
@@ -274,7 +274,7 @@ root         <span class="m">6</span>  <span class="m">0</span>.0  <span class="
 
 
 <p>把需要  nginx 读写的地方配置上  <code>rwx</code> 权限，这样不管 nginx 进程的 <code>uid</code>  是多少，都可以正常运行。</p>
-<h2 id="tag">镜像 tag 管理</h2>
+<h2 id="tag"><a class="toclink" href="#tag">镜像 tag 管理</a><a class="headerlink" href="#tag" title="Permanent link">&para;</a></h2>
 <p>理论上讲，docker 的镜像内容是不可变的，其 tag 应该是和 git 的 tag 是一样的，应该是一个只读值不应该变化。但是平时大家在使用的时候，习惯的使用 <code>:latest</code> ， 这样在生产环境中是比较危险的，很容易搞错镜像。我建议使用如下风格的 tag 命令方式来管理 image.</p>
 <div class="highlight"><pre><span></span>X.Y.Z-N
 
@@ -283,14 +283,14 @@ N 使用构建次数，或使用时间戳。来标记 Dockerfile 的变化及构
 </pre></div>
 
 
-<h2 id="_9">其它镜像构建方式</h2>
+<h2 id="_9"><a class="toclink" href="#_9">其它镜像构建方式</a><a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
 <p>现在，除了 <code>Dockerfile</code> 这种构建方式，还有很多其它的镜像构建工具，有兴趣可以深入研究下</p>
 <ul>
 <li><a href="https://github.com/openshift/source-to-image" target="_blank">source to image</a>: openshift 里面带的一个方便由源代码直接生成镜像的方案，可以单独使用。</li>
 <li><a href="https://github.com/uber/makisu" target="_blank">makisu</a>: 方便在  kubernetes 环境中使用的镜像构建方案，可以 unprivileged 的容器中使用</li>
 <li><a href="https://github.com/containers/buildah" target="_blank">buildash</a>: 构建 OCI 兼容格式镜像工具。</li>
 </ul>
-<h2 id="demo">Demo</h2>
+<h2 id="demo"><a class="toclink" href="#demo">Demo</a><a class="headerlink" href="#demo" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span>FROM centos:7
 
 EXPOSE 8080
@@ -410,7 +410,7 @@ RUN BUILD_DEP_PKGS=&quot;\
 </pre></div>
 
 
-<h2 id="ref">REF</h2>
+<h2 id="ref"><a class="toclink" href="#ref">REF</a><a class="headerlink" href="#ref" title="Permanent link">&para;</a></h2>
 <ul>
 <li>[^1]: https://github.com/sagemathinc/cocalc/issues/2287#issue-249824529</li>
 <li>[^2]: https://docs.docker.com/engine/reference/commandline/build/#squash-an-images-layers---squash-experimental</li>

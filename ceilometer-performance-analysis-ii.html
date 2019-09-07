@@ -125,7 +125,7 @@
     <p>在上一篇文章中， 「<a href="ceilometer-performance-analysis.html" target="_blank">记一次 ceilometer 性能分析</a>」中，我们分析了 ceilometer 的架构，及由于keystonauth 的问题，导致的大量 <code>get_endpoints</code> 的请求。文章的最后，成功的把这去掉了这部分无意义的请求。但是即使优化后，ceilometer notification 服务还是会吃掉大量CPU, 那 ceilometer 还有没有其它的优化空间呢?</p>
 <p>细心的伙伴也许会发现，在最后的火焰图下，还有大量的 <code>re.py</code> 模块的调用。大约占掉了总 CPU 的使用的 28%(下图蓝框部分)。这是值得怀疑的。正则处理不应该这么慢。SVG文件见 <a href="images/ceilometer-perf/notification_perf_after.svg" target="_blank">notification_perf_after.svg</a></p>
 <p><img alt="notification perf ii_before" src="images/ceilometer-perf/notification_perf_ii_before.jpg"></p>
-<h2 id="_1">分析</h2>
+<h2 id="_1"><a class="toclink" href="#_1">分析</a><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <p>结合代码查下，定位到了如下部分</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">metric_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric_name</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;metrics&#39;</span><span class="p">]:</span>
@@ -176,7 +176,7 @@
 
 
 <p>全清掉后，所有的正则编译都需要重新跑一次。而 ceilometer 处理的 metric 又多，所以会频繁的触发这个问题。也就造成了<code>re.compile</code> 调用，进而吃掉了大量 CPU</p>
-<h2 id="_2">验证</h2>
+<h2 id="_2"><a class="toclink" href="#_2">验证</a><a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>既然定位了问题，就可以写段代码验证下。 代码逻辑如下：使用不同的 <code>size</code> 值来触发<code>_MATCH_CACHE.clear()</code> 的调用，测试调用时间。</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">fnmatch</span>
 
@@ -187,7 +187,7 @@
 </pre></div>
 
 
-<h3 id="python2">python2 测试</h3>
+<h3 id="python2"><a class="toclink" href="#python2">python2 测试</a><a class="headerlink" href="#python2" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@node1</span> <span class="o">~</span><span class="p">]</span><span class="c1"># python -m timeit  -v  -n 100 -r 3 -s &#39;from fnmatch_test import test&#39; -- &#39;test(100)&#39; </span>
 <span class="n">raw</span> <span class="n">times</span><span class="p">:</span> <span class="mf">0.124</span> <span class="mf">0.117</span> <span class="mf">0.116</span>
 <span class="mi">100</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">1.16</span> <span class="n">msec</span> <span class="n">per</span> <span class="n">loop</span>
@@ -199,7 +199,7 @@
 
 
 <p>可以看出， 当 size 为 101 比 100 只多一个对比数据，但是最后的运行时间从 0.116 秒上升到了 3.24 秒。 单次循环的时间花费从 1.16 msec 上升到了 31.4 msec，增加了27倍之多。</p>
-<h3 id="python3">python3 测试</h3>
+<h3 id="python3"><a class="toclink" href="#python3">python3 测试</a><a class="headerlink" href="#python3" title="Permanent link">&para;</a></h3>
 <p>同时测试了下 python3 的 fnmatch 实现。python3 里面使用了不同的实现。 废弃了 <code>DICT</code> 的 cache 机制，使用 <code>functools.lru_cache</code>, 同时也不是满了全清，而是使用 <code>lru</code> (Least recently used) 的机制。cache size 也从100 提升到了 256, 性能有很大提升<sup id="fnref-3"><a class="footnote-ref" href="#fn-3">3</a></sup><sup id="fnref-4"><a class="footnote-ref" href="#fn-4">4</a></sup>。</p>
 <div class="highlight"><pre><span></span><span class="c1"># python -m timeit -v -n 100 -r 3 -s &#39;from fnmatch_test import test&#39; -- &#39;test(256)&#39;</span>
 <span class="n">raw</span> <span class="n">times</span><span class="p">:</span> <span class="mi">321</span> <span class="n">msec</span><span class="p">,</span> <span class="mi">314</span> <span class="n">msec</span><span class="p">,</span> <span class="mi">312</span> <span class="n">msec</span>
@@ -212,12 +212,12 @@
 
 
 <p>可以看出，在超出 cache size, 因为 python3 中不是全清，运行时间只增加了3倍，相比 python2 的情况要好很多了。</p>
-<h2 id="_3">问题解决</h2>
+<h2 id="_3"><a class="toclink" href="#_3">问题解决</a><a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p>因为我使用的是 OpenStack pike 版本，先搜索了下最新的代码有没有解决这个问题，发现还真解决了。社区 patch 见<sup id="fnref-5"><a class="footnote-ref" href="#fn-5">5</a></sup>。解决的逻辑是因为 resource 里面的 metrics 个数并不多，没有必要使用 <code>fnmatch</code>，而是本地缓存一个 <code>(metric, resource)</code> 的字典，直接反查。不过这个只包含在了 Rocky 及之后的版本里面。我做了一个 backport， 代码见<sup id="fnref-6"><a class="footnote-ref" href="#fn-6">6</a></sup>。</p>
 <p>打上 patch 后，再看新的火焰图如下, SVG文件见 <a href="images/ceilometer-perf/notification_perf_ii_after.svg" target="_blank">notification_perf_ii_after.svg</a></p>
 <p><img alt="notification perf ii_after" src="images/ceilometer-perf/notification_perf_ii_after.jpg"></p>
 <p>同时 CPU 的消耗也降低了不少,从100% 降到了 10%-20% 的区间，效果还是很明显的。</p>
-<h2 id="_4">总结</h2>
+<h2 id="_4"><a class="toclink" href="#_4">总结</a><a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <p>对比下最早的火焰图，SVG文件见 <a href="images/ceilometer-perf/notification_perf_before.svg" target="_blank">notification_perf_before.svg</a>。 蓝色框内的请求都已经去掉了，优化掉了近 50%以上的 CPU 消耗。</p>
 <p><img alt="notification perf ii_finally" src="images/ceilometer-perf/notification_perf_ii_finally.jpg"></p>
 <ul>

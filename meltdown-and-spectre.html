@@ -129,11 +129,11 @@
     <p>新年刚过，一个 Intel CPU 的漏洞消息如晴天霹雳，掀起了一波讨论浪潮。Intel 的股价也应声而且倒。</p>
 <p><img alt="intel-stock" src="images/2018/intel-stock.png"></p>
 <p>这个漏洞几乎影响了现在所有正在使用的 CPU 型号，囊括了包含Intel, AMD, ARM在内的所有主流 CPU 厂商。影响之大，前所未有。究竟这是怎么一个问题，又如何避免?</p>
-<h2 id="_1">时间线</h2>
+<h2 id="_1"><a class="toclink" href="#_1">时间线</a><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <p>这个问题最早在2017年6月1日就已经被 Google Project Zero 团队报到了各大 CPU 厂商。</p>
 <p>11月份左右自个操作系统厂商开始意识到这个问题，并开始了修补工作。</p>
 <p>之所以今天才引起轰动，是因为 Project Zero 团队于1月3日把漏洞信息发布到了自己的博客上面 <sup id="fnref-1"><a class="footnote-ref" href="#fn-1">1</a></sup>。</p>
-<h2 id="_2">漏洞描述</h2>
+<h2 id="_2"><a class="toclink" href="#_2">漏洞描述</a><a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>关于这个漏洞，有三个变种的问题，分别是</p>
 <ol>
 <li>bounds check bypass (CVE-2017-5753)</li>
@@ -145,30 +145,30 @@
 <li><a href="https://spectreattack.com/spectre.pdf" target="_blank">Spectre</a> (幽灵)，基于变种 1 和变种 2</li>
 <li><a href="https://meltdownattack.com/meltdown.pdf" target="_blank">Meltdown</a> (熔断)，基于变种 3</li>
 </ol>
-<h2 id="meltdown">Meltdown</h2>
+<h2 id="meltdown"><a class="toclink" href="#meltdown">Meltdown</a><a class="headerlink" href="#meltdown" title="Permanent link">&para;</a></h2>
 <p>Meltdown 允许没有授权的进程访问系统级的内存数据。这个漏洞主影响 Intel 系统的 CPU, AMD 并不受影响。所有实现了<a href="https://en.wikipedia.org/wiki/Out-of-order_execution" target="_blank">out-of-order execution</a>的Intel CPU 都可能受影响。这几乎包括了 1995 年后 Intel 生产的所有 CPU(除了 2013 年之前生产的 Intel Itanium and Intel Atom)。</p>
-<h3 id="_3">影响</h3>
+<h3 id="_3"><a class="toclink" href="#_3">影响</a><a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
 <p>这个问题，最大的影响是各大公有云厂商， 像 Google Cloud Platform, AWS, 阿里云等。</p>
 <p>这个问题的发现者称，Xen(半虚拟化) 和 containers (docker, lxc, OpenVZ) 都受到影响。对于全虚拟化，当攻击客户机时，只能读取到客户机的内核内存，并不能读到宿主机的内核内存。</p>
 <p>现在多数去平台都是使用的 KVM 全虚拟化，所以影响稍微小一些。但是也不容小觑。</p>
-<h3 id="_4">修复情况</h3>
+<h3 id="_4"><a class="toclink" href="#_4">修复情况</a><a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
 <p>修复情况： 各大系统实现了一套叫 Kernel page-table isolation(KPTI) 的技术，来避免这个漏洞。该漏洞已经包含在了 Linux kernel 4.15 中。也 backport 到了 linux kernel 4.14.11 中。 macOS 在  10.13.2 中也修复了这个问题。window 10 在1月3号也放出了相关补丁。</p>
 <p>还有报告声称：KPTI 降低了 CPU 多达 30% 的性能。但是也有报告称：自从 Skylake 架构后，在 KPTI 下，性能损失比之前几代的要低的多。</p>
 <p>KPTI 是大家吐槽最多的点之一，现在看来，性能影响并不是太大。</p>
-<h3 id="_5">操作系统修复方法</h3>
+<h3 id="_5"><a class="toclink" href="#_5">操作系统修复方法</a><a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Redhat</strong> 相关修复已经于1月3日推送到了主仓库中，通过更新系统，并重启操作系统可避免这个问题。更多信息能看<sup id="fnref-2"><a class="footnote-ref" href="#fn-2">2</a></sup></li>
 <li><strong>Ubuntu</strong> 操作系统貌似补丁还没有放出，进展参看<sup id="fnref-3"><a class="footnote-ref" href="#fn-3">3</a></sup></li>
 </ul>
-<h2 id="spectre">Spectre</h2>
+<h2 id="spectre"><a class="toclink" href="#spectre">Spectre</a><a class="headerlink" href="#spectre" title="Permanent link">&para;</a></h2>
 <p>Spectre 允许其它<strong>用户进程</strong>访问<strong>另一用户进程</strong>的任何内存地址。根本原因是预测执行技术( speculative execution )的技术缺陷。报告的实验中破译数据的速度可达 503 KB/s，错误率低至万分之二。实验中已经可以读取 Firefox 56 的内存，并从中找到网页请求的头数据和浏览器储存的密码。</p>
 <p>Meltdown 可以视为特别简单的一个 Spectre 特例情况。</p>
-<h3 id="_6">影响</h3>
+<h3 id="_6"><a class="toclink" href="#_6">影响</a><a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
 <p>几乎所有的电子系统都会受 Spectre 影响，包括台式电脑，笔记本和移动终端设备。而且 Spectre 影响 Intel, AMD 和 ARM 的处理器。</p>
 <p>当前，Spectre 只影响到了用户级的进程。但是将来可能会有更加严重的影响。他不像 Meltdown, Spectre 要靠处理器架构上面的改变才可以消除。而且将来，Spectre 对云提供商的影响可能大过 Meltdown。Meltdown 只是允许未授权的应用去读取同台机器上的系统级内存里面的敏感数据。而 Spectre 能够诱骗虚拟化层向其运行的客户机传输数据。</p>
-<h3 id="_7">修复</h3>
+<h3 id="_7"><a class="toclink" href="#_7">修复</a><a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
 <p>一部分 Spectre 特例情况的修复工作在进行中。但是这个问题很难修复，会存在很长一段时间。</p>
-<h2 id="_8">我们能做什么</h2>
+<h2 id="_8"><a class="toclink" href="#_8">我们能做什么</a><a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
 <p>见于这个漏洞破坏很大，并且影响极其深远。我们应该立刻行动起来, 应对该问题。</p>
 <p>对于各个战线(尤其是公有云)的运维同志，请及时升级自己的操作系统，打上相关的补丁。</p>
 <p>对于大部分普通人来说，想避免这个问题，可以从以下几个方面做起。</p>
@@ -178,7 +178,7 @@
 <li>不要安装运行未知来源的软件。</li>
 <li>不要用盗版软件。</li>
 </ul>
-<h2 id="more-info">More Info</h2>
+<h2 id="more-info"><a class="toclink" href="#more-info">More Info</a><a class="headerlink" href="#more-info" title="Permanent link">&para;</a></h2>
 <p>Following is copied from ttx post<sup id="fnref-11"><a class="footnote-ref" href="#fn-11">11</a></sup></p>
 <blockquote>
 <p>Where can I learn more ?</p>

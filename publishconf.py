@@ -12,7 +12,7 @@ sys.path.append(os.curdir)
 
 from pelicanconf import *  # noqa
 
-SITEURL = 'http://xcodest.me'
+SITEURL = 'https://xcodest.me'
 FEED_DOMAIN = SITEURL
 RELATIVE_URLS = False
 

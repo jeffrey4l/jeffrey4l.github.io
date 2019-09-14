@@ -95,3 +95,8 @@ MARKDOWN = {
             },
         'output_format': 'html5'
         }
+
+IGNORE_FILES = [
+    '.venv',
+    '__pycache__'
+]

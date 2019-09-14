@@ -21,3 +21,5 @@ pyquery
 cssutils
 markdown-css
 markdown-newtab
+
+premailer

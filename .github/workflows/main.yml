@@ -1,14 +1,32 @@
 ---
-name: CI
+name: publish
 on:
-  - push
+  push:
+    branches:
+      - source
+
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: jeffrey4l/jeffrey4l.github.io@source
-      - name: Run a one-line script
-        run: echo start build
-      - name: Run a multi-line script
+      - uses: actions/checkout@v1.0.0
+        with:
+          submodules: true
+
+      - name: install python virtualenv
         run: |
+          sudo apt update
+          sudo apt install -y python-virtualenv
+
+      - name: install requirements
+        run: |
+          virtualenv .venv
+          source .venv/bin/activate
+
+          pip install -r requirements.txt
+
+          git remote set-url origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           make github
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -166,3 +166,7 @@ a.footnote-ref:after {
 li:target, sup:target {
     background: #DEF;
 }
+
+a.headerlink {
+    display: none;
+}

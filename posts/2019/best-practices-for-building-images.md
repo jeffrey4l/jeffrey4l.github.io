@@ -1,15 +1,14 @@
 ---
-title: 制作镜像的最佳实践
-date: 2018-10-03
-status: draft
+title: 制作容器镜像的最佳实践
+date: 2019-09-14
 slug: best-practices-for-building-docker-images
 ---
 
-## 构建体积更小的镜像
+## 构建体积更小的镜像 {: #build-smaller-size-image }
 
 构建体积更小的镜像，有利于镜像本身的传输，尤其在 Kubernetes 的环境中，镜像的传输会更加频繁，更小的体积意味着更快的调度时间和更小的空间占用。那如何构建更加小的镜像呢?
 
-### 使用更小的基础镜像
+### 使用更小的基础镜像 {: #use-smaller-base-image }
 
 不同的基础镜像构建相同的应用会有不同的大小。使用更小基础镜像会有利于减小最终镜像的大小。建议非特殊情况下，使用 alpine 镜像。他的基础镜像只有不到 5MB, 而且还自带包管理工具。一般需求都可以满足。
 
@@ -26,7 +25,7 @@ COPY mybinary /mybinary
 CMD [ "/mybinary" ]
 ```
 
-### 合并 RUN 命令
+### 合并 RUN 命令 {: #merge-run-command }
 
 不同的 RUN 命令如果先后做了文件的增加和删除，因为镜像分层文件系统的原因，还是会增加镜像体积的。如果两个 RUN 命令合并后，才会达到所想的效果。
 
@@ -38,7 +37,7 @@ RUN curl http://xyz.abc -o abc.tar.gz \
 ...
 ```
 
-### 去除掉不用的软件包
+### 去除掉不用的软件包 {: #remove-useless-package }
 
 在安装包的过程中，尽量只安装需要用到的包。尤其是在编译过程中，难免会安装一些运行过程中不需要的软件包，如 glibc-devel 等。那在最后，最好把这些包去掉，来节省镜像空间。又因为镜像分层系统的原因，这些安装和卸载的语法还应该处理同一个 RUN 命令下
 
@@ -53,7 +52,7 @@ RUN BUILD_DEP_PKGS="
 ...
 ```
 
-### 只安装必要依赖包的
+### 只安装必要依赖包的 {: #only-install-required-package }
 
 `apt` 和 `yum/dnf` 在安装包的过程中，默认会自动安装一些弱依赖包。一般情况下是使用不到的。可以显示的关闭弱依赖。
 
@@ -73,11 +72,11 @@ yum -y --setopt=install_weak_deps=false \
 * `--setopt=tsflags=nodocs`: 不安装文档包
 * `--setopt=override_install_langs=en_US.utf8`: 设置默认语言为 `en_US.utf8`
 
-###  关闭用户初始化 lastlog 和 faillog 数据库
+###  关闭用户初始化 lastlog 和 faillog 数据库 {: #disable-lastlog-and-faillog }
 
-如果你要在镜像中创建新的用户，可以不初始化用户相关的 lastlog 和  faillog 数据库[1]。可以使用 `useradd -l` 或把 `/var/log/faillog` 和 `/var/log/lastlog` 文件删除掉，彻底关掉该功能。每个用户大概用占用掉 4k 左右的空间。
+如果你要在镜像中创建新的用户，可以不初始化用户相关的 lastlog 和  faillog 数据库[^1]。可以使用 `useradd -l` 或把 `/var/log/faillog` 和 `/var/log/lastlog` 文件删除掉，彻底关掉该功能。每个用户大概用占用掉 4k 左右的空间。
 
-### 使用 multi stage 构建
+### 使用 multi stage 构建 {: #use-multi-stage }
 
 对于很多需要编译运行的程序，如 Java, C, Golang 等，其编译环境和运行环境是不一样的，为了减小最终镜像的大小，我们可以使用上面提到的合并 `RUN` 命令的方式，但是看着会比较乱，比较难以维护。docker daemon >= 17.05 [^3]版本的时候支持 multi stage 构建，解决了此类问题，他使用两个镜像来构建，通过 `COPY --from` 语法，在两个镜像之间传递构建好的文件。使用方法如下：
 
@@ -85,7 +84,7 @@ yum -y --setopt=install_weak_deps=false \
 FROM golang:1.7.3 as builder
 WORKDIR /go/src/github.com/alexellis/href-counter/
 RUN go get -d -v golang.org/x/net/html  
-COPY app.go    .
+COPY app.go .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
 
 FROM alpine:latest  
@@ -97,17 +96,15 @@ CMD ["./app"]
 
 它使用 `golang:1.7.3` 做为构建镜像，来构建出名为 `app` 的应用，然后把  `app` 再拷贝到以 `alpine:latest` 为基础的镜像里面，这样做出来的镜像肯定会很小。
 
-## 缩小镜
+## 缩小镜像体积 {: #shrink-image-size }
 
-## 像体积
-
-### 使用 dive 分析镜像的空间占用
+### 使用 dive 分析镜像的空间占用 {: #use-dive }
 
 [dive](https://github.com/wagoodman/dive) 是一个命令行工具，可以分析镜像里面每层的空间占用大小，有助于发现问题，以减少镜像大小。
 
 ![dive example](images/2018/dive-demo.gif)
 
-### 合并镜像的多个层
+### 合并镜像的多个层 {: #merge-multi-layer }
 
 docker 自从 1.13 版本增加了一个 squash 的 `experimental`特性 [^2]。他可以把把当前 Dockerfile 文件里面的多个层在构建的时候自动合并成一个。但是不支持合并其父镜像。使用前，需要打开 docker daemon 的 experiment 特性。使用方法如下
 
@@ -132,9 +129,9 @@ Image registered in Docker daemon as kolla/centos-source-base:new
 
 > 注意：在使用 squash 的时候，会消耗大量的硬盘 IO，如果硬盘性能不好，速度会比较慢。
 
-##  镜像安全
+## 镜像安全 {: #image-safety }
 
-### init 进程
+### init 进程 {: #init-progress }
 
 重启容器的时候，经常会很慢，而且docker daemon 日志中经常会抛出以下错误
 
@@ -159,7 +156,7 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["/my/script", "--with", "--args"]
 ```
 
-如果是使用 docker 的情况下，docker 自 1.13 之后已经自带一个 init 进程，其实就是  tini, 使用方法如下
+如果是使用 docker 的情况下，docker 自 1.13 之后已经自带一个 init 进程，其实就是 tini, 使用方法如下
 
 ```
 $ docker run --init centos:7 ps auxf
@@ -168,7 +165,7 @@ root         1  0.0  0.0   1000     4 ?        Ss   03:45   0:00 /dev/init -- ps
 root         6  0.0  0.0  51748  3444 ?        R    03:45   0:00 ps auxf
 ```
 
-### Drop root
+### Drop root {: #drop-root }
 
 虽然 container 在运行的时候 ，是与系统隔离开的，但是如果你使用 root 运行容器的话，他在系统层面上看，也是 root 账号，权限是比较大的，[会有一定的风险](https://security.stackexchange.com/questions/176206/docker-runs-container-processes-as-root-should-i-be-worried)。更安全的做法是使用非root 账号运行。这点在 openshift 上面体现的比较明显，他默认是使用一个很大的 uid 来运行，来限制容器内的进程权限。
 
@@ -189,7 +186,7 @@ RUN ... \
 
 把需要  nginx 读写的地方配置上  `rwx` 权限，这样不管 nginx 进程的 `uid`  是多少，都可以正常运行。
 
-## 镜像 tag 管理 
+## 镜像 tag 管理 {: #image-tag-management }
 
 理论上讲，docker 的镜像内容是不可变的，其 tag 应该是和 git 的 tag 是一样的，应该是一个只读值不应该变化。但是平时大家在使用的时候，习惯的使用 `:latest` ， 这样在生产环境中是比较危险的，很容易搞错镜像。我建议使用如下风格的 tag 命令方式来管理 image.
 
@@ -200,17 +197,17 @@ X.Y.Z 跟随镜像里面关联代码的版本号
 N 使用构建次数，或使用时间戳。来标记 Dockerfile 的变化及构建时间
 ```
 
-## 其它镜像构建方式
+## 其它镜像构建方式 {: #other-build-methods }
 
 现在，除了 `Dockerfile` 这种构建方式，还有很多其它的镜像构建工具，有兴趣可以深入研究下
 
 * [source to image](https://github.com/openshift/source-to-image): openshift 里面带的一个方便由源代码直接生成镜像的方案，可以单独使用。
-* [makisu](https://github.com/uber/makisu): 方便在  kubernetes 环境中使用的镜像构建方案，可以 unprivileged 的容器中使用
+* [makisu](https://github.com/uber/makisu): 方便在 kubernetes 环境中使用的镜像构建方案，可以 unprivileged 的容器中使用
 * [buildash](https://github.com/containers/buildah): 构建 OCI 兼容格式镜像工具。
 
-## Demo
+## Example {: #example }
 
-```
+```dockerfile
 FROM centos:7
 
 EXPOSE 8080
@@ -329,9 +326,9 @@ RUN BUILD_DEP_PKGS="\
     && ln -sf /var/www /etc/nginx/www
 ```
 
-## REF
+## REF {: #reference }
 
-* [^1]: https://github.com/sagemathinc/cocalc/issues/2287#issue-249824529
-* [^2]: https://docs.docker.com/engine/reference/commandline/build/#squash-an-images-layers---squash-experimental
-* [^3]: <https://docs.docker.com/develop/develop-images/multistage-build/> 
-* [^4]: [10 tips for building and managing containers](https://www.weave.works/blog/10-tips-for-building-and-managing-containers)
+[^1]: https://github.com/sagemathinc/cocalc/issues/2287#issue-249824529
+[^2]: https://docs.docker.com/engine/reference/commandline/build/#squash-an-images-layers---squash-experimental
+[^3]: <https://docs.docker.com/develop/develop-images/multistage-build/> 
+[^4]: [10 tips for building and managing containers](https://www.weave.works/blog/10-tips-for-building-and-managing-containers)

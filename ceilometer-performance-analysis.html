@@ -134,21 +134,21 @@
 </blockquote>
 <h2 id="ceilometer"><a class="toclink" href="#ceilometer">ceilometer 架构</a><a class="headerlink" href="#ceilometer" title="Permanent link">&para;</a></h2>
 <p>ceilometer 架构经历过多次变化，已经简化成了如下图的结构。ceilometer 只有两个服务。ceilometer polling 服务负责从nova, swift, libvirt 等服务拉取相关数据，并发送到 MQ 里面的 notification.sample 队列。之后 ceilometer notification 从 MQ 中取到数据后，通过 <code>pipeline.yml</code> 的定义，进行数据转化后，再发给后面的 gnocchi api 进行存储。 这次的问题是出现在 ceilometer notification 进程。</p>
-<div class="highlight"><pre><span></span>   +--------------------+
-   | Ceilometer Polling |
-   +---------+----------+
-             |
-      +======v========+
-     / Message Queue /
-    +========+======+
-             |
- +-----------v-------------+
- | Ceilometer Notification |
- +-----------+-------------+
-             |
-      +------v------+
-      | gnocchi api |
-      +-------------+
+<div class="highlight"><pre><span></span>   <span class="o">+</span><span class="c1">--------------------+</span>
+   <span class="o">|</span> <span class="n">Ceilometer</span> <span class="n">Polling</span> <span class="o">|</span>
+   <span class="o">+</span><span class="c1">---------+----------+</span>
+             <span class="o">|</span>
+      <span class="o">+======</span><span class="n">v</span><span class="o">========+</span>
+     <span class="o">/</span> <span class="n">Message</span> <span class="n">Queue</span> <span class="o">/</span>
+    <span class="o">+========+======+</span>
+             <span class="o">|</span>
+ <span class="o">+</span><span class="c1">-----------v-------------+</span>
+ <span class="o">|</span> <span class="n">Ceilometer</span> <span class="n">Notification</span> <span class="o">|</span>
+ <span class="o">+</span><span class="c1">-----------+-------------+</span>
+             <span class="o">|</span>
+      <span class="o">+</span><span class="c1">------v------+</span>
+      <span class="o">|</span> <span class="n">gnocchi</span> <span class="n">api</span> <span class="o">|</span>
+      <span class="o">+</span><span class="c1">-------------+</span>
 </pre></div>
 
 
@@ -156,29 +156,29 @@
 <p>当开启 16 worker 的情况下，MQ 的处理速度如下图。前面部分是优化前的，基本消息处理速度在 10/s，平均每个 worker 每秒连一个请求都处理不完 。(后部分上升是因为有几个worker 做了优化)</p>
 <p><img alt="rabbitmq noti" src="images/ceilometer-perf/rabbitmq.jpg"></p>
 <p>安装 pyflame 工具</p>
-<div class="highlight"><pre><span></span>yum install autoconf automake gcc-c++ git libtool python-devel make
+<div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="n">autoconf</span> <span class="n">automake</span> <span class="n">gcc</span><span class="o">-</span><span class="k">c</span><span class="o">++</span> <span class="n">git</span> <span class="n">libtool</span> <span class="n">python</span><span class="o">-</span><span class="n">devel</span> <span class="n">make</span>
 
-git clone https://github.com/uber/pyflame.git
-cd pyflame
-./autogen.sh
-./configure
-make
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">uber</span><span class="o">/</span><span class="n">pyflame</span><span class="p">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">pyflame</span>
+<span class="p">.</span><span class="o">/</span><span class="n">autogen</span><span class="p">.</span><span class="n">sh</span>
+<span class="p">.</span><span class="o">/</span><span class="n">configure</span>
+<span class="n">make</span>
 </pre></div>
 
 
 <p>命令会生成在 <code>./src/pyflame</code> 位置</p>
 <p>安装 FlameGraph<sup id="fnref-4"><a class="footnote-ref" href="#fn-4">4</a></sup> 工具 </p>
-<div class="highlight"><pre><span></span>git clone https://github.com/brendangregg/FlameGraph.git
+<div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">brendangregg</span><span class="o">/</span><span class="n">FlameGraph</span><span class="p">.</span><span class="n">git</span>
 </pre></div>
 
 
 <p>使用如下命令抓取数据</p>
-<div class="highlight"><pre><span></span>./src/pyflame -p &lt;pid&gt; -s 60 -r 0.01 &gt; ceilometer-notification.pyflame
+<div class="highlight"><pre><span></span><span class="p">.</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">pyflame</span> <span class="o">-</span><span class="n">p</span> <span class="o">&lt;</span><span class="n">pid</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">s</span> <span class="mi">60</span> <span class="o">-</span><span class="n">r</span> <span class="mi">0</span><span class="p">.</span><span class="mi">01</span> <span class="o">&gt;</span> <span class="n">ceilometer</span><span class="o">-</span><span class="n">notification</span><span class="p">.</span><span class="n">pyflame</span>
 </pre></div>
 
 
 <p>然后使用 FlameGraph 工具目录下的 <code>flamegraph.pl</code> 工具把 pyflame 数据生成火焰图</p>
-<div class="highlight"><pre><span></span>flamegraph.pl ceilometer-notification.pyflame &gt; ceilometer-notification.svg
+<div class="highlight"><pre><span></span><span class="n">flamegraph</span><span class="p">.</span><span class="n">pl</span> <span class="n">ceilometer</span><span class="o">-</span><span class="n">notification</span><span class="p">.</span><span class="n">pyflame</span> <span class="o">&gt;</span> <span class="n">ceilometer</span><span class="o">-</span><span class="n">notification</span><span class="p">.</span><span class="n">svg</span>
 </pre></div>
 
 

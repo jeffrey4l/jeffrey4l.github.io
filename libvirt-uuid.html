@@ -138,7 +138,7 @@ $ virsh capabilities | grep uuid
 <p>可以看到这两个值是一样的(不知道为什么有一段顺序不对)。</p>
 <p>当我在不同的 LXC 中启动多个 libvirt 时，就会触发这个问题。所有的 libvirt 使用的是相同的 uuid 从而导致 live migration 失败。</p>
 <p>修改的办法也很简单。这个UUID可以在 libvirt 的配置文件<code>/etc/libvirt/libvirtd.conf</code>中修改后重启libivrt就可以了。</p>
-<div class="highlight"><pre><span></span>host_uuid = &quot;8ba976e9-1224-4339-9526-719fe6dee311&quot;
+<div class="highlight"><pre><span></span><span class="n">host_uuid</span> <span class="o">=</span> <span class="ss">&quot;8ba976e9-1224-4339-9526-719fe6dee311&quot;</span>
 </pre></div>
 
 

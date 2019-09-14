@@ -235,12 +235,12 @@
 
 <p>在 python3 中，message 相关的信息已经完全删除掉了。</p>
 <p>所以，一般使用 <code>message</code> 属性的话，推荐这样使用</p>
-<div class="highlight"><pre><span></span><span class="kr">class</span> <span class="nx">MyException</span><span class="p">(</span><span class="nx">Exception</span><span class="p">)</span><span class="o">:</span>
-    <span class="nx">def</span> <span class="nx">__init__</span><span class="p">(</span><span class="nx">self</span><span class="p">,</span> <span class="nx">message</span><span class="p">)</span><span class="o">:</span>
-        <span class="nx">self</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="nx">message</span>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">MyException</span>(<span class="nb">Exception</span>):
+    <span class="n">def</span> <span class="n">__init__</span>(<span class="k">self</span>, <span class="n">message</span>):
+        <span class="k">self</span>.<span class="n">message</span> = <span class="n">message</span>
 
-<span class="kr">class</span> <span class="nx">My2Exception</span><span class="p">(</span><span class="nx">Exception</span><span class="p">)</span><span class="o">:</span>
-    <span class="nx">message</span> <span class="o">=</span> <span class="s1">&#39;this is a message&#39;</span>
+<span class="k">class</span> <span class="n">My2Exception</span>(<span class="nb">Exception</span>):
+    <span class="n">message</span> = <span class="s">&#39;this is a message&#39;</span>
 </pre></div>
     <div class="copyright">
       <p><span>原始链接:</span><a href="http://xcodest.me/python-exception-init-args.html" target="_blank">http://xcodest.me/python-exception-init-args.html </a></p>

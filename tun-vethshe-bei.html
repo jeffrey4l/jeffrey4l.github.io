@@ -150,15 +150,15 @@ supports-priv-flags: no
 <p>开源项目openvpn和Vtun都是利用tun/tap驱动实现的隧道封装</p>
 <p>虽然是出自一个娘，但它们仍然有大的不同。tun是点对点的设备，而tap是一个普通的以太网卡设备。也就是说，tun设备其实完全不需要有物理地址的。它收到和发出的包不需要arp，也不需要有数据链路层的头。而tap设备则是有完整的物理地址和完整的以太网帧。</p>
 <p>可以通过以下方法创建</p>
-<div class="highlight"><pre><span></span>ip tuntap add mode tap 
-ip tuntap add mode tun
+<div class="highlight"><pre><span></span><span class="n">ip</span> <span class="n">tuntap</span> <span class="k">add</span> <span class="k">mode</span> <span class="n">tap</span> 
+<span class="n">ip</span> <span class="n">tuntap</span> <span class="k">add</span> <span class="k">mode</span> <span class="n">tun</span>
 </pre></div>
 
 
 <p>在 OpenStack 中，主要用tap来做虚拟机的网卡。</p>
 <h1 id="veth"><a class="toclink" href="#veth">veth</a><a class="headerlink" href="#veth" title="Permanent link">&para;</a></h1>
 <p>veth 从名字上来看是 Virtual ETHernet 的缩写，它的作用很简单，就是要把从一个 network namespace 发出的数据包转发到另一个 namespace。veth 设备是成对的，一个是 container 之中，另一个在 container 之外，即在真实机器上能看到的。 建立 veth 类型的设备可以用下面的命令：</p>
-<div class="highlight"><pre><span></span>ip link add name veth0 type veth0 peer name veth1
+<div class="highlight"><pre><span></span><span class="n">ip</span> <span class="n">link</span> <span class="k">add</span> <span class="n">name</span> <span class="n">veth0</span> <span class="k">type</span> <span class="n">veth0</span> <span class="n">peer</span> <span class="n">name</span> <span class="n">veth1</span>
 </pre></div>
 
 

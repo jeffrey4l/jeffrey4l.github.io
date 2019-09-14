@@ -126,17 +126,17 @@
   <div class="entry-content">
     <p>在使用 Shell 的过程中，经常会遇到一行过长，导致输出折行，相当难看的情况出现。而且多数据情况下，我们只用每行的前 N 个字符就可以了。这时可以用以下方法来截断每行的长度。</p>
 <p><strong>方法1</strong>： 使用 <code>awk</code></p>
-<div class="highlight"><pre><span></span>cat filename | awk &#39;{print substr($0, 0, 20)}&#39;
+<div class="highlight"><pre><span></span><span class="n">cat</span> <span class="n">filename</span> <span class="o">|</span> <span class="n">awk</span> <span class="s1">&#39;{print substr($0, 0, 20)}&#39;</span>
 </pre></div>
 
 
 <p><strong>方法2</strong>: 使用 <code>sed</code></p>
-<div class="highlight"><pre><span></span>cat filename | sed &#39;s/\(.\{20\}\).*/\1/&#39;
+<div class="highlight"><pre><span></span><span class="n">cat</span> <span class="n">filename</span> <span class="o">|</span> <span class="n">sed</span> <span class="s1">&#39;s/\(.\{20\}\).*/\1/&#39;</span>
 </pre></div>
 
 
 <p><strong> 方法3</strong>: 使用 <code>sed -r</code></p>
-<div class="highlight"><pre><span></span>cat filename | sed -r &#39;s/(.{20}).*/\1/&#39;
+<div class="highlight"><pre><span></span><span class="n">cat</span> <span class="n">filename</span> <span class="o">|</span> <span class="n">sed</span> <span class="o">-</span><span class="n">r</span> <span class="s1">&#39;s/(.{20}).*/\1/&#39;</span>
 </pre></div>
     <div class="copyright">
       <p><span>原始链接:</span><a href="http://xcodest.me/print-the-first-n-characters-of-each-line.html" target="_blank">http://xcodest.me/print-the-first-n-characters-of-each-line.html </a></p>

@@ -1,5 +1,309 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>代码杂货铺</title><link>https://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Wed, 12 Dec 2018 00:00:00 +0800</lastBuildDate><item><title>ceilometer 性能分析 II</title><link>https://xcodest.me/ceilometer-performance-analysis-ii.html</link><description>&lt;p&gt;在上一篇文章中， 「&lt;a href="ceilometer-performance-analysis.html" target="_blank"&gt;记一次 ceilometer 性能分析&lt;/a&gt;」中，我们分析了 ceilometer 的架构，及由于keystonauth 的问题，导致的大量 &lt;code&gt;get_endpoints&lt;/code&gt; 的请求。文章的最后，成功的把这去掉了这部分无意义的请求。但是即使优化后，ceilometer notification 服务还是会吃掉大量CPU, 那 ceilometer 还有没有其它的优化空间呢?&lt;/p&gt;
+<rss version="2.0"><channel><title>代码杂货铺</title><link>https://xcodest.me/</link><description>关注云计算，容器和Linux</description><lastBuildDate>Sat, 14 Sep 2019 00:00:00 +0800</lastBuildDate><item><title>制作容器镜像的最佳实践</title><link>https://xcodest.me/best-practices-for-building-docker-images.html</link><description>&lt;h2 id="build-smaller-size-image"&gt;&lt;a class="toclink" href="#build-smaller-size-image"&gt;构建体积更小的镜像&lt;/a&gt;&lt;a class="headerlink" href="#build-smaller-size-image" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;构建体积更小的镜像，有利于镜像本身的传输，尤其在 Kubernetes 的环境中，镜像的传输会更加频繁，更小的体积意味着更快的调度时间和更小的空间占用。那如何构建更加小的镜像呢?&lt;/p&gt;
+&lt;h3 id="use-smaller-base-image"&gt;&lt;a class="toclink" href="#use-smaller-base-image"&gt;使用更小的基础镜像&lt;/a&gt;&lt;a class="headerlink" href="#use-smaller-base-image" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;不同的基础镜像构建相同的应用会有不同的大小。使用更小基础镜像会有利于减小最终镜像的大小。建议非特殊情况下，使用 alpine 镜像。他的基础镜像只有不到 5MB, 而且还自带包管理工具。一般需求都可以满足。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM alpine
+RUN apk add nginx
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;如果你的应用可以独立运行，如 Go 编译出来的 Binary 文件，还可以直接使用 scratch 这个空白镜像。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM scratch
+COPY mybinary /mybinary
+CMD [ &amp;quot;/mybinary&amp;quot; ]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3 id="merge-run-command"&gt;&lt;a class="toclink" href="#merge-run-command"&gt;合并 RUN 命令&lt;/a&gt;&lt;a class="headerlink" href="#merge-run-command" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;不同的 RUN 命令如果先后做了文件的增加和删除，因为镜像分层文件系统的原因，还是会增加镜像体积的。如果两个 RUN 命令合并后，才会达到所想的效果。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;...
+RUN curl http://xyz.abc -o abc.tar.gz \
+    ...
+    rm -rf abc.tar.gz
+...
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3 id="remove-useless-package"&gt;&lt;a class="toclink" href="#remove-useless-package"&gt;去除掉不用的软件包&lt;/a&gt;&lt;a class="headerlink" href="#remove-useless-package" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;在安装包的过程中，尽量只安装需要用到的包。尤其是在编译过程中，难免会安装一些运行过程中不需要的软件包，如 glibc-devel 等。那在最后，最好把这些包去掉，来节省镜像空间。又因为镜像分层系统的原因，这些安装和卸载的语法还应该处理同一个 RUN 命令下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;...
+RUN BUILD_DEP_PKGS=&amp;quot;
+       gcc \
+       libc-devel&amp;quot;
+    &amp;amp;&amp;amp; yum -y install $BUILD_DEP_PKGS \
+    ...
+    &amp;amp;&amp;amp; yum -y remove $BUILD_DEP_PKGS
+...
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3 id="only-install-required-package"&gt;&lt;a class="toclink" href="#only-install-required-package"&gt;只安装必要依赖包的&lt;/a&gt;&lt;a class="headerlink" href="#only-install-required-package" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;apt&lt;/code&gt; 和 &lt;code&gt;yum/dnf&lt;/code&gt; 在安装包的过程中，默认会自动安装一些弱依赖包。一般情况下是使用不到的。可以显示的关闭弱依赖。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;# apt-get for Debian family&lt;/span&gt;
+&lt;span class="x"&gt;apt-get -y install --no-install-recommends &lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt; &lt;span class="nv"&gt;package&lt;/span&gt; &lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt; &lt;/span&gt;
+
+&lt;span class="x"&gt;# yum from RHEL family&lt;/span&gt;
+&lt;span class="x"&gt;yum -y --setopt=install_weak_deps=false \&lt;/span&gt;
+&lt;span class="x"&gt;    --setopt=tsflags=nodocs \&lt;/span&gt;
+&lt;span class="x"&gt;    --setopt=override_install_langs=en_US.utf8 \&lt;/span&gt;
+&lt;span class="x"&gt;    install vim&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--no-install-recommends&lt;/code&gt; : 不安装推荐依赖&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--setopt=install_weak_deps=false&lt;/code&gt;: 不安装弱依赖包&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--setopt=tsflags=nodocs&lt;/code&gt;: 不安装文档包&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--setopt=override_install_langs=en_US.utf8&lt;/code&gt;: 设置默认语言为 &lt;code&gt;en_US.utf8&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="disable-lastlog-and-faillog"&gt;&lt;a class="toclink" href="#disable-lastlog-and-faillog"&gt;关闭用户初始化 lastlog 和 faillog 数据库&lt;/a&gt;&lt;a class="headerlink" href="#disable-lastlog-and-faillog" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;如果你要在镜像中创建新的用户，可以不初始化用户相关的 lastlog 和  faillog 数据库&lt;sup id="fnref-1"&gt;&lt;a class="footnote-ref" href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt;。可以使用 &lt;code&gt;useradd -l&lt;/code&gt; 或把 &lt;code&gt;/var/log/faillog&lt;/code&gt; 和 &lt;code&gt;/var/log/lastlog&lt;/code&gt; 文件删除掉，彻底关掉该功能。每个用户大概用占用掉 4k 左右的空间。&lt;/p&gt;
+&lt;h3 id="use-multi-stage"&gt;&lt;a class="toclink" href="#use-multi-stage"&gt;使用 multi stage 构建&lt;/a&gt;&lt;a class="headerlink" href="#use-multi-stage" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;对于很多需要编译运行的程序，如 Java, C, Golang 等，其编译环境和运行环境是不一样的，为了减小最终镜像的大小，我们可以使用上面提到的合并 &lt;code&gt;RUN&lt;/code&gt; 命令的方式，但是看着会比较乱，比较难以维护。docker daemon &amp;gt;= 17.05 &lt;sup id="fnref-3"&gt;&lt;a class="footnote-ref" href="#fn-3"&gt;3&lt;/a&gt;&lt;/sup&gt;版本的时候支持 multi stage 构建，解决了此类问题，他使用两个镜像来构建，通过 &lt;code&gt;COPY --from&lt;/code&gt; 语法，在两个镜像之间传递构建好的文件。使用方法如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="s"&gt; golang:1.7.3 as builder&lt;/span&gt;
+&lt;span class="k"&gt;WORKDIR&lt;/span&gt;&lt;span class="s"&gt; /go/src/github.com/alexellis/href-counter/&lt;/span&gt;
+&lt;span class="k"&gt;RUN&lt;/span&gt; go get -d -v golang.org/x/net/html  
+&lt;span class="k"&gt;COPY&lt;/span&gt; app.go .
+&lt;span class="k"&gt;RUN&lt;/span&gt; &lt;span class="nv"&gt;CGO_ENABLED&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="nv"&gt;GOOS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;linux go build -a -installsuffix cgo -o app .
+
+&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="s"&gt; alpine:latest  &lt;/span&gt;
+&lt;span class="k"&gt;RUN&lt;/span&gt; apk --no-cache add ca-certificates
+&lt;span class="k"&gt;WORKDIR&lt;/span&gt;&lt;span class="s"&gt; /root/&lt;/span&gt;
+&lt;span class="k"&gt;COPY&lt;/span&gt; --from&lt;span class="o"&gt;=&lt;/span&gt;builder /go/src/github.com/alexellis/href-counter/app .
+&lt;span class="k"&gt;CMD&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;./app&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;  
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;它使用 &lt;code&gt;golang:1.7.3&lt;/code&gt; 做为构建镜像，来构建出名为 &lt;code&gt;app&lt;/code&gt; 的应用，然后把  &lt;code&gt;app&lt;/code&gt; 再拷贝到以 &lt;code&gt;alpine:latest&lt;/code&gt; 为基础的镜像里面，这样做出来的镜像肯定会很小。&lt;/p&gt;
+&lt;h2 id="shrink-image-size"&gt;&lt;a class="toclink" href="#shrink-image-size"&gt;缩小镜像体积&lt;/a&gt;&lt;a class="headerlink" href="#shrink-image-size" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;h3 id="use-dive"&gt;&lt;a class="toclink" href="#use-dive"&gt;使用 dive 分析镜像的空间占用&lt;/a&gt;&lt;a class="headerlink" href="#use-dive" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;a href="https://github.com/wagoodman/dive" target="_blank"&gt;dive&lt;/a&gt; 是一个命令行工具，可以分析镜像里面每层的空间占用大小，有助于发现问题，以减少镜像大小。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="dive example" src="images/2018/dive-demo.gif"&gt;&lt;/p&gt;
+&lt;h3 id="merge-multi-layer"&gt;&lt;a class="toclink" href="#merge-multi-layer"&gt;合并镜像的多个层&lt;/a&gt;&lt;a class="headerlink" href="#merge-multi-layer" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;docker 自从 1.13 版本增加了一个 squash 的 &lt;code&gt;experimental&lt;/code&gt;特性 &lt;sup id="fnref-2"&gt;&lt;a class="footnote-ref" href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt;。他可以把把当前 Dockerfile 文件里面的多个层在构建的时候自动合并成一个。但是不支持合并其父镜像。使用前，需要打开 docker daemon 的 experiment 特性。使用方法如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker build --squash .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;除了这个方法，还有一个工具叫 &lt;a href="https://github.com/goldmann/docker-squash" target="_blank"&gt;docker squash&lt;/a&gt; ， 他支持合并镜像的任意层。使用方法如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pip install docker-squash
+$ docker-squash -t kolla/centos-source-base:new &lt;span class="se"&gt;\&lt;/span&gt;
+      kolla/centos-source-base:master
+Old image has &lt;span class="m"&gt;40&lt;/span&gt; layers
+Attempting to squash last &lt;span class="m"&gt;40&lt;/span&gt; layers...
+...
+Original image size: &lt;span class="m"&gt;388&lt;/span&gt;.51 MB
+Squashed image size: &lt;span class="m"&gt;281&lt;/span&gt;.43 MB
+Image size decreased by &lt;span class="m"&gt;27&lt;/span&gt;.56 %
+Image registered in Docker daemon as kolla/centos-source-base:new
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;可以看到，通过 &lt;code&gt;squash&lt;/code&gt; 镜像大小从 &lt;code&gt;388.51MB&lt;/code&gt; 缩小到了 &lt;code&gt;281.43MB&lt;/code&gt; ，缩小了 &lt;code&gt;27.56%&lt;/code&gt; 。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;注意：在使用 squash 的时候，会消耗大量的硬盘 IO，如果硬盘性能不好，速度会比较慢。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id="image-safety"&gt;&lt;a class="toclink" href="#image-safety"&gt;镜像安全&lt;/a&gt;&lt;a class="headerlink" href="#image-safety" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;h3 id="init-progress"&gt;&lt;a class="toclink" href="#init-progress"&gt;init 进程&lt;/a&gt;&lt;a class="headerlink" href="#init-progress" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;重启容器的时候，经常会很慢，而且docker daemon 日志中经常会抛出以下错误&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dockerd[559]: msg=&amp;quot;Container 5054f failed to exit within 10 seconds of signal 15 - using the force&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;默认的的 signal 15 根本就没有使其退出，最后还是 10 秒超时后强制退出(kill)的。而且有时还会出现大量僵尸进程。&lt;/p&gt;
+&lt;p&gt;容器化后，由于单容器单进程，已经没有传统意义上的 init 进程。应用进程直接占用了 pid 1 的进程号，应用默认是不会处理&lt;code&gt;SIGTERM&lt;/code&gt; 信号的，所以会导致 signal 15 不能使进程正常退出，只能使用 &lt;code&gt;SIGKILL&lt;/code&gt; 直接杀死进程。而这可能导致某些资源不能正常回收。另外 pid 1 进程还需要负责其子进程的回收工作，但是一般应用也不会对此进行处理。所以会导致僵尸进程的出现。更多解释，请参看我写的另外一篇文章：&lt;a href="docker-init-process" target="_blank"&gt;Docker init 进程&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;解决方案是使用 &lt;a href="https://github.com/krallin/tini" target="_blank"&gt;tini&lt;/a&gt; , 或 &lt;a href="ttps://github.com/Yelp/dumb-init" target="_blank"&gt;dumb-init&lt;/a&gt; 等轻量级 init 进程。所以在制作镜像的时候最好安装上其中一个。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c"&gt;# install dumb-init&lt;/span&gt;
+&lt;span class="k"&gt;RUN&lt;/span&gt; wget -O /usr/local/bin/dumb-init &lt;span class="se"&gt;\&lt;/span&gt;
+    https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64
+&lt;span class="k"&gt;RUN&lt;/span&gt; chmod +x /usr/local/bin/dumb-init
+
+&lt;span class="c"&gt;# Runs &amp;quot;/usr/bin/dumb-init -- /my/script --with --args&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;ENTRYPOINT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/usr/bin/dumb-init&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;--&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;CMD&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/my/script&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;--with&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;--args&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;如果是使用 docker 的情况下，docker 自 1.13 之后已经自带一个 init 进程，其实就是 tini, 使用方法如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker run --init centos:7 ps auxf
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         &lt;span class="m"&gt;1&lt;/span&gt;  &lt;span class="m"&gt;0&lt;/span&gt;.0  &lt;span class="m"&gt;0&lt;/span&gt;.0   &lt;span class="m"&gt;1000&lt;/span&gt;     &lt;span class="m"&gt;4&lt;/span&gt; ?        Ss   &lt;span class="m"&gt;03&lt;/span&gt;:45   &lt;span class="m"&gt;0&lt;/span&gt;:00 /dev/init -- ps auxf
+root         &lt;span class="m"&gt;6&lt;/span&gt;  &lt;span class="m"&gt;0&lt;/span&gt;.0  &lt;span class="m"&gt;0&lt;/span&gt;.0  &lt;span class="m"&gt;51748&lt;/span&gt;  &lt;span class="m"&gt;3444&lt;/span&gt; ?        R    &lt;span class="m"&gt;03&lt;/span&gt;:45   &lt;span class="m"&gt;0&lt;/span&gt;:00 ps auxf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3 id="drop-root"&gt;&lt;a class="toclink" href="#drop-root"&gt;Drop root&lt;/a&gt;&lt;a class="headerlink" href="#drop-root" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;虽然 container 在运行的时候 ，是与系统隔离开的，但是如果你使用 root 运行容器的话，他在系统层面上看，也是 root 账号，权限是比较大的，&lt;a href="https://security.stackexchange.com/questions/176206/docker-runs-container-processes-as-root-should-i-be-worried" target="_blank"&gt;会有一定的风险&lt;/a&gt;。更安全的做法是使用非root 账号运行。这点在 openshift 上面体现的比较明显，他默认是使用一个很大的 uid 来运行，来限制容器内的进程权限。&lt;/p&gt;
+&lt;p&gt;在使用非 root 账号运行，尤其是在 kubernetes/openshift 这种环境中，uid 是不能事先确认的，需要对读写目录标记上&lt;code&gt;0777&lt;/code&gt; 的权限。包括某些可能通过  volume 挂载的目录。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;注意，对于 volume 挂载的目录，在 kubernetes/openshift 环境中，并不是必要的，volume 目录的 uid / gid 会由 kubelet 自动配置好。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;例子如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; ... &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; rm -rf /etc/nginx/*.default &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chmod -R a+rwx &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_HOME_TMP&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chmod -R a+rwx /etc/nginx &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chmod -R a+rwx /var/log/nginx &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chmod -R a+rwx /var/run/nginx
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;把需要  nginx 读写的地方配置上  &lt;code&gt;rwx&lt;/code&gt; 权限，这样不管 nginx 进程的 &lt;code&gt;uid&lt;/code&gt;  是多少，都可以正常运行。&lt;/p&gt;
+&lt;h2 id="image-tag-management"&gt;&lt;a class="toclink" href="#image-tag-management"&gt;镜像 tag 管理&lt;/a&gt;&lt;a class="headerlink" href="#image-tag-management" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;理论上讲，docker 的镜像内容是不可变的，其 tag 应该是和 git 的 tag 是一样的，应该是一个只读值不应该变化。但是平时大家在使用的时候，习惯的使用 &lt;code&gt;:latest&lt;/code&gt; ， 这样在生产环境中是比较危险的，很容易搞错镜像。我建议使用如下风格的 tag 命令方式来管理 image.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;X.Y.Z-N
+
+X.Y.Z 跟随镜像里面关联代码的版本号
+N 使用构建次数，或使用时间戳。来标记 Dockerfile 的变化及构建时间
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id="other-build-methods"&gt;&lt;a class="toclink" href="#other-build-methods"&gt;其它镜像构建方式&lt;/a&gt;&lt;a class="headerlink" href="#other-build-methods" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;现在，除了 &lt;code&gt;Dockerfile&lt;/code&gt; 这种构建方式，还有很多其它的镜像构建工具，有兴趣可以深入研究下&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/openshift/source-to-image" target="_blank"&gt;source to image&lt;/a&gt;: openshift 里面带的一个方便由源代码直接生成镜像的方案，可以单独使用。&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/uber/makisu" target="_blank"&gt;makisu&lt;/a&gt;: 方便在 kubernetes 环境中使用的镜像构建方案，可以 unprivileged 的容器中使用&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/containers/buildah" target="_blank"&gt;buildash&lt;/a&gt;: 构建 OCI 兼容格式镜像工具。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="example"&gt;&lt;a class="toclink" href="#example"&gt;Example&lt;/a&gt;&lt;a class="headerlink" href="#example" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="s"&gt; centos:7&lt;/span&gt;
+
+&lt;span class="k"&gt;EXPOSE&lt;/span&gt;&lt;span class="s"&gt; 8080&lt;/span&gt;
+&lt;span class="k"&gt;EXPOSE&lt;/span&gt;&lt;span class="s"&gt; 8443&lt;/span&gt;
+
+&lt;span class="k"&gt;ARG&lt;/span&gt; http_proxy
+&lt;span class="k"&gt;ARG&lt;/span&gt; https_proxy
+
+&lt;span class="k"&gt;ARG&lt;/span&gt; &lt;span class="nv"&gt;NGINX_MODULE_VTS_VERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;v0.1.18
+&lt;span class="k"&gt;ARG&lt;/span&gt; &lt;span class="nv"&gt;NGINX_VERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.13.3
+&lt;span class="k"&gt;ARG&lt;/span&gt; &lt;span class="nv"&gt;TINI_VERSION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;v0.18.0
+
+&lt;span class="k"&gt;ENV&lt;/span&gt; NGINX_GROUP nginx
+&lt;span class="k"&gt;ENV&lt;/span&gt; NGINX_HOME_TMP /var/spool/nginx/tmp
+&lt;span class="k"&gt;ENV&lt;/span&gt; NGINX_HOME /var/lib/nginx
+&lt;span class="k"&gt;ENV&lt;/span&gt; NGINX_USER nginx
+
+&lt;span class="k"&gt;ENV&lt;/span&gt; NGINX_DOWNLOAD_URL http://nginx.org/download/nginx-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_VERSION&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.tar.gz
+
+&lt;span class="k"&gt;RUN&lt;/span&gt; &lt;span class="nv"&gt;BUILD_DEP_PKGS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;\&lt;/span&gt;
+&lt;span class="s2"&gt;        cpp \&lt;/span&gt;
+&lt;span class="s2"&gt;        expat-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        fontconfig-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        freetype-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        gcc \&lt;/span&gt;
+&lt;span class="s2"&gt;        gd-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        git \&lt;/span&gt;
+&lt;span class="s2"&gt;        glibc-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        glibc-headers \&lt;/span&gt;
+&lt;span class="s2"&gt;        kernel-headers \&lt;/span&gt;
+&lt;span class="s2"&gt;        keyutils-libs-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        krb5-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        libcom_err-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        libjpeg-turbo-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        libpng-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        libselinux-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        libsepol-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        libverto-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        libX11-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        libXau-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        libxcb-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        libxcb-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        libXpm-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        make \&lt;/span&gt;
+&lt;span class="s2"&gt;        openssl-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        pcre-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        xorg-x11-proto-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        zlib-devel \&lt;/span&gt;
+&lt;span class="s2"&gt;        &amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; yum -y --setopt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;install_weak_deps&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt; --setopt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;tsflags&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;nodocs --setopt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;override_install_langs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;en_US.utf8 &lt;span class="se"&gt;\&lt;/span&gt;
+        install &lt;span class="se"&gt;\&lt;/span&gt;
+        &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;BUILD_DEP_PKGS&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+        rsync &lt;span class="se"&gt;\&lt;/span&gt;
+        wget &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; curl -L https://github.com/krallin/tini/releases/download/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;TINI_VERSION&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/tini -o /tini &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chmod +x /tini &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; wget &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_DOWNLOAD_URL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; -O /tmp/nginx.tar.gz &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; tar xf /tmp/nginx.tar.gz -C /tmp &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; git clone --branch &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_MODULE_VTS_VERSION&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; https://github.com/vozlt/nginx-module-vts.git /tmp/nginx-module-vts &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+        &lt;span class="nb"&gt;cd&lt;/span&gt; /tmp/nginx-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_VERSION&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+        &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; ./configure &lt;span class="se"&gt;\&lt;/span&gt;
+                --add-module&lt;span class="o"&gt;=&lt;/span&gt;/tmp/nginx-module-vts &lt;span class="se"&gt;\&lt;/span&gt;
+                --conf-path&lt;span class="o"&gt;=&lt;/span&gt;/etc/nginx/nginx.conf &lt;span class="se"&gt;\&lt;/span&gt;
+                --error-log-path&lt;span class="o"&gt;=&lt;/span&gt;/var/log/nginx/error.log &lt;span class="se"&gt;\&lt;/span&gt;
+                --group&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_GROUP&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+                --http-client-body-temp-path&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_HOME_TMP&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/client_body &lt;span class="se"&gt;\&lt;/span&gt;
+                --http-fastcgi-temp-path&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_HOME_TMP&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/fastcgi &lt;span class="se"&gt;\&lt;/span&gt;
+                --http-log-path&lt;span class="o"&gt;=&lt;/span&gt;/var/log/nginx/access.log &lt;span class="se"&gt;\&lt;/span&gt;
+                --http-proxy-temp-path&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_HOME_TMP&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/proxy &lt;span class="se"&gt;\&lt;/span&gt;
+                --http-uwsgi-temp-path&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_HOME_TMP&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/uwsgi &lt;span class="se"&gt;\&lt;/span&gt;
+                --lock-path&lt;span class="o"&gt;=&lt;/span&gt;/var/local/subsys/nginx &lt;span class="se"&gt;\&lt;/span&gt;
+                --modules-path&lt;span class="o"&gt;=&lt;/span&gt;/usr/lib64/nginx/modules &lt;span class="se"&gt;\&lt;/span&gt;
+                --pid-path&lt;span class="o"&gt;=&lt;/span&gt;/var/run/nginx/nginx.pid &lt;span class="se"&gt;\&lt;/span&gt;
+                --prefix&lt;span class="o"&gt;=&lt;/span&gt;/etc/nginx &lt;span class="se"&gt;\&lt;/span&gt;
+                --sbin-path&lt;span class="o"&gt;=&lt;/span&gt;/usr/bin/nginx &lt;span class="se"&gt;\&lt;/span&gt;
+                --user&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_USER&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+                --with-http_gzip_static_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --with-http_image_filter_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --with-http_realip_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --with-http_secure_link_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --with-http_ssl_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --with-http_stub_status_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --with-http_sub_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --with-http_v2_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --without-http_scgi_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --without-mail_imap_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --without-mail_pop3_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --without-mail_smtp_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --without-poll_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --without-select_module &lt;span class="se"&gt;\&lt;/span&gt;
+                --with-threads &lt;span class="se"&gt;\&lt;/span&gt;
+        &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make -j4 &lt;span class="se"&gt;\&lt;/span&gt;
+        &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install &lt;span class="se"&gt;\&lt;/span&gt;
+        &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; cp -r conf/* /etc/nginx/ &lt;span class="se"&gt;\&lt;/span&gt;
+        &lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; rm -rf /tmp/nginx.tar.gz &lt;span class="se"&gt;\&lt;/span&gt;
+        /tmp/nginx-module-vts &lt;span class="se"&gt;\&lt;/span&gt;
+        /tmp/nginx-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_VERSION&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; yum -y remove &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;BUILD_DEP_PKGS&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; yum clean all &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; mkdir -p &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_HOME_TMP&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/&lt;span class="o"&gt;{&lt;/span&gt;client_body,proxy,fastcgi,uwsgi&lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; mkdir -p /usr/share/nginx &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; mkdir -p /var/run/nginx &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; mkdir -p /var/www &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; mv /etc/nginx/html /usr/share/nginx/ &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; rm -rf /etc/nginx/*.default &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chmod -R a+rwx &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;NGINX_HOME_TMP&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chmod -R a+rwx /etc/nginx &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chmod -R a+rwx /var/log/nginx &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; chmod -R a+rwx /var/run/nginx &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; sed -i &lt;span class="s1"&gt;&amp;#39;/listen/s,listen\s*80;,listen 8080;,g&amp;#39;&lt;/span&gt; /etc/nginx/nginx.conf &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; sed -i &lt;span class="s1"&gt;&amp;#39;/^#user/s,#\(user.*\),\1,g&amp;#39;&lt;/span&gt; /etc/nginx/nginx.conf &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; ln -sf /var/log/nginx /etc/nginx/logs &lt;span class="se"&gt;\&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; ln -sf /var/www /etc/nginx/www
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id="reference"&gt;&lt;a class="toclink" href="#reference"&gt;REF&lt;/a&gt;&lt;a class="headerlink" href="#reference" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="footnote"&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id="fn-1"&gt;
+&lt;p&gt;https://github.com/sagemathinc/cocalc/issues/2287#issue-249824529&amp;#160;&lt;a class="footnote-backref" href="#fnref-1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn-2"&gt;
+&lt;p&gt;https://docs.docker.com/engine/reference/commandline/build/#squash-an-images-layers---squash-experimental&amp;#160;&lt;a class="footnote-backref" href="#fnref-2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn-3"&gt;
+&lt;p&gt;&lt;a href="https://docs.docker.com/develop/develop-images/multistage-build/" target="_blank"&gt;https://docs.docker.com/develop/develop-images/multistage-build/&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-3" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn-4"&gt;
+&lt;p&gt;&lt;a href="https://www.weave.works/blog/10-tips-for-building-and-managing-containers" target="_blank"&gt;10 tips for building and managing containers&lt;/a&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jeffrey4l</dc:creator><pubDate>Sat, 14 Sep 2019 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:xcodest.me,2019-09-14:/best-practices-for-building-docker-images.html</guid></item><item><title>ceilometer 性能分析 II</title><link>https://xcodest.me/ceilometer-performance-analysis-ii.html</link><description>&lt;p&gt;在上一篇文章中， 「&lt;a href="ceilometer-performance-analysis.html" target="_blank"&gt;记一次 ceilometer 性能分析&lt;/a&gt;」中，我们分析了 ceilometer 的架构，及由于keystonauth 的问题，导致的大量 &lt;code&gt;get_endpoints&lt;/code&gt; 的请求。文章的最后，成功的把这去掉了这部分无意义的请求。但是即使优化后，ceilometer notification 服务还是会吃掉大量CPU, 那 ceilometer 还有没有其它的优化空间呢?&lt;/p&gt;
 &lt;p&gt;细心的伙伴也许会发现，在最后的火焰图下，还有大量的 &lt;code&gt;re.py&lt;/code&gt; 模块的调用。大约占掉了总 CPU 的使用的 28%(下图蓝框部分)。这是值得怀疑的。正则处理不应该这么慢。SVG文件见 &lt;a href="images/ceilometer-perf/notification_perf_after.svg" target="_blank"&gt;notification_perf_after.svg&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="notification perf ii_before" src="images/ceilometer-perf/notification_perf_ii_before.jpg"&gt;&lt;/p&gt;
 &lt;h2 id="_1"&gt;&lt;a class="toclink" href="#_1"&gt;分析&lt;/a&gt;&lt;a class="headerlink" href="#_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;

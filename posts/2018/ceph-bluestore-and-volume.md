@@ -52,7 +52,7 @@ category: Ceph
         mon: 1 daemons, quorum node1
         mgr: no daemons active
         osd: 0 osds: 0 up, 0 in
-    
+
       data:
         pools:   0 pools, 0 pgs
         objects: 0 objects, 0 bytes
@@ -65,24 +65,41 @@ category: Ceph
 
 接下来部署 ceph osd, 现在推荐使用 ceph-volume lvm 来管理磁盘。所有安装的时候 ，就需要准备一个 lv 出来。为了测试 bluestore 的 block.db 和 block.wal， 我们来做三个lv 分别用于单 osd 。
 
+    $ uuid=$(uuidgen)
+    20861703-1a01-415c-97c3-7e855cfb8994
     $ pv create /dev/sdb
-      Physical volume "/dev/sdb" successfully created.
-    $ vgcreate  ceph-pool /dev/sdb
-      Volume group "ceph-pool" successfully created
-    $ lvcreate -n osd0.wal -L 1G ceph-pool
-      Logical volume "osd0.wal" created.
-    $ lvcreate -n osd0.db -L 1G ceph-pool
-      Logical volume "osd0.db" created.
-    $ lvcreate -n osd0 -l 100%FREE ceph-pool
-      Logical volume "osd0" created.
+    Physical volume "/dev/sdb" successfully created.
+    $ vgcreate ceph-$uuid /dev/sdb
+    Volume group "ceph-20861703-1a01-415c-97c3-7e855cfb8994" successfully created
+    $ lvcreate ceph-$uuid -L 1G -n osd.wal
+    Logical volume "osd.wal" created.
+    $ lvcreate ceph-$uuid -L 1G -n osd.db
+    Logical volume "osd.db" created.
+    $ lvcreate ceph-$uuid -l 100%FREE -n osd.block
+    Logical volume "osd.block" created.
 
 接下来，就可以创建 OSD 了。
 
     ceph-deploy osd create \
-        --data ceph-pool/osd0 \
-        --block-db ceph-pool/osd0.db \
-        --block-wal ceph-pool/osd0.wal \
-        --bluestore node1
+        --bluestore \
+        --data ceph-$uuid/osd.block \
+        --block.db ceph-$uuid/osd.db \
+        --block.wal ceph-$uuid/osd.wal
+        node1
+
+使用 ceph-volume 部署的方法如下
+
+    uuid=$(uuidgen)
+
+    vgcreate ceph-$uuid /dev/sdb
+    lvcreate ceph-$uuid -L 1G -n osd.wal
+    lvcreate ceph-$uuid -L 1G -n osd.db
+    lvcreate ceph-$uuid -l 100%FREE -n osd.block
+
+    ceph-volume lvm create \
+        --data ceph-$uuid/osd.block \
+        --block.db ceph-$uuid/osd.db \
+        --block.wal ceph-$uuid/osd.wal
 
 这样，一个最小的集群就建好了
 
@@ -90,38 +107,36 @@ category: Ceph
       cluster:
         id:     5b2f0020-fc24-44de-a6c9-a88efdc5074f
         health: HEALTH_OK
-    
+
       services:
         mon: 1 daemons, quorum node1
         mgr: node2(active)
         osd: 1 osds: 1 up, 1 in
-    
+
       data:
         pools:   0 pools, 0 pgs
         objects: 0 objects, 0 bytes
         usage:   2048 MB used, 37883 MB / 39931 MB avail
         pgs:
-    
+
     $ ls -alh /var/lib/ceph/osd/ceph-0/
     total 52K
-    drwxrwxrwt. 2 ceph ceph 340 Apr  4 16:27 .
-    drwxr-x---. 3 ceph ceph  20 Apr  4 16:27 ..
-    -rw-r--r--. 1 ceph ceph 183 Apr  4 16:27 activate.monmap
-    lrwxrwxrwx. 1 ceph ceph  19 Apr  4 16:27 block -> /dev/ceph-pool/osd0
-    lrwxrwxrwx. 1 root root  23 Apr  4 16:27 block.db -> /dev/ceph-pool/osd0.wal
-    lrwxrwxrwx. 1 root root  23 Apr  4 16:27 block.wal -> /dev/ceph-pool/osd0.wa
-    -rw-r--r--. 1 ceph ceph   2 Apr  4 16:27 bluefs
-    -rw-r--r--. 1 ceph ceph  37 Apr  4 16:27 ceph_fsid
-    -rw-r--r--. 1 ceph ceph  37 Apr  4 16:27 fsid
-    -rw-------. 1 ceph ceph  55 Apr  4 16:27 keyring
-    -rw-r--r--. 1 ceph ceph   8 Apr  4 16:27 kv_backend
-    -rw-r--r--. 1 ceph ceph  21 Apr  4 16:27 magic
-    -rw-r--r--. 1 ceph ceph   4 Apr  4 16:27 mkfs_done
-    -rw-r--r--. 1 ceph ceph  41 Apr  4 16:27 osd_key
-    -rw-r--r--. 1 ceph ceph  24 Apr  4 16:27 path_block.db
-    -rw-r--r--. 1 ceph ceph   6 Apr  4 16:27 ready
-    -rw-r--r--. 1 ceph ceph  10 Apr  4 16:27 type
-    -rw-r--r--. 1 ceph ceph   2 Apr  4 16:27 whoami
+    -rw-r--r-- 1 ceph ceph 409 Apr 12 03:05 activate.monmap
+    lrwxrwxrwx 1 ceph ceph  56 Apr 12 03:05 block -> /dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.block
+    lrwxrwxrwx 1 ceph ceph  53 Apr 12 03:05 block.db -> /dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.db
+    lrwxrwxrwx 1 ceph ceph  54 Apr 12 03:05 block.wal -> /dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.wal
+    -rw-r--r-- 1 ceph ceph   2 Apr 12 03:05 bluefs
+    -rw-r--r-- 1 ceph ceph  37 Apr 12 03:05 ceph_fsid
+    -rw-r--r-- 1 ceph ceph  37 Apr 12 03:05 fsid
+    -rw------- 1 ceph ceph  55 Apr 12 03:05 keyring
+    -rw-r--r-- 1 ceph ceph   8 Apr 12 03:05 kv_backend
+    -rw-r--r-- 1 ceph ceph  21 Apr 12 03:05 magic
+    -rw-r--r-- 1 ceph ceph   4 Apr 12 03:05 mkfs_done
+    -rw-r--r-- 1 ceph ceph  41 Apr 12 03:05 osd_key
+    -rw-r--r-- 1 ceph ceph   6 Apr 12 03:05 ready
+    -rw-r--r-- 1 ceph ceph   3 Apr 12 03:05 require_osd_release
+    -rw-r--r-- 1 ceph ceph  10 Apr 12 03:05 type
+    -rw-r--r-- 1 ceph ceph   2 Apr 12 03:05 whoami
 
 ## bluestore & rocksdb & ceph-volume
 
@@ -153,35 +168,56 @@ KV 存储主要包括 LevelDB, MemDB 和新的 RocksDB。 RocksDB 是 Facebook �
 如果是使用 ceph-volume 管理磁盘，`/var/lib/ceph/osd/ceph-0` 分区会从 tmpfs 挂载过来(也就是内存)
 
     $ mount | grep osd
-    tmpfs on /var/lib/ceph/osd/ceph-0 type tmpfs (rw,relatime,seclabel)
+    tmpfs on /var/lib/ceph/osd/ceph-0 type tmpfs (rw,relatime)
     $ ls -Alh /var/lib/ceph/osd/ceph-0
-    lrwxrwxrwx. 1 ceph ceph 19 Apr  7 21:36 block -> /dev/ceph-pool/osd0
-    lrwxrwxrwx. 1 root root 22 Apr  7 21:36 block.db -> /dev/ceph-pool/osd0.db
-    lrwxrwxrwx. 1 root root 23 Apr  7 21:36 block.wal -> /dev/ceph-pool/osd0.wal
-    -rw-------. 1 ceph ceph 37 Apr  7 21:36 ceph_fsid
-    -rw-------. 1 ceph ceph 37 Apr  7 21:36 fsid
-    -rw-------. 1 ceph ceph 55 Apr  7 21:36 keyring
-    -rw-------. 1 ceph ceph  6 Apr  7 21:36 ready
-    -rw-------. 1 ceph ceph 10 Apr  7 21:36 type
-    -rw-------. 1 ceph ceph  2 Apr  7 21:36 whoami
+    -rw-r--r-- 1 ceph ceph 409 Apr 12 03:05 activate.monmap
+    lrwxrwxrwx 1 ceph ceph  56 Apr 12 03:05 block -> /dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.block
+    lrwxrwxrwx 1 ceph ceph  53 Apr 12 03:05 block.db -> /dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.db
+    lrwxrwxrwx 1 ceph ceph  54 Apr 12 03:05 block.wal -> /dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.wal
+    -rw-r--r-- 1 ceph ceph   2 Apr 12 03:05 bluefs
+    -rw-r--r-- 1 ceph ceph  37 Apr 12 03:05 ceph_fsid
+    -rw-r--r-- 1 ceph ceph  37 Apr 12 03:05 fsid
+    -rw------- 1 ceph ceph  55 Apr 12 03:05 keyring
+    -rw-r--r-- 1 ceph ceph   8 Apr 12 03:05 kv_backend
+    -rw-r--r-- 1 ceph ceph  21 Apr 12 03:05 magic
+    -rw-r--r-- 1 ceph ceph   4 Apr 12 03:05 mkfs_done
+    -rw-r--r-- 1 ceph ceph  41 Apr 12 03:05 osd_key
+    -rw-r--r-- 1 ceph ceph   6 Apr 12 03:05 ready
+    -rw-r--r-- 1 ceph ceph   3 Apr 12 03:05 require_osd_release
+    -rw-r--r-- 1 ceph ceph  10 Apr 12 03:05 type
+    -rw-r--r-- 1 ceph ceph   2 Apr 12 03:05 whoami
 
 至于目录中的这些文件则是从 bluestore 盘一开始的 `BDEV_LABEL_BLOCK_SIZE=4096` 位置读取过来的。通过 以下命令，可以把所有的 label 打印出来
 
-    $ ceph-bluestore-tool  show-label --path /var/lib/ceph/osd/ceph-0
+    ceph-bluestore-tool  show-label --path /var/lib/ceph/osd/ceph-0
+    inferring bluefs devices from bluestore path
     {
         "/var/lib/ceph/osd/ceph-0/block": {
-            "osd_uuid": "c349b2ba-690f-4a36-b6f6-2cc0d0839f29",
-            "size": 2147483648,
-            "btime": "2018-04-04 10:22:25.216117",
+            "osd_uuid": "2a464466-e5f8-48c8-ae26-b26e12b887cc",
+            "size": 19323158528,
+            "btime": "2020-04-12 03:05:20.158229",
             "description": "main",
             "bluefs": "1",
-            "ceph_fsid": "14941be9-c327-4a17-8b86-be50ee2f962e",
+            "ceph_fsid": "63050303-aeab-45e9-9ad5-da01ea3b6851",
             "kv_backend": "rocksdb",
             "magic": "ceph osd volume v026",
             "mkfs_done": "yes",
-            "osd_key": "AQDgNsRaVtsRIBAA6pmOf7y2GBufyE83nHwVvg==",
+            "osd_key": "AQBthZJebBpGOxAA+Y+uVPfzSXpr++2HiiRP3A==",
             "ready": "ready",
+            "require_osd_release": "12",
             "whoami": "0"
+        },
+        "/var/lib/ceph/osd/ceph-0/block.wal": {
+            "osd_uuid": "2a464466-e5f8-48c8-ae26-b26e12b887cc",
+            "size": 1073741824,
+            "btime": "2020-04-12 03:05:20.172686",
+            "description": "bluefs wal"
+        },
+        "/var/lib/ceph/osd/ceph-0/block.db": {
+            "osd_uuid": "2a464466-e5f8-48c8-ae26-b26e12b887cc",
+            "size": 1073741824,
+            "btime": "2020-04-12 03:05:20.164547",
+            "description": "bluefs db"
         }
     }
 
@@ -192,18 +228,52 @@ KV 存储主要包括 LevelDB, MemDB 和新的 RocksDB。 RocksDB 是 Facebook �
 
 使用ceph-volume， 不管 store 使用的是 filestore 还是 bluestore, 都会把一些 tag 存在 lvm 上面， 可以使用以下命令查看(做了格式化处理)
 
-    $lvs -o lv_tags /dev/mapper/ceph--pool-osd
-    LV Tags
-    ceph.block_device=/dev/ceph-pool/osd
-    ceph.block_uuid=dRW0FO-KiVS-vBjB-PE42-RnSd-mL04-FRQmAz
+    $ lvs -o lv_tags ceph-20861703-1a01-415c-97c3-7e855cfb8994
+    ceph.block_device=/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.block
+    ceph.block_uuid=tXAc95-eeqZ-rBuv-r25S-UX22-iNyN-ts9Mkc
     ceph.cephx_lockbox_secret=
-    ceph.cluster_fsid=14941be9-c327-4a17-8b86-be50ee2f962e
+    ceph.cluster_fsid=63050303-aeab-45e9-9ad5-da01ea3b6851
+    ceph.cluster_name=ceph
+    ceph.crush_device_class=None
+    ceph.db_device=/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.db
+    ceph.db_uuid=1ced0p-o0kk-Vx32-VUAQ-PlM1-pRpX-e3SXnm
+    ceph.encrypted=0
+    ceph.osd_fsid=2a464466-e5f8-48c8-ae26-b26e12b887cc
+    ceph.osd_id=0
+    ceph.type=block
+    ceph.vdo=0
+    ceph.wal_device=/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.wal
+    ceph.wal_uuid=vqTGDo-szoS-9DeJ-yDwt-OmuB-OG2N-r5SzvW
+
+    ceph.block_device=/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.block
+    ceph.block_uuid=tXAc95-eeqZ-rBuv-r25S-UX22-iNyN-ts9Mkc
+    ceph.cephx_lockbox_secret=
+    ceph.cluster_fsid=63050303-aeab-45e9-9ad5-da01ea3b6851
+    ceph.cluster_name=ceph
+    ceph.crush_device_class=None
+    ceph.db_device=/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.db
+    ceph.db_uuid=1ced0p-o0kk-Vx32-VUAQ-PlM1-pRpX-e3SXnm
+    ceph.encrypted=0
+    ceph.osd_fsid=2a464466-e5f8-48c8-ae26-b26e12b887cc
+    ceph.osd_id=0
+    ceph.type=db
+    ceph.vdo=0
+    ceph.wal_device=/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.wal
+    ceph.wal_uuid=vqTGDo-szoS-9DeJ-yDwt-OmuB-OG2N-r5SzvW
+
+    ceph.block_device=/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.block
+    ceph.block_uuid=tXAc95-eeqZ-rBuv-r25S-UX22-iNyN-ts9Mkc
+    ceph.cephx_lockbox_secret=
+    ceph.cluster_fsid=63050303-aeab-45e9-9ad5-da01ea3b6851
     ceph.cluster_name=ceph
     ceph.crush_device_class=None
     ceph.encrypted=0
-    ceph.osd_fsid=c349b2ba-690f-4a36-b6f6-2cc0d0839f29
+    ceph.osd_fsid=2a464466-e5f8-48c8-ae26-b26e12b887cc
     ceph.osd_id=0
-    ceph.type=block
+    ceph.type=wal
+    ceph.vdo=0
+    ceph.wal_device=/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.wal
+    ceph.wal_uuid=vqTGDo-szoS-9DeJ-yDwt-OmuB-OG2N-r5SzvW
 
 ## osd 的盘是如何挂载的
 
@@ -217,7 +287,7 @@ ceph 依赖 systemd 来管理挂载，不需要配置 `/etc/fstab` 文件。在�
     Description=Ceph Volume activation: %i
     After=local-fs.target
     Wants=local-fs.target
-    
+
     [Service]
     Type=oneshot
     KillMode=none
@@ -255,10 +325,11 @@ ceph-disk 应试不支持 lvm 的， 参见 http://tracker.ceph.com/issues/5461
 
 ## 版本
 
-时间       | 更新内容 
+时间       | 更新内容
 ---------- | ------------------------
 2018-04-07 | 初版
 2018-11-25 | 增加 block.db 推荐大小值
+2020-04-12 | 增加 block.db / block.wal 的配置
 
 [^1]: <https://www.slideshare.net/sageweil1/bluestore-a-new-storage-backend-for-ceph-one-year-in>
 [^2]: <http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/020822.html>

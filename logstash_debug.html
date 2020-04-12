@@ -136,21 +136,21 @@
 
 
 <p>用 logstash 手动启动</p>
-<div class="highlight"><pre><span></span><span class="n">logstash</span> <span class="o">-</span><span class="n">f</span> <span class="n">debug</span><span class="p">.</span><span class="n">conf</span> <span class="c1">--verbose --debug</span>
+<div class="highlight"><pre><span></span><span class="err">logstash -f debug.conf --verbose --debug</span>
 </pre></div>
 
 
 <p>直接输入数据，能得到详细的输出报告</p>
-<div class="highlight"><pre><span></span><span class="p">.</span><span class="o">/</span><span class="n">logstash</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="c1">--verbose --debug                            </span>
-<span class="n">a</span><span class="w"></span>
-<span class="n">Pipeline</span><span class="w"> </span><span class="n">started</span><span class="w"> </span><span class="err">{:</span><span class="k">level</span><span class="o">=&gt;</span><span class="err">:</span><span class="n">info</span><span class="err">}</span><span class="w"></span>
-<span class="err">{</span><span class="w"></span>
-<span class="w">       </span><span class="ss">&quot;message&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">&quot;a&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="ss">&quot;@version&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">&quot;1&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="ss">&quot;@timestamp&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">&quot;2015-03-23T09:55:15.226Z&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="ss">&quot;type&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">&quot;test&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="ss">&quot;host&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="ss">&quot;jeffrey-thinkpad&quot;</span><span class="w"></span>
-<span class="err">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><span class="err">./logstash -f debug --verbose --debug                            </span>
+<span class="err">a</span>
+<span class="err">Pipeline started {:level=&gt;:info}</span>
+<span class="err">{</span>
+<span class="err">       &quot;message&quot; =&gt; &quot;a&quot;,</span>
+<span class="err">      &quot;@version&quot; =&gt; &quot;1&quot;,</span>
+<span class="err">    &quot;@timestamp&quot; =&gt; &quot;2015-03-23T09:55:15.226Z&quot;,</span>
+<span class="err">          &quot;type&quot; =&gt; &quot;test&quot;,</span>
+<span class="err">          &quot;host&quot; =&gt; &quot;jeffrey-thinkpad&quot;</span>
+<span class="err">}</span>
 </pre></div>
 
 

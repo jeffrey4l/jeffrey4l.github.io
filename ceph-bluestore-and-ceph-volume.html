@@ -133,14 +133,14 @@
 </ul>
 <p>准备 centos 7.4 系统的机器，并配置好 ssh 的无密码登录</p>
 <p>安装 ceph-deploy</p>
-<div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="p">.</span><span class="n">ceph</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">rpm</span><span class="o">-</span><span class="n">luminous</span><span class="o">/</span><span class="n">el7</span><span class="o">/</span><span class="n">noarch</span><span class="o">/</span><span class="n">ceph</span><span class="o">-</span><span class="n">deploy</span><span class="o">-</span><span class="mi">2</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="n">noarch</span><span class="p">.</span><span class="n">rpm</span>
+<div class="highlight"><pre><span></span><span class="err">yum install https://download.ceph.com/rpm-luminous/el7/noarch/ceph-deploy-2.0.0-0.noarch.rpm</span>
 </pre></div>
 
 
 <p>数据 ceph 安装包</p>
-<div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">ceph</span><span class="o">-</span><span class="n">install</span>
-<span class="n">cd</span> <span class="n">ceph</span><span class="o">-</span><span class="n">install</span>
-<span class="n">ceph</span><span class="o">-</span><span class="n">deploy</span> <span class="k">new</span> <span class="n">node1</span>
+<div class="highlight"><pre><span></span><span class="err">mkdir ceph-install</span>
+<span class="err">cd ceph-install</span>
+<span class="err">ceph-deploy new node1</span>
 </pre></div>
 
 
@@ -152,13 +152,13 @@
 
 
 <p>安装 ceph 包</p>
-<div class="highlight"><pre><span></span> <span class="n">ceph</span><span class="o">-</span><span class="n">deploy</span> <span class="n">install</span> <span class="c1">--release luminous node2</span>
+<div class="highlight"><pre><span></span><span class="err"> ceph-deploy install --release luminous node2</span>
 </pre></div>
 
 
 <p>初始化 mon</p>
-<div class="highlight"><pre><span></span><span class="n">ceph</span><span class="o">-</span><span class="n">deploy</span> <span class="n">mon</span> <span class="k">create</span><span class="o">-</span><span class="n">initial</span>
-<span class="n">ceph</span><span class="o">-</span><span class="n">deploy</span> <span class="k">admin</span> <span class="n">node1</span>
+<div class="highlight"><pre><span></span><span class="err">ceph-deploy mon create-initial</span>
+<span class="err">ceph-deploy admin node1</span>
 </pre></div>
 
 
@@ -181,30 +181,48 @@
 
 
 <p>接下来要部署 ceph mgr, 这个组件在 Luminous 里面是必装组件</p>
-<div class="highlight"><pre><span></span><span class="n">ceph</span><span class="o">-</span><span class="n">deploy</span>  <span class="n">mgr</span> <span class="k">create</span> <span class="n">node1</span>
+<div class="highlight"><pre><span></span><span class="err">ceph-deploy  mgr create node1</span>
 </pre></div>
 
 
 <p>接下来部署 ceph osd, 现在推荐使用 ceph-volume lvm 来管理磁盘。所有安装的时候 ，就需要准备一个 lv 出来。为了测试 bluestore 的 block.db 和 block.wal， 我们来做三个lv 分别用于单 osd 。</p>
-<div class="highlight"><pre><span></span>$ pv create /dev/sdb
-  Physical volume <span class="s2">&quot;/dev/sdb&quot;</span> successfully created.
-$ vgcreate  ceph-pool /dev/sdb
-  Volume group <span class="s2">&quot;ceph-pool&quot;</span> successfully created
-$ lvcreate -n osd0.wal -L 1G ceph-pool
-  Logical volume <span class="s2">&quot;osd0.wal&quot;</span> created.
-$ lvcreate -n osd0.db -L 1G ceph-pool
-  Logical volume <span class="s2">&quot;osd0.db&quot;</span> created.
-$ lvcreate -n osd0 -l <span class="m">100</span>%FREE ceph-pool
-  Logical volume <span class="s2">&quot;osd0&quot;</span> created.
+<div class="highlight"><pre><span></span>$ <span class="nv">uuid</span><span class="o">=</span><span class="k">$(</span>uuidgen<span class="k">)</span>
+<span class="m">20861703</span>-1a01-415c-97c3-7e855cfb8994
+$ pv create /dev/sdb
+Physical volume <span class="s2">&quot;/dev/sdb&quot;</span> successfully created.
+$ vgcreate ceph-<span class="nv">$uuid</span> /dev/sdb
+Volume group <span class="s2">&quot;ceph-20861703-1a01-415c-97c3-7e855cfb8994&quot;</span> successfully created
+$ lvcreate ceph-<span class="nv">$uuid</span> -L 1G -n osd.wal
+Logical volume <span class="s2">&quot;osd.wal&quot;</span> created.
+$ lvcreate ceph-<span class="nv">$uuid</span> -L 1G -n osd.db
+Logical volume <span class="s2">&quot;osd.db&quot;</span> created.
+$ lvcreate ceph-<span class="nv">$uuid</span> -l <span class="m">100</span>%FREE -n osd.block
+Logical volume <span class="s2">&quot;osd.block&quot;</span> created.
 </pre></div>
 
 
 <p>接下来，就可以创建 OSD 了。</p>
-<div class="highlight"><pre><span></span><span class="n">ceph</span><span class="o">-</span><span class="n">deploy</span> <span class="n">osd</span> <span class="k">create</span> <span class="err">\</span>
-    <span class="c1">--data ceph-pool/osd0 \</span>
-    <span class="c1">--block-db ceph-pool/osd0.db \</span>
-    <span class="c1">--block-wal ceph-pool/osd0.wal \</span>
-    <span class="c1">--bluestore node1</span>
+<div class="highlight"><pre><span></span><span class="err">ceph-deploy osd create \</span>
+<span class="err">    --bluestore \</span>
+<span class="err">    --data ceph-$uuid/osd.block \</span>
+<span class="err">    --block.db ceph-$uuid/osd.db \</span>
+<span class="err">    --block.wal ceph-$uuid/osd.wal</span>
+<span class="err">    node1</span>
+</pre></div>
+
+
+<p>使用 ceph-volume 部署的方法如下</p>
+<div class="highlight"><pre><span></span><span class="n">uuid</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">uuidgen</span><span class="p">)</span>
+
+<span class="n">vgcreate</span> <span class="n">ceph</span><span class="o">-</span><span class="err">$</span><span class="n">uuid</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">sdb</span>
+<span class="n">lvcreate</span> <span class="n">ceph</span><span class="o">-</span><span class="err">$</span><span class="n">uuid</span> <span class="o">-</span><span class="n">L</span> <span class="mi">1</span><span class="k">G</span> <span class="o">-</span><span class="n">n</span> <span class="n">osd</span><span class="p">.</span><span class="n">wal</span>
+<span class="n">lvcreate</span> <span class="n">ceph</span><span class="o">-</span><span class="err">$</span><span class="n">uuid</span> <span class="o">-</span><span class="n">L</span> <span class="mi">1</span><span class="k">G</span> <span class="o">-</span><span class="n">n</span> <span class="n">osd</span><span class="p">.</span><span class="n">db</span>
+<span class="n">lvcreate</span> <span class="n">ceph</span><span class="o">-</span><span class="err">$</span><span class="n">uuid</span> <span class="o">-</span><span class="n">l</span> <span class="mi">100</span><span class="o">%</span><span class="k">FREE</span> <span class="o">-</span><span class="n">n</span> <span class="n">osd</span><span class="p">.</span><span class="n">block</span>
+
+<span class="n">ceph</span><span class="o">-</span><span class="n">volume</span> <span class="n">lvm</span> <span class="k">create</span> <span class="err">\</span>
+    <span class="c1">--data ceph-$uuid/osd.block \</span>
+    <span class="c1">--block.db ceph-$uuid/osd.db \</span>
+    <span class="c1">--block.wal ceph-$uuid/osd.wal</span>
 </pre></div>
 
 
@@ -227,24 +245,22 @@ $ lvcreate -n osd0 -l <span class="m">100</span>%FREE ceph-pool
 
 $ ls -alh /var/lib/ceph/osd/ceph-0/
 total 52K
-drwxrwxrwt. <span class="m">2</span> ceph ceph <span class="m">340</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 .
-drwxr-x---. <span class="m">3</span> ceph ceph  <span class="m">20</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 ..
--rw-r--r--. <span class="m">1</span> ceph ceph <span class="m">183</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 activate.monmap
-lrwxrwxrwx. <span class="m">1</span> ceph ceph  <span class="m">19</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 block -&gt; /dev/ceph-pool/osd0
-lrwxrwxrwx. <span class="m">1</span> root root  <span class="m">23</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 block.db -&gt; /dev/ceph-pool/osd0.wal
-lrwxrwxrwx. <span class="m">1</span> root root  <span class="m">23</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 block.wal -&gt; /dev/ceph-pool/osd0.wa
--rw-r--r--. <span class="m">1</span> ceph ceph   <span class="m">2</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 bluefs
--rw-r--r--. <span class="m">1</span> ceph ceph  <span class="m">37</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 ceph_fsid
--rw-r--r--. <span class="m">1</span> ceph ceph  <span class="m">37</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 fsid
--rw-------. <span class="m">1</span> ceph ceph  <span class="m">55</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 keyring
--rw-r--r--. <span class="m">1</span> ceph ceph   <span class="m">8</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 kv_backend
--rw-r--r--. <span class="m">1</span> ceph ceph  <span class="m">21</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 magic
--rw-r--r--. <span class="m">1</span> ceph ceph   <span class="m">4</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 mkfs_done
--rw-r--r--. <span class="m">1</span> ceph ceph  <span class="m">41</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 osd_key
--rw-r--r--. <span class="m">1</span> ceph ceph  <span class="m">24</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 path_block.db
--rw-r--r--. <span class="m">1</span> ceph ceph   <span class="m">6</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 ready
--rw-r--r--. <span class="m">1</span> ceph ceph  <span class="m">10</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 <span class="nb">type</span>
--rw-r--r--. <span class="m">1</span> ceph ceph   <span class="m">2</span> Apr  <span class="m">4</span> <span class="m">16</span>:27 whoami
+-rw-r--r-- <span class="m">1</span> ceph ceph <span class="m">409</span> Apr <span class="m">12</span> <span class="m">03</span>:05 activate.monmap
+lrwxrwxrwx <span class="m">1</span> ceph ceph  <span class="m">56</span> Apr <span class="m">12</span> <span class="m">03</span>:05 block -&gt; /dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.block
+lrwxrwxrwx <span class="m">1</span> ceph ceph  <span class="m">53</span> Apr <span class="m">12</span> <span class="m">03</span>:05 block.db -&gt; /dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.db
+lrwxrwxrwx <span class="m">1</span> ceph ceph  <span class="m">54</span> Apr <span class="m">12</span> <span class="m">03</span>:05 block.wal -&gt; /dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.wal
+-rw-r--r-- <span class="m">1</span> ceph ceph   <span class="m">2</span> Apr <span class="m">12</span> <span class="m">03</span>:05 bluefs
+-rw-r--r-- <span class="m">1</span> ceph ceph  <span class="m">37</span> Apr <span class="m">12</span> <span class="m">03</span>:05 ceph_fsid
+-rw-r--r-- <span class="m">1</span> ceph ceph  <span class="m">37</span> Apr <span class="m">12</span> <span class="m">03</span>:05 fsid
+-rw------- <span class="m">1</span> ceph ceph  <span class="m">55</span> Apr <span class="m">12</span> <span class="m">03</span>:05 keyring
+-rw-r--r-- <span class="m">1</span> ceph ceph   <span class="m">8</span> Apr <span class="m">12</span> <span class="m">03</span>:05 kv_backend
+-rw-r--r-- <span class="m">1</span> ceph ceph  <span class="m">21</span> Apr <span class="m">12</span> <span class="m">03</span>:05 magic
+-rw-r--r-- <span class="m">1</span> ceph ceph   <span class="m">4</span> Apr <span class="m">12</span> <span class="m">03</span>:05 mkfs_done
+-rw-r--r-- <span class="m">1</span> ceph ceph  <span class="m">41</span> Apr <span class="m">12</span> <span class="m">03</span>:05 osd_key
+-rw-r--r-- <span class="m">1</span> ceph ceph   <span class="m">6</span> Apr <span class="m">12</span> <span class="m">03</span>:05 ready
+-rw-r--r-- <span class="m">1</span> ceph ceph   <span class="m">3</span> Apr <span class="m">12</span> <span class="m">03</span>:05 require_osd_release
+-rw-r--r-- <span class="m">1</span> ceph ceph  <span class="m">10</span> Apr <span class="m">12</span> <span class="m">03</span>:05 <span class="nb">type</span>
+-rw-r--r-- <span class="m">1</span> ceph ceph   <span class="m">2</span> Apr <span class="m">12</span> <span class="m">03</span>:05 whoami
 </pre></div>
 
 
@@ -263,38 +279,59 @@ lrwxrwxrwx. <span class="m">1</span> root root  <span class="m">23</span> Apr  <
 <p>如果是使用的 ceph-disk 管理磁盘，他会建立一个 100MB 的分区，来存放 keyring / whoami 这些信息，这和之前的逻辑是一样的。</p>
 <p>如果是使用 ceph-volume 管理磁盘，<code>/var/lib/ceph/osd/ceph-0</code> 分区会从 tmpfs 挂载过来(也就是内存)</p>
 <div class="highlight"><pre><span></span>$ mount <span class="p">|</span> grep osd
-tmpfs on /var/lib/ceph/osd/ceph-0 <span class="nb">type</span> tmpfs <span class="o">(</span>rw,relatime,seclabel<span class="o">)</span>
+tmpfs on /var/lib/ceph/osd/ceph-0 <span class="nb">type</span> tmpfs <span class="o">(</span>rw,relatime<span class="o">)</span>
 $ ls -Alh /var/lib/ceph/osd/ceph-0
-lrwxrwxrwx. <span class="m">1</span> ceph ceph <span class="m">19</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 block -&gt; /dev/ceph-pool/osd0
-lrwxrwxrwx. <span class="m">1</span> root root <span class="m">22</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 block.db -&gt; /dev/ceph-pool/osd0.db
-lrwxrwxrwx. <span class="m">1</span> root root <span class="m">23</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 block.wal -&gt; /dev/ceph-pool/osd0.wal
--rw-------. <span class="m">1</span> ceph ceph <span class="m">37</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 ceph_fsid
--rw-------. <span class="m">1</span> ceph ceph <span class="m">37</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 fsid
--rw-------. <span class="m">1</span> ceph ceph <span class="m">55</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 keyring
--rw-------. <span class="m">1</span> ceph ceph  <span class="m">6</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 ready
--rw-------. <span class="m">1</span> ceph ceph <span class="m">10</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 <span class="nb">type</span>
--rw-------. <span class="m">1</span> ceph ceph  <span class="m">2</span> Apr  <span class="m">7</span> <span class="m">21</span>:36 whoami
+-rw-r--r-- <span class="m">1</span> ceph ceph <span class="m">409</span> Apr <span class="m">12</span> <span class="m">03</span>:05 activate.monmap
+lrwxrwxrwx <span class="m">1</span> ceph ceph  <span class="m">56</span> Apr <span class="m">12</span> <span class="m">03</span>:05 block -&gt; /dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.block
+lrwxrwxrwx <span class="m">1</span> ceph ceph  <span class="m">53</span> Apr <span class="m">12</span> <span class="m">03</span>:05 block.db -&gt; /dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.db
+lrwxrwxrwx <span class="m">1</span> ceph ceph  <span class="m">54</span> Apr <span class="m">12</span> <span class="m">03</span>:05 block.wal -&gt; /dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.wal
+-rw-r--r-- <span class="m">1</span> ceph ceph   <span class="m">2</span> Apr <span class="m">12</span> <span class="m">03</span>:05 bluefs
+-rw-r--r-- <span class="m">1</span> ceph ceph  <span class="m">37</span> Apr <span class="m">12</span> <span class="m">03</span>:05 ceph_fsid
+-rw-r--r-- <span class="m">1</span> ceph ceph  <span class="m">37</span> Apr <span class="m">12</span> <span class="m">03</span>:05 fsid
+-rw------- <span class="m">1</span> ceph ceph  <span class="m">55</span> Apr <span class="m">12</span> <span class="m">03</span>:05 keyring
+-rw-r--r-- <span class="m">1</span> ceph ceph   <span class="m">8</span> Apr <span class="m">12</span> <span class="m">03</span>:05 kv_backend
+-rw-r--r-- <span class="m">1</span> ceph ceph  <span class="m">21</span> Apr <span class="m">12</span> <span class="m">03</span>:05 magic
+-rw-r--r-- <span class="m">1</span> ceph ceph   <span class="m">4</span> Apr <span class="m">12</span> <span class="m">03</span>:05 mkfs_done
+-rw-r--r-- <span class="m">1</span> ceph ceph  <span class="m">41</span> Apr <span class="m">12</span> <span class="m">03</span>:05 osd_key
+-rw-r--r-- <span class="m">1</span> ceph ceph   <span class="m">6</span> Apr <span class="m">12</span> <span class="m">03</span>:05 ready
+-rw-r--r-- <span class="m">1</span> ceph ceph   <span class="m">3</span> Apr <span class="m">12</span> <span class="m">03</span>:05 require_osd_release
+-rw-r--r-- <span class="m">1</span> ceph ceph  <span class="m">10</span> Apr <span class="m">12</span> <span class="m">03</span>:05 <span class="nb">type</span>
+-rw-r--r-- <span class="m">1</span> ceph ceph   <span class="m">2</span> Apr <span class="m">12</span> <span class="m">03</span>:05 whoami
 </pre></div>
 
 
 <p>至于目录中的这些文件则是从 bluestore 盘一开始的 <code>BDEV_LABEL_BLOCK_SIZE=4096</code> 位置读取过来的。通过 以下命令，可以把所有的 label 打印出来</p>
-<div class="highlight"><pre><span></span>$ <span class="nv">ceph</span><span class="o">-</span><span class="nv">bluestore</span><span class="o">-</span><span class="nv">tool</span>  <span class="k">show</span><span class="o">-</span><span class="nv">label</span> <span class="o">--</span><span class="nv">path</span> <span class="o">/</span><span class="nv">var</span><span class="o">/</span><span class="nv">lib</span><span class="o">/</span><span class="nv">ceph</span><span class="o">/</span><span class="nv">osd</span><span class="o">/</span><span class="nv">ceph</span><span class="o">-</span><span class="mi">0</span>
-{
-    <span class="s2">&quot;</span><span class="s">/var/lib/ceph/osd/ceph-0/block</span><span class="s2">&quot;</span>: {
-        <span class="s2">&quot;</span><span class="s">osd_uuid</span><span class="s2">&quot;</span>: <span class="s2">&quot;</span><span class="s">c349b2ba-690f-4a36-b6f6-2cc0d0839f29</span><span class="s2">&quot;</span>,
-        <span class="s2">&quot;</span><span class="s">size</span><span class="s2">&quot;</span>: <span class="mi">2147483648</span>,
-        <span class="s2">&quot;</span><span class="s">btime</span><span class="s2">&quot;</span>: <span class="s2">&quot;</span><span class="s">2018-04-04 10:22:25.216117</span><span class="s2">&quot;</span>,
-        <span class="s2">&quot;</span><span class="s">description</span><span class="s2">&quot;</span>: <span class="s2">&quot;</span><span class="s">main</span><span class="s2">&quot;</span>,
-        <span class="s2">&quot;</span><span class="s">bluefs</span><span class="s2">&quot;</span>: <span class="s2">&quot;</span><span class="s">1</span><span class="s2">&quot;</span>,
-        <span class="s2">&quot;</span><span class="s">ceph_fsid</span><span class="s2">&quot;</span>: <span class="s2">&quot;</span><span class="s">14941be9-c327-4a17-8b86-be50ee2f962e</span><span class="s2">&quot;</span>,
-        <span class="s2">&quot;</span><span class="s">kv_backend</span><span class="s2">&quot;</span>: <span class="s2">&quot;</span><span class="s">rocksdb</span><span class="s2">&quot;</span>,
-        <span class="s2">&quot;</span><span class="s">magic</span><span class="s2">&quot;</span>: <span class="s2">&quot;</span><span class="s">ceph osd volume v026</span><span class="s2">&quot;</span>,
-        <span class="s2">&quot;</span><span class="s">mkfs_done</span><span class="s2">&quot;</span>: <span class="s2">&quot;</span><span class="s">yes</span><span class="s2">&quot;</span>,
-        <span class="s2">&quot;</span><span class="s">osd_key</span><span class="s2">&quot;</span>: <span class="s2">&quot;</span><span class="s">AQDgNsRaVtsRIBAA6pmOf7y2GBufyE83nHwVvg==</span><span class="s2">&quot;</span>,
-        <span class="s2">&quot;</span><span class="s">ready</span><span class="s2">&quot;</span>: <span class="s2">&quot;</span><span class="s">ready</span><span class="s2">&quot;</span>,
-        <span class="s2">&quot;</span><span class="s">whoami</span><span class="s2">&quot;</span>: <span class="s2">&quot;</span><span class="s">0</span><span class="s2">&quot;</span>
-    }
-}
+<div class="highlight"><pre><span></span><span class="err">ceph-bluestore-tool  show-label --path /var/lib/ceph/osd/ceph-0</span>
+<span class="err">inferring bluefs devices from bluestore path</span>
+<span class="err">{</span>
+<span class="err">    &quot;/var/lib/ceph/osd/ceph-0/block&quot;: {</span>
+<span class="err">        &quot;osd_uuid&quot;: &quot;2a464466-e5f8-48c8-ae26-b26e12b887cc&quot;,</span>
+<span class="err">        &quot;size&quot;: 19323158528,</span>
+<span class="err">        &quot;btime&quot;: &quot;2020-04-12 03:05:20.158229&quot;,</span>
+<span class="err">        &quot;description&quot;: &quot;main&quot;,</span>
+<span class="err">        &quot;bluefs&quot;: &quot;1&quot;,</span>
+<span class="err">        &quot;ceph_fsid&quot;: &quot;63050303-aeab-45e9-9ad5-da01ea3b6851&quot;,</span>
+<span class="err">        &quot;kv_backend&quot;: &quot;rocksdb&quot;,</span>
+<span class="err">        &quot;magic&quot;: &quot;ceph osd volume v026&quot;,</span>
+<span class="err">        &quot;mkfs_done&quot;: &quot;yes&quot;,</span>
+<span class="err">        &quot;osd_key&quot;: &quot;AQBthZJebBpGOxAA+Y+uVPfzSXpr++2HiiRP3A==&quot;,</span>
+<span class="err">        &quot;ready&quot;: &quot;ready&quot;,</span>
+<span class="err">        &quot;require_osd_release&quot;: &quot;12&quot;,</span>
+<span class="err">        &quot;whoami&quot;: &quot;0&quot;</span>
+<span class="err">    },</span>
+<span class="err">    &quot;/var/lib/ceph/osd/ceph-0/block.wal&quot;: {</span>
+<span class="err">        &quot;osd_uuid&quot;: &quot;2a464466-e5f8-48c8-ae26-b26e12b887cc&quot;,</span>
+<span class="err">        &quot;size&quot;: 1073741824,</span>
+<span class="err">        &quot;btime&quot;: &quot;2020-04-12 03:05:20.172686&quot;,</span>
+<span class="err">        &quot;description&quot;: &quot;bluefs wal&quot;</span>
+<span class="err">    },</span>
+<span class="err">    &quot;/var/lib/ceph/osd/ceph-0/block.db&quot;: {</span>
+<span class="err">        &quot;osd_uuid&quot;: &quot;2a464466-e5f8-48c8-ae26-b26e12b887cc&quot;,</span>
+<span class="err">        &quot;size&quot;: 1073741824,</span>
+<span class="err">        &quot;btime&quot;: &quot;2020-04-12 03:05:20.164547&quot;,</span>
+<span class="err">        &quot;description&quot;: &quot;bluefs db&quot;</span>
+<span class="err">    }</span>
+<span class="err">}</span>
 </pre></div>
 
 
@@ -304,18 +341,52 @@ lrwxrwxrwx. <span class="m">1</span> root root <span class="m">23</span> Apr  <s
 <li><a href="https://github.com/ceph/ceph/blob/d65b8844d16d71df01b57f368badc100db505506/src/os/bluestore/bluestore_tool.cc#L316-L396" target="_blank">ceph-bluestore-tool prime-osd-dir</a></li>
 </ul>
 <p>使用ceph-volume， 不管 store 使用的是 filestore 还是 bluestore, 都会把一些 tag 存在 lvm 上面， 可以使用以下命令查看(做了格式化处理)</p>
-<div class="highlight"><pre><span></span><span class="err">$</span><span class="n">lvs</span> <span class="o">-</span><span class="n">o</span> <span class="n">lv_tags</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">mapper</span><span class="o">/</span><span class="n">ceph</span><span class="c1">--pool-osd</span>
-<span class="n">LV</span> <span class="n">Tags</span>
-<span class="n">ceph</span><span class="p">.</span><span class="n">block_device</span><span class="o">=/</span><span class="n">dev</span><span class="o">/</span><span class="n">ceph</span><span class="o">-</span><span class="n">pool</span><span class="o">/</span><span class="n">osd</span>
-<span class="n">ceph</span><span class="p">.</span><span class="n">block_uuid</span><span class="o">=</span><span class="n">dRW0FO</span><span class="o">-</span><span class="n">KiVS</span><span class="o">-</span><span class="n">vBjB</span><span class="o">-</span><span class="n">PE42</span><span class="o">-</span><span class="n">RnSd</span><span class="o">-</span><span class="n">mL04</span><span class="o">-</span><span class="n">FRQmAz</span>
-<span class="n">ceph</span><span class="p">.</span><span class="n">cephx_lockbox_secret</span><span class="o">=</span>
-<span class="n">ceph</span><span class="p">.</span><span class="n">cluster_fsid</span><span class="o">=</span><span class="mi">14941</span><span class="n">be9</span><span class="o">-</span><span class="n">c327</span><span class="o">-</span><span class="mi">4</span><span class="n">a17</span><span class="o">-</span><span class="mi">8</span><span class="n">b86</span><span class="o">-</span><span class="n">be50ee2f962e</span>
-<span class="n">ceph</span><span class="p">.</span><span class="n">cluster_name</span><span class="o">=</span><span class="n">ceph</span>
-<span class="n">ceph</span><span class="p">.</span><span class="n">crush_device_class</span><span class="o">=</span><span class="k">None</span>
-<span class="n">ceph</span><span class="p">.</span><span class="k">encrypted</span><span class="o">=</span><span class="mi">0</span>
-<span class="n">ceph</span><span class="p">.</span><span class="n">osd_fsid</span><span class="o">=</span><span class="n">c349b2ba</span><span class="o">-</span><span class="mi">690</span><span class="n">f</span><span class="o">-</span><span class="mi">4</span><span class="n">a36</span><span class="o">-</span><span class="n">b6f6</span><span class="o">-</span><span class="mi">2</span><span class="n">cc0d0839f29</span>
-<span class="n">ceph</span><span class="p">.</span><span class="n">osd_id</span><span class="o">=</span><span class="mi">0</span>
-<span class="n">ceph</span><span class="p">.</span><span class="k">type</span><span class="o">=</span><span class="n">block</span>
+<div class="highlight"><pre><span></span>$ lvs -o lv_tags ceph-20861703-1a01-415c-97c3-7e855cfb8994
+ceph.block_device<span class="o">=</span>/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.block
+ceph.block_uuid<span class="o">=</span>tXAc95-eeqZ-rBuv-r25S-UX22-iNyN-ts9Mkc
+ceph.cephx_lockbox_secret<span class="o">=</span>
+ceph.cluster_fsid<span class="o">=</span><span class="m">63050303</span>-aeab-45e9-9ad5-da01ea3b6851
+ceph.cluster_name<span class="o">=</span>ceph
+ceph.crush_device_class<span class="o">=</span>None
+ceph.db_device<span class="o">=</span>/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.db
+ceph.db_uuid<span class="o">=</span>1ced0p-o0kk-Vx32-VUAQ-PlM1-pRpX-e3SXnm
+ceph.encrypted<span class="o">=</span><span class="m">0</span>
+ceph.osd_fsid<span class="o">=</span>2a464466-e5f8-48c8-ae26-b26e12b887cc
+ceph.osd_id<span class="o">=</span><span class="m">0</span>
+ceph.type<span class="o">=</span>block
+ceph.vdo<span class="o">=</span><span class="m">0</span>
+ceph.wal_device<span class="o">=</span>/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.wal
+ceph.wal_uuid<span class="o">=</span>vqTGDo-szoS-9DeJ-yDwt-OmuB-OG2N-r5SzvW
+
+ceph.block_device<span class="o">=</span>/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.block
+ceph.block_uuid<span class="o">=</span>tXAc95-eeqZ-rBuv-r25S-UX22-iNyN-ts9Mkc
+ceph.cephx_lockbox_secret<span class="o">=</span>
+ceph.cluster_fsid<span class="o">=</span><span class="m">63050303</span>-aeab-45e9-9ad5-da01ea3b6851
+ceph.cluster_name<span class="o">=</span>ceph
+ceph.crush_device_class<span class="o">=</span>None
+ceph.db_device<span class="o">=</span>/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.db
+ceph.db_uuid<span class="o">=</span>1ced0p-o0kk-Vx32-VUAQ-PlM1-pRpX-e3SXnm
+ceph.encrypted<span class="o">=</span><span class="m">0</span>
+ceph.osd_fsid<span class="o">=</span>2a464466-e5f8-48c8-ae26-b26e12b887cc
+ceph.osd_id<span class="o">=</span><span class="m">0</span>
+ceph.type<span class="o">=</span>db
+ceph.vdo<span class="o">=</span><span class="m">0</span>
+ceph.wal_device<span class="o">=</span>/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.wal
+ceph.wal_uuid<span class="o">=</span>vqTGDo-szoS-9DeJ-yDwt-OmuB-OG2N-r5SzvW
+
+ceph.block_device<span class="o">=</span>/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.block
+ceph.block_uuid<span class="o">=</span>tXAc95-eeqZ-rBuv-r25S-UX22-iNyN-ts9Mkc
+ceph.cephx_lockbox_secret<span class="o">=</span>
+ceph.cluster_fsid<span class="o">=</span><span class="m">63050303</span>-aeab-45e9-9ad5-da01ea3b6851
+ceph.cluster_name<span class="o">=</span>ceph
+ceph.crush_device_class<span class="o">=</span>None
+ceph.encrypted<span class="o">=</span><span class="m">0</span>
+ceph.osd_fsid<span class="o">=</span>2a464466-e5f8-48c8-ae26-b26e12b887cc
+ceph.osd_id<span class="o">=</span><span class="m">0</span>
+ceph.type<span class="o">=</span>wal
+ceph.vdo<span class="o">=</span><span class="m">0</span>
+ceph.wal_device<span class="o">=</span>/dev/ceph-20861703-1a01-415c-97c3-7e855cfb8994/osd.wal
+ceph.wal_uuid<span class="o">=</span>vqTGDo-szoS-9DeJ-yDwt-OmuB-OG2N-r5SzvW
 </pre></div>
 
 
@@ -341,7 +412,7 @@ lrwxrwxrwx. <span class="m">1</span> root root <span class="m">23</span> Apr  <s
 
 
 <p>可以看到， 他是把参数传递给了 <code>ceph-volume-systemd</code> 命令， 而这个命令又把参数解析后，传给了 <code>ceph-volume</code> 命令，最后的执行的命令是</p>
-<div class="highlight"><pre><span></span><span class="n">ceph</span><span class="o">-</span><span class="n">volume</span> <span class="n">lvm</span> <span class="k">trigger</span> <span class="err">{</span><span class="n">osd</span> <span class="n">id</span><span class="err">}</span> <span class="err">{</span><span class="n">osd</span> <span class="n">uuid</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><span class="err">ceph-volume lvm trigger {osd id} {osd uuid]</span>
 </pre></div>
 
 
@@ -377,6 +448,10 @@ lrwxrwxrwx. <span class="m">1</span> root root <span class="m">23</span> Apr  <s
 <tr>
 <td>2018-11-25</td>
 <td>增加 block.db 推荐大小值</td>
+</tr>
+<tr>
+<td>2020-04-12</td>
+<td>增加 block.db / block.wal 的配置</td>
 </tr>
 </tbody>
 </table>

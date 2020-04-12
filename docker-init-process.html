@@ -128,8 +128,8 @@
   <div class="entry-content">
     <p>应用容器化后，重启容器的时候，经常会很慢，而且docker daemon 日志中经常会抛出以<br>
 下错误</p>
-<div class="highlight"><pre><span></span><span class="nv">dockerd</span>[<span class="mi">559</span>]: <span class="nv">msg</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">Container 5054f failed to exit within 10 seconds of</span>
-<span class="nv">signal</span> <span class="mi">15</span> <span class="o">-</span> <span class="nv">using</span> <span class="nv">the</span> <span class="nv">force</span><span class="s2">&quot;</span>
+<div class="highlight"><pre><span></span><span class="err">dockerd[559]: msg=&quot;Container 5054f failed to exit within 10 seconds of</span>
+<span class="err">signal 15 - using the force&quot;</span>
 </pre></div>
 
 
@@ -144,9 +144,9 @@
 <p>僵尸进程是终止运行的进程，为什么它们是有害的? </p>
 <p>虽然应用申请的内存已经释放了，但是你依然能通过 <code>ps</code> 看到它。这是因为有一些内<br>
 核资源没有释放。下面是 Linux <code>waitpid</code> 的 man page:</p>
-<div class="highlight"><pre><span></span><span class="nv">As</span> <span class="nv">long</span> <span class="nv">as</span> <span class="nv">a</span> <span class="nv">zombie</span> <span class="nv">is</span> <span class="nv">not</span> <span class="nv">removed</span> <span class="nv">from</span> <span class="nv">the</span> <span class="nv">system</span> <span class="nv">via</span> <span class="nv">a</span> <span class="k">wait</span>, <span class="nv">it</span> <span class="nv">will</span>
-<span class="nv">consume</span> <span class="nv">a</span> <span class="nv">slot</span> <span class="nv">in</span> <span class="nv">the</span> <span class="nv">kernel</span> <span class="nv">process</span> <span class="nv">table</span>, <span class="nv">and</span> <span class="k">if</span> <span class="nv">this</span> <span class="nv">table</span> <span class="nv">fills</span>, <span class="nv">it</span>
-<span class="nv">will</span> <span class="nv">not</span> <span class="nv">be</span> <span class="nv">possible</span> <span class="nv">to</span> <span class="nv">create</span> <span class="nv">further</span> <span class="nv">processes</span>.<span class="s2">&quot;</span>
+<div class="highlight"><pre><span></span><span class="err">As long as a zombie is not removed from the system via a wait, it will</span>
+<span class="err">consume a slot in the kernel process table, and if this table fills, it</span>
+<span class="err">will not be possible to create further processes.&quot;</span>
 </pre></div>
 
 

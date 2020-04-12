@@ -127,9 +127,9 @@
     <p>OpenStack的源因为你我都知道的原因，一直不稳定，导致 devstack 时经常失败。特定写了个脚本，可以拿到所有的仓库地址，方便做本地的mirror。</p>
 <p>脚本在 gist<sup id="fnref-1"><a class="footnote-ref" href="#fn-1">1</a></sup> 上。</p>
 <p>使用方法：</p>
-<div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">PyGithub</span>
-<span class="n">python</span> <span class="n">openstack_repo</span><span class="p">.</span><span class="n">py</span> <span class="o">-</span><span class="n">u</span> <span class="o">&lt;</span><span class="n">github_username</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">p</span> <span class="o">&lt;</span><span class="n">github_password</span><span class="o">&gt;</span> <span class="err">\</span>
-    <span class="o">-</span><span class="n">o</span> <span class="n">repos</span><span class="p">.</span><span class="n">txt</span>
+<div class="highlight"><pre><span></span><span class="err">pip install PyGithub</span>
+<span class="err">python openstack_repo.py -u &lt;github_username&gt; -p &lt;github_password&gt; \</span>
+<span class="err">    -o repos.txt</span>
 </pre></div>
 
 

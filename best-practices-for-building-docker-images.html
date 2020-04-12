@@ -126,51 +126,51 @@
 <p>构建体积更小的镜像，有利于镜像本身的传输，尤其在 Kubernetes 的环境中，镜像的传输会更加频繁，更小的体积意味着更快的调度时间和更小的空间占用。那如何构建更加小的镜像呢?</p>
 <h3 id="use-smaller-base-image"><a class="toclink" href="#use-smaller-base-image">使用更小的基础镜像</a><a class="headerlink" href="#use-smaller-base-image" title="Permanent link">&para;</a></h3>
 <p>不同的基础镜像构建相同的应用会有不同的大小。使用更小基础镜像会有利于减小最终镜像的大小。建议非特殊情况下，使用 alpine 镜像。他的基础镜像只有不到 5MB, 而且还自带包管理工具。一般需求都可以满足。</p>
-<div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="n">alpine</span>
-<span class="n">RUN</span> <span class="n">apk</span> <span class="k">add</span> <span class="n">nginx</span>
+<div class="highlight"><pre><span></span><span class="err">FROM alpine</span>
+<span class="err">RUN apk add nginx</span>
 </pre></div>
 
 
 <p>如果你的应用可以独立运行，如 Go 编译出来的 Binary 文件，还可以直接使用 scratch 这个空白镜像。</p>
-<div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="n">scratch</span>
-<span class="k">COPY</span> <span class="n">mybinary</span> <span class="o">/</span><span class="n">mybinary</span>
-<span class="n">CMD</span> <span class="p">[</span> <span class="ss">&quot;/mybinary&quot;</span> <span class="p">]</span>
+<div class="highlight"><pre><span></span><span class="err">FROM scratch</span>
+<span class="err">COPY mybinary /mybinary</span>
+<span class="err">CMD [ &quot;/mybinary&quot; ]</span>
 </pre></div>
 
 
 <h3 id="merge-run-command"><a class="toclink" href="#merge-run-command">合并 RUN 命令</a><a class="headerlink" href="#merge-run-command" title="Permanent link">&para;</a></h3>
 <p>不同的 RUN 命令如果先后做了文件的增加和删除，因为镜像分层文件系统的原因，还是会增加镜像体积的。如果两个 RUN 命令合并后，才会达到所想的效果。</p>
-<div class="highlight"><pre><span></span><span class="p">...</span>
-<span class="n">RUN</span> <span class="n">curl</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">xyz</span><span class="p">.</span><span class="n">abc</span> <span class="o">-</span><span class="n">o</span> <span class="n">abc</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span> <span class="err">\</span>
-    <span class="p">...</span>
-    <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="n">abc</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
-<span class="p">...</span>
+<div class="highlight"><pre><span></span><span class="err">...</span>
+<span class="err">RUN curl http://xyz.abc -o abc.tar.gz \</span>
+<span class="err">    ...</span>
+<span class="err">    rm -rf abc.tar.gz</span>
+<span class="err">...</span>
 </pre></div>
 
 
 <h3 id="remove-useless-package"><a class="toclink" href="#remove-useless-package">去除掉不用的软件包</a><a class="headerlink" href="#remove-useless-package" title="Permanent link">&para;</a></h3>
 <p>在安装包的过程中，尽量只安装需要用到的包。尤其是在编译过程中，难免会安装一些运行过程中不需要的软件包，如 glibc-devel 等。那在最后，最好把这些包去掉，来节省镜像空间。又因为镜像分层系统的原因，这些安装和卸载的语法还应该处理同一个 RUN 命令下</p>
-<div class="highlight"><pre><span></span><span class="p">...</span>
-<span class="n">RUN</span> <span class="n">BUILD_DEP_PKGS</span><span class="o">=</span><span class="ss">&quot;</span>
-<span class="ss">       gcc \</span>
-<span class="ss">       libc-devel&quot;</span>
-    <span class="o">&amp;&amp;</span> <span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="err">$</span><span class="n">BUILD_DEP_PKGS</span> <span class="err">\</span>
-    <span class="p">...</span>
-    <span class="o">&amp;&amp;</span> <span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">remove</span> <span class="err">$</span><span class="n">BUILD_DEP_PKGS</span>
-<span class="p">...</span>
+<div class="highlight"><pre><span></span><span class="err">...</span>
+<span class="err">RUN BUILD_DEP_PKGS=&quot;</span>
+<span class="err">       gcc \</span>
+<span class="err">       libc-devel&quot;</span>
+<span class="err">    &amp;&amp; yum -y install $BUILD_DEP_PKGS \</span>
+<span class="err">    ...</span>
+<span class="err">    &amp;&amp; yum -y remove $BUILD_DEP_PKGS</span>
+<span class="err">...</span>
 </pre></div>
 
 
 <h3 id="only-install-required-package"><a class="toclink" href="#only-install-required-package">只安装必要依赖包的</a><a class="headerlink" href="#only-install-required-package" title="Permanent link">&para;</a></h3>
 <p><code>apt</code> 和 <code>yum/dnf</code> 在安装包的过程中，默认会自动安装一些弱依赖包。一般情况下是使用不到的。可以显示的关闭弱依赖。</p>
-<div class="highlight"><pre><span></span># <span class="nv">apt</span><span class="o">-</span><span class="nv">get</span> <span class="k">for</span> <span class="nv">Debian</span> <span class="nv">family</span>
-<span class="nv">apt</span><span class="o">-</span><span class="nv">get</span> <span class="o">-</span><span class="nv">y</span> <span class="nv">install</span> <span class="o">--</span><span class="nv">no</span><span class="o">-</span><span class="nv">install</span><span class="o">-</span><span class="nv">recommends</span> {{ <span class="nv">package</span> }} 
+<div class="highlight"><pre><span></span><span class="x"># apt-get for Debian family</span>
+<span class="x">apt-get -y install --no-install-recommends </span><span class="cp">{{</span> <span class="nv">package</span> <span class="cp">}}</span><span class="x"> </span>
 
-# <span class="nv">yum</span> <span class="nv">from</span> <span class="nv">RHEL</span> <span class="nv">family</span>
-<span class="nv">yum</span> <span class="o">-</span><span class="nv">y</span> <span class="o">--</span><span class="nv">setopt</span><span class="o">=</span><span class="nv">install_weak_deps</span><span class="o">=</span><span class="nv">false</span> \
-    <span class="o">--</span><span class="nv">setopt</span><span class="o">=</span><span class="nv">tsflags</span><span class="o">=</span><span class="nv">nodocs</span> \
-    <span class="o">--</span><span class="nv">setopt</span><span class="o">=</span><span class="nv">override_install_langs</span><span class="o">=</span><span class="nv">en_US</span>.<span class="nv">utf8</span> \
-    <span class="nv">install</span> <span class="nv">vim</span>
+<span class="x"># yum from RHEL family</span>
+<span class="x">yum -y --setopt=install_weak_deps=false \</span>
+<span class="x">    --setopt=tsflags=nodocs \</span>
+<span class="x">    --setopt=override_install_langs=en_US.utf8 \</span>
+<span class="x">    install vim</span>
 </pre></div>
 
 
@@ -184,13 +184,13 @@
 <p>如果你要在镜像中创建新的用户，可以不初始化用户相关的 lastlog 和  faillog 数据库<sup id="fnref-1"><a class="footnote-ref" href="#fn-1">1</a></sup>。可以使用 <code>useradd -l</code> 或把 <code>/var/log/faillog</code> 和 <code>/var/log/lastlog</code> 文件删除掉，彻底关掉该功能。每个用户大概用占用掉 4k 左右的空间。</p>
 <h3 id="use-multi-stage"><a class="toclink" href="#use-multi-stage">使用 multi stage 构建</a><a class="headerlink" href="#use-multi-stage" title="Permanent link">&para;</a></h3>
 <p>对于很多需要编译运行的程序，如 Java, C, Golang 等，其编译环境和运行环境是不一样的，为了减小最终镜像的大小，我们可以使用上面提到的合并 <code>RUN</code> 命令的方式，但是看着会比较乱，比较难以维护。docker daemon &gt;= 17.05 <sup id="fnref-3"><a class="footnote-ref" href="#fn-3">3</a></sup>版本的时候支持 multi stage 构建，解决了此类问题，他使用两个镜像来构建，通过 <code>COPY --from</code> 语法，在两个镜像之间传递构建好的文件。使用方法如下：</p>
-<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> golang:1.7.3 as builder</span>
+<div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="s">golang:1.7.3</span> <span class="k">as</span> <span class="s">builder</span>
 <span class="k">WORKDIR</span><span class="s"> /go/src/github.com/alexellis/href-counter/</span>
 <span class="k">RUN</span> go get -d -v golang.org/x/net/html  
 <span class="k">COPY</span> app.go .
 <span class="k">RUN</span> <span class="nv">CGO_ENABLED</span><span class="o">=</span><span class="m">0</span> <span class="nv">GOOS</span><span class="o">=</span>linux go build -a -installsuffix cgo -o app .
 
-<span class="k">FROM</span><span class="s"> alpine:latest  </span>
+<span class="k">FROM</span> <span class="s">alpine:latest</span>  
 <span class="k">RUN</span> apk --no-cache add ca-certificates
 <span class="k">WORKDIR</span><span class="s"> /root/</span>
 <span class="k">COPY</span> --from<span class="o">=</span>builder /go/src/github.com/alexellis/href-counter/app .
@@ -230,7 +230,7 @@ Image registered in Docker daemon as kolla/centos-source-base:new
 <h2 id="image-safety"><a class="toclink" href="#image-safety">镜像安全</a><a class="headerlink" href="#image-safety" title="Permanent link">&para;</a></h2>
 <h3 id="init-progress"><a class="toclink" href="#init-progress">init 进程</a><a class="headerlink" href="#init-progress" title="Permanent link">&para;</a></h3>
 <p>重启容器的时候，经常会很慢，而且docker daemon 日志中经常会抛出以下错误</p>
-<div class="highlight"><pre><span></span><span class="nv">dockerd</span>[<span class="mi">559</span>]: <span class="nv">msg</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">Container 5054f failed to exit within 10 seconds of signal 15 - using the force</span><span class="s2">&quot;</span>
+<div class="highlight"><pre><span></span><span class="err">dockerd[559]: msg=&quot;Container 5054f failed to exit within 10 seconds of signal 15 - using the force&quot;</span>
 </pre></div>
 
 
@@ -290,7 +290,7 @@ root         <span class="m">6</span>  <span class="m">0</span>.0  <span class="
 <li><a href="https://github.com/containers/buildah" target="_blank">buildash</a>: 构建 OCI 兼容格式镜像工具。</li>
 </ul>
 <h2 id="example"><a class="toclink" href="#example">Example</a><a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> centos:7</span>
+<div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="s">centos:7</span>
 
 <span class="k">EXPOSE</span><span class="s"> 8080</span>
 <span class="k">EXPOSE</span><span class="s"> 8443</span>

@@ -130,7 +130,7 @@
 
 
 <span class="k">def</span> <span class="nf">worker</span><span class="p">():</span>
-    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -193,25 +193,25 @@ or similar.
 
 
 <span class="k">def</span> <span class="nf">worker</span><span class="p">():</span>
-    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-        <span class="k">print</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="nb">print</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">worker_init</span><span class="p">():</span>
     <span class="c1"># ignore the SIGINI in sub process, just print a log</span>
     <span class="k">def</span> <span class="nf">sig_int</span><span class="p">(</span><span class="n">signal_num</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-        <span class="k">print</span> <span class="s1">&#39;signal: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">signal_num</span>
+        <span class="nb">print</span> <span class="s1">&#39;signal: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">signal_num</span>
     <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">sig_int</span><span class="p">)</span>
 
 
 <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">worker_init</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span><span class="n">worker</span><span class="p">)</span>
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mh">0xfff</span><span class="p">)</span>
     <span class="c1"># catch TimeoutError and get again</span>
     <span class="k">except</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">TimeoutError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s1">&#39;timeout&#39;</span>
+        <span class="nb">print</span> <span class="s1">&#39;timeout&#39;</span>
 </pre></div>
 
 

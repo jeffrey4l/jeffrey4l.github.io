@@ -128,9 +128,9 @@
 <p>由于是用 Python 编写的，安装起来和普通 Python 应用没有太大区别。可以通过源码，pypi, 操作系统的包管理进行安装。</p>
 <h1 id="_1"><a class="toclink" href="#_1">系统包管理</a><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <h2 id="rpm"><a class="toclink" href="#rpm">RPM 系</a><a class="headerlink" href="#rpm" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><span class="o">#</span> <span class="n">install</span> <span class="n">epel</span> <span class="k">source</span>
-<span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">epel</span><span class="o">-</span><span class="n">release</span>
-<span class="n">yum</span> <span class="n">install</span> <span class="n">ansible</span>
+<div class="highlight"><pre><span></span><span class="err"># install epel source</span>
+<span class="err">yum install -y epel-release</span>
+<span class="err">yum install ansible</span>
 </pre></div>
 
 
@@ -144,7 +144,7 @@ apt-get install -y ansible
 
 <h1 id="pypi"><a class="toclink" href="#pypi">pypi安装</a><a class="headerlink" href="#pypi" title="Permanent link">&para;</a></h1>
 <p>通过pypi相当简单，直接用pip就可安装</p>
-<div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">ansible</span>
+<div class="highlight"><pre><span></span><span class="err">pip install ansible</span>
 </pre></div>
 
 

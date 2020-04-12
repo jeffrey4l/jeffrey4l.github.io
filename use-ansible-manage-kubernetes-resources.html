@@ -224,21 +224,21 @@
 
 <p>它可以动态调整 Deployment 的 <code>replicas</code> 个数，基本上等同于<code>kubectl scale</code> 命令，但是这个功能基本可以使用 <code>k8s</code> 模块通过改变 <code>replicas</code> 参数来调整。</p>
 <p><code>k8s_facts</code>的例子如下</p>
-<div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="k">Get</span> <span class="n">an</span> <span class="k">existing</span> <span class="n">Service</span> <span class="k">object</span>
-  <span class="n">k8s_facts</span><span class="p">:</span>
-    <span class="n">api_version</span><span class="p">:</span> <span class="n">v1</span>
-    <span class="n">kind</span><span class="p">:</span> <span class="n">Service</span>
-    <span class="n">name</span><span class="p">:</span> <span class="n">web</span>
-    <span class="n">namespace</span><span class="p">:</span> <span class="n">testing</span>
-  <span class="n">register</span><span class="p">:</span> <span class="n">web_service</span>
+<div class="highlight"><pre><span></span><span class="err">- name: Get an existing Service object</span>
+<span class="err">  k8s_facts:</span>
+<span class="err">    api_version: v1</span>
+<span class="err">    kind: Service</span>
+<span class="err">    name: web</span>
+<span class="err">    namespace: testing</span>
+<span class="err">  register: web_service</span>
 </pre></div>
 
 
 <p>使用他，你可以检查某个资源是否存在，如果存在的话，还可以获得这个资源的yaml 文件描述，我觉得在 Ansible 流程控制中会有一些作用，可以根据当前 Kubernets 里面资源情况，有选择的做一些动作。</p>
 <h2 id="_1"><a class="toclink" href="#_1">小技巧</a><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <p>因为 Ansible 是 Python 编写的，在使用 pip 安装时容易破坏系统已经安装的 Python 包，推荐使用虚拟环境来安装。</p>
-<div class="highlight"><pre><span></span><span class="o">#</span> <span class="n">mkvirtualenv</span> <span class="c1">--system-site-packages ansible</span>
-<span class="o">#</span> <span class="n">pip</span> <span class="n">install</span> <span class="s1">&#39;ansible&lt;2.7&#39;</span> <span class="n">openshift</span>
+<div class="highlight"><pre><span></span><span class="err"># mkvirtualenv --system-site-packages ansible</span>
+<span class="err"># pip install &#39;ansible&lt;2.7&#39; openshift</span>
 </pre></div>
 
 

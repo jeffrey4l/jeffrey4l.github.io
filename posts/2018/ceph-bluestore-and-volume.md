@@ -153,7 +153,7 @@ lrwxrwxrwx 1 ceph ceph  54 Apr 12 03:05 block.wal -> /dev/ceph-20861703-1a01-415
 
 ## bluestore & rocksdb & ceph-volume
 
-ceph 的组件多采用插件的机制，包括后端存储，KV 数据库，磁盘管理等。各组件之间可以灵活的组合。
+ceph 的组件多采用插件的机制，包括后端存储，KV 数据库，磁盘管理等。各组件之间可以灵活地组合。
 
 基于后端存储包括 filestore, kvstore，memstore 和新的 bluestore。 Ceph Luminous 引用了 bluestore 的存储类型，不依赖文件系统，直接管理物理磁盘，相比filestore, 在 io 写入的时候路径更短，也避免了二次写入的问题，性能会更加好。
 
@@ -163,15 +163,15 @@ KV 存储主要包括 LevelDB, MemDB 和新的 RocksDB。 RocksDB 是 Facebook �
 
 ![ceph-bluestore.png](images/2018/ceph-bluestore.png)
 
-基中比较有意思的是 RocksDB 的实现，RocksDB 原本只基于文件系统的。但是得益于它本身的灵活性，bluestore 实现了一套 RocksDB 的 Env 接口，还在 BlueStore 上面实现了一套 BlueFS 的接口与 BluestoreEnv 对接。使得 RocksDB 可以存储在 BlueStore 上面。
+其中比较有意思的是 RocksDB 的实现，RocksDB 原本只基于文件系统的。但是得益于它本身的灵活性，bluestore 实现了一套 RocksDB 的 Env 接口，还在 BlueStore 上面实现了一套 BlueFS 的接口与 BluestoreEnv 对接。使得 RocksDB 可以存储在 BlueStore 上面。
 
 ## wal & db 的大小问题
 
-在 ceph bluestore 的情况下，wal 是 RocksDB 的 write-ahead log, 相当于之前的 journal 数据，db 是 RocksDB 的 metadata 信息。在磁盘选择原则是 block.wal > block.db > block。当然所有的数据也可以放到同一块盘上。
+在 ceph bluestore 的情况下，wal 是 RocksDB 的 write-ahead log, 相当于之前的 journal 数据，db 是 RocksDB 的 metadata 信息。在磁盘选择原则是速度应该是 `block.wal > block.db > block`。当然所有的数据也可以放到同一块盘上。
 
-默认情况下， wal 和 db 的大小分别是 512 MB 和 1GB, 包括 [Sage Weil 的 PPT ](https://www.slideshare.net/sageweil1/bluestore-a-new-storage-backend-for-ceph-one-year-in)里面也是这样标明的。现在没有一个太好的理论值，它和 ceph 里面的每个 OSD 里面的对象个数有关系。更多讨论可以[参看](http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/020822.html)。 现在社区推荐的是 block size * 4% 的值。也就是说如果你的 block 盘大小是 1TB，那 block.db 的大小最少是 40GB。具体参看[bluestore-config-ref#sizing](http://docs.ceph.com/docs/master/rados/configuration/bluestore-config-ref/#sizing)，[[ceph-users] WAL/DB size](http://lists.ceph.com/pipermail/ceph-users-ceph.com/2018-September/029643.html)
+默认情况下， wal 和 db 的大小分别是 512 MB 和 1GB, 包括 [Sage Weil 的 PPT ](https://www.slideshare.net/sageweil1/bluestore-a-new-storage-backend-for-ceph-one-year-in)里面也是这样表明的。现在没有一个太好的理论值，它和 ceph 里面的每个 OSD 里面的对象个数有关系。更多讨论可以[参看](http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/020822.html)。 现在社区推荐的是 `block size * 4%` 的值。也就是说如果你的 block 盘大小是 1TB，那 block.db 的大小最少是 40GB。具体参看[bluestore-config-ref#sizing](http://docs.ceph.com/docs/master/rados/configuration/bluestore-config-ref/#sizing)，[[ceph-users] WAL/DB size](http://lists.ceph.com/pipermail/ceph-users-ceph.com/2018-September/029643.html)
 
-值得注意的是，如果所有的数据都在单块盘上，那是没有必要指定 wal & db 的大小的。如果 wal & db 是在不同的盘上，由于 wal/db 一般都会分的比较小，是有满的可能性的。如果满了，这些数据会迁移到下一个快的盘上(wal - db - main)。所以最少不会因为数据满了，而[造成无法写入](http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/021037.html)。
+值得注意的是，如果所有的数据都在单块盘上，那是没有必要指定 wal & db 的大小的。如果 wal & db 是在不同的盘上，由于 wal/db 一般都会分得比较小，是有满的可能性的。如果满了，这些数据会迁移到下一个快的盘上(wal -> db -> block)。所以最少不会因为数据满了，而[造成无法写入](http://lists.ceph.com/pipermail/ceph-users-ceph.com/2017-September/021037.html)。
 
 
 ## 使用 bluestore 时的 osd 分区

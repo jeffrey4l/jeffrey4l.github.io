@@ -332,3 +332,4 @@ RUN BUILD_DEP_PKGS="\
 [^2]: https://docs.docker.com/engine/reference/commandline/build/#squash-an-images-layers---squash-experimental
 [^3]: <https://docs.docker.com/develop/develop-images/multistage-build/> 
 [^4]: [10 tips for building and managing containers](https://www.weave.works/blog/10-tips-for-building-and-managing-containers)
+[^5]: [Dockerfile Security Best Practices](https://cloudberry.engineering/article/dockerfile-security-best-practices/)

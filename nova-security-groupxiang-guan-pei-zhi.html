@@ -90,7 +90,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -150,26 +150,26 @@
 </ul>
 <h1 id="_2"><a class="toclink" href="#_2">使用组合：</a><a class="headerlink" href="#_2" title="Permanent link">&para;</a></h1>
 <p>nova-network + libvirt</p>
-<div class="highlight"><pre><span></span><span class="err">nova_api_class=nova.network.api.API</span>
-<span class="err">security_group_ap=nova</span>
-<span class="err">linuxnet_interface_driver=nova.network.linux_net.LinuxBridgeInterfaceDriver</span>
-<span class="err">firewall_driver=nova.virt.firewall.IptablesFirewallDrive</span>
+<div class="highlight"><pre><span></span>nova_api_class=nova.network.api.API
+security_group_ap=nova
+linuxnet_interface_driver=nova.network.linux_net.LinuxBridgeInterfaceDriver
+firewall_driver=nova.virt.firewall.IptablesFirewallDrive
 </pre></div>
 
 
 <p>neutron + ml2 + linuxbridge plugin + libvirt</p>
-<div class="highlight"><pre><span></span><span class="err">nova_api_class=nova.network.neutronv2.API</span>
-<span class="err">security_group_ap=neutron</span>
-<span class="err">linuxnet_interface_driver=nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver</span>
-<span class="err">firewall_driver=nova.virt.firewall.NoopFirewallDriver</span>
+<div class="highlight"><pre><span></span>nova_api_class=nova.network.neutronv2.API
+security_group_ap=neutron
+linuxnet_interface_driver=nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
+firewall_driver=nova.virt.firewall.NoopFirewallDriver
 </pre></div>
 
 
 <p>neutron + ml2 + ovs plugin + libvirt</p>
-<div class="highlight"><pre><span></span><span class="err">nova_api_class=nova.network.neutronv2.API</span>
-<span class="err">security_group_ap=neutron</span>
-<span class="err">linuxnet_interface_driver=nova.network.linux_net.linuxOVSInterfaceDriver</span>
-<span class="err">firewall_driver=nova.virt.firewall.NoopFirewallDriver</span>
+<div class="highlight"><pre><span></span>nova_api_class=nova.network.neutronv2.API
+security_group_ap=neutron
+linuxnet_interface_driver=nova.network.linux_net.linuxOVSInterfaceDriver
+firewall_driver=nova.virt.firewall.NoopFirewallDriver
 </pre></div>
 
 

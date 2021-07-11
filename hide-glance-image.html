@@ -91,7 +91,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -133,7 +133,7 @@
 <p><img alt="instance-without-image-info" src="images/glance-deactivate/instance-without-image-info.png"></p>
 <h2 id="2"><a class="toclink" href="#2">方法 2</a><a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
 <p>这时还有更好的一个办法，Glance API 支持把镜像属性变为非可用状态。使用方法如下</p>
-<div class="highlight"><pre><span></span><span class="gp">$</span> openstack image <span class="nb">set</span> --deactivate &lt;image&gt;
+<div class="highlight"><pre><span></span><span class="gp">$ </span>openstack image <span class="nb">set</span> --deactivate &lt;image&gt;
 </pre></div>
 
 
@@ -142,7 +142,7 @@
 <p>但是，用户还可以看到这个镜像的信息，已经启动的虚拟机不受影响。</p>
 <p><img alt="instance-without-image-info" src="images/glance-deactivate/instance-with-image-info.png"></p>
 <p>如果想把镜像再变成可用状态，可以使用。</p>
-<div class="highlight"><pre><span></span><span class="gp">$</span> openstack image <span class="nb">set</span> --activate &lt;image&gt;
+<div class="highlight"><pre><span></span><span class="gp">$ </span>openstack image <span class="nb">set</span> --activate &lt;image&gt;
 </pre></div>
 
 

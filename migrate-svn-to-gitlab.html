@@ -90,7 +90,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -128,7 +128,7 @@
 <li>在GitLab上创建相对应的项目/项目组</li>
 <li>准备''users.txt''文件，来修正提交用户名。并手动修改users.txt的正确性 </li>
 </ul>
-<div class="highlight"><pre><span></span><span class="err">svn log &lt;svn-url&gt; --xml | grep -P &quot;^&lt;author&quot; | sort -u | perl -pe &#39;s/&lt;author&gt;(.*?)&lt;\/author&gt;/$1 = /&#39; &gt; users.txt</span>
+<div class="highlight"><pre><span></span>svn log &lt;svn-url&gt; --xml | grep -P &quot;^&lt;author&quot; | sort -u | perl -pe &#39;s/&lt;author&gt;(.*?)&lt;\/author&gt;/$1 = /&#39; &gt; users.txt
 </pre></div>
 
 
@@ -140,7 +140,7 @@
 <ul>
 <li>把SVN项目使用git-svn进行克隆 </li>
 </ul>
-<div class="highlight"><pre><span></span><span class="err">git svn clone --no-metadata --authors-file users.txt -s &lt;svn-url&gt; &lt;project&gt;</span>
+<div class="highlight"><pre><span></span>git svn clone --no-metadata --authors-file users.txt -s &lt;svn-url&gt; &lt;project&gt;
 </pre></div>
 
 
@@ -156,9 +156,9 @@ git for-each-ref refs/remotes | cut -d / -f 3- | grep -v @ | while read branchna
 <ul>
 <li>Push到Gitlab上的仓库</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="err">git remote add origin &lt;git-repo-url&gt;</span>
-<span class="err">git push origin --all</span>
-<span class="err">git push origin --tags</span>
+<div class="highlight"><pre><span></span>git remote add origin &lt;git-repo-url&gt;
+git push origin --all
+git push origin --tags
 </pre></div>
 
 

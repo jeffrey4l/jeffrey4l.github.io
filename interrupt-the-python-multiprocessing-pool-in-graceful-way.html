@@ -90,7 +90,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -143,13 +143,13 @@
 <div class="highlight"><pre><span></span>$ python2 b.py                                                                      
 ^CProcess PoolWorker-1:
 Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
-  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/process.py&quot;</span>, line <span class="m">258</span>, in _bootstrap
+  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/process.py&quot;</span>, line <span class="m">258</span>, <span class="k">in</span> _bootstrap
     self.run<span class="o">()</span>
-  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/process.py&quot;</span>, line <span class="m">114</span>, in run
+  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/process.py&quot;</span>, line <span class="m">114</span>, <span class="k">in</span> run
     self._target<span class="o">(</span>*self._args, **self._kwargs<span class="o">)</span>
-  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/pool.py&quot;</span>, line <span class="m">113</span>, in worker
+  File <span class="s2">&quot;/usr/lib/python2.7/multiprocessing/pool.py&quot;</span>, line <span class="m">113</span>, <span class="k">in</span> worker
     <span class="nv">result</span> <span class="o">=</span> <span class="o">(</span>True, func<span class="o">(</span>*args, **kwds<span class="o">))</span>
-  File <span class="s2">&quot;b.py&quot;</span>, line <span class="m">7</span>, in worker
+  File <span class="s2">&quot;b.py&quot;</span>, line <span class="m">7</span>, <span class="k">in</span> worker
     time.sleep<span class="o">(</span><span class="m">1</span><span class="o">)</span>
 KeyboardInterrupt
 </pre></div>
@@ -195,7 +195,7 @@ or similar.
 <span class="k">def</span> <span class="nf">worker</span><span class="p">():</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="nb">print</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">.5</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">worker_init</span><span class="p">():</span>
     <span class="c1"># ignore the SIGINI in sub process, just print a log</span>

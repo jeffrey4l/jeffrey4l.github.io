@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="cn">
 <head>
-    <title>代码杂货铺</title>
+      <title> Docker recreate tool - 代码杂货铺</title>
     <meta charset="utf-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://xcodest.me/theme/css/bootstrap.min.css" type="text/css" charset="utf-8">
     <link rel="stylesheet" href="https://xcodest.me/theme/css/bootstrap-theme.min.css" type="text/css" charset="utf-8">
@@ -108,22 +109,122 @@
         <div class="col-md-8 col-xs-12">
 <div class="row">
   <div class="col-md-12 col-xs-12">
-    <ol class="breadcrumb">
-      <li><a href="https://xcodest.me">Home</a></li>
-      <li><a href="https://xcodest.me/tags.html">Tag</a></li>
-      <li class="active">Ansible</li>
-    </ol>
-    <ul class="list-group">
-      <li class="list-group-item">
-        <span class="badge">2016-12-27</span>
-        <a href="https://xcodest.me/ansible-with-items-auto-flatten-list-of-lists.html" rel="bookmark" title="Permalink to Ansible with-items auto flatten list of lists">Ansible with-items auto flatten list of lists</a>
-      </li>
-      <li class="list-group-item">
-        <span class="badge">2015-12-30</span>
-        <a href="https://xcodest.me/ansible-install.html" rel="bookmark" title="Permalink to Ansible安装">Ansible安装</a>
-      </li>
-    </ul><!-- /#posts-list -->
+  <section id="content" class="body">
+  <header>
+    <h1 class="entry-title">Docker recreate tool</h1>
+    <div class="entry-info">
+      <span class="glyphicon glyphicon-list-alt"></span>
+      <span class="post-date"> 2021-07-11 </span>
+      <!--
+      <a class="post-category label label-default" href="https://xcodest.me/category/others.html">Others</a>
+      -->
+      <span class="glyphicon glyphicon-tags"></span>
+    </div>
+  </header>
+  <div class="entry-content">
+    <p>现在 docker 使用的越来越多，有很多部署工具可以使用，但有些时候需要临时手动重建容器。我写了一个 Python 小脚本来实现类似的功能。</p>
+<ul>
+<li>Github repo: https://github.com/jeffrey4l/docker-recreate</li>
+</ul>
+<h1 id="install"><a class="toclink" href="#install">Install</a><a class="headerlink" href="#install" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><span class="c1"># through pip</span>
+pip install docker-recreate
+
+
+<span class="c1"># using curl</span>
+curl https://raw.githubusercontent.com/jeffrey4l/docker-recreate/master/main.py <span class="se">\</span>
+    -o /usr/local/bin/docker-recreate
+chmod +x /usr/local/bin/docker-recreate
+
+
+<span class="c1"># for China</span>
+curl https://raw.fastgit.org/jeffrey4l/docker-recreate/master/main.py <span class="se">\</span>
+    -o /usr/local/bin/docker-recreate
+chmod +x /usr/local/bin/docker-recreate
+</pre></div>
+
+
+<h1 id="usage"><a class="toclink" href="#usage">Usage</a><a class="headerlink" href="#usage" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><span class="gp">$ </span>docker-recreate -h
+<span class="go">usage: docker-recreate [-h] [--format {csv,json,oneline,string,yaml}] container [container ...]</span>
+
+<span class="go">positional arguments:</span>
+<span class="go">  container</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --format {csv,json,oneline,string,yaml}, -f {csv,json,oneline,string,yaml}</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="gp">$ </span>docker-create grafana
+<span class="go">docker \</span>
+<span class="go">    run \</span>
+<span class="go">    -d \</span>
+<span class="go">    --name grafana \</span>
+<span class="go">    --network host \</span>
+<span class="go">    --restart always \</span>
+<span class="go">    -v grafana:/var/lib/grafana:rw \</span>
+<span class="go">    grafana/grafana:8.0.3</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="gp">$ </span>docker-recreate ceph_osd_2
+<span class="go">docker \</span>
+<span class="go">    run \</span>
+<span class="go">    -d \</span>
+<span class="go">    --name ceph_osd_2 \</span>
+<span class="go">    --network host \</span>
+<span class="go">    --restart unless-stopped \</span>
+<span class="go">    --pid host \</span>
+<span class="go">    --privileged \</span>
+<span class="go">    -e OSD_STORETYPE=filestore \</span>
+<span class="go">    -e OSD_BS_FSUUID=e76f38d0-3f34-4771-b099-d26ee063ae01 \</span>
+<span class="go">    -e OSD_ID=2 \</span>
+<span class="go">    -e KOLLA_CONFIG_STRATEGY=COPY_ALWAYS \</span>
+<span class="go">    -e JOURNAL_PARTITION=/dev/disk/by-partuuid/9967b401-ff2b-4ed4-ac15-028e89238bdf \</span>
+<span class="go">    -e TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES=134217728 \</span>
+<span class="go">    -e KOLLA_SERVICE_NAME=ceph-osd-2 \</span>
+<span class="go">    -v kolla_logs:/var/log/kolla/:rw \</span>
+<span class="go">    -v /etc/localtime:/etc/localtime:ro \</span>
+<span class="go">    -v /etc/kolla/ceph-osd/:/var/lib/kolla/config_files/:ro \</span>
+<span class="go">    -v /dev/:/dev/:rw \</span>
+<span class="go">    -v /var/lib/ceph/osd/e76f38d0-3f34-4771-b099-d26ee063ae01:/var/lib/ceph/osd/ceph-2:rw \</span>
+<span class="go">    172.20.140.229:4000/kolla/centos-source-ceph-osd:train</span>
+</pre></div>
+
+
+<p>欢迎大家收藏，转发，使用。有问题可以建 Issue。</p>
+    <div class="copyright">
+      <p><span>原始链接:</span><a href="http://xcodest.me/docker-recreate-tool.html" target="_blank">http://xcodest.me/docker-recreate-tool.html </a></p>
+      <p> <span>许可协议:</span><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。</p>
+    </div>
+  </div><!-- /.entry-content -->
+  <div>
+    <nav>
+      <ul class="pager">
+        <li class="previous"><a href="best-practices-for-building-docker-images.html">&larr; Older</a></li>
+        <li class="next disabled"><span href="">Newer &rarr;</span></li>
+      </ul>
+    </nav>
   </div>
+    <div class="comments">
+      <h2>Comments</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'xcodest';
+        var disqus_identifier = 'docker-recreate-tool.html';
+        var disqus_url = 'http://xcodest.me/docker-recreate-tool.html';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//xcodest.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+</section>
+</div>
 </div>
         </div>
       </div>

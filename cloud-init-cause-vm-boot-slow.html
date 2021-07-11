@@ -90,7 +90,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -146,13 +146,13 @@
 <h2 id="_4"><a class="toclink" href="#_4">调试</a><a class="headerlink" href="#_4" title="Permanent link">¶</a></h2>
 <p>测试虚拟机用的 CentOS 7 系统，</p>
 <p>首先看虚拟机的 console log, 发现如下信息</p>
-<div class="highlight"><pre><span></span><span class="err">Starting kdump:[  OK  ]</span>
-<span class="err">Starting cloud-init: Cloud-init v. 0.7.5 running 'init' at Wed, 30 Mar 2016 14:58:36 +0000. Up 40.68 seconds.</span>
-<span class="err">...</span>
-<span class="err">Starting cloud-init: Cloud-init v. 0.7.5 running 'modules:config' at Wed, 30 Mar 2016 14:59:59 +0000. Up 124.27 seconds.</span>
-<span class="err">Starting cloud-init: Cloud-init v. 0.7.5 running 'modules:final' at Wed, 30 Mar 2016 15:00:01 +0000. Up 126.22 seconds.</span>
-<span class="err">...</span>
-<span class="err">Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource DataSourceOpenStack [net,ver=2].  Up 126.41 seconds</span>
+<div class="highlight"><pre><span></span>Starting kdump:[  OK  ]
+Starting cloud-init: Cloud-init v. 0.7.5 running 'init' at Wed, 30 Mar 2016 14:58:36 +0000. Up 40.68 seconds.
+...
+Starting cloud-init: Cloud-init v. 0.7.5 running 'modules:config' at Wed, 30 Mar 2016 14:59:59 +0000. Up 124.27 seconds.
+Starting cloud-init: Cloud-init v. 0.7.5 running 'modules:final' at Wed, 30 Mar 2016 15:00:01 +0000. Up 126.22 seconds.
+...
+Cloud-init v. 0.7.5 finished at Wed, 30 Mar 2016 15:00:01 +0000. Datasource DataSourceOpenStack [net,ver=2].  Up 126.41 seconds
 </pre></div>
 <p>发现: cloud-init 服务从开始启动到最后完成，花了 80 多秒，大部分的时间都是花在了 init 环节上。按说是不应该的。</p>
 <p>一开始我怀疑是硬盘分区自动扩展慢导致的，但把自动扩展关掉了也还是一样，时间基本没有变化。肯定是其它问题。</p>
@@ -165,7 +165,7 @@
 <div class="highlight"><pre><span></span><span class="nt">output</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt">all</span><span class="p">:</span> <span class="s">'|</span><span class="nv"> </span><span class="s">tee</span><span class="nv"> </span><span class="s">-a</span><span class="nv"> </span><span class="s">/var/log/cloud-init-output.log'</span><span class="p p-Indicator">}</span>
 </pre></div>
 <p>联想到 CentOS 7 用的 systemd 管理器，试图从 systemd 里找日志。先找到了所有的 cloud-init 相关的服务</p>
-<div class="highlight"><pre><span></span><span class="gp">$</span> systemctl list-units <span class="p">|</span> grep cloud
+<div class="highlight"><pre><span></span><span class="gp">$ </span>systemctl list-units <span class="p">|</span> grep cloud
 <span class="go">cloud-config.service       Apply the settings specified in cloud-config</span>
 <span class="go">cloud-final.service        Execute cloud user/final scripts</span>
 <span class="go">cloud-init-local.service   Initial cloud-init job (pre-networking)</span>
@@ -173,7 +173,7 @@
 <span class="go">cloud-config.target        Cloud-config availability</span>
 </pre></div>
 <p>可以看到，cloud-init 安装的服务还是有多个的。不同的服务的启动时间点和所做的事情是不一样的。使用 <code>journalctl</code> 挨个排查后，找到以下日志：</p>
-<div class="highlight"><pre><span></span><span class="gp">$</span> journalctl -u cloud-init
+<div class="highlight"><pre><span></span><span class="gp">$ </span>journalctl -u cloud-init
 <span class="go">...</span>
 <span class="go">Apr 03 13:19:33 cloud-init[780]: [CLOUDINIT] __init__.py[DEBUG]: Merging using located merger</span>
 <span class="go">Apr 03 13:21:13 cloud-init[780]: [CLOUDINIT] DataSourceGCE.py[DEBUG]: http://metadata.google.internal./computeMetadata/v1/ is not resolvable</span>

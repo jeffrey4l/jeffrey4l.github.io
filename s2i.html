@@ -91,7 +91,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -145,21 +145,21 @@
 <p>redhat 官方有一些已经编写好的镜像例子<sup id="fnref-2"><a class="footnote-ref" href="#fn-2">2</a></sup>，可以从找到。像 <a href="https://github.com/sclorg/s2i-python-container" target="_blank">Python</a>, <a href="https://github.com/sclorg/s2i-ruby-container" target="_blank">Ruby</a>。利用这些镜像，再加上你的源代码，可以快速构建出应用镜像。</p>
 <h2 id="s2i_1"><a class="toclink" href="#s2i_1">安装 S2I 工具</a><a class="headerlink" href="#s2i_1" title="Permanent link">&para;</a></h2>
 <p>S2I 是一个 Go 编写的程序，你可以从 Github 上面下载已经编译的二进制文件<sup id="fnref-1"><a class="footnote-ref" href="#fn-1">1</a></sup>，也可以自己编译。下面是手动编译的方法。</p>
-<div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nv">S2I_URL</span><span class="o">=</span>github.com/openshift/source-to-image
-<span class="gp">$</span> go get <span class="si">${</span><span class="nv">S2I_URL</span><span class="si">}</span>
-<span class="gp">$</span> <span class="nb">cd</span> <span class="si">${</span><span class="nv">GOPATH</span><span class="si">}</span>/src/<span class="si">${</span><span class="nv">S2I_URL</span><span class="si">}</span>
-<span class="gp">$</span> <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="si">${</span><span class="nv">GOPATH</span><span class="si">}</span>/src/<span class="si">${</span><span class="nv">S2I_URL</span><span class="si">}</span>/_output/local/bin/linux/amd64/
-<span class="gp">$</span> make all
+<div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">S2I_URL</span><span class="o">=</span>github.com/openshift/source-to-image
+<span class="gp">$ </span>go get <span class="si">${</span><span class="nv">S2I_URL</span><span class="si">}</span>
+<span class="gp">$ </span><span class="nb">cd</span> <span class="si">${</span><span class="nv">GOPATH</span><span class="si">}</span>/src/<span class="si">${</span><span class="nv">S2I_URL</span><span class="si">}</span>
+<span class="gp">$ </span><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="si">${</span><span class="nv">GOPATH</span><span class="si">}</span>/src/<span class="si">${</span><span class="nv">S2I_URL</span><span class="si">}</span>/_output/local/bin/linux/amd64/
+<span class="gp">$ </span>make all
 </pre></div>
 
 
 <h2 id="s2i_2"><a class="toclink" href="#s2i_2">使用 S2I 构建镜像</a><a class="headerlink" href="#s2i_2" title="Permanent link">&para;</a></h2>
 <p>下面我们来使用 S2I 的功能，快速构建一个 Python 应用。</p>
 <p>首先，先构建一个通用的 Python 2.7 基础镜像</p>
-<div class="highlight"><pre><span></span><span class="gp">$</span> git clone https://github.com/sclorg/s2i-python-container.git
-<span class="gp">$</span> <span class="nb">cd</span> s2i-python-container/2.7
+<div class="highlight"><pre><span></span><span class="gp">$ </span>git clone https://github.com/sclorg/s2i-python-container.git
+<span class="gp">$ </span><span class="nb">cd</span> s2i-python-container/2.7
 
-<span class="gp">$</span> docker build . -t local/s2i-python27
+<span class="gp">$ </span>docker build . -t local/s2i-python27
 </pre></div>
 
 
@@ -170,10 +170,10 @@
 <li>唯一特殊的是把 <code>./s2i/bin/</code> 目录拷贝到了 <code>STI_SCRIPTS_PATH</code> ( 也就是 <code>/usr/libexec/s2i</code> ) 位置。查看这个目录中的文件，就会看到上面提到的 <code>run</code>, <code>assemble</code> 及 <code>usage</code> 三个文件。</li>
 </ul>
 <p>这样我们就得到了一个叫<code>local/s2i-python27:latest</code> 的基本镜像。下一步，把 Python 源代码打包入python 的基本镜像中。</p>
-<div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> test/django-test-app
-<span class="gp">$</span> s2i build test/django-test-app  <span class="se">\</span>
-    local/s2i-python27:latest <span class="se">\</span>
-    django-test-app:latest
+<div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> test/django-test-app
+<span class="gp">$ </span>s2i build test/django-test-app  <span class="se">\</span>
+<span class="go">    local/s2i-python27:latest \</span>
+<span class="go">    django-test-app:latest</span>
 <span class="go">---&gt; Installing application source ...</span>
 <span class="go">---&gt; Installing dependencies ...</span>
 <span class="go">Collecting Django==1.8.1 (from -r requirements.txt (line 1))</span>
@@ -198,7 +198,7 @@
 </li>
 </ol>
 <p>这时，一个名叫<code>django-test-app:latest</code>就构建好了，查看他的历史可以看到：</p>
-<div class="highlight"><pre><span></span><span class="gp">$</span> docker <span class="nb">history</span> django-test-app 
+<div class="highlight"><pre><span></span><span class="gp">$ </span>docker <span class="nb">history</span> django-test-app 
 <span class="go">IMAGE         CREATED BY                                      SIZE     </span>
 <span class="go">c1775906f248  /bin/sh -c tar -C /tmp -xf - &amp;&amp; /usr/libexec…   21.6MB</span>
 <span class="go">df3a71bbe741  /bin/sh -c #(nop)  CMD [&quot;/bin/sh&quot; &quot;-c&quot; &quot;$STI…   0B</span>
@@ -210,7 +210,7 @@
 
 <p>对比<code>centos/s2i-base-centos7</code>就会发现， 上面这个镜像只增加了一个层次。</p>
 <p>最后直接启动镜像验证</p>
-<div class="highlight"><pre><span></span><span class="gp">$</span> docker run -it --rm django-test-app
+<div class="highlight"><pre><span></span><span class="gp">$ </span>docker run -it --rm django-test-app
 <span class="go">---&gt; Migrating database ...</span>
 <span class="go">Operations to perform:</span>
 <span class="go">  Synchronize unmigrated apps: staticfiles, messages</span>

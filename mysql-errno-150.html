@@ -90,7 +90,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -125,7 +125,7 @@
   </header>
   <div class="entry-content">
     <p>做OpenStack icehouse 升级到 Juno过程中，升级Neutron数据库时遇到这个错误。</p>
-<div class="highlight"><pre><span></span><span class="gp">$</span> python -m neutron.db.migration.migrate_to_ml2 openvswitch mysql://USER:PASSWORD@10.251.1.8/neutron
+<div class="highlight"><pre><span></span><span class="gp">$ </span>python -m neutron.db.migration.migrate_to_ml2 openvswitch mysql://USER:PASSWORD@10.251.1.8/neutron
 <span class="go">Traceback (most recent call last):</span>
 <span class="go">  File &quot;/usr/lib/python2.7/runpy.py&quot;, line 162, in _run_module_as_main</span>
 <span class="go">    &quot;__main__&quot;, fname, loader, pkg_name)</span>
@@ -184,7 +184,7 @@
 <li>InnoDB does not currently support foreign keys for tables with user-defined partitioning. This includes both parent and child tables.</li>
 </ul>
 <p><strong>解决方法是</strong>：将 database 及 table 的 character 和 collcation 改成一样的就行了。</p>
-<div class="highlight"><pre><span></span><span class="k">alter</span> <span class="k">database</span> <span class="n">neutron</span> <span class="k">DEFAULT</span> <span class="k">character</span> <span class="kt">set</span> <span class="n">utf8</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="k">alter</span> <span class="k">database</span> <span class="n">neutron</span> <span class="k">DEFAULT</span> <span class="k">character</span> <span class="k">set</span> <span class="n">utf8</span><span class="p">;</span>
 </pre></div>
 
 

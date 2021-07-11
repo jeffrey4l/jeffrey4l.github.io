@@ -90,7 +90,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -125,14 +125,14 @@
   </header>
   <div class="entry-content">
     <p>使用 Docker 时，很多情况下需要搭建自己的 registry 服务。把一些私有的 Image 放到上面用。官方有一个 registry 的<a href="https://hub.docker.com/_/registry/" target="_blank">镜像</a>可以拉下来，直接用。如下：</p>
-<div class="highlight"><pre><span></span><span class="err">docker run -p 5000:5000 -v &lt;HOST_DIR&gt;:/tmp/registry-dev registry</span>
+<div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">p</span> <span class="mh">5000</span><span class="o">:</span><span class="mh">5000</span> <span class="o">-</span><span class="n">v</span> <span class="o">&lt;</span><span class="n">HOST_DIR</span><span class="o">&gt;:/</span><span class="n">tmp</span><span class="o">/</span><span class="n">registry</span><span class="o">-</span><span class="n">dev</span> <span class="n">registry</span>
 </pre></div>
 
 
 <p>但是默认没有加上 ssl(如果没有，只能给本机提供服务)， proxy也没有开启。</p>
 <p>我自己写了一个 docker compose, 默认开启了以上两个功能，代码见<a href="https://github.com/jeffrey4l/docker-registry" target="_blank">这里</a>。默认使用了 host 的 /data/docker-registry/data 目录做数据 volume, 所以请保证这个目录存在。</p>
 <p>使用自己建立的 registry 服务时，要修改 docker 的服务启动脚本，加上如下参数：</p>
-<div class="highlight"><pre><span></span><span class="err">--insecure-registry your.domain.com:5000 --registry-mirror=https://your.domain.com:5000</span>
+<div class="highlight"><pre><span></span><span class="o">--</span><span class="n">insecure</span><span class="o">-</span><span class="n">registry</span> <span class="n">your</span><span class="p">.</span><span class="n">domain</span><span class="p">.</span><span class="nl">com:</span><span class="mh">5000</span> <span class="o">--</span><span class="n">registry</span><span class="o">-</span><span class="n">mirror</span><span class="o">=</span><span class="nl">https:</span><span class="c1">//your.domain.com:5000</span>
 </pre></div>
 
 

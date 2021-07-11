@@ -90,7 +90,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -126,7 +126,7 @@
   <div class="entry-content">
     <p>在一些特殊环境中，服务器是不能联网的。此时要通过pip安装包会有一些麻烦。这时可以使用pip的download到本地的功能，来加速安装。</p>
 <p>先在有网络的环境中下载下来所有需要的包：</p>
-<div class="highlight"><pre><span></span>pip install --download <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages -r requirement.txt
+<div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">download</span> <span class="o">$</span><span class="p">{</span><span class="n">HOME</span><span class="p">}</span><span class="o">/.</span><span class="n">pip</span><span class="o">-</span><span class="n">packages</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirement</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 
 
@@ -137,8 +137,8 @@
 
 <p>所有需要的包就安装上了。</p>
 <p>为了方便使用，还可以把这两个命令弄成alias来使用</p>
-<div class="highlight"><pre><span></span>alias pipcache=&#39;pip install --download <span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages&#39;
-alias pipinstall=&#39;pip install --no-index --find-links=file://<span class="cp">${</span><span class="n">HOME</span><span class="cp">}</span>/.pip-packages/&#39;
+<div class="highlight"><pre><span></span><span class="n">alias</span> <span class="n">pipcache</span><span class="o">=</span><span class="s1">&#39;pip install --download ${HOME}/.pip-packages&#39;</span>
+<span class="n">alias</span> <span class="n">pipinstall</span><span class="o">=</span><span class="s1">&#39;pip install --no-index --find-links=file://${HOME}/.pip-packages/&#39;</span>
 </pre></div>
     <div class="copyright">
       <p><span>原始链接:</span><a href="http://xcodest.me/pip-install-from-local.html" target="_blank">http://xcodest.me/pip-install-from-local.html </a></p>

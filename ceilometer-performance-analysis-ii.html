@@ -89,7 +89,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -136,7 +136,7 @@
 
 
 <p>对于每个 metric 都会调用一次 <code>fnmatch</code> 命令，所以有大量的请求。那为什么会那么慢呢? 再继续跟踪到 <code>oslo_util</code> 的 fnmatch 实现，看到如下代码 </p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">fnmatch</span> <span class="kn">as</span> <span class="nn">standard_fnmatch</span>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">fnmatch</span> <span class="k">as</span> <span class="nn">standard_fnmatch</span>
 
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">):</span>
     <span class="n">fnmatch</span> <span class="o">=</span> <span class="n">standard_fnmatch</span><span class="o">.</span><span class="n">fnmatch</span>
@@ -149,7 +149,7 @@
 
     <span class="k">def</span> <span class="nf">_get_cached_pattern</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
         <span class="n">cached_pattern</span> <span class="o">=</span> <span class="n">_MATCH_CACHE</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">cached_pattern</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cached_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">translated_pattern</span> <span class="o">=</span> <span class="n">translate</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
             <span class="n">cached_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">translated_pattern</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_MATCH_CACHE</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">_MATCH_CACHE_MAX</span><span class="p">:</span>

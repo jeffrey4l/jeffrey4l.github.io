@@ -91,7 +91,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -168,30 +168,30 @@
 <span class="n">EOF</span><span class="w"></span>
 </pre></div>
 <p>加入 EPEL 源</p>
-<div class="highlight"><pre><span></span><span class="err">yum install -y epel-release</span>
+<div class="highlight"><pre><span></span>yum install -y epel-release
 </pre></div>
 <h2 id="kolla"><a class="toclink" href="#kolla">安装 Kolla 所需依赖</a><a class="headerlink" href="#kolla" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><span class="err">yum install -y ansible docker-engine git gcc python-setuptools</span>
-<span class="err">easy_install -U pip</span>
+<div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">ansible</span> <span class="n">docker</span><span class="o">-</span><span class="n">engine</span> <span class="n">git</span> <span class="n">gcc</span> <span class="n">python</span><span class="o">-</span><span class="n">setuptools</span>
+<span class="n">easy_install</span> <span class="o">-</span><span class="n">U</span> <span class="n">pip</span>
 </pre></div>
 <p>Docker 现在使用了 shared mount 功能，默认没有打开，需要手动修改 Docker 启动文件 <code>/usr/lib/systemd/system/docker.service</code> 的 MountFlags</p>
-<div class="highlight"><pre><span></span><span class="err">sed -i 's/MountFlags.*/MountFlags=shared/' /usr/lib/systemd/system/docker.service</span>
+<div class="highlight"><pre><span></span>sed -i 's/MountFlags.*/MountFlags=shared/' /usr/lib/systemd/system/docker.service
 </pre></div>
 <p>启动 Docker 服务</p>
-<div class="highlight"><pre><span></span><span class="err">systemctl daemon-reload</span>
-<span class="err">systemctl enable docker</span>
-<span class="err">systemctl start docker</span>
+<div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">daemon</span><span class="o">-</span><span class="n">reload</span>
+<span class="n">systemctl</span> <span class="n">enable</span> <span class="n">docker</span>
+<span class="n">systemctl</span> <span class="n">start</span> <span class="n">docker</span>
 </pre></div>
 <h2 id="kolla_1"><a class="toclink" href="#kolla_1">下载 Kolla 代码并安装依赖</a><a class="headerlink" href="#kolla_1" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><span class="err">git clone https://github.com/openstack/kolla.git</span>
-<span class="err">cd kolla</span>
-<span class="err">pip install -r requirements.txt -r test-requirements.txt tox</span>
+<div class="highlight"><pre><span></span>git clone https://github.com/openstack/kolla.git
+cd kolla
+pip install -r requirements.txt -r test-requirements.txt tox
 </pre></div>
 <h1 id="build-docker-image"><a class="toclink" href="#build-docker-image">Build Docker Image</a><a class="headerlink" href="#build-docker-image" title="Permanent link">¶</a></h1>
 <p>以下如果没有特别说明，所有的操作都是在 Kolla 项目的目录里进行</p>
 <p>首先要先生成并修改配置文件</p>
-<div class="highlight"><pre><span></span><span class="err">tox -e genconfig</span>
-<span class="err">cp -rv etc/kolla /etc/</span>
+<div class="highlight"><pre><span></span>tox -e genconfig
+cp -rv etc/kolla /etc/
 </pre></div>
 <p>然后修改 <code>/etc/kolla/kolla-build.conf</code> 文件，它是用来控制 kolla build 过程的。修改后，其主要内容如下:</p>
 <div class="highlight"><pre><span></span><span class="k">[DEFAULT]</span>
@@ -201,7 +201,7 @@
 <span class="na">push</span> <span class="o">=</span> <span class="s">false</span>
 </pre></div>
 <p>接下来就是进行漫长的 build, 这个过程主要依赖机器性能和网速。如果快的话，20多分钟就完成。如果有问题的话，会很久。不过依赖于 Docker Build 的 Cache 功能，就算重跑的话，之前已经 Build 好的也会很快完成。</p>
-<div class="highlight"><pre><span></span><span class="err">./tool/build.py -p default</span>
+<div class="highlight"><pre><span></span><span class="o">./</span><span class="k">tool</span><span class="o">/</span><span class="n">build</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">p</span> <span class="n">default</span>
 </pre></div>
 <p>参数中的 <code>-p default</code> 是指定了只 build 主要的 image, 包括: mariadb, rabbitmq, cinder, ceilometer, glance, heat, horizon, keystone, neutron, nova, swift等 . 这些可以只生成的 <code>kolla-build.conf</code> 里找到。</p>
 <p>如果 Build 完成之后，使用 <code>docker images</code> 能看到所有已经 build 好的镜像。</p>
@@ -225,11 +225,11 @@
 <span class="k">Usage</span><span class="err">:</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">kolla</span><span class="o">-</span><span class="n">ansible</span><span class="w"> </span><span class="n">COMMAND</span><span class="w"> </span><span class="o">[</span><span class="n">options</span><span class="o">]</span><span class="w"></span>
 
 <span class="nl">Options</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="c1">--inventory, -i &lt;inventory_path&gt; Specify path to ansible inventory file</span>
-<span class="w">    </span><span class="c1">--playbook, -p &lt;playbook_path&gt;   Specify path to ansible playbook file</span>
-<span class="w">    </span><span class="c1">--keyfile, -k &lt;key_file&gt;         Specify path to ansible vault keyfile</span>
-<span class="w">    </span><span class="c1">--help, -h                       Show this usage information</span>
-<span class="w">    </span><span class="c1">--tags, -t &lt;tags&gt;                Only run plays and tasks tagged with these values</span>
+<span class="w">    </span><span class="o">--</span><span class="n">inventory</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="n">inventory_path</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Specify</span><span class="w"> </span><span class="k">path</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">ansible</span><span class="w"> </span><span class="n">inventory</span><span class="w"> </span><span class="k">file</span><span class="w"></span>
+<span class="w">    </span><span class="o">--</span><span class="n">playbook</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="o">&lt;</span><span class="n">playbook_path</span><span class="o">&gt;</span><span class="w">   </span><span class="n">Specify</span><span class="w"> </span><span class="k">path</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">ansible</span><span class="w"> </span><span class="n">playbook</span><span class="w"> </span><span class="k">file</span><span class="w"></span>
+<span class="w">    </span><span class="o">--</span><span class="n">keyfile</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">k</span><span class="w"> </span><span class="o">&lt;</span><span class="n">key_file</span><span class="o">&gt;</span><span class="w">         </span><span class="n">Specify</span><span class="w"> </span><span class="k">path</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">ansible</span><span class="w"> </span><span class="n">vault</span><span class="w"> </span><span class="n">keyfile</span><span class="w"></span>
+<span class="w">    </span><span class="o">--</span><span class="n">help</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">h</span><span class="w">                       </span><span class="n">Show</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="k">usage</span><span class="w"> </span><span class="n">information</span><span class="w"></span>
+<span class="w">    </span><span class="o">--</span><span class="n">tags</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">t</span><span class="w"> </span><span class="o">&lt;</span><span class="n">tags</span><span class="o">&gt;</span><span class="w">                </span><span class="k">Only</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="n">plays</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="n">tagged</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">these</span><span class="w"> </span><span class="k">values</span><span class="w"></span>
 
 <span class="nl">Commands</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="n">prechecks</span><span class="w">    </span><span class="n">Do</span><span class="w"> </span><span class="n">pre</span><span class="o">-</span><span class="n">deployment</span><span class="w"> </span><span class="n">checks</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">hosts</span><span class="w"></span>
@@ -241,33 +241,33 @@
 <p>使用 <code>./tools/kolla-ansible deploy</code> 来开始正式安装。安装会很快，我机器上，几分钟就安装完成了。</p>
 <p>最后，使用<code>./tools/kolla-ansible post-deploy</code> 来生成 <code>/etc/kolla/admin-openrc.sh</code> 文件用来加载认证变量。</p>
 <h1 id="_3"><a class="toclink" href="#_3">查看安装后的状态</a><a class="headerlink" href="#_3" title="Permanent link">¶</a></h1>
-<div class="highlight"><pre><span></span><span class="err">IMAGE                                                  COMMAND                 NAMES</span>
-<span class="err">lokolla/centos-source-keystone:2.0.0                   "kolla_start"           keystone</span>
-<span class="err">lokolla/centos-source-horizon:2.0.0                    "kolla_start"           horizon</span>
-<span class="err">lokolla/centos-source-neutron-metadata-agent:2.0.0     "kolla_start"           neutron_metadata_agent</span>
-<span class="err">lokolla/centos-source-neutron-l3-agent:2.0.0           "kolla_start"           neutron_l3_agent</span>
-<span class="err">lokolla/centos-source-neutron-dhcp-agent:2.0.0         "kolla_start"           neutron_dhcp_agent</span>
-<span class="err">lokolla/centos-source-neutron-openvswitch-agent:2.0.0  "kolla_start"           neutron_openvswitch_agent</span>
-<span class="err">lokolla/centos-source-neutron-server:2.0.0             "kolla_start"           neutron_server</span>
-<span class="err">lokolla/centos-source-openvswitch-vswitchd:2.0.0       "kolla_start"           openvswitch_vswitchd</span>
-<span class="err">lokolla/centos-source-openvswitch-db-server:2.0.0      "kolla_start"           openvswitch_db</span>
-<span class="err">lokolla/centos-source-nova-compute:2.0.0               "kolla_start"           nova_compute</span>
-<span class="err">lokolla/centos-source-nova-libvirt:2.0.0               "kolla_start"           nova_libvirt</span>
-<span class="err">lokolla/centos-source-nova-conductor:2.0.0             "kolla_start"           nova_conductor</span>
-<span class="err">lokolla/centos-source-nova-scheduler:2.0.0             "kolla_start"           nova_scheduler</span>
-<span class="err">lokolla/centos-source-nova-novncproxy:2.0.0            "kolla_start"           nova_novncproxy</span>
-<span class="err">lokolla/centos-source-nova-consoleauth:2.0.0           "kolla_start"           nova_consoleauth</span>
-<span class="err">lokolla/centos-source-nova-api:2.0.0                   "kolla_start"           nova_api</span>
-<span class="err">lokolla/centos-source-glance-api:2.0.0                 "kolla_start"           glance_api</span>
-<span class="err">lokolla/centos-source-glance-registry:2.0.0            "kolla_start"           glance_registry</span>
-<span class="err">lokolla/centos-source-rabbitmq:2.0.0                   "kolla_start"           rabbitmq</span>
-<span class="err">lokolla/centos-source-mariadb:2.0.0                    "kolla_start"           mariadb</span>
-<span class="err">lokolla/centos-source-memcached:2.0.0                  "kolla_start"           memcached</span>
-<span class="err">lokolla/centos-source-keepalived:2.0.0                 "kolla_start"           keepalived</span>
-<span class="err">lokolla/centos-source-haproxy:2.0.0                    "kolla_start"           haproxy</span>
-<span class="err">lokolla/centos-source-kolla-toolbox:2.0.0              "/bin/sleep infinity"   kolla_toolbox</span>
-<span class="err">lokolla/centos-source-heka:2.0.0                       "kolla_start"           heka</span>
-<span class="err">lokolla/centos-source-rsyslog:2.0.0                    "kolla_start"           rsyslog</span>
+<div class="highlight"><pre><span></span><span class="n">IMAGE</span>                                                  <span class="n">COMMAND</span>                 <span class="n">NAMES</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">keystone</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>                   <span class="s2">"kolla_start"</span>           <span class="n">keystone</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">horizon</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>                    <span class="s2">"kolla_start"</span>           <span class="n">horizon</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">neutron</span><span class="o">-</span><span class="n">metadata</span><span class="o">-</span><span class="n">agent</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>     <span class="s2">"kolla_start"</span>           <span class="n">neutron_metadata_agent</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">neutron</span><span class="o">-</span><span class="n">l3</span><span class="o">-</span><span class="n">agent</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>           <span class="s2">"kolla_start"</span>           <span class="n">neutron_l3_agent</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">neutron</span><span class="o">-</span><span class="n">dhcp</span><span class="o">-</span><span class="n">agent</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>         <span class="s2">"kolla_start"</span>           <span class="n">neutron_dhcp_agent</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">neutron</span><span class="o">-</span><span class="n">openvswitch</span><span class="o">-</span><span class="n">agent</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>  <span class="s2">"kolla_start"</span>           <span class="n">neutron_openvswitch_agent</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">neutron</span><span class="o">-</span><span class="n">server</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>             <span class="s2">"kolla_start"</span>           <span class="n">neutron_server</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">openvswitch</span><span class="o">-</span><span class="n">vswitchd</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>       <span class="s2">"kolla_start"</span>           <span class="n">openvswitch_vswitchd</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">openvswitch</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">server</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>      <span class="s2">"kolla_start"</span>           <span class="n">openvswitch_db</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">compute</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>               <span class="s2">"kolla_start"</span>           <span class="n">nova_compute</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">libvirt</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>               <span class="s2">"kolla_start"</span>           <span class="n">nova_libvirt</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">conductor</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>             <span class="s2">"kolla_start"</span>           <span class="n">nova_conductor</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">scheduler</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>             <span class="s2">"kolla_start"</span>           <span class="n">nova_scheduler</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">novncproxy</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>            <span class="s2">"kolla_start"</span>           <span class="n">nova_novncproxy</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">consoleauth</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>           <span class="s2">"kolla_start"</span>           <span class="n">nova_consoleauth</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">nova</span><span class="o">-</span><span class="n">api</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>                   <span class="s2">"kolla_start"</span>           <span class="n">nova_api</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">glance</span><span class="o">-</span><span class="n">api</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>                 <span class="s2">"kolla_start"</span>           <span class="n">glance_api</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">glance</span><span class="o">-</span><span class="n">registry</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>            <span class="s2">"kolla_start"</span>           <span class="n">glance_registry</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">rabbitmq</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>                   <span class="s2">"kolla_start"</span>           <span class="n">rabbitmq</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">mariadb</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>                    <span class="s2">"kolla_start"</span>           <span class="n">mariadb</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">memcached</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>                  <span class="s2">"kolla_start"</span>           <span class="n">memcached</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">keepalived</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>                 <span class="s2">"kolla_start"</span>           <span class="n">keepalived</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">haproxy</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>                    <span class="s2">"kolla_start"</span>           <span class="n">haproxy</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">kolla</span><span class="o">-</span><span class="n">toolbox</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>              <span class="s2">"/bin/sleep infinity"</span>   <span class="n">kolla_toolbox</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">heka</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>                       <span class="s2">"kolla_start"</span>           <span class="n">heka</span>
+<span class="n">lokolla</span><span class="o">/</span><span class="n">centos</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">rsyslog</span><span class="p">:</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span>                    <span class="s2">"kolla_start"</span>           <span class="n">rsyslog</span>
 </pre></div>
 <p>为了显示好看，我去掉了一些无关的列。通过上面，可以看出</p>
 <ul>

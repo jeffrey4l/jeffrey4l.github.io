@@ -89,7 +89,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -126,38 +126,38 @@
 <p>构建体积更小的镜像，有利于镜像本身的传输，尤其在 Kubernetes 的环境中，镜像的传输会更加频繁，更小的体积意味着更快的调度时间和更小的空间占用。那如何构建更加小的镜像呢?</p>
 <h3 id="use-smaller-base-image"><a class="toclink" href="#use-smaller-base-image">使用更小的基础镜像</a><a class="headerlink" href="#use-smaller-base-image" title="Permanent link">&para;</a></h3>
 <p>不同的基础镜像构建相同的应用会有不同的大小。使用更小基础镜像会有利于减小最终镜像的大小。建议非特殊情况下，使用 alpine 镜像。他的基础镜像只有不到 5MB, 而且还自带包管理工具。一般需求都可以满足。</p>
-<div class="highlight"><pre><span></span><span class="err">FROM alpine</span>
-<span class="err">RUN apk add nginx</span>
+<div class="highlight"><pre><span></span>FROM alpine
+RUN apk add nginx
 </pre></div>
 
 
 <p>如果你的应用可以独立运行，如 Go 编译出来的 Binary 文件，还可以直接使用 scratch 这个空白镜像。</p>
-<div class="highlight"><pre><span></span><span class="err">FROM scratch</span>
-<span class="err">COPY mybinary /mybinary</span>
-<span class="err">CMD [ &quot;/mybinary&quot; ]</span>
+<div class="highlight"><pre><span></span>FROM scratch
+COPY mybinary /mybinary
+CMD [ &quot;/mybinary&quot; ]
 </pre></div>
 
 
 <h3 id="merge-run-command"><a class="toclink" href="#merge-run-command">合并 RUN 命令</a><a class="headerlink" href="#merge-run-command" title="Permanent link">&para;</a></h3>
 <p>不同的 RUN 命令如果先后做了文件的增加和删除，因为镜像分层文件系统的原因，还是会增加镜像体积的。如果两个 RUN 命令合并后，才会达到所想的效果。</p>
-<div class="highlight"><pre><span></span><span class="err">...</span>
-<span class="err">RUN curl http://xyz.abc -o abc.tar.gz \</span>
-<span class="err">    ...</span>
-<span class="err">    rm -rf abc.tar.gz</span>
-<span class="err">...</span>
+<div class="highlight"><pre><span></span>...
+RUN curl http://xyz.abc -o abc.tar.gz \
+    ...
+    rm -rf abc.tar.gz
+...
 </pre></div>
 
 
 <h3 id="remove-useless-package"><a class="toclink" href="#remove-useless-package">去除掉不用的软件包</a><a class="headerlink" href="#remove-useless-package" title="Permanent link">&para;</a></h3>
 <p>在安装包的过程中，尽量只安装需要用到的包。尤其是在编译过程中，难免会安装一些运行过程中不需要的软件包，如 glibc-devel 等。那在最后，最好把这些包去掉，来节省镜像空间。又因为镜像分层系统的原因，这些安装和卸载的语法还应该处理同一个 RUN 命令下</p>
-<div class="highlight"><pre><span></span><span class="err">...</span>
-<span class="err">RUN BUILD_DEP_PKGS=&quot;</span>
-<span class="err">       gcc \</span>
-<span class="err">       libc-devel&quot;</span>
-<span class="err">    &amp;&amp; yum -y install $BUILD_DEP_PKGS \</span>
-<span class="err">    ...</span>
-<span class="err">    &amp;&amp; yum -y remove $BUILD_DEP_PKGS</span>
-<span class="err">...</span>
+<div class="highlight"><pre><span></span>...
+RUN BUILD_DEP_PKGS=&quot;
+       gcc \
+       libc-devel&quot;
+    &amp;&amp; yum -y install $BUILD_DEP_PKGS \
+    ...
+    &amp;&amp; yum -y remove $BUILD_DEP_PKGS
+...
 </pre></div>
 
 
@@ -219,7 +219,7 @@ Attempting to squash last <span class="m">40</span> layers...
 Original image size: <span class="m">388</span>.51 MB
 Squashed image size: <span class="m">281</span>.43 MB
 Image size decreased by <span class="m">27</span>.56 %
-Image registered in Docker daemon as kolla/centos-source-base:new
+Image registered <span class="k">in</span> Docker daemon as kolla/centos-source-base:new
 </pre></div>
 
 
@@ -230,7 +230,7 @@ Image registered in Docker daemon as kolla/centos-source-base:new
 <h2 id="image-safety"><a class="toclink" href="#image-safety">镜像安全</a><a class="headerlink" href="#image-safety" title="Permanent link">&para;</a></h2>
 <h3 id="init-progress"><a class="toclink" href="#init-progress">init 进程</a><a class="headerlink" href="#init-progress" title="Permanent link">&para;</a></h3>
 <p>重启容器的时候，经常会很慢，而且docker daemon 日志中经常会抛出以下错误</p>
-<div class="highlight"><pre><span></span><span class="err">dockerd[559]: msg=&quot;Container 5054f failed to exit within 10 seconds of signal 15 - using the force&quot;</span>
+<div class="highlight"><pre><span></span><span class="n">dockerd</span><span class="p">[</span><span class="mi">559</span><span class="p">]:</span> <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;Container 5054f failed to exit within 10 seconds of signal 15 - using the force&quot;</span>
 </pre></div>
 
 
@@ -275,10 +275,10 @@ root         <span class="m">6</span>  <span class="m">0</span>.0  <span class="
 <p>把需要  nginx 读写的地方配置上  <code>rwx</code> 权限，这样不管 nginx 进程的 <code>uid</code>  是多少，都可以正常运行。</p>
 <h2 id="image-tag-management"><a class="toclink" href="#image-tag-management">镜像 tag 管理</a><a class="headerlink" href="#image-tag-management" title="Permanent link">&para;</a></h2>
 <p>理论上讲，docker 的镜像内容是不可变的，其 tag 应该是和 git 的 tag 是一样的，应该是一个只读值不应该变化。但是平时大家在使用的时候，习惯的使用 <code>:latest</code> ， 这样在生产环境中是比较危险的，很容易搞错镜像。我建议使用如下风格的 tag 命令方式来管理 image.</p>
-<div class="highlight"><pre><span></span><span class="n">X</span><span class="p">.</span><span class="n">Y</span><span class="p">.</span><span class="n">Z</span><span class="o">-</span><span class="n">N</span>
+<div class="highlight"><pre><span></span>X.Y.Z-N
 
-<span class="n">X</span><span class="p">.</span><span class="n">Y</span><span class="p">.</span><span class="n">Z</span> <span class="err">跟随镜像里面关联代码的版本号</span>
-<span class="n">N</span> <span class="err">使用构建次数，或使用时间戳。来标记</span> <span class="n">Dockerfile</span> <span class="err">的变化及构建时间</span>
+X.Y.Z 跟随镜像里面关联代码的版本号
+N 使用构建次数，或使用时间戳。来标记 Dockerfile 的变化及构建时间
 </pre></div>
 
 
@@ -425,6 +425,9 @@ root         <span class="m">6</span>  <span class="m">0</span>.0  <span class="
 <li id="fn-4">
 <p><a href="https://www.weave.works/blog/10-tips-for-building-and-managing-containers" target="_blank">10 tips for building and managing containers</a>&#160;<a class="footnote-backref" href="#fnref-4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
 </li>
+<li id="fn-5">
+<p><a href="https://cloudberry.engineering/article/dockerfile-security-best-practices/" target="_blank">Dockerfile Security Best Practices</a>&#160;<a class="footnote-backref" href="#fnref-5" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
 </ol>
 </div>
     <div class="copyright">
@@ -436,7 +439,7 @@ root         <span class="m">6</span>  <span class="m">0</span>.0  <span class="
     <nav>
       <ul class="pager">
         <li class="previous"><a href="ceilometer-performance-analysis-ii.html">&larr; Older</a></li>
-        <li class="next disabled"><span href="">Newer &rarr;</span></li>
+        <li class="next"><a href="docker-recreate-tool.html">Newer &rarr;</a></li>
       </ul>
     </nav>
   </div>

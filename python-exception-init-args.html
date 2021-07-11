@@ -90,7 +90,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -160,7 +160,7 @@
 <span class="nf">BaseException_init</span><span class="p">(</span><span class="n">PyBaseExceptionObject</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">PyObject</span> <span class="o">*</span><span class="n">kwds</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_PyArg_NoKeywords</span><span class="p">(</span><span class="n">Py_TYPE</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">tp_name</span><span class="p">,</span> <span class="n">kwds</span><span class="p">))</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
 
     <span class="n">Py_DECREF</span><span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">);</span>
     <span class="n">self</span><span class="o">-&gt;</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">;</span>
@@ -215,7 +215,7 @@
     <span class="k">if</span> <span class="p">(</span><span class="n">val</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">dict</span> <span class="o">&amp;&amp;</span> <span class="n">PyDict_GetItemString</span><span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">dict</span><span class="p">,</span> <span class="s">&quot;message&quot;</span><span class="p">))</span> <span class="p">{</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">PyDict_DelItemString</span><span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">dict</span><span class="p">,</span> <span class="s">&quot;message&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-                <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+                <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
         <span class="p">}</span>
         <span class="n">Py_XDECREF</span><span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">);</span>
         <span class="n">self</span><span class="o">-&gt;</span><span class="n">message</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
@@ -226,7 +226,7 @@
     <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">dict</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
         <span class="n">self</span><span class="o">-&gt;</span><span class="n">dict</span> <span class="o">=</span> <span class="n">PyDict_New</span><span class="p">();</span>
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">dict</span><span class="p">)</span>
-            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="n">PyDict_SetItemString</span><span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">dict</span><span class="p">,</span> <span class="s">&quot;message&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">);</span>
 <span class="p">}</span>
@@ -236,11 +236,11 @@
 <p>在 python3 中，message 相关的信息已经完全删除掉了。</p>
 <p>所以，一般使用 <code>message</code> 属性的话，推荐这样使用</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">MyException</span>(<span class="nb">Exception</span>):
-    <span class="n">def</span> <span class="n">__init__</span>(<span class="k">self</span>, <span class="n">message</span>):
-        <span class="k">self</span>.<span class="n">message</span> = <span class="n">message</span>
+    <span class="n">def</span> <span class="n">__init__</span>(<span class="nb">self</span>, <span class="nb">message</span>):
+        <span class="nb">self</span>.<span class="nb">message</span> = <span class="nb">message</span>
 
 <span class="k">class</span> <span class="n">My2Exception</span>(<span class="nb">Exception</span>):
-    <span class="n">message</span> = <span class="s">&#39;this is a message&#39;</span>
+    <span class="nb">message</span> = <span class="s">&#39;this is a message&#39;</span>
 </pre></div>
     <div class="copyright">
       <p><span>原始链接:</span><a href="http://xcodest.me/python-exception-init-args.html" target="_blank">http://xcodest.me/python-exception-init-args.html </a></p>

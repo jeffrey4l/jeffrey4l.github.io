@@ -92,7 +92,7 @@
               <a class="list-group-item" href="https://xcodest.me/category/linux.html">Linux<span class="badge">18</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/openstack.html">OpenStack<span class="badge">20</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/ops.html">Ops<span class="badge">1</span></a>
-              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">6</span></a>
+              <a class="list-group-item" href="https://xcodest.me/category/others.html">Others<span class="badge">7</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/programming.html">Programming<span class="badge">5</span></a>
               <a class="list-group-item" href="https://xcodest.me/category/python.html">Python<span class="badge">2</span></a>
             </div>
@@ -129,7 +129,7 @@
   </header>
   <div class="entry-content">
     <p>在使用<code>keepalived</code>的过程中，出现了dhcp失败，而导致keepalived工作不正常的问题。而且之前也出现过dhcp偶尔失败，导致虚拟机不能得到IP, 从而不能访问的情况。虽然在<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>中加上了如下语句：</p>
-<div class="highlight"><pre><span></span><span class="err">PERSISTENT_DHCLIENT=1</span>
+<div class="highlight"><pre><span></span>PERSISTENT_DHCLIENT=1
 </pre></div>
 
 
@@ -159,12 +159,12 @@ to deal with this issue by upgrading dnsmasq. It would be great if the various<b
 distributionss could upgrade as well, or at least try to patch in the fix. If<br>
 upgrading dnsmasq is out of the question, a possible workaround is to minimize<br>
 lease renewals with something like the following combination of config options.</p>
-<div class="highlight"><pre><span></span><span class="err"># release leases immediately on terminate</span>
-<span class="err">force_dhcp_release=true</span>
-<span class="err"># one week lease time</span>
-<span class="err">dhcp_lease_time=604800</span>
-<span class="err"># two week disassociate timeout</span>
-<span class="err">fixed_ip_disassociate_timeout=1209600</span>
+<div class="highlight"><pre><span></span># release leases immediately on terminate
+force_dhcp_release=true
+# one week lease time
+dhcp_lease_time=604800
+# two week disassociate timeout
+fixed_ip_disassociate_timeout=1209600
 </pre></div>
 
 

@@ -7,6 +7,7 @@ pelican<4
 webassets
 # markdown-newtab do not support Markdown>=3
 Markdown<3
+cssutils
 feedgenerator
 Jinja2
 docutils
@@ -18,7 +19,6 @@ beautifulsoup4
 
 docopt
 pyquery
-cssutils
 markdown-css
 markdown-newtab
 
